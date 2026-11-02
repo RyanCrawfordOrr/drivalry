@@ -1,0 +1,196 @@
+{
+  "kind": "format",
+  "description": "formatDuration / formatSaved display strings, including rounding ties and negatives.",
+  "formatDuration": [
+    {
+      "input": 0,
+      "expected": "0 seconds"
+    },
+    {
+      "input": 0.4,
+      "expected": "0 seconds"
+    },
+    {
+      "input": 0.5,
+      "expected": "1 seconds"
+    },
+    {
+      "input": 1,
+      "expected": "1 seconds"
+    },
+    {
+      "input": 1.5,
+      "expected": "2 seconds"
+    },
+    {
+      "input": 2.5,
+      "expected": "3 seconds"
+    },
+    {
+      "input": 8,
+      "expected": "8 seconds"
+    },
+    {
+      "input": 44.5,
+      "expected": "45 seconds"
+    },
+    {
+      "input": 45,
+      "expected": "45 seconds"
+    },
+    {
+      "input": 59.4,
+      "expected": "59 seconds"
+    },
+    {
+      "input": 59.5,
+      "expected": "a minute"
+    },
+    {
+      "input": 60,
+      "expected": "a minute"
+    },
+    {
+      "input": 65,
+      "expected": "a minute"
+    },
+    {
+      "input": 69.5,
+      "expected": "1 min 10 s"
+    },
+    {
+      "input": 70,
+      "expected": "1 min 10 s"
+    },
+    {
+      "input": 89.5,
+      "expected": "1 min 30 s"
+    },
+    {
+      "input": 90,
+      "expected": "1 min 30 s"
+    },
+    {
+      "input": 95,
+      "expected": "1 min 35 s"
+    },
+    {
+      "input": 109.49,
+      "expected": "1 min 49 s"
+    },
+    {
+      "input": 109.5,
+      "expected": "1 min 50 s"
+    },
+    {
+      "input": 119.4,
+      "expected": "1 min 59 s"
+    },
+    {
+      "input": 119.5,
+      "expected": "2 minutes"
+    },
+    {
+      "input": 120,
+      "expected": "2 minutes"
+    },
+    {
+      "input": 149.5,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 150,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 150.5,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 180,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 190,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 300,
+      "expected": "5 minutes"
+    },
+    {
+      "input": 299.5,
+      "expected": "5 minutes"
+    },
+    {
+      "input": 3600,
+      "expected": "60 minutes"
+    },
+    {
+      "input": -0.5,
+      "expected": "0 seconds"
+    },
+    {
+      "input": -3.7,
+      "expected": "-4 seconds"
+    }
+  ],
+  "formatSaved": [
+    {
+      "input": -5,
+      "expected": "nothing"
+    },
+    {
+      "input": -0.4,
+      "expected": "nothing"
+    },
+    {
+      "input": 0,
+      "expected": "nothing"
+    },
+    {
+      "input": 0.3,
+      "expected": "nothing"
+    },
+    {
+      "input": 0.5,
+      "expected": "1 seconds"
+    },
+    {
+      "input": 1,
+      "expected": "1 seconds"
+    },
+    {
+      "input": 38,
+      "expected": "38 seconds"
+    },
+    {
+      "input": 59.5,
+      "expected": "1 minutes"
+    },
+    {
+      "input": 60,
+      "expected": "1 minutes"
+    },
+    {
+      "input": 89.5,
+      "expected": "2 minutes"
+    },
+    {
+      "input": 90,
+      "expected": "2 minutes"
+    },
+    {
+      "input": 130,
+      "expected": "2 minutes"
+    },
+    {
+      "input": 150,
+      "expected": "3 minutes"
+    },
+    {
+      "input": 3599.5,
+      "expected": "60 minutes"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "kind": "trip",
+  "name": "edge-empty-trip",
+  "description": "No samples at all: unscored (too_short) with an all-zero summary.",
+  "mirrors": "prepare.ts / score.ts degenerate-input handling",
+  "source": {
+    "builder": "manual"
+  },
+  "options": {},
+  "input": {
+    "id": "empty",
+    "samples": [],
+    "segments": []
+  },
+  "expected": {
+    "tripId": "empty",
+    "scored": false,
+    "unscoredReason": "too_short",
+    "score": 0,
+    "penalties": {
+      "speed": 0,
+      "smoothness": 0,
+      "attention": 0,
+      "efficiency": 0
+    },
+    "flags": [],
+    "reckless": false,
+    "xp": 0,
+    "events": [],
+    "observations": [],
+    "summary": {
+      "distanceM": 0,
+      "movingTimeS": 0,
+      "totalTimeS": 0,
+      "maxSpeed": 0,
+      "avgMovingSpeed": 0,
+      "secondsOverLimit": 0,
+      "secondsWithKnownLimit": 0,
+      "timeSavedBySpeedingS": 0,
+      "startT": 0,
+      "endT": 0,
+      "nightFraction": 0,
+      "gpsQuality": 0
+    },
+    "feedback": {
+      "headline": {
+        "tone": "praise",
+        "text": "0.0 miles. Too short to score. Barely a trip, honestly."
+      },
+      "lines": []
+    },
+    "eventLines": [],
+    "severityOrder": [],
+    "feedbackVariants": [
+      {
+        "intensity": "gentle",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "Too short to judge (0.0 miles). Logged, not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "gentle",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "Too short to judge (0.0 km). Logged, not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "sassy",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "0.0 miles. Too short to score. Barely a trip, honestly."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "sassy",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "0.0 km. Too short to score. Barely a trip, honestly."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "savage",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "0.0 miles. That is not a trip, that is a parking manoeuvre with ambition. Not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "savage",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "0.0 km. That is not a trip, that is a parking manoeuvre with ambition. Not scored."
+        },
+        "lines": []
+      }
+    ]
+  }
+}

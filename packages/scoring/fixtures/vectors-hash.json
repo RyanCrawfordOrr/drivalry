@@ -1,0 +1,70 @@
+{
+  "kind": "hash",
+  "description": "FNV-1a 32-bit over UTF-16 code units; the template selection seed.",
+  "vectors": [
+    {
+      "seed": "",
+      "hash": 2166136261
+    },
+    {
+      "seed": "a",
+      "hash": 3826002220
+    },
+    {
+      "seed": "messy-commute",
+      "hash": 2636399081
+    },
+    {
+      "seed": "messy-commute:speeding.major:0",
+      "hash": 1727172105
+    },
+    {
+      "seed": "messy-commute:harsh_brake.severe:1",
+      "hash": 2063011414
+    },
+    {
+      "seed": "messy-commute:phone_handling.moderate:2",
+      "hash": 575014456
+    },
+    {
+      "seed": "clean-commute:pf",
+      "hash": 3862100221
+    },
+    {
+      "seed": "clean-commute:sm",
+      "hash": 4213988935
+    },
+    {
+      "seed": "clean-commute:lr",
+      "hash": 4196961053
+    },
+    {
+      "seed": "id-0",
+      "hash": 2627941509
+    },
+    {
+      "seed": "id-11",
+      "hash": 3303598329
+    },
+    {
+      "seed": "The quick brown fox jumps over the lazy dog",
+      "hash": 76545936
+    },
+    {
+      "seed": "héllo wörld",
+      "hash": 3551649478
+    },
+    {
+      "seed": "naïve café ☕",
+      "hash": 2888395662
+    },
+    {
+      "seed": "🚗💨",
+      "hash": 1782321032
+    },
+    {
+      "seed": "日本語のトリップ",
+      "hash": 4048352008
+    }
+  ]
+}

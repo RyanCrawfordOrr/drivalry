@@ -1,0 +1,255 @@
+{
+  "kind": "computeXp",
+  "description": "computeXp(score, distanceM, context, reckless) vectors.",
+  "vectors": [
+    {
+      "score": 100,
+      "distanceM": 15000,
+      "reckless": false,
+      "expected": 100
+    },
+    {
+      "score": 49,
+      "distanceM": 15000,
+      "reckless": false,
+      "expected": 0
+    },
+    {
+      "score": 50,
+      "distanceM": 15000,
+      "reckless": false,
+      "expected": 10
+    },
+    {
+      "score": 100,
+      "distanceM": 15000,
+      "reckless": true,
+      "expected": 0
+    },
+    {
+      "score": 100,
+      "distanceM": 3000,
+      "reckless": false,
+      "expected": 52
+    },
+    {
+      "score": 100,
+      "distanceM": 300,
+      "reckless": false,
+      "expected": 41
+    },
+    {
+      "score": 100,
+      "distanceM": 0,
+      "reckless": false,
+      "expected": 40
+    },
+    {
+      "score": 70,
+      "distanceM": 15000,
+      "reckless": false,
+      "expected": 46
+    },
+    {
+      "score": 85,
+      "distanceM": 15000,
+      "reckless": false,
+      "expected": 73
+    },
+    {
+      "score": 100,
+      "distanceM": 30000,
+      "context": {
+        "dailyCreditedKmBefore": 100
+      },
+      "reckless": false,
+      "expected": 40
+    },
+    {
+      "score": 100,
+      "distanceM": 30000,
+      "context": {
+        "dailyCreditedKmBefore": 95
+      },
+      "reckless": false,
+      "expected": 60
+    },
+    {
+      "score": 100,
+      "distanceM": 30000,
+      "context": {
+        "dailyCreditedKmBefore": 120
+      },
+      "reckless": false,
+      "expected": 40
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 1
+      },
+      "reckless": false,
+      "expected": 90
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 0.49
+      },
+      "reckless": false,
+      "expected": 82
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 0.5
+      },
+      "reckless": false,
+      "expected": 90
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 1,
+        "weather": "rain"
+      },
+      "reckless": false,
+      "expected": 98
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "weather": "snow"
+      },
+      "reckless": false,
+      "expected": 90
+    },
+    {
+      "score": 90,
+      "distanceM": 20000,
+      "context": {
+        "weather": "clear"
+      },
+      "reckless": false,
+      "expected": 82
+    },
+    {
+      "score": 84,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 1,
+        "weather": "rain"
+      },
+      "reckless": false,
+      "expected": 71
+    },
+    {
+      "score": 70,
+      "distanceM": 20000,
+      "context": {
+        "nightFraction": 1,
+        "weather": "rain"
+      },
+      "reckless": false,
+      "expected": 46
+    },
+    {
+      "score": 100,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 4
+      },
+      "reckless": false,
+      "expected": 100
+    },
+    {
+      "score": 100,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 5
+      },
+      "reckless": false,
+      "expected": 105
+    },
+    {
+      "score": 100,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 19
+      },
+      "reckless": false,
+      "expected": 105
+    },
+    {
+      "score": 100,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 20
+      },
+      "reckless": false,
+      "expected": 110
+    },
+    {
+      "score": 100,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 25
+      },
+      "reckless": false,
+      "expected": 110
+    },
+    {
+      "score": 80,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 25
+      },
+      "reckless": false,
+      "expected": 74
+    },
+    {
+      "score": 79,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 25
+      },
+      "reckless": false,
+      "expected": 62
+    },
+    {
+      "score": 70,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 25
+      },
+      "reckless": false,
+      "expected": 46
+    },
+    {
+      "score": 95,
+      "distanceM": 7500,
+      "context": {
+        "nightFraction": 0.9,
+        "weather": "snow",
+        "cleanStreak": 21,
+        "dailyCreditedKmBefore": 97
+      },
+      "reckless": false,
+      "expected": 67
+    },
+    {
+      "score": 25,
+      "distanceM": 20000,
+      "context": {
+        "cleanStreak": 25
+      },
+      "reckless": true,
+      "expected": 0
+    }
+  ]
+}

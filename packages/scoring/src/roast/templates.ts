@@ -1,0 +1,202 @@
+/**
+ * Roast and praise templates.
+ *
+ * Rules (see docs/02-game-design.md §9):
+ *  - Target the drive, not the driver.
+ *  - Always include the number. Specificity is the joke.
+ *  - Hard floor: nothing about crashes, death, injury, alcohol, other people getting hurt,
+ *    or anything that reads as a dare. `test/roast.test.ts` enforces a banned-word list.
+ *
+ * Slots: {over} {limit} {speed} {duration} {road} {saved} {count} {peak} {distance}
+ *        {phoneSeconds} {unit} {events} {idleMinutes} {cruiseMinutes}
+ */
+import type { Intensity } from '../types';
+
+export type TemplateKey =
+  | 'speeding.minor'
+  | 'speeding.moderate'
+  | 'speeding.major'
+  | 'speeding.reckless'
+  | 'harsh_brake.moderate'
+  | 'harsh_brake.severe'
+  | 'harsh_accel.moderate'
+  | 'harsh_accel.severe'
+  | 'hard_corner.moderate'
+  | 'hard_corner.severe'
+  | 'phone_handling.minor'
+  | 'phone_handling.moderate'
+  | 'phone_handling.major'
+  | 'idling'
+  | 'high_speed_cruise'
+  | 'praise.perfect'
+  | 'praise.clean_long'
+  | 'praise.good'
+  | 'praise.phone_free'
+  | 'praise.smooth'
+  | 'praise.limit_respect'
+  | 'unscored.too_short'
+  | 'unscored.passenger';
+
+export type TemplateLibrary = Record<TemplateKey, Record<Intensity, string[]>>;
+
+export const TEMPLATES: TemplateLibrary = {
+  'speeding.minor': {
+    gentle: [
+      'You were about {over} {unit} over on {road} for {duration}. That saved roughly {saved}.',
+      'A little quick on {road}: {over} over for {duration}.',
+    ],
+    sassy: [
+      '{over} over on {road} for {duration}. You saved {saved}. Big spender.',
+      '{road}, {over} over, {duration}. The limit was right there on a sign and everything.',
+    ],
+    savage: [
+      '{over} over on {road} for {duration} to save {saved}. Bold strategy for someone with a league to lose.',
+      "{road}: {over} over, {duration}, {saved} saved. Your friends can see this. They're not impressed, they're just looking.",
+    ],
+  },
+  'speeding.moderate': {
+    gentle: [
+      '{over} {unit} over on {road} for {duration}. That is ticket territory and it saved about {saved}.',
+      'Watch {road}: {speed} in a {limit} for {duration}.',
+    ],
+    sassy: [
+      '{speed} in a {limit} on {road} for {duration}. Saved {saved}. Hope the {saved} were incredible.',
+      '{over} over for {duration} on {road}. The limit is a ceiling, not a suggestion with a tip jar.',
+    ],
+    savage: [
+      "{speed} in a {limit} on {road} for {duration}. That bought you {saved}, which you then spent reading this.",
+      "{road}, {duration}, {over} over. A radar gun would have had a great day. Your Drive Score did not.",
+      "Hey Dale Earnhardt, {road} is a {limit}.",
+    ],
+  },
+  'speeding.major': {
+    gentle: [
+      '{speed} in a {limit} on {road} for {duration}. This is the kind of speeding that gets expensive.',
+      '{over} {unit} over on {road}. Please ease off there.',
+    ],
+    sassy: [
+      '{speed} in a {limit}. On {road}. For {duration}. You saved {saved} and lost the moral high ground.',
+      '{over} over on {road}. The sign said {limit}. You read it as a dare.',
+    ],
+    savage: [
+      "{speed} in a {limit} on {road} for {duration}. That's not a commute, that's a qualifying lap, and it saved {saved}.",
+      '{over} over for {duration}. Somewhere a traffic officer felt a disturbance and did not know why.',
+      '{road} is a {limit}. You did {speed}. The league has been notified. The league is disappointed.',
+    ],
+  },
+  'speeding.reckless': {
+    gentle: [
+      'Reckless: {speed} on {road}. This trip earns no XP and resets your streak.',
+      'Reckless speed on {road} ({speed}). No points for this one.',
+    ],
+    sassy: [
+      '{speed} on {road}. Reckless. Zero XP, streak gone, and yes, it is on the Wall of Shame.',
+      'Reckless: {speed} in a {limit}. Your streak has left the building.',
+    ],
+    savage: [
+      "{speed} on {road}. RECKLESS. Zero XP, streak reset, Wall of Shame. Hope the {saved} you saved were worth your entire week.",
+      "{speed} in a {limit} for {duration}. That is not a Drive Score, that is a plea deal.",
+    ],
+  },
+  'harsh_brake.moderate': {
+    gentle: ['A hard stop on {road} ({peak} m/s²). Leave a little more room.'],
+    sassy: ['Hard brake on {road}, {peak} m/s². Did the road end early or did you just notice it?'],
+    savage: ['{peak} m/s² of brake on {road}. Everything in the cupholders is now in the footwell.'],
+  },
+  'harsh_brake.severe': {
+    gentle: ['A very hard stop on {road} ({peak} m/s²). Following distance is the fix.'],
+    sassy: ['{peak} m/s² of braking on {road}. The ABS wants to talk to you.'],
+    savage: [
+      '{peak} m/s² on {road}. Your brake pads just filed a complaint with HR.',
+      'Slammed it on {road} at {peak} m/s². Whack-a-mole, but the mole is the pedal.',
+    ],
+  },
+  'harsh_accel.moderate': {
+    gentle: ['Quick off the line on {road} ({peak} m/s²). Smoother starts save fuel.'],
+    sassy: ['{peak} m/s² launch on {road}. The light turned green, not gold.'],
+    savage: ['{peak} m/s² off the line on {road}. The only thing you beat to the next light was your MPG.'],
+  },
+  'harsh_accel.severe': {
+    gentle: ['Hard acceleration on {road} ({peak} m/s²).'],
+    sassy: ['{peak} m/s² on {road}. Drag strip energy, grocery run destination.'],
+    savage: ['{peak} m/s² on {road}. Fast and Furious, if the furious part is your fuel bill.'],
+  },
+  'hard_corner.moderate': {
+    gentle: ['Took a corner quickly on {road} ({peak} m/s² lateral).'],
+    sassy: ['{peak} m/s² through a corner on {road}. Your passengers are now in the door pocket.'],
+    savage: ['{peak} m/s² of cornering on {road}. The tires squealed. So did everyone in the back.'],
+  },
+  'hard_corner.severe': {
+    gentle: ['A very fast corner on {road} ({peak} m/s² lateral). Brake before the turn, not in it.'],
+    sassy: ['{peak} m/s² lateral on {road}. This is a sedan, not a go-kart.'],
+    savage: ['{peak} m/s² around a bend on {road}. Initial D called. They said tone it down.'],
+  },
+  'phone_handling.minor': {
+    gentle: ['Your phone was unlocked briefly at {speed} {unit}. Put it in the mount and leave it.'],
+    sassy: ['Phone unlocked at {speed} {unit}. Whatever it was, it could wait {phoneSeconds}.'],
+    savage: ['Touched the phone at {speed} {unit}. {phoneSeconds} of not looking at the road, for a notification.'],
+  },
+  'phone_handling.moderate': {
+    gentle: ['{phoneSeconds} on the phone while moving at up to {speed} {unit}.'],
+    sassy: ['{phoneSeconds} of phone time at {speed} {unit}. Thumbs on glass, eyes on vibes.'],
+    savage: ['{phoneSeconds} on the phone at {speed} {unit}. Your friends can see this. All of them. In the feed.'],
+  },
+  'phone_handling.major': {
+    gentle: ['Extended phone use at {speed} {unit} ({phoneSeconds}). This is the biggest hit to your score.'],
+    sassy: ['{phoneSeconds} of phone at {speed} {unit}. Whatever you typed had better have been a masterpiece.'],
+    savage: [
+      "{phoneSeconds} on the phone at {speed} {unit}. That's a whole TikTok at highway speed. Butterfingers badge incoming.",
+      '{phoneSeconds} of scrolling at {speed} {unit}. The road also had content. You missed it.',
+    ],
+  },
+  idling: {
+    gentle: ['About {idleMinutes} of idling mid-trip. Switch off if you are waiting.'],
+    sassy: ['{idleMinutes} idling. Burning fuel to go nowhere is a strategy, just not a good one.'],
+    savage: ['{idleMinutes} of idling. You paid for gas to sit still. Bold.'],
+  },
+  high_speed_cruise: {
+    gentle: ['{cruiseMinutes} above 75 {unit}. Fuel use climbs fast up there.'],
+    sassy: ['{cruiseMinutes} above 75 {unit}. Your MPG filed for divorce.'],
+    savage: ['{cruiseMinutes} above 75 {unit}. Aerodynamics would like a word, and so would your wallet.'],
+  },
+  'praise.perfect': {
+    gentle: ['Perfect trip. {distance} with zero events.'],
+    sassy: ['{distance}, zero events. Who are you and what did you do with your usual driving?'],
+    savage: ['{distance}, zero events. Butter smooth. Insufferable about it, probably, but earned.'],
+  },
+  'praise.clean_long': {
+    gentle: ['{distance} with nothing to flag. Great drive.'],
+    sassy: ['{distance} and nothing to roast. Annoying, honestly. Well done.'],
+    savage: ['{distance} and I have nothing. Nothing. Enjoy it, it will not last.'],
+  },
+  'praise.good': {
+    gentle: ['Solid trip: {score}/100 over {distance}.'],
+    sassy: ['{score}/100 over {distance}. Respectable. Not perfect, but respectable.'],
+    savage: ['{score}/100. Good, not great. The gap between you and great is the stuff below.'],
+  },
+  'praise.phone_free': {
+    gentle: ['Zero phone time over {distance}.'],
+    sassy: ['Zero phone time over {distance}. The notifications survived without you.'],
+    savage: ['Zero phone time. The group chat lived. You lived. Everyone lived.'],
+  },
+  'praise.smooth': {
+    gentle: ['Smooth inputs the whole way.'],
+    sassy: ['Smooth the whole way. Did someone else drive?'],
+    savage: ['Smooth the whole way. Suspiciously smooth. Chauffeur energy.'],
+  },
+  'praise.limit_respect': {
+    gentle: ['Under the limit for the entire trip.'],
+    sassy: ['Never over the limit. Imagine that. Signs, read.'],
+    savage: ['Not a single second over the limit. Grandma Mode engaged and, somehow, winning.'],
+  },
+  'unscored.too_short': {
+    gentle: ['Too short to judge ({distance}). Logged, not scored.'],
+    sassy: ['{distance}. Too short to score. Barely a trip, honestly.'],
+    savage: ['{distance}. That is not a trip, that is a parking manoeuvre with ambition. Not scored.'],
+  },
+  'unscored.passenger': {
+    gentle: ['Logged as a passenger trip. Not scored.'],
+    sassy: ['Passenger trip. No XP, no roasts. Enjoy the ride.'],
+    savage: ["Passenger. The driver's score is their problem. Yours is the aux cord."],
+  },
+};

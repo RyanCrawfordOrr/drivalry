@@ -1,0 +1,618 @@
+{
+  "kind": "trip",
+  "name": "trip-too-short",
+  "description": "One minute at 20 mph is under 1 km and under 120 s moving: logged, not scored.",
+  "mirrors": "score.test.ts › trip minimums › does not score trips under 1 km",
+  "source": {
+    "builder": "buildSyntheticTrip",
+    "spec": {
+      "id": "tiny",
+      "legs": [
+        {
+          "durationS": 60,
+          "speedMph": 20,
+          "limitMph": 25
+        }
+      ]
+    }
+  },
+  "options": {},
+  "input": {
+    "id": "tiny",
+    "samples": [
+      {
+        "t": 1793554200000,
+        "lat": 36.1627,
+        "lon": -86.7816,
+        "speed": 0,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554201000,
+        "lat": 36.162699999998836,
+        "lon": -86.78158329112057,
+        "speed": 1.5,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554202000,
+        "lat": 36.162699999994196,
+        "lon": -86.78154987336166,
+        "speed": 3,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554203000,
+        "lat": 36.16269999998374,
+        "lon": -86.78149974672334,
+        "speed": 4.5,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554204000,
+        "lat": 36.162699999965156,
+        "lon": -86.78143291120557,
+        "speed": 6,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554205000,
+        "lat": 36.16269999993614,
+        "lon": -86.7813493668084,
+        "speed": 7.5,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554206000,
+        "lat": 36.16269999989491,
+        "lon": -86.78124977297557,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554207000,
+        "lat": 36.16269999985368,
+        "lon": -86.78115017914268,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554208000,
+        "lat": 36.16269999981245,
+        "lon": -86.7810505853098,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554209000,
+        "lat": 36.16269999977123,
+        "lon": -86.78095099147691,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554210000,
+        "lat": 36.162699999729995,
+        "lon": -86.78085139764403,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554211000,
+        "lat": 36.16269999968877,
+        "lon": -86.78075180381114,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554212000,
+        "lat": 36.162699999647536,
+        "lon": -86.78065220997826,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554213000,
+        "lat": 36.1626999996063,
+        "lon": -86.78055261614543,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554214000,
+        "lat": 36.16269999956507,
+        "lon": -86.7804530223126,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554215000,
+        "lat": 36.16269999952384,
+        "lon": -86.78035342847971,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554216000,
+        "lat": 36.16269999948261,
+        "lon": -86.78025383464683,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554217000,
+        "lat": 36.16269999944138,
+        "lon": -86.78015424081394,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554218000,
+        "lat": 36.16269999940015,
+        "lon": -86.78005464698106,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554219000,
+        "lat": 36.16269999935892,
+        "lon": -86.77995505314817,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554220000,
+        "lat": 36.16269999931769,
+        "lon": -86.77985545931529,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554221000,
+        "lat": 36.162699999276455,
+        "lon": -86.77975586548246,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554222000,
+        "lat": 36.16269999923522,
+        "lon": -86.77965627164963,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554223000,
+        "lat": 36.16269999919399,
+        "lon": -86.7795566778168,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554224000,
+        "lat": 36.162699999152764,
+        "lon": -86.77945708398391,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554225000,
+        "lat": 36.162699999111524,
+        "lon": -86.77935749015103,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554226000,
+        "lat": 36.16269999907029,
+        "lon": -86.77925789631814,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554227000,
+        "lat": 36.16269999902906,
+        "lon": -86.77915830248526,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554228000,
+        "lat": 36.162699998987826,
+        "lon": -86.77905870865243,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554229000,
+        "lat": 36.1626999989466,
+        "lon": -86.77895911481954,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554230000,
+        "lat": 36.162699998905374,
+        "lon": -86.77885952098666,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554231000,
+        "lat": 36.16269999886414,
+        "lon": -86.77875992715383,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554232000,
+        "lat": 36.162699998822916,
+        "lon": -86.77866033332094,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554233000,
+        "lat": 36.16269999878168,
+        "lon": -86.77856073948806,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554234000,
+        "lat": 36.16269999874044,
+        "lon": -86.77846114565517,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554235000,
+        "lat": 36.16269999869921,
+        "lon": -86.77836155182229,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554236000,
+        "lat": 36.16269999865797,
+        "lon": -86.77826195798946,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554237000,
+        "lat": 36.162699998616745,
+        "lon": -86.77816236415657,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554238000,
+        "lat": 36.16269999857551,
+        "lon": -86.77806277032369,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554239000,
+        "lat": 36.16269999853428,
+        "lon": -86.7779631764908,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554240000,
+        "lat": 36.162699998493046,
+        "lon": -86.77786358265791,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554241000,
+        "lat": 36.162699998451814,
+        "lon": -86.77776398882509,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554242000,
+        "lat": 36.16269999841058,
+        "lon": -86.7776643949922,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554243000,
+        "lat": 36.16269999836935,
+        "lon": -86.77756480115931,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554244000,
+        "lat": 36.162699998328115,
+        "lon": -86.77746520732649,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554245000,
+        "lat": 36.16269999828688,
+        "lon": -86.77736561349366,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554246000,
+        "lat": 36.16269999824566,
+        "lon": -86.77726601966077,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554247000,
+        "lat": 36.162699998204424,
+        "lon": -86.77716642582789,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554248000,
+        "lat": 36.16269999816319,
+        "lon": -86.77706683199506,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554249000,
+        "lat": 36.162699998121965,
+        "lon": -86.77696723816223,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554250000,
+        "lat": 36.16269999808073,
+        "lon": -86.7768676443294,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554251000,
+        "lat": 36.1626999980395,
+        "lon": -86.77676805049657,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554252000,
+        "lat": 36.16269999799827,
+        "lon": -86.77666845666374,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554253000,
+        "lat": 36.16269999795705,
+        "lon": -86.77656886283091,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554254000,
+        "lat": 36.16269999791581,
+        "lon": -86.77646926899808,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554255000,
+        "lat": 36.162699997874576,
+        "lon": -86.77636967516526,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554256000,
+        "lat": 36.162699997833336,
+        "lon": -86.77627008133243,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554257000,
+        "lat": 36.1626999977921,
+        "lon": -86.7761704874996,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554258000,
+        "lat": 36.16269999775087,
+        "lon": -86.77607089366677,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554259000,
+        "lat": 36.16269999770964,
+        "lon": -86.77597129983394,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      },
+      {
+        "t": 1793554260000,
+        "lat": 36.162699997668405,
+        "lon": -86.77587170600111,
+        "speed": 8.9408,
+        "accuracy": 5,
+        "heading": 90
+      }
+    ],
+    "segments": [
+      {
+        "fromIdx": 1,
+        "toIdx": 60,
+        "speedLimit": 11.176,
+        "confidence": 0.9,
+        "roadClass": "residential"
+      }
+    ]
+  },
+  "expected": {
+    "tripId": "tiny",
+    "scored": false,
+    "unscoredReason": "too_short",
+    "score": 0,
+    "penalties": {
+      "speed": 0,
+      "smoothness": 0,
+      "attention": 0,
+      "efficiency": 0
+    },
+    "flags": [],
+    "reckless": false,
+    "xp": 0,
+    "events": [],
+    "observations": [],
+    "summary": {
+      "distanceM": 514.2440000115179,
+      "movingTimeS": 60,
+      "totalTimeS": 60,
+      "maxSpeed": 8.9408,
+      "avgMovingSpeed": 8.570733333525299,
+      "secondsOverLimit": 0,
+      "secondsWithKnownLimit": 59,
+      "timeSavedBySpeedingS": 0,
+      "startT": 1793554200000,
+      "endT": 1793554260000,
+      "nightFraction": 0,
+      "gpsQuality": 1
+    },
+    "feedback": {
+      "headline": {
+        "tone": "praise",
+        "text": "0.3 miles. Too short to score. Barely a trip, honestly."
+      },
+      "lines": []
+    },
+    "eventLines": [],
+    "severityOrder": [],
+    "feedbackVariants": [
+      {
+        "intensity": "gentle",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "Too short to judge (0.3 miles). Logged, not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "gentle",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "Too short to judge (0.5 km). Logged, not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "sassy",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "0.3 miles. Too short to score. Barely a trip, honestly."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "sassy",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "0.5 km. Too short to score. Barely a trip, honestly."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "savage",
+        "units": "mph",
+        "headline": {
+          "tone": "praise",
+          "text": "0.3 miles. That is not a trip, that is a parking manoeuvre with ambition. Not scored."
+        },
+        "lines": []
+      },
+      {
+        "intensity": "savage",
+        "units": "kmh",
+        "headline": {
+          "tone": "praise",
+          "text": "0.5 km. That is not a trip, that is a parking manoeuvre with ambition. Not scored."
+        },
+        "lines": []
+      }
+    ]
+  }
+}

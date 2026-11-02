@@ -1,0 +1,24 @@
+{
+  "name": "@drivalry/scoring",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Drivalry scoring engine: GPS samples + road segments in, Drive Score, events, XP and roasts out. Pure TypeScript, no platform dependencies.",
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "fixtures": "tsx scripts/export-fixtures.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.19.0",
+    "typescript": "~6.0.3",
+    "vitest": "^3.2.0"
+  }
+}

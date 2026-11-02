@@ -1,0 +1,30 @@
+# Secrets (keys live in .env; .env.example is the committed template)
+.env
+.env.*
+!.env.example
+
+# Node / TypeScript spec package
+node_modules/
+coverage/
+dist/
+*.log
+*.tsbuildinfo
+
+# Dart / Flutter (app/ has its own .gitignore as well)
+.dart_tool/
+.packages
+build/
+packages/*/pubspec.lock
+
+# Python (tools/packs)
+__pycache__/
+*.pyc
+.venv/
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+*.iml
+.vscode/*
+!.vscode/extensions.json

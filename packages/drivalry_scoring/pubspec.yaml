@@ -1,0 +1,15 @@
+name: drivalry_scoring
+description: >-
+  Dart port of the Drivalry scoring engine (@drivalry/scoring). GPS samples and
+  road segments in; Drive Score, events, XP and roasts out. Pure Dart, no Flutter
+  dependency. The TypeScript package is the specification; packages/scoring/fixtures
+  is the contract both implementations must satisfy.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.2
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

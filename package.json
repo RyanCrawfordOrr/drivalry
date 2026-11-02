@@ -1,0 +1,17 @@
+{
+  "name": "drivalry",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Drivalry: the friendly-rivalry driving app. Auto-tracked trips, Drive Scores, weekly leagues, convoys, and roasts for bad drivers.",
+  "workspaces": [
+    "packages/scoring"
+  ],
+  "scripts": {
+    "test": "npm run test --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "fixtures": "npm run fixtures --workspace packages/scoring"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
