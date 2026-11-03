@@ -10,8 +10,13 @@ import '../../../data/db/database.dart';
 import '../../../data/repos/garage_repo.dart';
 import '../../settings/widgets/settings_rows.dart';
 
-/// Insurance card, registration: photos encrypted on this phone. Empty and
-/// populated states cross-fade; rows arrive staggered (docs/12 §5b).
+/// What the new-document sheet hands back: where the photo comes from and
+/// the title typed for it.
+typedef _NewDocument = ({ImageSource source, String title});
+
+/// Papers: insurance card, registration, as photos encrypted on this phone.
+/// Empty and populated states cross-fade; rows arrive staggered (docs/12
+/// §5b).
 class DocumentsTab extends ConsumerWidget {
   const DocumentsTab({super.key, required this.vehicle});
 
@@ -37,7 +42,7 @@ class DocumentsTab extends ConsumerWidget {
                 key: const ValueKey('empty'),
                 children: [
                   EmptyState(
-                    kicker: 'Documents',
+                    kicker: 'Papers',
                     headline: "Your car's papers, in one place.",
                     body:
                         'Insurance card, registration: photos stay encrypted '
@@ -49,11 +54,15 @@ class DocumentsTab extends ConsumerWidget {
               )
             : ListView(
                 key: const ValueKey('list'),
-                padding: const EdgeInsets.fromLTRB(
+                // The last row clears the FAB (56 + 16 margin) and the nav
+                // bar with 24 to spare.
+                padding: EdgeInsets.fromLTRB(
                   Space.gutter,
                   Space.lg,
                   Space.gutter,
-                  Space.xxxl + Space.xxl,
+                  Space.xxxl +
+                      Space.xxxl +
+                      MediaQuery.paddingOf(context).bottom,
                 ),
                 children: [
                   Text(
@@ -94,51 +103,59 @@ class DocumentsTab extends ConsumerWidget {
     );
   }
 
+  /// The title field lives inside [TextControllers], which outlives the
+  /// sheet's exit animation; the text comes back through the pop value.
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final title = TextEditingController();
-    final source = await showDrivalrySheet<ImageSource>(
+    final result = await showDrivalrySheet<_NewDocument>(
       context,
       title: 'New document',
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: title,
-              autofocus: true,
-              decoration: const InputDecoration(labelText: 'Title'),
-            ),
-            const SizedBox(height: Space.xl),
-            PrimaryButton(
-              label: 'Take a photo',
-              icon: Icons.photo_camera_outlined,
-              onPressed: () => Navigator.of(ctx).pop(ImageSource.camera),
-            ),
-            const SizedBox(height: Space.sm),
-            SecondaryButton(
-              label: 'Choose from library',
-              icon: Icons.photo_library_outlined,
-              onPressed: () => Navigator.of(ctx).pop(ImageSource.gallery),
-            ),
-          ],
+      builder: (_) => TextControllers(
+        builder: (ctx, c) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: c.first,
+                autofocus: true,
+                decoration: const InputDecoration(labelText: 'Title'),
+              ),
+              const SizedBox(height: Space.xl),
+              PrimaryButton(
+                label: 'Take a photo',
+                icon: Icons.photo_camera_outlined,
+                onPressed: () => Navigator.of(
+                  ctx,
+                ).pop((source: ImageSource.camera, title: c.first.text)),
+              ),
+              const SizedBox(height: Space.sm),
+              SecondaryButton(
+                label: 'Choose from library',
+                icon: Icons.photo_library_outlined,
+                onPressed: () => Navigator.of(
+                  ctx,
+                ).pop((source: ImageSource.gallery, title: c.first.text)),
+              ),
+            ],
+          ),
         ),
       ),
     );
-    if (source == null) return;
+    if (result == null) return;
     final picked = await ImagePicker().pickImage(
-      source: source,
+      source: result.source,
       maxWidth: 2000,
       imageQuality: 85,
     );
     if (picked == null) return;
     final bytes = await picked.readAsBytes();
+    final title = result.title.trim();
     await ref
         .read(garageRepoProvider)
         .addDocument(
           vehicleId: vehicle.id,
-          title: title.text.trim().isEmpty ? 'Document' : title.text,
+          title: title.isEmpty ? 'Document' : title,
           bytes: bytes,
           mimeType: picked.mimeType ?? 'image/jpeg',
         );

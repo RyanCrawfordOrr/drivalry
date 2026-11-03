@@ -152,7 +152,10 @@ class CrashSettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Crash detection')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           for (var i = 0; i < blocks.length; i++)
             Reveal(delay: Reveal.stagger(i), child: blocks[i]),

@@ -10,10 +10,15 @@ import '../../../tracking/providers.dart';
 import '../../../widgets/units.dart';
 import '../../settings/widgets/settings_rows.dart';
 import '../widgets/swipe_to_delete.dart';
+import '../widgets/unit_stat.dart';
+
+/// What the fill-up sheet hands back when saved.
+typedef _FillUp = ({String volume, String odo, String cost, bool full});
 
 /// Fill-ups and the economy they prove. Empty: one headline and one button;
-/// populated: a stat grid, the log as tiles you can swipe away (with Undo),
-/// and a FAB. The two states cross-fade (docs/12 §5b).
+/// populated: a two-by-two stat grid, the log as tiles you can swipe away
+/// (with Undo), and a FAB the list clears. The two states cross-fade
+/// (docs/12 §5b).
 class FuelTab extends ConsumerStatefulWidget {
   const FuelTab({super.key, required this.vehicle});
 
@@ -41,6 +46,9 @@ class _FuelTabState extends ConsumerState<FuelTab> {
     final entries = all.where((e) => !_removing.contains(e.id)).toList();
     final stats = ref.watch(fuelStatsProvider(vehicle.id));
     final date = DateFormat.yMMMd();
+    final economy = stats.hasEconomy
+        ? (imperial ? 235.214583 / stats.lPer100km : stats.lPer100km)
+        : null;
 
     return Scaffold(
       floatingActionButton: entries.isEmpty
@@ -69,36 +77,44 @@ class _FuelTabState extends ConsumerState<FuelTab> {
               )
             : ListView(
                 key: const ValueKey('list'),
-                padding: const EdgeInsets.fromLTRB(
+                // The last row clears the FAB (56 + 16 margin) and the nav
+                // bar with 24 to spare.
+                padding: EdgeInsets.fromLTRB(
                   Space.gutter,
                   Space.lg,
                   Space.gutter,
-                  Space.xxxl + Space.xxl,
+                  Space.xxxl +
+                      Space.xxxl +
+                      MediaQuery.paddingOf(context).bottom,
                 ),
                 children: [
                   Reveal(
                     child: StatGrid(
+                      columns: 2,
                       children: [
-                        StatTile(
-                          value: formatEconomy(
-                            stats.lPer100km,
-                            useMpg: imperial,
-                          ),
+                        UnitStat(
+                          value: economy,
+                          decimals: 1,
+                          unit: imperial ? 'mpg' : 'L/100 km',
                           label: 'Economy',
                         ),
-                        StatTile(
-                          value: formatVolume(
-                            stats.totalLitres,
-                            useGallons: imperial,
-                          ),
+                        UnitStat(
+                          value: imperial
+                              ? litresToUsGallons(stats.totalLitres)
+                              : stats.totalLitres,
+                          decimals: 1,
+                          unit: imperial ? 'gal' : 'L',
                           label: 'Fuel logged',
                         ),
-                        StatTile(
+                        UnitStat(
                           value: stats.totalCostCents == 0
-                              ? '–'
-                              : formatCents(stats.totalCostCents),
+                              ? null
+                              : stats.totalCostCents / 100,
+                          decimals: 2,
+                          unit: entries.last.currency,
                           label: 'Spent',
                         ),
+                        UnitStat(value: entries.length, label: 'Fill-ups'),
                       ],
                     ),
                   ),
@@ -179,70 +195,79 @@ class _FuelTabState extends ConsumerState<FuelTab> {
     );
   }
 
+  /// The fields live inside [TextControllers], which outlives the sheet's
+  /// exit animation; the typed text comes back through the pop value.
   Future<void> _addFillUp(bool imperial) async {
-    final volume = TextEditingController();
-    final odo = TextEditingController();
-    final cost = TextEditingController();
     var full = true;
-    final ok = await showDrivalrySheet<bool>(
+    final result = await showDrivalrySheet<_FillUp>(
       context,
       title: 'Fill-up',
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-        child: StatefulBuilder(
-          builder: (ctx, setState) => Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                controller: volume,
-                autofocus: true,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+      builder: (_) => TextControllers(
+        initial: const ['', '', ''],
+        builder: (ctx, c) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+          child: StatefulBuilder(
+            builder: (ctx, setState) => Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: c[0],
+                  autofocus: true,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: imperial ? 'Gallons' : 'Litres',
+                  ),
                 ),
-                decoration: InputDecoration(
-                  labelText: imperial ? 'Gallons' : 'Litres',
+                const SizedBox(height: Space.md),
+                TextField(
+                  controller: c[1],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: InputDecoration(
+                    labelText: imperial ? 'Odometer (mi)' : 'Odometer (km)',
+                  ),
                 ),
-              ),
-              const SizedBox(height: Space.md),
-              TextField(
-                controller: odo,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+                const SizedBox(height: Space.md),
+                TextField(
+                  controller: c[2],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  decoration: const InputDecoration(
+                    labelText: 'Cost (optional)',
+                  ),
                 ),
-                decoration: InputDecoration(
-                  labelText: imperial ? 'Odometer (mi)' : 'Odometer (km)',
+                const SizedBox(height: Space.sm),
+                SettingsSwitchRow(
+                  title: 'Full tank',
+                  value: full,
+                  onChanged: (v) => setState(() => full = v),
                 ),
-              ),
-              const SizedBox(height: Space.md),
-              TextField(
-                controller: cost,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
+                const SizedBox(height: Space.lg),
+                PrimaryButton(
+                  label: 'Save',
+                  onPressed: () => Navigator.of(ctx).pop((
+                    volume: c[0].text,
+                    odo: c[1].text,
+                    cost: c[2].text,
+                    full: full,
+                  )),
                 ),
-                decoration: const InputDecoration(labelText: 'Cost (optional)'),
-              ),
-              const SizedBox(height: Space.sm),
-              SettingsSwitchRow(
-                title: 'Full tank',
-                value: full,
-                onChanged: (v) => setState(() => full = v),
-              ),
-              const SizedBox(height: Space.lg),
-              PrimaryButton(
-                label: 'Save',
-                onPressed: () => Navigator.of(ctx).pop(true),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
-    if (ok != true) return;
-    final v = double.tryParse(volume.text.replaceAll(',', '.'));
+    if (result == null) return;
+    final v = double.tryParse(result.volume.replaceAll(',', '.'));
     if (v == null || v <= 0) return;
-    final o = double.tryParse(odo.text.replaceAll(',', '.'));
-    final c = double.tryParse(cost.text.replaceAll(',', '.'));
+    final o = double.tryParse(result.odo.replaceAll(',', '.'));
+    final c = double.tryParse(result.cost.replaceAll(',', '.'));
     await ref
         .read(garageRepoProvider)
         .addFuelEntry(
@@ -250,7 +275,7 @@ class _FuelTabState extends ConsumerState<FuelTab> {
           litres: imperial ? usGallonsToLitres(v) : v,
           odometerKm: o == null ? null : (imperial ? milesToKm(o) : o),
           costCents: c == null ? null : (c * 100).round(),
-          fullTank: full,
+          fullTank: result.full,
         );
     Haptics.success();
   }

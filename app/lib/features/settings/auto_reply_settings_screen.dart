@@ -35,7 +35,10 @@ class AutoReplySettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Auto-reply to texts')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           Reveal(
             child: Padding(

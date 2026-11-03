@@ -11,8 +11,12 @@ import '../../../widgets/units.dart';
 import '../../settings/widgets/settings_rows.dart';
 import '../widgets/swipe_to_delete.dart';
 
-/// Oil, tyres, registration, inspection: by distance and/or time. Rows swipe
-/// away with Undo; empty and populated states cross-fade (docs/12 §5b).
+/// What the reminder sheet hands back when saved.
+typedef _Reminder = ({String title, String km, String days, String lastKm});
+
+/// Upkeep: oil, tyres, registration, inspection, by distance and/or time.
+/// Rows swipe away with Undo; empty and populated states cross-fade
+/// (docs/12 §5b).
 class MaintenanceTab extends ConsumerStatefulWidget {
   const MaintenanceTab({super.key, required this.vehicle});
 
@@ -55,7 +59,7 @@ class _MaintenanceTabState extends ConsumerState<MaintenanceTab> {
                 key: const ValueKey('empty'),
                 children: [
                   EmptyState(
-                    kicker: 'Maintenance',
+                    kicker: 'Upkeep',
                     headline: 'Set a reminder.',
                     body:
                         'Oil, tyres, registration, inspection: by distance, '
@@ -67,11 +71,15 @@ class _MaintenanceTabState extends ConsumerState<MaintenanceTab> {
               )
             : ListView(
                 key: const ValueKey('list'),
-                padding: const EdgeInsets.fromLTRB(
+                // The last row clears the FAB (56 + 16 margin) and the nav
+                // bar with 24 to spare.
+                padding: EdgeInsets.fromLTRB(
                   Space.gutter,
                   Space.lg,
                   Space.gutter,
-                  Space.xxxl + Space.xxl,
+                  Space.xxxl +
+                      Space.xxxl +
+                      MediaQuery.paddingOf(context).bottom,
                 ),
                 children: [
                   for (var i = 0; i < items.length; i++) ...[
@@ -163,72 +171,76 @@ class _MaintenanceTabState extends ConsumerState<MaintenanceTab> {
     );
   }
 
+  /// The fields live inside [TextControllers], which outlives the sheet's
+  /// exit animation; the typed text comes back through the pop value.
   Future<void> _addItem(bool imperial, double? odo) async {
-    final title = TextEditingController();
-    final km = TextEditingController();
-    final days = TextEditingController();
-    final lastKm = TextEditingController(
-      text: odo == null
-          ? ''
-          : (imperial ? kmToMiles(odo) : odo).round().toString(),
-    );
-    final ok = await showDrivalrySheet<bool>(
+    final lastKnown = odo == null
+        ? ''
+        : (imperial ? kmToMiles(odo) : odo).round().toString();
+    final unit = imperial ? 'mi' : 'km';
+    final result = await showDrivalrySheet<_Reminder>(
       context,
       title: 'New reminder',
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: title,
-              autofocus: true,
-              decoration: const InputDecoration(labelText: 'What'),
-            ),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: km,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Every (${imperial ? 'mi' : 'km'}, optional)',
+      builder: (_) => TextControllers(
+        initial: ['', '', '', lastKnown],
+        builder: (ctx, c) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: c[0],
+                autofocus: true,
+                decoration: const InputDecoration(labelText: 'What'),
               ),
-            ),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: days,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Every (days, optional)',
+              const SizedBox(height: Space.md),
+              TextField(
+                controller: c[1],
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Every ($unit, optional)',
+                ),
               ),
-            ),
-            const SizedBox(height: Space.md),
-            TextField(
-              controller: lastKm,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Last done at (${imperial ? 'mi' : 'km'})',
+              const SizedBox(height: Space.md),
+              TextField(
+                controller: c[2],
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Every (days, optional)',
+                ),
               ),
-            ),
-            const SizedBox(height: Space.xl),
-            PrimaryButton(
-              label: 'Save',
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
+              const SizedBox(height: Space.md),
+              TextField(
+                controller: c[3],
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(labelText: 'Last done at ($unit)'),
+              ),
+              const SizedBox(height: Space.xl),
+              PrimaryButton(
+                label: 'Save',
+                onPressed: () => Navigator.of(ctx).pop((
+                  title: c[0].text,
+                  km: c[1].text,
+                  days: c[2].text,
+                  lastKm: c[3].text,
+                )),
+              ),
+            ],
+          ),
         ),
       ),
     );
-    if (ok != true || title.text.trim().isEmpty) return;
-    final everyKm = double.tryParse(km.text);
-    final everyDays = int.tryParse(days.text);
+    if (result == null || result.title.trim().isEmpty) return;
+    final everyKm = double.tryParse(result.km);
+    final everyDays = int.tryParse(result.days);
     if (everyKm == null && everyDays == null) return;
-    final last = double.tryParse(lastKm.text);
+    final last = double.tryParse(result.lastKm);
     await ref
         .read(garageRepoProvider)
         .addMaintenance(
           vehicleId: vehicle.id,
-          title: title.text,
+          title: result.title,
           intervalKm: everyKm == null
               ? null
               : (imperial ? milesToKm(everyKm) : everyKm),

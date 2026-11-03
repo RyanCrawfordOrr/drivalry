@@ -1,3 +1,4 @@
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/crash/crash_monitor.dart';
 import 'package:drivalry/data/crash/crash_speaker.dart';
 import 'package:drivalry/data/db/database.dart';
@@ -65,7 +66,7 @@ void main() {
     (tester) async {
       await tester.pumpWidget(harness(const Scaffold(body: CrashStatusCard())));
       await pumpFor(tester, const Duration(milliseconds: 300));
-      expect(find.byType(Card), findsNothing);
+      expect(find.byType(Tile), findsNothing);
 
       final element = tester.element(find.byType(CrashStatusCard));
       final container = ProviderScope.containerOf(element);

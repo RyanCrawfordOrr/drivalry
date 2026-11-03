@@ -45,7 +45,9 @@ class NotificationsSettingsScreen extends ConsumerWidget {
               ),
             ),
             if (quiet.enabled) ...[
+              // Blank leading keeps the times in the text column above.
               SettingsRow(
+                leading: const SizedBox(width: 24),
                 title: 'Starts',
                 trailing: Text(
                   QuietHours.formatMinutes(quiet.startMinutes),
@@ -62,6 +64,7 @@ class NotificationsSettingsScreen extends ConsumerWidget {
                 },
               ),
               SettingsRow(
+                leading: const SizedBox(width: 24),
                 title: 'Ends',
                 trailing: Text(
                   QuietHours.formatMinutes(quiet.endMinutes),
@@ -107,7 +110,10 @@ class NotificationsSettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Notifications')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           for (var i = 0; i < sections.length; i++)
             Reveal(delay: Reveal.stagger(i), child: sections[i]),

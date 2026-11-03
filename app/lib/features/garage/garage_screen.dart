@@ -12,10 +12,11 @@ import '../../tracking/providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
 
-/// Your cars: stats, fuel, maintenance, documents (docs/01 §4.7). A large
-/// title that collapses on scroll; vehicles are tiles with a 48 px icon
-/// disc, a name and one caption line, arriving staggered; loading shimmers
-/// and the empty and populated states cross-fade (docs/12 §5b).
+/// Your cars: stats, fuel, upkeep, papers (docs/01 §4.7). A large title
+/// that collapses on scroll with "Add vehicle" in its toolbar; vehicles are
+/// tiles with a 48 px icon disc, a name and a caption, arriving staggered;
+/// loading shimmers and the empty and populated states cross-fade (docs/12
+/// §5b).
 class GarageScreen extends ConsumerWidget {
   const GarageScreen({super.key});
 
@@ -31,21 +32,27 @@ class GarageScreen extends ConsumerWidget {
       ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
     );
     final hasVehicles = vehicles.value?.isNotEmpty ?? false;
+    // The empty state (and the error one) brings its own top space.
+    final bare = vehicles.hasError || (vehicles.hasValue && !hasVehicles);
     return Scaffold(
-      floatingActionButton: hasVehicles
-          ? FloatingActionButton.extended(
-              onPressed: () => context.push(Routes.newVehicle),
-              icon: const Icon(Icons.add),
-              label: const Text('Add vehicle'),
-            )
-          : null,
       body: CustomScrollView(
         slivers: [
-          const LargeTitleBar(title: 'Garage'),
+          LargeTitleBar(
+            title: 'Garage',
+            actions: [
+              if (hasVehicles)
+                IconButton(
+                  key: const Key('vehicle-add'),
+                  tooltip: 'Add vehicle',
+                  icon: const Icon(Icons.add),
+                  onPressed: () => context.push(Routes.newVehicle),
+                ),
+            ],
+          ),
           SliverPadding(
-            padding: const EdgeInsets.only(
-              top: Space.sm,
-              bottom: Space.xxxl + Space.xxl,
+            padding: EdgeInsets.only(
+              top: bare ? 0 : Space.sm,
+              bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
             ),
             sliver: SliverToBoxAdapter(
               child: StateSwitcher(
@@ -204,30 +211,21 @@ class _VehicleTile extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                // The pill sits beside a short name and drops under a long
+                // one, so the name is never cut.
+                Wrap(
+                  spacing: Space.sm,
+                  runSpacing: Space.xs,
+                  crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
-                    Expanded(
-                      child: Text(
-                        vehicle.name,
-                        style: context.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    if (vehicle.neverTrack) ...[
-                      const SizedBox(width: Space.sm),
+                    Text(vehicle.name, style: context.title),
+                    if (vehicle.neverTrack)
                       const Pill('Never tracked', compact: true),
-                    ],
                   ],
                 ),
                 if (caption.isNotEmpty) ...[
                   const SizedBox(height: Space.xs),
-                  Text(
-                    caption,
-                    style: context.caption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  Text(caption, style: context.caption, maxLines: 2),
                 ],
               ],
             ),

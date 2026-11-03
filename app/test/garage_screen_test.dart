@@ -45,8 +45,10 @@ void main() {
       ),
       findsOneWidget,
     );
-    // The one action is the empty state's button; no FAB doubles it.
+    // The one action is the empty state's button; no toolbar action or FAB
+    // doubles it.
     expect(find.widgetWithText(FilledButton, 'Add vehicle'), findsOneWidget);
+    expect(find.byTooltip('Add vehicle'), findsNothing);
     expect(find.byType(FloatingActionButton), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -79,7 +81,9 @@ void main() {
     await tester.pumpWidget(harness(db, port));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.byType(EmptyState), findsNothing);
-    expect(find.byType(FloatingActionButton), findsOneWidget);
+    // Adding lives in the title bar, so nothing floats over the list.
+    expect(find.byTooltip('Add vehicle'), findsOneWidget);
+    expect(find.byType(FloatingActionButton), findsNothing);
     expect(find.text('Mazda'), findsOneWidget);
     expect(find.textContaining('2021 Mazda CX-5'), findsOneWidget);
     expect(find.textContaining('No trips yet'), findsNWidgets(2));
