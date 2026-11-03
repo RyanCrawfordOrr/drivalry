@@ -1,76 +1,52 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 import '../theme.dart';
 
-/// The Drivalry mark: a road ribbon climbing from bottom-left to top-right
-/// with a dashed centre line and a teal destination dot inside the top end.
+/// Shared palette for the Good Company identity.
 ///
-/// One painter renders every size the stores and the OS need (adaptive icon
-/// layers, legacy launcher icons, the App Store icon, splash images and the
-/// store graphics), so there is a single source of truth for the brand. The
-/// geometry is in unit coordinates; [contentScale] says how much of the
-/// canvas the artwork may use (adaptive foregrounds keep to the 66 dp safe
-/// zone of a 108 dp layer, full-bleed icons use more).
+/// The same mark is rendered at every launcher, splash and store size by the
+/// artwork tests. Semantic score and safety colours remain separate.
 abstract final class DrivalryBrand {
-  static const ink = Color(0xFF111726);
-  static const inkLight = Color(0xFF1C2537);
-  static const orange = DrivalryTheme.seed;
-  static const orangeLight = Color(0xFFFF9552);
-  static const teal = DrivalryTheme.teal;
-  static const paper = Color(0xFFFFF7F0);
+  static const ink = DrivalryTheme.ink;
+  static const inkLight = DrivalryTheme.ink;
+  static const coral = DrivalryTheme.seed;
+  static const paper = DrivalryTheme.paper;
 
-  static const backgroundGradient = LinearGradient(
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-    colors: [inkLight, ink],
-  );
+  // Kept for existing feature art that uses the previous accent names.
+  static const orange = coral;
+  static const orangeLight = coral;
+  static const teal = DrivalryTheme.teal;
+
+  /// A flat field rather than a gradient; kept as a Gradient for callers that
+  /// paint Android launcher backgrounds and rounded brand tiles.
+  static const backgroundGradient = LinearGradient(colors: [ink, ink]);
 }
 
 enum MarkStyle {
-  /// Orange ribbon, teal dot. Dashes and the dot's ring are cut through to
-  /// whatever is underneath (transparent on a foreground layer).
+  /// Cream lowercase-d mark with a coral dot.
   colour,
 
-  /// Single white shape for Android's themed icons and the status bar. The
-  /// dot becomes a hole.
+  /// White silhouette with a separate white dot for Android themed icons.
   monochrome,
 }
 
+/// A scalable interpretation of the approved lowercase-d identity.
+///
+/// The geometry is relative to a square so the logo remains consistent on
+/// Android, iOS and in store artwork. [contentScale] is used to keep launcher
+/// foregrounds inside Android's adaptive-icon safe area.
 class DrivalryMarkPainter extends CustomPainter {
   const DrivalryMarkPainter({
     this.style = MarkStyle.colour,
-    this.contentScale = 0.86,
+    this.contentScale = 1,
     this.background,
     this.backgroundRadiusFraction = 0,
   });
 
   final MarkStyle style;
-
-  /// Fraction of the canvas the unit square of the artwork occupies.
   final double contentScale;
-
-  /// Paint a background behind the mark: null for a transparent layer.
   final Gradient? background;
-
-  /// Corner radius of the background as a fraction of the canvas size
-  /// (0 = square, 0.5 = circle).
   final double backgroundRadiusFraction;
-
-  // Unit-square geometry: a route from a start node to a destination node.
-  static const _start = Offset(0.24, 0.78);
-  static const _c1 = Offset(0.24, 0.42);
-  static const _c2 = Offset(0.76, 0.58);
-  static const _end = Offset(0.76, 0.24);
-  static const _ribbonWidth = 0.165;
-  static const _startNodeRadius = 0.115;
-  static const _endNodeRadius = 0.15;
-  static const _dashWidth = 0.032;
-  static const _dashOn = 0.07;
-  static const _dashOff = 0.06;
-  static const _dotRadius = 0.058;
-  static const _ringWidth = 0.03;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -87,99 +63,62 @@ class DrivalryMarkPainter extends CustomPainter {
 
     final unit = s * contentScale;
     final origin = Offset((size.width - unit) / 2, (size.height - unit) / 2);
-    Offset u(Offset p) => origin + Offset(p.dx * unit, p.dy * unit);
+    Offset u(double x, double y) => origin + Offset(x * unit, y * unit);
+    Rect box(double left, double top, double right, double bottom) =>
+        Rect.fromPoints(u(left, top), u(right, bottom));
 
-    final road = Path()
-      ..moveTo(u(_start).dx, u(_start).dy)
-      ..cubicTo(
-        u(_c1).dx,
-        u(_c1).dy,
-        u(_c2).dx,
-        u(_c2).dy,
-        u(_end).dx,
-        u(_end).dy,
-      );
+    const cx = 0.50;
+    const cy = 0.596;
+    final monochrome = style == MarkStyle.monochrome;
+    final markPaint = Paint()
+      ..color = monochrome ? Colors.white : DrivalryBrand.paper;
 
-    final mono = style == MarkStyle.monochrome;
-    final ribbonPaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _ribbonWidth * unit
-      ..strokeCap = StrokeCap.round
-      ..strokeJoin = StrokeJoin.round;
-    if (mono) {
-      ribbonPaint.color = Colors.white;
-    } else {
-      ribbonPaint.shader = ui.Gradient.linear(u(_start), u(_end), const [
-        DrivalryBrand.orange,
-        DrivalryBrand.orangeLight,
-      ]);
-    }
-
-    // Everything cut out of the ribbon uses BlendMode.clear inside one layer
-    // so the background (or transparency) shows through.
+    // Clear the counter and opening in an isolated layer, so a transparent
+    // adaptive foreground and an opaque app icon use identical geometry.
     canvas.saveLayer(rect, Paint());
-    canvas.drawPath(road, ribbonPaint);
-    final nodePaint = Paint()..shader = ribbonPaint.shader;
-    if (mono) nodePaint.color = Colors.white;
-    canvas.drawCircle(u(_start), _startNodeRadius * unit, nodePaint);
-    canvas.drawCircle(u(_end), _endNodeRadius * unit, nodePaint);
-
-    final clear = Paint()
-      ..blendMode = BlendMode.clear
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _dashWidth * unit
-      ..strokeCap = StrokeCap.round;
-    final dashes = _dashed(
-      road,
-      on: _dashOn * unit,
-      off: _dashOff * unit,
-      // Start after the start node, stop before the destination node.
-      skipStart: (_startNodeRadius + 0.05) * unit,
-      skipEnd: (_endNodeRadius + 0.04) * unit,
+    canvas.drawCircle(u(cx, cy), 0.233 * unit, markPaint);
+    canvas.drawRRect(
+      RRect.fromRectAndCorners(
+        box(0.596, 0.199, 0.733, 0.596),
+        topLeft: Radius.circular(0.052 * unit),
+        topRight: Radius.circular(0.052 * unit),
+      ),
+      markPaint,
     );
-    canvas.drawPath(dashes, clear);
-
-    // Destination: a ring cut out of the ribbon end, then the teal dot.
-    final ringPaint = Paint()
-      ..blendMode = BlendMode.clear
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = _ringWidth * unit;
-    canvas.drawCircle(u(_end), (_dotRadius + _ringWidth / 2) * unit, ringPaint);
-    if (mono) {
-      canvas.drawCircle(
-        u(_end),
-        _dotRadius * unit,
-        Paint()..blendMode = BlendMode.clear,
-      );
-    }
+    final clear = Paint()..blendMode = BlendMode.clear;
+    canvas.drawCircle(u(cx, cy), 0.118 * unit, clear);
+    final opening = Path()
+      ..moveTo(u(0.60, 0.566).dx, u(0.60, 0.566).dy)
+      ..cubicTo(
+        u(0.617, 0.570).dx,
+        u(0.617, 0.570).dy,
+        u(0.618, 0.579).dx,
+        u(0.618, 0.579).dy,
+        u(0.638, 0.579).dx,
+        u(0.638, 0.579).dy,
+      )
+      ..lineTo(u(0.76, 0.579).dx, u(0.76, 0.579).dy)
+      ..lineTo(u(0.76, 0.615).dx, u(0.76, 0.615).dy)
+      ..lineTo(u(0.638, 0.615).dx, u(0.638, 0.615).dy)
+      ..cubicTo(
+        u(0.618, 0.615).dx,
+        u(0.618, 0.615).dy,
+        u(0.617, 0.625).dx,
+        u(0.617, 0.625).dy,
+        u(0.60, 0.628).dx,
+        u(0.60, 0.628).dy,
+      )
+      ..lineTo(u(0.50, 0.628).dx, u(0.50, 0.628).dy)
+      ..lineTo(u(0.50, 0.566).dx, u(0.50, 0.566).dy)
+      ..close();
+    canvas.drawPath(opening, clear);
     canvas.restore();
 
-    if (!mono) {
-      canvas.drawCircle(
-        u(_end),
-        _dotRadius * unit,
-        Paint()..color = DrivalryBrand.teal,
-      );
-    }
-  }
-
-  static Path _dashed(
-    Path source, {
-    required double on,
-    required double off,
-    required double skipStart,
-    required double skipEnd,
-  }) {
-    final out = Path();
-    for (final metric in source.computeMetrics()) {
-      var d = skipStart;
-      final limit = metric.length - skipEnd;
-      while (d + on <= limit) {
-        out.addPath(metric.extractPath(d, d + on), Offset.zero);
-        d += on + off;
-      }
-    }
-    return out;
+    canvas.drawCircle(
+      u(cx, cy),
+      0.072 * unit,
+      Paint()..color = monochrome ? Colors.white : DrivalryBrand.coral,
+    );
   }
 
   @override
@@ -196,7 +135,7 @@ class DrivalryMark extends StatelessWidget {
     super.key,
     required this.size,
     this.style = MarkStyle.colour,
-    this.contentScale = 0.86,
+    this.contentScale = 1,
     this.background,
     this.backgroundRadiusFraction = 0,
   });
@@ -204,7 +143,7 @@ class DrivalryMark extends StatelessWidget {
   /// The mark on its dark rounded tile, as it appears in the launcher.
   const DrivalryMark.tile({super.key, required this.size})
     : style = MarkStyle.colour,
-      contentScale = 0.86,
+      contentScale = 1,
       background = DrivalryBrand.backgroundGradient,
       backgroundRadiusFraction = 0.22;
 

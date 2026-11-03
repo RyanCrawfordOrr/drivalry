@@ -116,12 +116,25 @@ const artFontFallback = ['ArtSymbols', 'ArtEmoji'];
 /// emoji in app strings render instead of tofu boxes.
 ThemeData artTheme([Brightness brightness = Brightness.dark]) {
   final base = brightness == Brightness.dark
-      ? DrivalryTheme.dark()
-      : DrivalryTheme.light();
+      ? DrivalryTheme.dark(fontOverride: 'Roboto')
+      : DrivalryTheme.light(fontOverride: 'Roboto');
   return base.copyWith(
-    textTheme: base.textTheme.apply(fontFamilyFallback: artFontFallback),
-    primaryTextTheme: base.primaryTextTheme.apply(
+    // The test engine has no iOS system font. Force the loaded Roboto face
+    // here even when rendering an iOS target; otherwise text becomes Ahem
+    // placeholder squares. The production app keeps its platform font.
+    textTheme: base.textTheme.apply(
+      fontFamily: 'Roboto',
       fontFamilyFallback: artFontFallback,
+    ),
+    primaryTextTheme: base.primaryTextTheme.apply(
+      fontFamily: 'Roboto',
+      fontFamilyFallback: artFontFallback,
+    ),
+    chipTheme: base.chipTheme.copyWith(
+      labelStyle: base.chipTheme.labelStyle?.copyWith(
+        fontFamily: 'Roboto',
+        fontFamilyFallback: artFontFallback,
+      ),
     ),
   );
 }
@@ -298,7 +311,9 @@ class ShotSpec {
 const shotSpecs = [
   // Google Play: 9:16, at least 1080 px for featured placement.
   ShotSpec('store/play/phone', 1080, 1920),
-  // App Store 6.9-inch (iPhone 16 Pro Max class), required.
+  // App Store Dynamic Island medium display (required iPhone class).
+  ShotSpec('store/appstore/iphone-medium', 1206, 2622),
+  // App Store 6.9-inch (iPhone 16 Pro Max class), optional large display.
   ShotSpec('store/appstore/iphone-6.9', 1320, 2868),
   // App Store 6.5-inch (iPhone 11 Pro Max / XS Max class), optional.
   ShotSpec('store/appstore/iphone-6.5', 1284, 2778),
@@ -330,14 +345,12 @@ class StoreFrame extends StatelessWidget {
     required this.subline,
     required this.scene,
     required this.logicalHeight,
-    this.accent = DrivalryBrand.orange,
   });
 
   final String headline;
   final String subline;
   final Widget scene;
   final double logicalHeight;
-  final Color accent;
 
   @override
   Widget build(BuildContext context) {
@@ -347,99 +360,52 @@ class StoreFrame extends StatelessWidget {
       child: SizedBox(
         width: frameLogicalWidth,
         height: logicalHeight,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF1A2235), Color(0xFF0E1320)],
-            ),
-          ),
-          child: Stack(
-            clipBehavior: Clip.hardEdge,
+        child: ColoredBox(
+          color: DrivalryBrand.ink,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Positioned(
-                right: -120,
-                top: -140,
-                child: Container(
-                  width: 340,
-                  height: 340,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        accent.withValues(alpha: 0.35),
-                        accent.withValues(alpha: 0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: -150,
-                bottom: -60,
-                child: Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: RadialGradient(
-                      colors: [
-                        DrivalryBrand.teal.withValues(alpha: 0.18),
-                        DrivalryBrand.teal.withValues(alpha: 0),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(24, tall ? 56 : 40, 24, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          headline,
-                          style: const TextStyle(
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w900,
-                            fontSize: 30,
-                            height: 1.05,
-                            letterSpacing: -0.5,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          subline,
-                          style: const TextStyle(
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            fontSize: 15,
-                            height: 1.3,
-                            color: Color(0xFFB9C1D1),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: tall ? 28 : 20),
-                  // The phone keeps its natural size and runs off the bottom
-                  // of the shorter 9:16 canvas instead of being squeezed.
-                  Expanded(
-                    child: ClipRect(
-                      child: OverflowBox(
-                        alignment: Alignment.topCenter,
-                        minWidth: 0,
-                        minHeight: 0,
-                        maxHeight: double.infinity,
-                        child: PhoneMock(scene: scene),
+              Padding(
+                padding: EdgeInsets.fromLTRB(26, tall ? 54 : 34, 26, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      headline,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w900,
+                        fontSize: 30,
+                        height: 1.05,
+                        letterSpacing: -0.5,
+                        color: DrivalryBrand.paper,
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    Text(
+                      subline,
+                      style: const TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 15,
+                        height: 1.3,
+                        color: Color(0xFFE4D5D1),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: tall ? 28 : 18),
+              // Keep the entire real screen visible, including navigation.
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+                  child: FittedBox(
+                    fit: BoxFit.contain,
+                    alignment: Alignment.topCenter,
+                    child: PhoneMock(scene: scene),
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -469,13 +435,6 @@ class PhoneMock extends StatelessWidget {
         color: const Color(0xFF07090E),
         borderRadius: BorderRadius.circular(40),
         border: Border.all(color: Colors.white.withValues(alpha: 0.10)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.55),
-            blurRadius: 40,
-            offset: const Offset(0, 18),
-          ),
-        ],
       ),
       padding: const EdgeInsets.all(bezel),
       child: ClipRRect(

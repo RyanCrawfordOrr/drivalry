@@ -10,7 +10,12 @@ import 'ui/tokens.dart';
 /// type roles in `ui/typography.dart`; the rebrand changes this file, those
 /// two and the mark painter, nothing else (docs/12-ux-direction.md §9).
 abstract final class DrivalryTheme {
-  static const seed = Color(0xFFFF6A1A); // signal orange
+  /// The Good Company identity: coral, aubergine and warm cream.
+  static const seed = Color(0xFFF08566);
+  static const ink = Color(0xFF392837);
+  static const paper = Color(0xFFF9ECDD);
+
+  /// Semantic success accent, retained independently of the brand palette.
   static const teal = Color(0xFF13C2A3);
 
   /// Text family for everything. Null means the platform default (Roboto on
@@ -21,19 +26,43 @@ abstract final class DrivalryTheme {
   /// face for big numbers and titles; null falls back to [fontFamily].
   static const String? displayFontFamily = null;
 
-  static ThemeData light() => _base(Brightness.light);
-  static ThemeData dark() => _base(Brightness.dark);
+  static ThemeData light({String? fontOverride}) =>
+      _base(Brightness.light, fontOverride: fontOverride);
+  static ThemeData dark({String? fontOverride}) =>
+      _base(Brightness.dark, fontOverride: fontOverride);
 
-  static ThemeData _base(Brightness brightness) {
+  static ThemeData _base(Brightness brightness, {String? fontOverride}) {
+    final dark = brightness == Brightness.dark;
     final scheme = ColorScheme.fromSeed(
       seedColor: seed,
       brightness: brightness,
+      primary: dark ? seed : const Color(0xFF963F2B),
+      onPrimary: dark ? ink : Colors.white,
+      primaryContainer: dark
+          ? const Color(0xFF674239)
+          : const Color(0xFFFFDACD),
+      onPrimaryContainer: dark ? paper : const Color(0xFF35130C),
+      surface: dark ? const Color(0xFF271E27) : const Color(0xFFFFF8F3),
+      onSurface: dark ? paper : ink,
+      onSurfaceVariant: dark
+          ? const Color(0xFFDCCBC9)
+          : const Color(0xFF55464E),
+      surfaceContainerLowest: dark ? const Color(0xFF211821) : Colors.white,
+      surfaceContainerLow: dark
+          ? const Color(0xFF30242F)
+          : const Color(0xFFFBF1EB),
+      surfaceContainer: dark ? ink : const Color(0xFFF7EBE5),
+      surfaceContainerHigh: dark
+          ? const Color(0xFF463541)
+          : const Color(0xFFF1E4DE),
+      surfaceContainerHighest: dark
+          ? const Color(0xFF51404C)
+          : const Color(0xFFEBDED8),
     );
-    final dark = brightness == Brightness.dark;
     final base = ThemeData(
       colorScheme: scheme,
       useMaterial3: true,
-      fontFamily: fontFamily,
+      fontFamily: fontOverride ?? fontFamily,
     );
     final text = base.textTheme;
     return base.copyWith(

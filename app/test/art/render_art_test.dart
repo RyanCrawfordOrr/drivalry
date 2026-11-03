@@ -11,6 +11,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drivalry/app/brand/drivalry_mark.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -129,6 +130,8 @@ void main() {
           ),
           width: 512,
           height: 512,
+          // Google Play specifies 32-bit PNG; the square background is opaque.
+          alpha: true,
         ),
       );
     }, skip: !wanted('icons'));
@@ -218,6 +221,10 @@ void main() {
           '$id at ${spec.width}x${spec.height}',
           (tester) async {
             final scene = factory();
+            debugDefaultTargetPlatformOverride =
+                spec.folder.contains('appstore')
+                ? TargetPlatform.iOS
+                : TargetPlatform.android;
             try {
               final widget = await scene.build();
               final png = await renderPng(
@@ -238,11 +245,41 @@ void main() {
             } finally {
               await unmountAndSettle(tester);
               await scene.dispose();
+              debugDefaultTargetPlatformOverride = null;
             }
           },
           skip: sqliteSkip != null || !wanted(id),
         );
       }
     }
+
+    // Apple requires a 13-inch iPad image when an app supports iPadOS. Render
+    // the real league widget at tablet dimensions rather than stretching a
+    // phone mockup or presenting a phone screen as an iPad interface.
+    testWidgets(
+      '03-league at 2064x2752 iPad',
+      (tester) async {
+        final scene = sceneFactories.firstWhere((f) => f().id == '03-league')();
+        debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+        try {
+          final widget = await scene.build();
+          final png = await renderPng(
+            tester,
+            widget,
+            width: 2064,
+            height: 2752,
+            pixelRatio: 2,
+            settle: scene.settle,
+            prepare: scene.prepare,
+          );
+          await writePng(repoPath('store/appstore/ipad-13/03-league.png'), png);
+        } finally {
+          await unmountAndSettle(tester);
+          await scene.dispose();
+          debugDefaultTargetPlatformOverride = null;
+        }
+      },
+      skip: sqliteSkip != null || !wanted('03-league'),
+    );
   });
 }

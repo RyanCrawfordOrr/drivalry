@@ -276,7 +276,7 @@ class _MapPainter extends CustomPainter {
   static const _minor = Color(0xFF232B3C);
   static const _major = Color(0xFF2E3850);
   static const _river = Color(0xFF16202F);
-  static const _orange = Color(0xFFFF6A1A);
+  static const _orange = Color(0xFFF08566);
   static const _teal = Color(0xFF13C2A3);
   static const _amber = Color(0xFFF5B400);
   static const _blue = Color(0xFF4C8DFF);

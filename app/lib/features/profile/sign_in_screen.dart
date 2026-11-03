@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/brand/drivalry_mark.dart';
 import '../../config/env.dart';
 import '../../data/supabase/auth_service.dart';
 import '../../data/supabase/supabase_providers.dart';
@@ -65,11 +66,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Icon(
-              Icons.directions_car,
-              size: 64,
-              color: theme.colorScheme.primary,
-            ),
+            const Center(child: DrivalryMark.tile(size: 64)),
             const SizedBox(height: 16),
             Text(
               'Drivalry',

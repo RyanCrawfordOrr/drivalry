@@ -1,51 +1,57 @@
-# Store and brand art
+# Drivalry store and brand art
 
-Everything in this folder, plus the launcher icons inside `app/`, is rendered from one source: the painter in `app/lib/app/brand/drivalry_mark.dart` and the real app screens with seeded data. Nothing is hand-drawn, so a brand change is one edit and one command.
+The Good Company identity uses a cream lowercase **d**, a coral dot, and an aubergine background. The shared mark lives in `app/lib/app/brand/drivalry_mark.dart`; app colours live in `app/lib/app/theme.dart`. Store graphics are generated from the same mark and from app widgets with seeded example data.
 
 ## Regenerate
 
+From the project’s `app` directory, with the existing Flutter SDK and dependencies installed:
+
 ```powershell
-cd C:\Drivalry\app
 $env:DRIVALRY_ART = "1"
-flutter test test/art
+flutter test test/art/render_art_test.dart
 Remove-Item Env:DRIVALRY_ART
 ```
 
-Takes a few minutes. `DRIVALRY_ART_ONLY=icons,brand,01-drive` limits the run to some outputs. Without `DRIVALRY_ART` the suite skips, so CI never rewrites these files.
+To render only specific outputs, set `DRIVALRY_ART_ONLY=icons,brand,01-drive` before the command. Without `DRIVALRY_ART`, the renderer skips rather than changing image files. The test log identifies every generated image and any skipped scenes; SQLite must be available for the seeded screens.
 
-## What is where
+## Store files
 
-| File | Size | Used for |
+| File | Size | Use |
 | --- | --- | --- |
-| `play/icon-512.png` | 512×512, no alpha | Play Console → Store listing → App icon |
-| `play/feature-graphic-1024x500.png` | 1024×500 | Play Console → Store listing → Feature graphic (required) |
-| `play/phone/*.png` | 1080×1920 | Play Console → Phone screenshots (upload all, in filename order) |
-| `appstore/icon-1024.png` | 1024×1024, no alpha | Also embedded in the Xcode asset catalog; App Store Connect reads it from the build |
-| `appstore/iphone-6.9/*.png` | 1320×2868 | App Store Connect → iPhone 6.9" display (required set) |
-| `appstore/iphone-6.5/*.png` | 1284×2778 | App Store Connect → iPhone 6.5" display (optional; otherwise the 6.9" set is scaled) |
-| `social-preview-1280x640.png` | 1280×640 | GitHub → repo Settings → Social preview |
-| `../docs/assets/banner-1600x480.png` | 1600×480 | README header |
-| `listing.md` | | The text for both stores |
+| `play/icon-512.png` | 512 × 512 | Google Play listing icon; square, with no baked-in rounding or shadow |
+| `play/feature-graphic-1024x500.png` | 1024 × 500 | Google Play feature graphic |
+| `play/phone/*.png` | 1080 × 1920 | Eight Google Play phone screenshot drafts, in filename order |
+| `appstore/icon-1024.png` | 1024 × 1024, RGB | App Store icon; also embedded in the iOS asset catalog |
+| `appstore/iphone-medium/*.png` | 1206 × 2622, RGB | Required Dynamic Island medium-iPhone screenshot class |
+| `appstore/iphone-6.9/*.png` | 1320 × 2868, RGB | Optional large-iPhone screenshots |
+| `appstore/iphone-6.5/*.png` | 1284 × 2778, RGB | Optional older large-iPhone screenshots |
+| `appstore/ipad-13/03-league.png` | 2064 × 2752, RGB | 13-inch iPad screenshot draft, required when the app supports iPad |
+| `social-preview-1280x640.png` | 1280 × 640 | Repository social preview |
+| `../docs/assets/banner-1600x480.png` | 1600 × 480 | README banner |
+| `listing.md` | — | Existing store listing draft; verify every claim before use |
 
-Inside the app:
+The iPad image is the real league widget rendered at tablet dimensions, not an enlarged phone image. All screenshots are **draft marketing compositions** of real Flutter widgets with example accounts and data, rather than captures from a shipping device. The Drive map uses a painted stand-in because the platform map cannot render in the headless test. Device chrome is drawn, and the iOS mockups use the test renderer’s Roboto font in place of the iOS system font. Before submission, compare each image and its claims with the actual release build; replace the map and any other image as needed with genuine device captures. Store acceptance has not been checked.
 
-| Path | What |
+## Inside the app
+
+| Path | Contents |
 | --- | --- |
-| `app/android/app/src/main/res/mipmap-*/ic_launcher_foreground.png`, `_background.png`, `_monochrome.png` | Adaptive icon layers (108 dp), wired by `mipmap-anydpi-v26/ic_launcher.xml` |
-| `app/android/app/src/main/res/mipmap-*/ic_launcher.png`, `ic_launcher_round.png` | Legacy icons for Android 7 and older |
-| `app/android/app/src/main/res/drawable/ic_stat_tracking.xml` | Status-bar icon (vector, same ribbon) |
-| `app/android/app/src/main/res/drawable/launch_background.xml`, `values-v31/styles.xml` | Splash: brand ink behind the mark |
-| `app/ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png` | All iOS icon sizes, no alpha |
-| `app/ios/Runner/Assets.xcassets/LaunchImage.imageset/*.png` | Launch screen mark on the system background colour |
+| `app/lib/app/brand/drivalry_mark.dart` | Scalable colour and monochrome marks |
+| `app/lib/app/theme.dart` | Light and dark Material colour roles |
+| `app/lib/features/stats/wrapped_cards.dart` | Tonal season and share cards |
+| `app/android/app/src/main/res/mipmap-*/ic_launcher_*.png` | Adaptive foreground, background, monochrome and legacy launcher icons |
+| `app/android/app/src/main/res/drawable/ic_stat_tracking.xml` | Monochrome tracking notification mark |
+| `app/android/app/src/main/res/values/colors.xml` and launch resources | Aubergine Android splash background |
+| `app/ios/Runner/Assets.xcassets/AppIcon.appiconset/*.png` | iOS launcher and App Store icon sizes |
+| `app/ios/Runner/Assets.xcassets/LaunchImage.imageset/*.png` and `Base.lproj/LaunchScreen.storyboard` | iOS launch mark and aubergine background |
 
-## Still needed from the owner
+Brand reference colours: aubergine `#392837`, cream `#F9ECDD`, coral `#F08566`. Semantic driving-score and safety colours remain separate from the brand palette. The Android adaptive mark stays within the 66 dp safe area.
 
-- **Android Auto screenshots** for the Play form-factor declaration must be captured on the Desktop Head Unit (`docs/11-owner-setup.md` Part 7); Google wants real head-unit captures.
-- **iPad.** The Xcode project targets iPhone and iPad (`TARGETED_DEVICE_FAMILY = "1,2"`). App Store Connect then demands 13" iPad screenshots. Either set the family to `1` (iPhone only, the sensible choice for a driving app) in Xcode → Runner → General → Supported Destinations, or ask for an iPad set to be rendered.
-- **Promo video** (optional on both stores): not made.
+## Remaining release checks
 
-## Design notes
+- Build and inspect on real Android, iPhone, and iPad devices, including dark/light appearance, launcher masks and splash screens. An iOS build requires Xcode on a Mac.
+- Capture Android Auto review screenshots on the Desktop Head Unit if that form factor is declared (`docs/11-owner-setup.md`, Part 7).
+- Review listing copy, privacy disclosures, screenshots, supported form factors, and platform policies against the release build before uploading. No assets were published by the renderer.
+- Promo video is optional and is not included.
 
-- Mark: a road ribbon climbing left to right, dashed centre line cut through, teal destination dot inside the top end. Orange is `DrivalryTheme.seed`, teal `DrivalryTheme.teal`, ink `#111726`.
-- The adaptive foreground keeps the artwork inside the 66 dp safe circle; the monochrome layer is the same ribbon in white for Android 13 themed icons.
-- Screenshots are real screens on the dark theme inside a drawn phone body, with a headline above. The friends map in the Drive tab is a painted stand-in because Google Maps cannot render off-device; replace that one shot with a device capture before release if you prefer.
+Platform references: [Apple screenshot specifications](https://developer.apple.com/help/app-store-connect/reference/app-information/screenshot-specifications/) and [Google Play icon specifications](https://developer.android.com/distribute/google-play/resources/icon-design-specifications).

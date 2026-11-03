@@ -1,6 +1,6 @@
 # Store listing copy
 
-Paste-ready text for both stores. Character limits are in brackets; every line below fits. The tone follows the product rules: nothing praises speed or distance, roasts are about the drive, and privacy is stated plainly.
+The approved brand line is **“Good drives. Good company.”** Character limits are in brackets. This is an existing listing draft, not a verified compliance statement: check feature availability, privacy, battery, pricing, supported platforms, and age-rating answers against the release build before submission.
 
 ## Google Play
 

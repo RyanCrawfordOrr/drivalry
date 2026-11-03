@@ -2,6 +2,7 @@ import 'package:drivalry_scoring/drivalry_scoring.dart'
     show SpeedUnits, formatSaved;
 import 'package:flutter/material.dart';
 
+import '../../app/theme.dart';
 import '../../data/stats/stats_engine.dart';
 import '../../widgets/units.dart';
 import 'fun_facts.dart';
@@ -52,14 +53,14 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       kicker: 'Your ${s.range.label}',
       value: '${t.trips}',
       caption: t.trips == 1 ? 'trip as the driver' : 'trips as the driver',
-      color: const Color(0xFF1D3557),
+      color: DrivalryTheme.ink,
     ),
     WrappedCardData(
       id: 'distance',
       kicker: 'You covered',
       value: dist(t.distanceM),
       caption: '${formatHours(t.movingS)} behind the wheel',
-      color: const Color(0xFF2A9D8F),
+      color: const Color(0xFF604139),
     ),
     WrappedCardData(
       id: 'score',
@@ -68,7 +69,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       caption: t.bestScore == null
           ? 'No scored trips this season'
           : 'Best ${t.bestScore} · ${t.cleanTrips} clean trips',
-      color: const Color(0xFF457B9D),
+      color: const Color(0xFF60434F),
     ),
     WrappedCardData(
       id: 'habits',
@@ -76,7 +77,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       value: '${h.nightPercent} %',
       caption:
           'of your distance after dark · ${h.weekendPercent} % on weekends',
-      color: const Color(0xFF3D405B),
+      color: const Color(0xFF433244),
     ),
     WrappedCardData(
       id: 'states',
@@ -85,7 +86,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       caption: g.stateCodes.isEmpty
           ? 'Nothing matched to a pack yet'
           : g.stateCodes.take(8).join(' · '),
-      color: const Color(0xFF6D597A),
+      color: const Color(0xFF60464F),
       states: g.stateCodes,
     ),
     WrappedCardData(
@@ -98,7 +99,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       shareCaption: groundhog == null
           ? null
           : 'the same route, again and again',
-      color: const Color(0xFFB56576),
+      color: const Color(0xFF67453F),
     ),
     WrappedCardData(
       id: 'reality',
@@ -107,7 +108,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       caption: rc.secondsOverLimit < 60
           ? 'Barely at all. Respect.'
           : 'It saved you ${formatSaved(rc.timeSavedS)}.',
-      color: const Color(0xFFE76F51),
+      color: const Color(0xFF814130),
     ),
     WrappedCardData(
       id: 'records',
@@ -118,7 +119,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
           'Highest point ${formatAltitude(r.highestAltitudeM!, units)}',
         'Busiest day ${r.mostTripsInDay} trips',
       ].join(' · '),
-      color: const Color(0xFF264653),
+      color: const Color(0xFF4C3744),
     ),
     WrappedCardData(
       id: 'social',
@@ -131,14 +132,14 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       shareCaption: so.convoysJoined == 0
           ? null
           : '${dist(so.convoyDistanceM)} together',
-      color: const Color(0xFF8338EC),
+      color: const Color(0xFF604048),
     ),
     WrappedCardData(
       id: 'outro',
       kicker: 'XP earned',
       value: '${t.xp}',
       caption: 'Drive well. See you next season.',
-      color: const Color(0xFF101828),
+      color: const Color(0xFF30212E),
     ),
   ];
 }
@@ -164,11 +165,7 @@ class WrappedCard extends StatelessWidget {
     final scale = forShare ? 2.6 : 1.0;
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [data.color, Color.lerp(data.color, Colors.black, 0.45)!],
-        ),
+        color: data.color,
         borderRadius: forShare ? null : BorderRadius.circular(24),
       ),
       child: Padding(
@@ -179,7 +176,7 @@ class WrappedCard extends StatelessWidget {
             Text(
               'DRIVALRY · ${rangeLabel.toUpperCase()}',
               style: TextStyle(
-                color: Colors.white70,
+                color: DrivalryTheme.paper.withValues(alpha: 0.78),
                 fontSize: 13 * scale,
                 letterSpacing: 2,
                 fontWeight: FontWeight.w700,
@@ -188,7 +185,10 @@ class WrappedCard extends StatelessWidget {
             const Spacer(),
             Text(
               data.kicker,
-              style: TextStyle(color: Colors.white, fontSize: 22 * scale),
+              style: TextStyle(
+                color: DrivalryTheme.paper,
+                fontSize: 22 * scale,
+              ),
             ),
             SizedBox(height: 8 * scale),
             FittedBox(
@@ -197,7 +197,7 @@ class WrappedCard extends StatelessWidget {
               child: Text(
                 data.value,
                 style: TextStyle(
-                  color: Colors.white,
+                  color: DrivalryTheme.paper,
                   fontSize: 64 * scale,
                   fontWeight: FontWeight.w900,
                   height: 1,
@@ -208,7 +208,7 @@ class WrappedCard extends StatelessWidget {
             Text(
               forShare ? data.captionForShare : data.caption,
               style: TextStyle(
-                color: Colors.white,
+                color: DrivalryTheme.paper,
                 fontSize: 18 * scale,
                 height: 1.3,
               ),
@@ -217,7 +217,10 @@ class WrappedCard extends StatelessWidget {
             if (handle != null)
               Text(
                 '@$handle',
-                style: TextStyle(color: Colors.white54, fontSize: 13 * scale),
+                style: TextStyle(
+                  color: DrivalryTheme.paper.withValues(alpha: 0.78),
+                  fontSize: 13 * scale,
+                ),
               ),
           ],
         ),
