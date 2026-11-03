@@ -69,10 +69,20 @@ Then, with the `Runner` target selected:
    be `app.drivalry` (it already is in all three configurations; check that automatic signing
    did not append a suffix).
 2. **Signing & Capabilities** → `+ Capability` → **Background Modes**, tick
-   **Location updates**. `Info.plist` already contains `UIBackgroundModes = [location]`;
-   adding the capability only makes Xcode show it. Do not tick anything else.
-3. **General** → Minimum Deployments must read **iOS 16.0** (set in `project.pbxproj`).
-4. If the files under `Runner › Tracking` show in **red** in the navigator, the group
+   **Location updates** and **Remote notifications**. `Info.plist` already contains
+   `UIBackgroundModes = [location, remote-notification]`; adding the capability only makes
+   Xcode show it. Do not tick anything else.
+3. **Signing & Capabilities** → `+ Capability` → **Push Notifications** (Firebase Cloud
+   Messaging via APNs; the APNs key upload is docs/09-auth-setup.md §7 step 4). Xcode adds
+   the `aps-environment` entitlement to `Runner.entitlements`.
+4. **Signing & Capabilities** → `+ Capability` → **Sign in with Apple**
+   (docs/09-auth-setup.md §2 step 3). This also lands in `Runner.entitlements`; commit that
+   file together with the `project.pbxproj` change.
+5. `Info.plist` already declares the `drivalry://` URL scheme (`CFBundleURLTypes`, name
+   `app.drivalry`) for invite links; nothing to add in Xcode, but check it survived if
+   Xcode rewrites the plist.
+6. **General** → Minimum Deployments must read **iOS 16.0** (set in `project.pbxproj`).
+7. If the files under `Runner › Tracking` show in **red** in the navigator, the group
    reference did not survive the Windows edit: right-click the `Tracking` group → Delete →
    *Remove Reference*, then right-click `Runner` → *Add Files to "Runner"…* → select the
    `Runner/Tracking` folder, tick *Create groups* and the *Runner* target → Add.

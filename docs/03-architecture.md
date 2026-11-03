@@ -223,7 +223,7 @@ The React Native library that implements this model needs a paid Android license
 
 | Table | Holds | Retention |
 | --- | --- | --- |
-| `profiles` | handle, display name, avatar path, passenger-marked count | account life |
+| `profiles` | handle, display name, avatar path, passenger-marked count, global `location_hidden` | account life |
 | `friendships` | pairs with status | account life |
 | `leagues`, `league_members`, `league_weeks` | membership, tier, weekly standings as JSON | account life |
 | `trip_summaries` | the summary in §3.6, one row per trip | account life |
@@ -238,7 +238,7 @@ The React Native library that implements this model needs a paid Android license
 | `speed_limit_flags`, `speed_limit_overrides` | the shared correction cache (§4.4) | indefinite |
 | `push_tokens` | APNs and FCM tokens per device | until sign-out |
 
-Row-level security: a user writes only their own rows; reads are scoped to leagues and circles they belong to; `presence` is readable by circle members only when `hiding` is false. Saved places (Home, Work) and emergency contact phone numbers stay on the phone.
+Row-level security: a user writes only their own rows; reads are scoped to accepted friends and to leagues and circles they belong to (`can_view`); `presence` is readable by accepted friends and circle members, only when the owner is not hiding in that circle and has not set `location_hidden` (ADR-018, `0002_presence_friends_account.sql`). Saved places (Home, Work) and emergency contact phone numbers stay on the phone.
 
 ## 9. Realtime, convoys, radio, music
 
@@ -310,7 +310,7 @@ supabase/
 
 ## 12. Open technical questions
 
-- Do Texas and California fit under 60 MB with `service` roads included? Measure before choosing the class filter.
+- Texas (102 MB) and California (80 MB) do not fit under 60 MB with `service` roads included (measured 2026-11-03). Accepted for now; the shrink levers are listed in `07-pack-format.md` §7.
 - Real 1 Hz GPS power cost on recent iPhones without deferred updates. Measure on the five test iPhones.
 - Realtime message budget under real convoy use once the data-channel fallback kicks in. Measure on the first road trip.
 - Spotify Development Mode limits as of today. Confirm the allowlist size before promising Convoy DJ.

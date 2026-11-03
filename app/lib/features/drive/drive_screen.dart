@@ -2,24 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/deep_links.dart';
 import '../../app/router.dart';
 import '../../data/db/database.dart';
 import '../../data/models/trip_score_view.dart';
+import '../../data/repos/friends_sync.dart';
+import '../../data/repos/presence_repo.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../widgets/units.dart';
+import 'friends_map/friends_map.dart';
 import 'simulate_sheet.dart';
 import 'widgets/passenger_card.dart';
 import 'widgets/tracking_status_card.dart';
 import 'widgets/trip_card.dart';
 
-/// Home tab: tracking status, the passenger question, the last trip and the
-/// recent list (docs/01 §4.1).
+/// Home tab: the friends map, tracking status, the passenger question, the
+/// last trip and the recent list (docs/01 §4.1, ADR-018).
 class DriveScreen extends ConsumerWidget {
   const DriveScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Long-lived services that live as long as the home tab does.
+    ref.watch(presencePublisherProvider);
+    ref.watch(friendsSyncProvider);
+    ref.watch(deepLinksProvider);
+
     final tracking = ref.watch(trackingControllerProvider);
     final controller = ref.read(trackingControllerProvider.notifier);
     final trips =
@@ -28,9 +37,14 @@ class DriveScreen extends ConsumerWidget {
         ref.watch(unansweredTripsProvider).value ?? const <Trip>[];
     final unitsSetting =
         ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto;
+    final pendingRequests = ref.watch(pendingRequestCountProvider);
     final latestRegion = trips.isEmpty ? null : trips.first.trip.packRegion;
     final units = resolveUnits(unitsSetting, packRegion: latestRegion);
     final theme = Theme.of(context);
+    final mapHeight = (MediaQuery.sizeOf(context).height * 0.4).clamp(
+      220.0,
+      420.0,
+    );
 
     final last = trips.isEmpty ? null : trips.first;
     final rest = trips.length > 1 ? trips.sublist(1) : const <TripWithScore>[];
@@ -39,6 +53,20 @@ class DriveScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Drive'),
         actions: [
+          IconButton(
+            tooltip: 'Friend requests',
+            onPressed: () => context.push(Routes.friendRequests),
+            icon: Badge.count(
+              count: pendingRequests,
+              isLabelVisible: pendingRequests > 0,
+              child: const Icon(Icons.people_outline),
+            ),
+          ),
+          IconButton(
+            tooltip: 'Settings',
+            onPressed: () => context.push(Routes.settings),
+            icon: const Icon(Icons.settings_outlined),
+          ),
           PopupMenuButton<String>(
             onSelected: (v) => _onMenu(context, ref, v),
             itemBuilder: (_) => const [
@@ -53,6 +81,14 @@ class DriveScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         children: [
+          SizedBox(
+            height: mapHeight,
+            child: Card(
+              clipBehavior: Clip.antiAlias,
+              margin: const EdgeInsets.only(bottom: 12),
+              child: const FriendsMap(),
+            ),
+          ),
           TrackingStatusCard(
             state: tracking,
             units: units,

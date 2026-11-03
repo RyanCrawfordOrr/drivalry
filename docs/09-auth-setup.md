@@ -59,3 +59,14 @@ GOOGLE_IOS_CLIENT_ID=
 - Google on Android: install a debug build, tap Continue with Google, pick an account that is a tester (or the app is published). You land on your profile with a generated handle.
 - Apple on iOS: tap Continue with Apple, use Face ID. The handle is derived from the name Apple shares the first time; if you "Hide my email", the profile still works because the handle is what matters.
 - Supabase → Authentication → Users shows the row; `profiles` has a matching row created by the `on_auth_user_created` trigger from `0001_init.sql`.
+
+## 7. Firebase (push notifications, both platforms)
+
+Firebase Cloud Messaging is free and rides on the same Google Cloud project. The app initialises Firebase in code from `.env`, so no `google-services.json` or `GoogleService-Info.plist` is checked in or needed to build.
+
+1. https://console.firebase.google.com → **Add project** → choose the existing Google Cloud project `drivalry` → disable Google Analytics (not needed) → Create.
+2. Project settings (gear) → **General** → Your apps → **Add app** → Android: package `app.drivalry`, nickname `Drivalry Android`; skip the config-file download. Repeat for iOS with bundle id `app.drivalry`.
+3. Still in General, copy into `.env`: **Web API Key** → `FIREBASE_API_KEY`, **Project ID** → `FIREBASE_PROJECT_ID`, **Project number** → `FIREBASE_SENDER_ID` (it is `108228117712`), the Android **App ID** (`1:108228117712:android:…`) → `FIREBASE_APP_ID_ANDROID`, the iOS **App ID** → `FIREBASE_APP_ID_IOS`.
+4. **Cloud Messaging** tab → under Apple app configuration upload the APNs auth key (`.p8` from developer.apple.com → Keys, with APNs ticked; note its Key ID and your Team ID). Without this iOS devices register tokens but never receive anything.
+5. **Service accounts** tab → Generate new private key → that JSON is the `FCM_SERVICE_ACCOUNT_JSON` secret for the Edge Function (`supabase/functions/push/README.md`). Delete the local copy afterwards.
+6. Rebuild the app with `--dart-define-from-file=../.env`. Settings → Notifications shows "registered" once a token is stored in `push_tokens`.

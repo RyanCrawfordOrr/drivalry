@@ -49,6 +49,15 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- drivalry:// deep links (ADR-018 invite links). launchMode is singleTop, so a
+                 link opened while the app runs reaches the existing activity's onNewIntent
+                 and the Flutter app_links plugin picks it up. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="drivalry" />
+            </intent-filter>
         </activity>
 
         <!-- Trip recording: GPS 1 Hz batched + 20 Hz linear acceleration. Runs only

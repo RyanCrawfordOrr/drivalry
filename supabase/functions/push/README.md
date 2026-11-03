@@ -24,7 +24,7 @@ supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(Get-Content -Raw .\drivalry-fir
 ```
 
 - **APNs key**: developer.apple.com → Keys → `+` → name `Drivalry push`, tick Apple Push Notifications service (APNs) → Register → download the `.p8` once. Team ID is top right of the account page. Set `APNS_SANDBOX=false` once builds come from TestFlight or the App Store.
-- **FCM**: console.firebase.google.com → Add project → pick the existing Google Cloud project `drivalry` (no new billing; Firebase Cloud Messaging is free) → Project settings → Cloud Messaging → make sure the Firebase Cloud Messaging API (V1) is enabled → Service accounts → Generate new private key. Also add an Android app with package `app.drivalry` and download `google-services.json` into `app/android/app/` (gitignored; the app reads the sender id from it).
+- **FCM**: console.firebase.google.com → Add project → pick the existing Google Cloud project `drivalry` (no new billing; Firebase Cloud Messaging is free) → Project settings → Cloud Messaging → make sure the Firebase Cloud Messaging API (V1) is enabled → Service accounts → Generate new private key. The app itself needs no `google-services.json`: it initialises Firebase from the `FIREBASE_*` values in `.env` (docs/09-auth-setup.md §7). Both platforms register FCM tokens; the function routes 64-hex tokens to APNs and everything else to FCM, so the APNs secrets are only needed if a native APNs path is ever added.
 - Keep the `.p8` and the service-account JSON out of the repo. Delete the local copies after setting the secrets.
 
 ## Database Webhooks (Dashboard → Database → Webhooks → Create)

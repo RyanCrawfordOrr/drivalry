@@ -168,3 +168,54 @@ class FixBatches extends Table {
   @override
   Set<Column> get primaryKey => {tripId, batchT};
 }
+
+// --------------------------------------------------------------------------
+// Stage 2: cloud sync (docs/03 §7). Added in schema version 2.
+// --------------------------------------------------------------------------
+
+/// Pending cloud writes. Each row is one idempotent operation; [id] is the
+/// client-generated key the handler uses to make retries safe.
+class Outbox extends Table {
+  TextColumn get id => text()();
+  TextColumn get kind => text()();
+  TextColumn get payload => text()();
+  IntColumn get createdAt => integer()();
+  IntColumn get attempts => integer().withDefault(const Constant(0))();
+  IntColumn get nextAttemptAt => integer().withDefault(const Constant(0))();
+  TextColumn get lastError => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// JSON snapshots of cloud reads (feed pages, standings, friends) so every
+/// social screen renders offline with stale data.
+class RemoteCache extends Table {
+  TextColumn get key => text()();
+  TextColumn get json => text()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {key};
+}
+
+/// Which trips have been uploaded, and the hash of what was sent, so a
+/// re-scored trip (passenger re-mark) is uploaded again.
+class UploadedTrips extends Table {
+  TextColumn get tripId => text()();
+  IntColumn get uploadedAt => integer()();
+  TextColumn get summaryHash => text()();
+
+  @override
+  Set<Column> get primaryKey => {tripId};
+}
+
+/// Badges awarded on this phone; synced to `user_badges` through the outbox.
+class BadgeAwards extends Table {
+  TextColumn get badgeId => text()();
+  IntColumn get awardedAt => integer()();
+  BoolColumn get synced => boolean().withDefault(const Constant(false))();
+
+  @override
+  Set<Column> get primaryKey => {badgeId};
+}

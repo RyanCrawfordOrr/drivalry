@@ -83,6 +83,9 @@ class TripRecorder {
         }
       case TrackingError():
         debugPrint('tracking plugin error ${event.code}: ${event.message}');
+      case ParkedFixEvent():
+        // Presence only (lib/data/repos/presence_repo.dart); never a trip.
+        break;
     }
   }
 

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/env.dart';
 import '../data/db/database.dart';
+import '../data/sync/sync_bootstrap.dart';
 import '../packs/pack_providers.dart';
 import '../tracking/providers.dart';
 import '../tracking/tracking_controller.dart';
@@ -32,6 +33,8 @@ final mapsReadyProvider = FutureProvider<bool>((ref) async {
 final appBootstrapProvider = FutureProvider<void>((ref) async {
   // Keep the controller alive for the life of the app; it boots itself.
   ref.watch(trackingControllerProvider);
+  // Cloud sync: outbox handlers, uploader, push, periodic drains.
+  ref.watch(syncBootstrapProvider);
   await ref.watch(mapsReadyProvider.future);
   try {
     final removed = await ref

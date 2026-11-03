@@ -1,5 +1,6 @@
 package app.drivalry.tracking
 
+import android.location.Location
 import android.os.Handler
 import android.os.Looper
 import io.flutter.plugin.common.EventChannel
@@ -72,4 +73,34 @@ class TrackingEvents(private val spool: Spool) {
                 "message" to message,
             ),
         )
+
+    /**
+     * §4 `parkedFix`: a position the OS handed us for free while idle. Callers (the
+     * passive-location and geofence receivers, via [TrackingRuntime.parkedFix]) have
+     * already applied the idle check and the rate limit.
+     */
+    fun parkedFix(location: Location) =
+        emit(
+            LinkedHashMap<String, Any?>(8).apply {
+                put("type", "parkedFix")
+                put("tripId", null)
+                putAll(position(location))
+            },
+        )
+
+    companion object {
+        /**
+         * `{t, lat, lon, accuracy, speed?, heading?}`: the shape shared by `parkedFix` and
+         * `getLastKnownLocation` (§3). Unknown speed / heading are omitted, never -1 or 0;
+         * `accuracy` is omitted only when the OS reports none, which fused location never does.
+         */
+        fun position(loc: Location): Map<String, Any?> = LinkedHashMap<String, Any?>(6).apply {
+            put("t", loc.time)
+            put("lat", loc.latitude)
+            put("lon", loc.longitude)
+            if (loc.hasAccuracy()) put("accuracy", loc.accuracy.toDouble())
+            if (loc.hasSpeed() && loc.speed >= 0f) put("speed", loc.speed.toDouble())
+            if (loc.hasBearing() && loc.bearing >= 0f) put("heading", loc.bearing.toDouble())
+        }
+    }
 }

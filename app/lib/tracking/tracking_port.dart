@@ -20,6 +20,10 @@ abstract class TrackingPort {
   Future<void> setMapsApiKey(String key);
   Future<TrackingDiagnostics> getDiagnostics();
 
+  /// The OS's cached last position, refreshed when older than [maxAgeMs]
+  /// (docs/08 §3). Null without location permission or without a plugin.
+  Future<LastKnownLocation?> getLastKnownLocation({int maxAgeMs = 120000});
+
   /// Live events. A broadcast stream; late subscribers miss nothing important
   /// because the spool keeps the history.
   Stream<TrackingEvent> get events;

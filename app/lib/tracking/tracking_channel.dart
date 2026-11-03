@@ -98,6 +98,20 @@ class TrackingChannel implements TrackingPort {
   }
 
   @override
+  Future<LastKnownLocation?> getLastKnownLocation({
+    int maxAgeMs = 120000,
+  }) async {
+    try {
+      final m = await _call('getLastKnownLocation', {'maxAgeMs': maxAgeMs});
+      if (m == null || m['lat'] == null || m['lon'] == null) return null;
+      return LastKnownLocation.fromMap(m);
+    } on PlatformException {
+      // No permission, location services off, or an older plugin build.
+      return null;
+    }
+  }
+
+  @override
   Stream<TrackingEvent> get events => _eventStream ??= _events
       .receiveBroadcastStream()
       .map((e) => e is Map<Object?, Object?> ? TrackingEvent.fromMap(e) : null)

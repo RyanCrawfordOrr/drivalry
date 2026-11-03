@@ -218,6 +218,11 @@ class SimulatedTracking implements TrackingPort {
   @override
   Future<TrackingDiagnostics> getDiagnostics() async =>
       const TrackingDiagnostics(lastTriggerKind: 'simulated');
+
+  @override
+  Future<LastKnownLocation?> getLastKnownLocation({
+    int maxAgeMs = 120000,
+  }) async => null;
 }
 
 /// Builds a plausible trip from an installed pack: walks connected ways

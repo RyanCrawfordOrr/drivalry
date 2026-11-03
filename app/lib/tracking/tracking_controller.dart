@@ -116,12 +116,22 @@ class TrackingUiState {
 class TrackingController extends Notifier<TrackingUiState> {
   StreamSubscription<TrackingEvent>? _sub;
   Future<void>? _bootFuture;
+  final StreamController<TrackingEvent> _handled =
+      StreamController<TrackingEvent>.broadcast();
   TrackingPort get _port => ref.read(trackingPortProvider);
   AppDatabase get _db => ref.read(databaseProvider);
 
+  /// Every event this controller handled as it happened: live plugin events
+  /// and desk simulations, but not spool replays (those are history). The
+  /// presence publisher listens here.
+  Stream<TrackingEvent> get handledEvents => _handled.stream;
+
   @override
   TrackingUiState build() {
-    ref.onDispose(() => _sub?.cancel());
+    ref.onDispose(() {
+      _sub?.cancel();
+      _handled.close();
+    });
     Future.microtask(boot);
     return const TrackingUiState();
   }
@@ -184,6 +194,7 @@ class TrackingController extends Notifier<TrackingUiState> {
   }
 
   void _onEvent(TrackingEvent e) {
+    if (!_handled.isClosed) _handled.add(e);
     ref.read(tripRecorderProvider).handle(e);
     _trackLive(e);
     if (e is PhaseEvent) {
@@ -342,3 +353,8 @@ final trackingControllerProvider =
     NotifierProvider<TrackingController, TrackingUiState>(
       TrackingController.new,
     );
+
+/// Live and simulated tracking events as the controller handles them.
+final trackingEventsProvider = StreamProvider<TrackingEvent>(
+  (ref) => ref.watch(trackingControllerProvider.notifier).handledEvents,
+);

@@ -1,4 +1,5 @@
 import 'package:drivalry/app/app.dart';
+import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/tracking/providers.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +32,8 @@ void main() {
         overrides: [
           databaseProvider.overrideWithValue(db),
           trackingPortProvider.overrideWithValue(port),
+          // Tests never talk to the app_links plugin.
+          deepLinkSourceProvider.overrideWithValue(const NoDeepLinks()),
         ],
         child: const DrivalryApp(),
       ),

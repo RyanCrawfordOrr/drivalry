@@ -64,3 +64,23 @@ supabase_flutter (accounts, friends, leagues, feeds, later). See
 `flutter test` runs everything, including database-backed tests against an
 in-memory SQLite. If the sqlite3 build hook cannot provide a native library on
 the host (no network for the prebuilt download), those tests skip and say why.
+
+## Cloud sync, sign-in, push (Stage 2, part A)
+
+Everything cloud-side goes through one outbox (`lib/data/sync/outbox.dart`): a feature enqueues a row with a client id and a `kind`, and a registered handler uploads it with retries and backoff. Handlers throw `OutboxRetryLater` while signed out, so a trip scored before sign-in uploads right after. The worker drains on start, on reconnect, on sign-in and every two minutes (`lib/data/sync/sync_bootstrap.dart`).
+
+| Kind | Payload | Handler |
+| --- | --- | --- |
+| `trip_summary` | `{trip_id, hash, summary: {…docs/03 §3.6…}, events: […]}` | upsert `trip_summaries`, replace `trip_events`, upsert `feed_posts` (trip, plus `shame` when reckless) |
+| `trip_delete` | `{trip_id}` | delete the summary (cascades) |
+| `limit_flag` | `{flag_id, way_id, region, suggested_value, suggested_mph, suggested_mps}` | insert `speed_limit_flags`, mark the local flag synced |
+| `profile_update` | `{user_id, fields: {display_name \| location_hidden …}}` | update `profiles` |
+| `push_token` | `{token, platform, device_label}` | upsert `push_tokens` |
+
+Trips upload once per content hash (`UploadedTrips`), so a re-scored trip goes again and an unchanged one never does. Nothing with coordinates leaves the phone; events carry road names only.
+
+- **Sign-in**: `lib/data/supabase/auth_service.dart`. Apple on iOS (native), Google on both (native id token → `signInWithIdToken`). The owner steps are in `docs/09-auth-setup.md`; until they are done the sign-in screen says "not configured for this build".
+- **Profile**: `lib/features/profile/` (handle, display name, avatar ≤ 100 KB in the `avatars` bucket, rating, passenger count, badges, streaks), cached in `RemoteCache` so it renders offline.
+- **Settings**: account (sign out, delete account via `delete_own_account()`, export my data as JSON), units, the global "Hide my location from everyone" switch (ADR-018), notifications (quiet hours, per-category switches), speed-limit packs, diagnostics, attribution.
+- **Push**: `lib/data/push/`. FCM on both platforms, initialised from the `FIREBASE_*` values in `.env` (docs/09 §7), so no `google-services.json` is needed. Foreground messages and the local "Trip scored" notification go through `flutter_local_notifications` and respect quiet hours; crash alerts never wait.
+- **Speed-limit corrections**: "Limit is wrong here" flags upload; the shared `speed_limit_overrides` for each installed region are pulled daily into `RemoteCache` and applied by the finalizer under the phone's own pending flags.

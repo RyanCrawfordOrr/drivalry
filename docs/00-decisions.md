@@ -140,6 +140,14 @@ Each entry has three parts. **Context**: why the question came up. **Decision**:
 
 **Consequences.** Two small native state machines to keep identical. The Dart side is simpler and fully testable with a simulated plugin. Live, mid-trip UI works only while the app is alive, which is fine because the Live Activity and the ongoing notification are rendered by the OS.
 
+## ADR-018: A live friends map on the Drive tab; friends see each other's location (2026-11-03)
+
+**Context.** The owner asked for an interactive map on the Drive tab showing every friend's location. The spec had location sharing scoped to circles only, with circles arriving in Stage 3.
+
+**Decision.** The Drive tab opens with a map. It shows accepted friends and circle members, precise, with "driving now", battery and last-seen, and expands to full screen. Presence is published while driving (every 30 s from the recorder's fixes) and on significant movement while parked (a `parkedFix` event from the plugins). Visibility: accepted friends and circle members, unless the owner is hiding in that circle or has flipped a single global "Hide my location" switch (`profiles.location_hidden`). Friends also count as a group for seeing trip cards and roasts. Presence is pulled into Stage 2.
+
+**Consequences.** Adding a friend now shares your location with them by default, which the add-friend screen says in plain words. The Stage 3 circles work shrinks to places, alerts, check-ins and crash detection. `0002_presence_friends_account.sql` carries the policy change.
+
 ## Open items (not decided)
 
 - **Money.** The docs now say "free, no ads, no subscription". The old Pro tier was removed because the zero-cost, no-server model leaves nothing to pay for, and several Pro perks (12-car convoys, unlimited PTT, raw-GPS retention tiers) conflict with the decisions above. Reinstating a paid tier is a new decision.

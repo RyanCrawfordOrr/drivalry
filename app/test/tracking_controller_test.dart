@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart' show Value;
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/models/trip_phase.dart';

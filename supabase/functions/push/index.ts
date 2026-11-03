@@ -60,7 +60,10 @@ Deno.serve(async (req) => {
 
   const results = await Promise.allSettled(
     (tokens ?? []).map((t) =>
-      t.platform === "ios" ? sendApns(t.token, note) : sendFcm(t.token, note)
+      // Raw APNs device tokens are 64 hex characters; FCM registration tokens
+      // are longer and contain ':'. Both platforms currently register FCM
+      // tokens (firebase_messaging), so APNs is a dormant path.
+      /^[0-9a-f]{64}$/i.test(t.token) ? sendApns(t.token, note) : sendFcm(t.token, note)
     ),
   );
 

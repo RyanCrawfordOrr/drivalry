@@ -85,5 +85,16 @@ class FakeTrackingPort implements TrackingPort {
   Future<TrackingDiagnostics> getDiagnostics() async =>
       const TrackingDiagnostics(confirmedTrips: 3, serviceRunning: false);
 
+  /// What [getLastKnownLocation] answers; null by default.
+  LastKnownLocation? lastKnown;
+
+  @override
+  Future<LastKnownLocation?> getLastKnownLocation({
+    int maxAgeMs = 120000,
+  }) async {
+    calls.add('getLastKnownLocation');
+    return lastKnown;
+  }
+
   Future<void> dispose() => controller.close();
 }

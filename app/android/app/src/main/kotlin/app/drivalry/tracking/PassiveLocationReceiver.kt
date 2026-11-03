@@ -8,8 +8,10 @@ import com.google.android.gms.location.LocationResult
 
 /**
  * PRIORITY_PASSIVE backstop (docs/03-architecture.md §3.1, §6.1): fixes that other apps
- * already paid for. If one lands well outside the parking spot while no trip is running,
- * it is treated like iOS significant-change and starts a tentative trip.
+ * already paid for. Every one received while idle is published as a §4 `parkedFix`
+ * (rate-limited in TrackingRuntime) so friends see a stale-but-honest parked position; if
+ * one lands well outside the parking spot while no trip is running, it is additionally
+ * treated like iOS significant-change and starts a tentative trip.
  */
 class PassiveLocationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -17,6 +19,9 @@ class PassiveLocationReceiver : BroadcastReceiver() {
         val location = LocationResult.extractResult(intent)?.lastLocation ?: return
         val runtime = TrackingRuntime.get(context)
         if (runtime.machine.phase != TripStateMachine.Phase.IDLE) return
+        // Presence first: the position is free and worth publishing whether or not it also
+        // starts a trip below.
+        runtime.parkedFix(location)
         val spot = runtime.prefs.parkingSpot ?: return
         if (location.hasAccuracy() && location.accuracy > MAX_ACCURACY_M) return
 

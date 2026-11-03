@@ -9,6 +9,7 @@ import '../data/db/database.dart';
 import '../data/db/pack_bounds.dart';
 import '../data/models/trip_phase.dart';
 import '../data/models/trip_score_view.dart';
+import '../data/sync/limit_flags_sync.dart';
 import '../widgets/units.dart';
 import 'match_runner.dart';
 import 'solar.dart';
@@ -96,7 +97,13 @@ class TripFinalizer {
         matchedFraction: 0,
       );
     } else {
-      final overrides = await _pendingFlagOverrides(pack.region);
+      // Shared two-flag overrides first (docs/03 §4.4), then this phone's own
+      // pending flags on top: a user who disagrees with the cache stops
+      // being roasted there while the second flag is awaited.
+      final overrides = {
+        ...await cachedOverrides(_db, pack.region),
+        ...await _pendingFlagOverrides(pack.region),
+      };
       match = await _matcher.run(samples, pack, overrides: overrides);
     }
     await _db.replaceSegments(tripId, match.segments);

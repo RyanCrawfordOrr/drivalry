@@ -359,6 +359,18 @@ sealed class TrackingEvent {
           kind: m['kind'] as String? ?? 'unknown',
           name: m['name'] as String?,
         );
+      case 'parkedFix':
+        final lat = m['lat'] as num?;
+        final lon = m['lon'] as num?;
+        if (lat == null || lon == null) return null;
+        return ParkedFixEvent(
+          t: t,
+          lat: lat.toDouble(),
+          lon: lon.toDouble(),
+          accuracy: (m['accuracy'] as num?)?.toDouble() ?? 50,
+          speed: (m['speed'] as num?)?.toDouble(),
+          heading: (m['heading'] as num?)?.toDouble(),
+        );
       case 'error':
         return TrackingError(
           t: t,
@@ -371,6 +383,76 @@ sealed class TrackingEvent {
   }
 
   Map<String, Object?> toMap();
+}
+
+/// A free position the OS handed the plugin while idle (docs/08 §4
+/// `parkedFix`): significant-change callbacks and geofence exits. Feeds the
+/// owner's presence while parked without ever turning the GPS radio on.
+final class ParkedFixEvent extends TrackingEvent {
+  const ParkedFixEvent({
+    required super.t,
+    required this.lat,
+    required this.lon,
+    required this.accuracy,
+    this.speed,
+    this.heading,
+  }) : super(tripId: null);
+
+  final double lat;
+  final double lon;
+  final double accuracy;
+  final double? speed;
+  final double? heading;
+
+  @override
+  Map<String, Object?> toMap() => {
+    'type': 'parkedFix',
+    'tripId': null,
+    't': t,
+    'lat': lat,
+    'lon': lon,
+    'accuracy': accuracy,
+    if (speed != null) 'speed': speed,
+    if (heading != null) 'heading': heading,
+  };
+}
+
+/// Answer to `getLastKnownLocation` (docs/08 §3).
+class LastKnownLocation {
+  const LastKnownLocation({
+    required this.t,
+    required this.lat,
+    required this.lon,
+    required this.accuracy,
+    this.speed,
+    this.heading,
+  });
+
+  factory LastKnownLocation.fromMap(Map<Object?, Object?> m) =>
+      LastKnownLocation(
+        t: (m['t'] as num?)?.toInt() ?? 0,
+        lat: (m['lat'] as num).toDouble(),
+        lon: (m['lon'] as num).toDouble(),
+        accuracy: (m['accuracy'] as num?)?.toDouble() ?? 50,
+        speed: (m['speed'] as num?)?.toDouble(),
+        heading: (m['heading'] as num?)?.toDouble(),
+      );
+
+  final int t;
+  final double lat;
+  final double lon;
+  final double accuracy;
+  final double? speed;
+  final double? heading;
+
+  Map<String, Object?> toMap() => {
+    't': t,
+    'lat': lat,
+    'lon': lon,
+    'accuracy': accuracy,
+    if (speed != null) 'speed': speed,
+    if (heading != null) 'heading': heading,
+  };
 }
 
 final class PhaseEvent extends TrackingEvent {

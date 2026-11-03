@@ -9,6 +9,9 @@ protocol LocationTrackerDelegate: AnyObject {
   func locationTracker(_ tracker: LocationTracker, didFlush fixes: [[String: Any]], lastFixAt: Int64?)
   /// A parked backstop fired: `"significantChange"` or `"geofence"`.
   func locationTracker(_ tracker: LocationTracker, didFireTrigger kind: String, at t: Int64)
+  /// A position the OS delivered for free while `.parked` (significant change, region exit), just
+  /// before the matching trigger. Nothing was requested for it (docs/08 §4 `parkedFix`).
+  func locationTracker(_ tracker: LocationTracker, didObserveParkedFix location: CLLocation)
   func locationTrackerDidChangeAuthorization(_ tracker: LocationTracker)
   func locationTracker(_ tracker: LocationTracker, didFail code: String, message: String)
 }
@@ -50,6 +53,12 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
   private var flushTimer: Timer?
   /// The last valid fix received in `.recording` mode (centre of the next parked region).
   private(set) var lastFix: CLLocation?
+  /// Callers waiting for a `requestLocation()` answer (docs/08 §3 `getLastKnownLocation`).
+  private var oneShotCompletions: [(CLLocation?) -> Void] = []
+  private var oneShotTimer: Timer?
+  /// Where the phone was when the one-shot was requested, so the answer can be told apart from a
+  /// genuine significant change that lands inside the request window.
+  private var oneShotAnchor: CLLocation?
 
   override init() {
     super.init()
@@ -62,6 +71,7 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
 
   deinit {
     flushTimer?.invalidate()
+    oneShotTimer?.invalidate()
   }
 
   // MARK: - Authorization
@@ -119,9 +129,74 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
       parkedCenter = nil
       manager.allowsBackgroundLocationUpdates = true
       manager.showsBackgroundLocationIndicator = true
+      // A one-shot request may have lowered this; recording always wants the best fixes.
+      manager.desiredAccuracy = kCLLocationAccuracyBest
+      // Cancels any pending requestLocation(); its waiters are answered by the first standard update.
       manager.startUpdatingLocation()
       startFlushTimer()
     }
+  }
+
+  // MARK: - One-shot position (docs/08 §3 getLastKnownLocation)
+
+  /// The most recent fix CoreLocation holds for this manager, whatever delivered it. Nil until the
+  /// first fix after launch; possibly hours old while parked.
+  var cachedLocation: CLLocation? {
+    return manager.location
+  }
+
+  /// One fresh fix through `requestLocation()`, or nil after `timeout` or a CoreLocation failure.
+  /// Only meaningful outside `.recording`: a standard update stream cancels (and is cancelled by)
+  /// `requestLocation()`, so while a trip runs the latest recorded fix is returned straight away.
+  /// The answer arrives in `didUpdateLocations` like any fix; while a request is pending that
+  /// callback is consumed here and counts neither as a trigger nor as a parked fix.
+  func requestOneShotLocation(timeout: TimeInterval, completion: @escaping (CLLocation?) -> Void) {
+    guard mode != .recording else {
+      completion(lastFix ?? manager.location)
+      return
+    }
+    oneShotCompletions.append(completion)
+    if oneShotCompletions.count > 1 { return }  // one request in flight answers everyone waiting
+    oneShotAnchor = manager.location
+    // Presence does not need Best; this mirrors Android's PRIORITY_BALANCED_POWER_ACCURACY.
+    // `setMode(.recording)` and `resolveOneShot` put Best back.
+    manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+    oneShotTimer = Timer.scheduledTimer(withTimeInterval: timeout, repeats: false) { [weak self] _ in
+      guard let self = self else { return }
+      // stopUpdatingLocation() is how a pending requestLocation() is cancelled; it must not touch a
+      // recording stream, and outside recording there is no stream to stop.
+      if self.mode != .recording { self.manager.stopUpdatingLocation() }
+      self.resolveOneShot(with: nil)
+    }
+    manager.requestLocation()
+  }
+
+  private var isOneShotPending: Bool {
+    return !oneShotCompletions.isEmpty
+  }
+
+  private func resolveOneShot(with location: CLLocation?) {
+    oneShotTimer?.invalidate()
+    oneShotTimer = nil
+    guard !oneShotCompletions.isEmpty else { return }
+    let completions = oneShotCompletions
+    oneShotCompletions.removeAll()
+    manager.desiredAccuracy = kCLLocationAccuracyBest
+    for completion in completions { completion(location) }
+  }
+
+  /// `{t, lat, lon, accuracy, speed?, heading?}`: the shape shared by `getLastKnownLocation` (§3)
+  /// and `parkedFix` (§4). Unknown speed / heading (negative) are omitted, never sent as -1.
+  static func positionMap(_ location: CLLocation) -> [String: Any] {
+    var map: [String: Any] = [
+      "t": TrackingClock.ms(location.timestamp),
+      "lat": location.coordinate.latitude,
+      "lon": location.coordinate.longitude,
+      "accuracy": location.horizontalAccuracy,
+    ]
+    if location.speed >= 0 { map["speed"] = location.speed }
+    if location.course >= 0 { map["heading"] = location.course }
+    return map
   }
 
   /// Start collecting batches. Fixes retained during tentative with `t >= since` join the first batch
@@ -152,6 +227,9 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
   // MARK: - Internals
 
   private func stopRecording() {
+    // stopUpdatingLocation() also cancels a pending requestLocation(): answer its waiters with
+    // whatever CoreLocation has rather than leave them to the timeout.
+    if isOneShotPending { resolveOneShot(with: manager.location) }
     manager.stopUpdatingLocation()
     flushTimer?.invalidate()
     flushTimer = nil
@@ -207,16 +285,9 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
     parkedCenter = center
   }
 
-  /// One `fixes[]` entry (docs/08 §4). Unknown speed/heading are omitted, never -1.
+  /// One `fixes[]` entry (docs/08 §4): the shared position map plus the optional extras.
   private func fixMap(_ location: CLLocation) -> [String: Any] {
-    var map: [String: Any] = [
-      "t": TrackingClock.ms(location.timestamp),
-      "lat": location.coordinate.latitude,
-      "lon": location.coordinate.longitude,
-      "accuracy": location.horizontalAccuracy,
-    ]
-    if location.speed >= 0 { map["speed"] = location.speed }
-    if location.course >= 0 { map["heading"] = location.course }
+    var map = LocationTracker.positionMap(location)
     if location.verticalAccuracy > 0 { map["altitude"] = location.altitude }
     if location.speedAccuracy >= 0 { map["speedAccuracy"] = location.speedAccuracy }
     if location.courseAccuracy >= 0 { map["headingAccuracy"] = location.courseAccuracy }
@@ -225,13 +296,36 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
 
   // MARK: - CLLocationManagerDelegate
 
+  /// A delivery that arrives while a one-shot is pending is usually just the `requestLocation()`
+  /// answer, but it can also be the significant-change callback for a drive that started seconds
+  /// after the app was opened. Treat it as movement when the phone is clearly moving or has left
+  /// the spot the request was made from; otherwise firing a trigger would start a tentative trip
+  /// (and the GPS) on every app open.
+  private func looksLikeGenuineMovement(_ location: CLLocation) -> Bool {
+    if location.speed >= 4 { return true }
+    guard let anchor = oneShotAnchor else { return true }
+    return location.distance(from: anchor) > 500
+  }
+
   func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    var answeredOneShot = false
+    if isOneShotPending {
+      // The requestLocation() answer, or the first standard update if a trip started meanwhile.
+      resolveOneShot(with: locations.last(where: { $0.horizontalAccuracy >= 0 }))
+      answeredOneShot = true
+    }
     switch mode {
     case .off:
       return
     case .parked:
-      // Significant-change delivery while parked: one trigger per callback.
+      // Significant-change delivery while parked: the free position goes out as a parked fix,
+      // then one trigger per callback. When the delivery answered a one-shot the position is
+      // still free (and still published), but the trigger only fires for genuine movement.
       guard let last = locations.last else { return }
+      if last.horizontalAccuracy >= 0 {
+        delegate?.locationTracker(self, didObserveParkedFix: last)
+      }
+      if answeredOneShot && !looksLikeGenuineMovement(last) { return }
       delegate?.locationTracker(self, didFireTrigger: "significantChange", at: TrackingClock.ms(last.timestamp))
     case .recording:
       for location in locations {
@@ -257,6 +351,10 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
 
   func locationManager(_ manager: CLLocationManager, didExitRegion region: CLRegion) {
     guard mode == .parked, region.identifier == LocationTracker.parkedRegionIdentifier else { return }
+    // The fix that tripped the fence is the manager's current location; nothing extra is requested.
+    if let fix = manager.location, fix.horizontalAccuracy >= 0 {
+      delegate?.locationTracker(self, didObserveParkedFix: fix)
+    }
     delegate?.locationTracker(self, didFireTrigger: "geofence", at: TrackingClock.nowMs())
   }
 
@@ -265,6 +363,10 @@ final class LocationTracker: NSObject, CLLocationManagerDelegate {
   }
 
   func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+    if isOneShotPending, mode != .recording {
+      // requestLocation() gave up (kCLErrorLocationUnknown) or was denied: the caller gets nil.
+      resolveOneShot(with: nil)
+    }
     let nsError = error as NSError
     guard nsError.domain == kCLErrorDomain else { return }
     if nsError.code == CLError.Code.denied.rawValue {

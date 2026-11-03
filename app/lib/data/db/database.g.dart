@@ -4746,6 +4746,1270 @@ class FixBatchesCompanion extends UpdateCompanion<FixBatche> {
   }
 }
 
+class $OutboxTable extends Outbox with TableInfo<$OutboxTable, OutboxData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $OutboxTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _kindMeta = const VerificationMeta('kind');
+  @override
+  late final GeneratedColumn<String> kind = GeneratedColumn<String>(
+    'kind',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _payloadMeta = const VerificationMeta(
+    'payload',
+  );
+  @override
+  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
+    'payload',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<int> createdAt = GeneratedColumn<int>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _attemptsMeta = const VerificationMeta(
+    'attempts',
+  );
+  @override
+  late final GeneratedColumn<int> attempts = GeneratedColumn<int>(
+    'attempts',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _nextAttemptAtMeta = const VerificationMeta(
+    'nextAttemptAt',
+  );
+  @override
+  late final GeneratedColumn<int> nextAttemptAt = GeneratedColumn<int>(
+    'next_attempt_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _lastErrorMeta = const VerificationMeta(
+    'lastError',
+  );
+  @override
+  late final GeneratedColumn<String> lastError = GeneratedColumn<String>(
+    'last_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    kind,
+    payload,
+    createdAt,
+    attempts,
+    nextAttemptAt,
+    lastError,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'outbox';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<OutboxData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('kind')) {
+      context.handle(
+        _kindMeta,
+        kind.isAcceptableOrUnknown(data['kind']!, _kindMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_kindMeta);
+    }
+    if (data.containsKey('payload')) {
+      context.handle(
+        _payloadMeta,
+        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_payloadMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('attempts')) {
+      context.handle(
+        _attemptsMeta,
+        attempts.isAcceptableOrUnknown(data['attempts']!, _attemptsMeta),
+      );
+    }
+    if (data.containsKey('next_attempt_at')) {
+      context.handle(
+        _nextAttemptAtMeta,
+        nextAttemptAt.isAcceptableOrUnknown(
+          data['next_attempt_at']!,
+          _nextAttemptAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('last_error')) {
+      context.handle(
+        _lastErrorMeta,
+        lastError.isAcceptableOrUnknown(data['last_error']!, _lastErrorMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  OutboxData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return OutboxData(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      kind: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}kind'],
+      )!,
+      payload: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}payload'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_at'],
+      )!,
+      attempts: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}attempts'],
+      )!,
+      nextAttemptAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}next_attempt_at'],
+      )!,
+      lastError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_error'],
+      ),
+    );
+  }
+
+  @override
+  $OutboxTable createAlias(String alias) {
+    return $OutboxTable(attachedDatabase, alias);
+  }
+}
+
+class OutboxData extends DataClass implements Insertable<OutboxData> {
+  final String id;
+  final String kind;
+  final String payload;
+  final int createdAt;
+  final int attempts;
+  final int nextAttemptAt;
+  final String? lastError;
+  const OutboxData({
+    required this.id,
+    required this.kind,
+    required this.payload,
+    required this.createdAt,
+    required this.attempts,
+    required this.nextAttemptAt,
+    this.lastError,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['kind'] = Variable<String>(kind);
+    map['payload'] = Variable<String>(payload);
+    map['created_at'] = Variable<int>(createdAt);
+    map['attempts'] = Variable<int>(attempts);
+    map['next_attempt_at'] = Variable<int>(nextAttemptAt);
+    if (!nullToAbsent || lastError != null) {
+      map['last_error'] = Variable<String>(lastError);
+    }
+    return map;
+  }
+
+  OutboxCompanion toCompanion(bool nullToAbsent) {
+    return OutboxCompanion(
+      id: Value(id),
+      kind: Value(kind),
+      payload: Value(payload),
+      createdAt: Value(createdAt),
+      attempts: Value(attempts),
+      nextAttemptAt: Value(nextAttemptAt),
+      lastError: lastError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastError),
+    );
+  }
+
+  factory OutboxData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return OutboxData(
+      id: serializer.fromJson<String>(json['id']),
+      kind: serializer.fromJson<String>(json['kind']),
+      payload: serializer.fromJson<String>(json['payload']),
+      createdAt: serializer.fromJson<int>(json['createdAt']),
+      attempts: serializer.fromJson<int>(json['attempts']),
+      nextAttemptAt: serializer.fromJson<int>(json['nextAttemptAt']),
+      lastError: serializer.fromJson<String?>(json['lastError']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'kind': serializer.toJson<String>(kind),
+      'payload': serializer.toJson<String>(payload),
+      'createdAt': serializer.toJson<int>(createdAt),
+      'attempts': serializer.toJson<int>(attempts),
+      'nextAttemptAt': serializer.toJson<int>(nextAttemptAt),
+      'lastError': serializer.toJson<String?>(lastError),
+    };
+  }
+
+  OutboxData copyWith({
+    String? id,
+    String? kind,
+    String? payload,
+    int? createdAt,
+    int? attempts,
+    int? nextAttemptAt,
+    Value<String?> lastError = const Value.absent(),
+  }) => OutboxData(
+    id: id ?? this.id,
+    kind: kind ?? this.kind,
+    payload: payload ?? this.payload,
+    createdAt: createdAt ?? this.createdAt,
+    attempts: attempts ?? this.attempts,
+    nextAttemptAt: nextAttemptAt ?? this.nextAttemptAt,
+    lastError: lastError.present ? lastError.value : this.lastError,
+  );
+  OutboxData copyWithCompanion(OutboxCompanion data) {
+    return OutboxData(
+      id: data.id.present ? data.id.value : this.id,
+      kind: data.kind.present ? data.kind.value : this.kind,
+      payload: data.payload.present ? data.payload.value : this.payload,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      attempts: data.attempts.present ? data.attempts.value : this.attempts,
+      nextAttemptAt: data.nextAttemptAt.present
+          ? data.nextAttemptAt.value
+          : this.nextAttemptAt,
+      lastError: data.lastError.present ? data.lastError.value : this.lastError,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OutboxData(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('attempts: $attempts, ')
+          ..write('nextAttemptAt: $nextAttemptAt, ')
+          ..write('lastError: $lastError')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    kind,
+    payload,
+    createdAt,
+    attempts,
+    nextAttemptAt,
+    lastError,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is OutboxData &&
+          other.id == this.id &&
+          other.kind == this.kind &&
+          other.payload == this.payload &&
+          other.createdAt == this.createdAt &&
+          other.attempts == this.attempts &&
+          other.nextAttemptAt == this.nextAttemptAt &&
+          other.lastError == this.lastError);
+}
+
+class OutboxCompanion extends UpdateCompanion<OutboxData> {
+  final Value<String> id;
+  final Value<String> kind;
+  final Value<String> payload;
+  final Value<int> createdAt;
+  final Value<int> attempts;
+  final Value<int> nextAttemptAt;
+  final Value<String?> lastError;
+  final Value<int> rowid;
+  const OutboxCompanion({
+    this.id = const Value.absent(),
+    this.kind = const Value.absent(),
+    this.payload = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.attempts = const Value.absent(),
+    this.nextAttemptAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  OutboxCompanion.insert({
+    required String id,
+    required String kind,
+    required String payload,
+    required int createdAt,
+    this.attempts = const Value.absent(),
+    this.nextAttemptAt = const Value.absent(),
+    this.lastError = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       kind = Value(kind),
+       payload = Value(payload),
+       createdAt = Value(createdAt);
+  static Insertable<OutboxData> custom({
+    Expression<String>? id,
+    Expression<String>? kind,
+    Expression<String>? payload,
+    Expression<int>? createdAt,
+    Expression<int>? attempts,
+    Expression<int>? nextAttemptAt,
+    Expression<String>? lastError,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (kind != null) 'kind': kind,
+      if (payload != null) 'payload': payload,
+      if (createdAt != null) 'created_at': createdAt,
+      if (attempts != null) 'attempts': attempts,
+      if (nextAttemptAt != null) 'next_attempt_at': nextAttemptAt,
+      if (lastError != null) 'last_error': lastError,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  OutboxCompanion copyWith({
+    Value<String>? id,
+    Value<String>? kind,
+    Value<String>? payload,
+    Value<int>? createdAt,
+    Value<int>? attempts,
+    Value<int>? nextAttemptAt,
+    Value<String?>? lastError,
+    Value<int>? rowid,
+  }) {
+    return OutboxCompanion(
+      id: id ?? this.id,
+      kind: kind ?? this.kind,
+      payload: payload ?? this.payload,
+      createdAt: createdAt ?? this.createdAt,
+      attempts: attempts ?? this.attempts,
+      nextAttemptAt: nextAttemptAt ?? this.nextAttemptAt,
+      lastError: lastError ?? this.lastError,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (kind.present) {
+      map['kind'] = Variable<String>(kind.value);
+    }
+    if (payload.present) {
+      map['payload'] = Variable<String>(payload.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(createdAt.value);
+    }
+    if (attempts.present) {
+      map['attempts'] = Variable<int>(attempts.value);
+    }
+    if (nextAttemptAt.present) {
+      map['next_attempt_at'] = Variable<int>(nextAttemptAt.value);
+    }
+    if (lastError.present) {
+      map['last_error'] = Variable<String>(lastError.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('OutboxCompanion(')
+          ..write('id: $id, ')
+          ..write('kind: $kind, ')
+          ..write('payload: $payload, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('attempts: $attempts, ')
+          ..write('nextAttemptAt: $nextAttemptAt, ')
+          ..write('lastError: $lastError, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RemoteCacheTable extends RemoteCache
+    with TableInfo<$RemoteCacheTable, RemoteCacheData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RemoteCacheTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+    'key',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _jsonMeta = const VerificationMeta('json');
+  @override
+  late final GeneratedColumn<String> json = GeneratedColumn<String>(
+    'json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [key, json, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'remote_cache';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RemoteCacheData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('key')) {
+      context.handle(
+        _keyMeta,
+        key.isAcceptableOrUnknown(data['key']!, _keyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('json')) {
+      context.handle(
+        _jsonMeta,
+        json.isAcceptableOrUnknown(data['json']!, _jsonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_jsonMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {key};
+  @override
+  RemoteCacheData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RemoteCacheData(
+      key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}key'],
+      )!,
+      json: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}json'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RemoteCacheTable createAlias(String alias) {
+    return $RemoteCacheTable(attachedDatabase, alias);
+  }
+}
+
+class RemoteCacheData extends DataClass implements Insertable<RemoteCacheData> {
+  final String key;
+  final String json;
+  final int updatedAt;
+  const RemoteCacheData({
+    required this.key,
+    required this.json,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['key'] = Variable<String>(key);
+    map['json'] = Variable<String>(json);
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  RemoteCacheCompanion toCompanion(bool nullToAbsent) {
+    return RemoteCacheCompanion(
+      key: Value(key),
+      json: Value(json),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RemoteCacheData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RemoteCacheData(
+      key: serializer.fromJson<String>(json['key']),
+      json: serializer.fromJson<String>(json['json']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'key': serializer.toJson<String>(key),
+      'json': serializer.toJson<String>(json),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  RemoteCacheData copyWith({String? key, String? json, int? updatedAt}) =>
+      RemoteCacheData(
+        key: key ?? this.key,
+        json: json ?? this.json,
+        updatedAt: updatedAt ?? this.updatedAt,
+      );
+  RemoteCacheData copyWithCompanion(RemoteCacheCompanion data) {
+    return RemoteCacheData(
+      key: data.key.present ? data.key.value : this.key,
+      json: data.json.present ? data.json.value : this.json,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemoteCacheData(')
+          ..write('key: $key, ')
+          ..write('json: $json, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(key, json, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RemoteCacheData &&
+          other.key == this.key &&
+          other.json == this.json &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RemoteCacheCompanion extends UpdateCompanion<RemoteCacheData> {
+  final Value<String> key;
+  final Value<String> json;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const RemoteCacheCompanion({
+    this.key = const Value.absent(),
+    this.json = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  RemoteCacheCompanion.insert({
+    required String key,
+    required String json,
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : key = Value(key),
+       json = Value(json),
+       updatedAt = Value(updatedAt);
+  static Insertable<RemoteCacheData> custom({
+    Expression<String>? key,
+    Expression<String>? json,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (key != null) 'key': key,
+      if (json != null) 'json': json,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  RemoteCacheCompanion copyWith({
+    Value<String>? key,
+    Value<String>? json,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return RemoteCacheCompanion(
+      key: key ?? this.key,
+      json: json ?? this.json,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (json.present) {
+      map['json'] = Variable<String>(json.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RemoteCacheCompanion(')
+          ..write('key: $key, ')
+          ..write('json: $json, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UploadedTripsTable extends UploadedTrips
+    with TableInfo<$UploadedTripsTable, UploadedTrip> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UploadedTripsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
+  @override
+  late final GeneratedColumn<String> tripId = GeneratedColumn<String>(
+    'trip_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uploadedAtMeta = const VerificationMeta(
+    'uploadedAt',
+  );
+  @override
+  late final GeneratedColumn<int> uploadedAt = GeneratedColumn<int>(
+    'uploaded_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _summaryHashMeta = const VerificationMeta(
+    'summaryHash',
+  );
+  @override
+  late final GeneratedColumn<String> summaryHash = GeneratedColumn<String>(
+    'summary_hash',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [tripId, uploadedAt, summaryHash];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'uploaded_trips';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UploadedTrip> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('trip_id')) {
+      context.handle(
+        _tripIdMeta,
+        tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_tripIdMeta);
+    }
+    if (data.containsKey('uploaded_at')) {
+      context.handle(
+        _uploadedAtMeta,
+        uploadedAt.isAcceptableOrUnknown(data['uploaded_at']!, _uploadedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uploadedAtMeta);
+    }
+    if (data.containsKey('summary_hash')) {
+      context.handle(
+        _summaryHashMeta,
+        summaryHash.isAcceptableOrUnknown(
+          data['summary_hash']!,
+          _summaryHashMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_summaryHashMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {tripId};
+  @override
+  UploadedTrip map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UploadedTrip(
+      tripId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trip_id'],
+      )!,
+      uploadedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}uploaded_at'],
+      )!,
+      summaryHash: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}summary_hash'],
+      )!,
+    );
+  }
+
+  @override
+  $UploadedTripsTable createAlias(String alias) {
+    return $UploadedTripsTable(attachedDatabase, alias);
+  }
+}
+
+class UploadedTrip extends DataClass implements Insertable<UploadedTrip> {
+  final String tripId;
+  final int uploadedAt;
+  final String summaryHash;
+  const UploadedTrip({
+    required this.tripId,
+    required this.uploadedAt,
+    required this.summaryHash,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['trip_id'] = Variable<String>(tripId);
+    map['uploaded_at'] = Variable<int>(uploadedAt);
+    map['summary_hash'] = Variable<String>(summaryHash);
+    return map;
+  }
+
+  UploadedTripsCompanion toCompanion(bool nullToAbsent) {
+    return UploadedTripsCompanion(
+      tripId: Value(tripId),
+      uploadedAt: Value(uploadedAt),
+      summaryHash: Value(summaryHash),
+    );
+  }
+
+  factory UploadedTrip.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UploadedTrip(
+      tripId: serializer.fromJson<String>(json['tripId']),
+      uploadedAt: serializer.fromJson<int>(json['uploadedAt']),
+      summaryHash: serializer.fromJson<String>(json['summaryHash']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'tripId': serializer.toJson<String>(tripId),
+      'uploadedAt': serializer.toJson<int>(uploadedAt),
+      'summaryHash': serializer.toJson<String>(summaryHash),
+    };
+  }
+
+  UploadedTrip copyWith({
+    String? tripId,
+    int? uploadedAt,
+    String? summaryHash,
+  }) => UploadedTrip(
+    tripId: tripId ?? this.tripId,
+    uploadedAt: uploadedAt ?? this.uploadedAt,
+    summaryHash: summaryHash ?? this.summaryHash,
+  );
+  UploadedTrip copyWithCompanion(UploadedTripsCompanion data) {
+    return UploadedTrip(
+      tripId: data.tripId.present ? data.tripId.value : this.tripId,
+      uploadedAt: data.uploadedAt.present
+          ? data.uploadedAt.value
+          : this.uploadedAt,
+      summaryHash: data.summaryHash.present
+          ? data.summaryHash.value
+          : this.summaryHash,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UploadedTrip(')
+          ..write('tripId: $tripId, ')
+          ..write('uploadedAt: $uploadedAt, ')
+          ..write('summaryHash: $summaryHash')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(tripId, uploadedAt, summaryHash);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UploadedTrip &&
+          other.tripId == this.tripId &&
+          other.uploadedAt == this.uploadedAt &&
+          other.summaryHash == this.summaryHash);
+}
+
+class UploadedTripsCompanion extends UpdateCompanion<UploadedTrip> {
+  final Value<String> tripId;
+  final Value<int> uploadedAt;
+  final Value<String> summaryHash;
+  final Value<int> rowid;
+  const UploadedTripsCompanion({
+    this.tripId = const Value.absent(),
+    this.uploadedAt = const Value.absent(),
+    this.summaryHash = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  UploadedTripsCompanion.insert({
+    required String tripId,
+    required int uploadedAt,
+    required String summaryHash,
+    this.rowid = const Value.absent(),
+  }) : tripId = Value(tripId),
+       uploadedAt = Value(uploadedAt),
+       summaryHash = Value(summaryHash);
+  static Insertable<UploadedTrip> custom({
+    Expression<String>? tripId,
+    Expression<int>? uploadedAt,
+    Expression<String>? summaryHash,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (tripId != null) 'trip_id': tripId,
+      if (uploadedAt != null) 'uploaded_at': uploadedAt,
+      if (summaryHash != null) 'summary_hash': summaryHash,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  UploadedTripsCompanion copyWith({
+    Value<String>? tripId,
+    Value<int>? uploadedAt,
+    Value<String>? summaryHash,
+    Value<int>? rowid,
+  }) {
+    return UploadedTripsCompanion(
+      tripId: tripId ?? this.tripId,
+      uploadedAt: uploadedAt ?? this.uploadedAt,
+      summaryHash: summaryHash ?? this.summaryHash,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (tripId.present) {
+      map['trip_id'] = Variable<String>(tripId.value);
+    }
+    if (uploadedAt.present) {
+      map['uploaded_at'] = Variable<int>(uploadedAt.value);
+    }
+    if (summaryHash.present) {
+      map['summary_hash'] = Variable<String>(summaryHash.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UploadedTripsCompanion(')
+          ..write('tripId: $tripId, ')
+          ..write('uploadedAt: $uploadedAt, ')
+          ..write('summaryHash: $summaryHash, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $BadgeAwardsTable extends BadgeAwards
+    with TableInfo<$BadgeAwardsTable, BadgeAward> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BadgeAwardsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _badgeIdMeta = const VerificationMeta(
+    'badgeId',
+  );
+  @override
+  late final GeneratedColumn<String> badgeId = GeneratedColumn<String>(
+    'badge_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _awardedAtMeta = const VerificationMeta(
+    'awardedAt',
+  );
+  @override
+  late final GeneratedColumn<int> awardedAt = GeneratedColumn<int>(
+    'awarded_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
+  @override
+  late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
+    'synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [badgeId, awardedAt, synced];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'badge_awards';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BadgeAward> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('badge_id')) {
+      context.handle(
+        _badgeIdMeta,
+        badgeId.isAcceptableOrUnknown(data['badge_id']!, _badgeIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_badgeIdMeta);
+    }
+    if (data.containsKey('awarded_at')) {
+      context.handle(
+        _awardedAtMeta,
+        awardedAt.isAcceptableOrUnknown(data['awarded_at']!, _awardedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_awardedAtMeta);
+    }
+    if (data.containsKey('synced')) {
+      context.handle(
+        _syncedMeta,
+        synced.isAcceptableOrUnknown(data['synced']!, _syncedMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {badgeId};
+  @override
+  BadgeAward map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BadgeAward(
+      badgeId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}badge_id'],
+      )!,
+      awardedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}awarded_at'],
+      )!,
+      synced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}synced'],
+      )!,
+    );
+  }
+
+  @override
+  $BadgeAwardsTable createAlias(String alias) {
+    return $BadgeAwardsTable(attachedDatabase, alias);
+  }
+}
+
+class BadgeAward extends DataClass implements Insertable<BadgeAward> {
+  final String badgeId;
+  final int awardedAt;
+  final bool synced;
+  const BadgeAward({
+    required this.badgeId,
+    required this.awardedAt,
+    required this.synced,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['badge_id'] = Variable<String>(badgeId);
+    map['awarded_at'] = Variable<int>(awardedAt);
+    map['synced'] = Variable<bool>(synced);
+    return map;
+  }
+
+  BadgeAwardsCompanion toCompanion(bool nullToAbsent) {
+    return BadgeAwardsCompanion(
+      badgeId: Value(badgeId),
+      awardedAt: Value(awardedAt),
+      synced: Value(synced),
+    );
+  }
+
+  factory BadgeAward.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BadgeAward(
+      badgeId: serializer.fromJson<String>(json['badgeId']),
+      awardedAt: serializer.fromJson<int>(json['awardedAt']),
+      synced: serializer.fromJson<bool>(json['synced']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'badgeId': serializer.toJson<String>(badgeId),
+      'awardedAt': serializer.toJson<int>(awardedAt),
+      'synced': serializer.toJson<bool>(synced),
+    };
+  }
+
+  BadgeAward copyWith({String? badgeId, int? awardedAt, bool? synced}) =>
+      BadgeAward(
+        badgeId: badgeId ?? this.badgeId,
+        awardedAt: awardedAt ?? this.awardedAt,
+        synced: synced ?? this.synced,
+      );
+  BadgeAward copyWithCompanion(BadgeAwardsCompanion data) {
+    return BadgeAward(
+      badgeId: data.badgeId.present ? data.badgeId.value : this.badgeId,
+      awardedAt: data.awardedAt.present ? data.awardedAt.value : this.awardedAt,
+      synced: data.synced.present ? data.synced.value : this.synced,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BadgeAward(')
+          ..write('badgeId: $badgeId, ')
+          ..write('awardedAt: $awardedAt, ')
+          ..write('synced: $synced')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(badgeId, awardedAt, synced);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BadgeAward &&
+          other.badgeId == this.badgeId &&
+          other.awardedAt == this.awardedAt &&
+          other.synced == this.synced);
+}
+
+class BadgeAwardsCompanion extends UpdateCompanion<BadgeAward> {
+  final Value<String> badgeId;
+  final Value<int> awardedAt;
+  final Value<bool> synced;
+  final Value<int> rowid;
+  const BadgeAwardsCompanion({
+    this.badgeId = const Value.absent(),
+    this.awardedAt = const Value.absent(),
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BadgeAwardsCompanion.insert({
+    required String badgeId,
+    required int awardedAt,
+    this.synced = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : badgeId = Value(badgeId),
+       awardedAt = Value(awardedAt);
+  static Insertable<BadgeAward> custom({
+    Expression<String>? badgeId,
+    Expression<int>? awardedAt,
+    Expression<bool>? synced,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (badgeId != null) 'badge_id': badgeId,
+      if (awardedAt != null) 'awarded_at': awardedAt,
+      if (synced != null) 'synced': synced,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BadgeAwardsCompanion copyWith({
+    Value<String>? badgeId,
+    Value<int>? awardedAt,
+    Value<bool>? synced,
+    Value<int>? rowid,
+  }) {
+    return BadgeAwardsCompanion(
+      badgeId: badgeId ?? this.badgeId,
+      awardedAt: awardedAt ?? this.awardedAt,
+      synced: synced ?? this.synced,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (badgeId.present) {
+      map['badge_id'] = Variable<String>(badgeId.value);
+    }
+    if (awardedAt.present) {
+      map['awarded_at'] = Variable<int>(awardedAt.value);
+    }
+    if (synced.present) {
+      map['synced'] = Variable<bool>(synced.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BadgeAwardsCompanion(')
+          ..write('badgeId: $badgeId, ')
+          ..write('awardedAt: $awardedAt, ')
+          ..write('synced: $synced, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4759,6 +6023,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LimitFlagsTable limitFlags = $LimitFlagsTable(this);
   late final $SettingsTable settings = $SettingsTable(this);
   late final $FixBatchesTable fixBatches = $FixBatchesTable(this);
+  late final $OutboxTable outbox = $OutboxTable(this);
+  late final $RemoteCacheTable remoteCache = $RemoteCacheTable(this);
+  late final $UploadedTripsTable uploadedTrips = $UploadedTripsTable(this);
+  late final $BadgeAwardsTable badgeAwards = $BadgeAwardsTable(this);
   late final Index tripsStartedAt = Index(
     'trips_started_at',
     'CREATE INDEX trips_started_at ON trips (started_at)',
@@ -4778,6 +6046,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     limitFlags,
     settings,
     fixBatches,
+    outbox,
+    remoteCache,
+    uploadedTrips,
+    badgeAwards,
     tripsStartedAt,
   ];
 }
@@ -7278,6 +8550,766 @@ typedef $$FixBatchesTableProcessedTableManager =
       FixBatche,
       PrefetchHooks Function()
     >;
+typedef $$OutboxTableCreateCompanionBuilder =
+    OutboxCompanion Function({
+      required String id,
+      required String kind,
+      required String payload,
+      required int createdAt,
+      Value<int> attempts,
+      Value<int> nextAttemptAt,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+typedef $$OutboxTableUpdateCompanionBuilder =
+    OutboxCompanion Function({
+      Value<String> id,
+      Value<String> kind,
+      Value<String> payload,
+      Value<int> createdAt,
+      Value<int> attempts,
+      Value<int> nextAttemptAt,
+      Value<String?> lastError,
+      Value<int> rowid,
+    });
+
+class $$OutboxTableFilterComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$OutboxTableOrderingComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get kind => $composableBuilder(
+    column: $table.kind,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get payload => $composableBuilder(
+    column: $table.payload,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get attempts => $composableBuilder(
+    column: $table.attempts,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastError => $composableBuilder(
+    column: $table.lastError,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$OutboxTableAnnotationComposer
+    extends Composer<_$AppDatabase, $OutboxTable> {
+  $$OutboxTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get kind =>
+      $composableBuilder(column: $table.kind, builder: (column) => column);
+
+  GeneratedColumn<String> get payload =>
+      $composableBuilder(column: $table.payload, builder: (column) => column);
+
+  GeneratedColumn<int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<int> get attempts =>
+      $composableBuilder(column: $table.attempts, builder: (column) => column);
+
+  GeneratedColumn<int> get nextAttemptAt => $composableBuilder(
+    column: $table.nextAttemptAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get lastError =>
+      $composableBuilder(column: $table.lastError, builder: (column) => column);
+}
+
+class $$OutboxTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $OutboxTable,
+          OutboxData,
+          $$OutboxTableFilterComposer,
+          $$OutboxTableOrderingComposer,
+          $$OutboxTableAnnotationComposer,
+          $$OutboxTableCreateCompanionBuilder,
+          $$OutboxTableUpdateCompanionBuilder,
+          (OutboxData, BaseReferences<_$AppDatabase, $OutboxTable, OutboxData>),
+          OutboxData,
+          PrefetchHooks Function()
+        > {
+  $$OutboxTableTableManager(_$AppDatabase db, $OutboxTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$OutboxTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$OutboxTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$OutboxTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> kind = const Value.absent(),
+                Value<String> payload = const Value.absent(),
+                Value<int> createdAt = const Value.absent(),
+                Value<int> attempts = const Value.absent(),
+                Value<int> nextAttemptAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OutboxCompanion(
+                id: id,
+                kind: kind,
+                payload: payload,
+                createdAt: createdAt,
+                attempts: attempts,
+                nextAttemptAt: nextAttemptAt,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String kind,
+                required String payload,
+                required int createdAt,
+                Value<int> attempts = const Value.absent(),
+                Value<int> nextAttemptAt = const Value.absent(),
+                Value<String?> lastError = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => OutboxCompanion.insert(
+                id: id,
+                kind: kind,
+                payload: payload,
+                createdAt: createdAt,
+                attempts: attempts,
+                nextAttemptAt: nextAttemptAt,
+                lastError: lastError,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$OutboxTable, OutboxData>(table),
+                  BaseReferences<_$AppDatabase, $OutboxTable, OutboxData>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$OutboxTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $OutboxTable,
+      OutboxData,
+      $$OutboxTableFilterComposer,
+      $$OutboxTableOrderingComposer,
+      $$OutboxTableAnnotationComposer,
+      $$OutboxTableCreateCompanionBuilder,
+      $$OutboxTableUpdateCompanionBuilder,
+      (OutboxData, BaseReferences<_$AppDatabase, $OutboxTable, OutboxData>),
+      OutboxData,
+      PrefetchHooks Function()
+    >;
+typedef $$RemoteCacheTableCreateCompanionBuilder =
+    RemoteCacheCompanion Function({
+      required String key,
+      required String json,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$RemoteCacheTableUpdateCompanionBuilder =
+    RemoteCacheCompanion Function({
+      Value<String> key,
+      Value<String> json,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$RemoteCacheTableFilterComposer
+    extends Composer<_$AppDatabase, $RemoteCacheTable> {
+  $$RemoteCacheTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RemoteCacheTableOrderingComposer
+    extends Composer<_$AppDatabase, $RemoteCacheTable> {
+  $$RemoteCacheTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get key => $composableBuilder(
+    column: $table.key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get json => $composableBuilder(
+    column: $table.json,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RemoteCacheTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RemoteCacheTable> {
+  $$RemoteCacheTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get key =>
+      $composableBuilder(column: $table.key, builder: (column) => column);
+
+  GeneratedColumn<String> get json =>
+      $composableBuilder(column: $table.json, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$RemoteCacheTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RemoteCacheTable,
+          RemoteCacheData,
+          $$RemoteCacheTableFilterComposer,
+          $$RemoteCacheTableOrderingComposer,
+          $$RemoteCacheTableAnnotationComposer,
+          $$RemoteCacheTableCreateCompanionBuilder,
+          $$RemoteCacheTableUpdateCompanionBuilder,
+          (
+            RemoteCacheData,
+            BaseReferences<_$AppDatabase, $RemoteCacheTable, RemoteCacheData>,
+          ),
+          RemoteCacheData,
+          PrefetchHooks Function()
+        > {
+  $$RemoteCacheTableTableManager(_$AppDatabase db, $RemoteCacheTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RemoteCacheTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RemoteCacheTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RemoteCacheTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> key = const Value.absent(),
+                Value<String> json = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => RemoteCacheCompanion(
+                key: key,
+                json: json,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String key,
+                required String json,
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => RemoteCacheCompanion.insert(
+                key: key,
+                json: json,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$RemoteCacheTable, RemoteCacheData>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $RemoteCacheTable,
+                    RemoteCacheData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RemoteCacheTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RemoteCacheTable,
+      RemoteCacheData,
+      $$RemoteCacheTableFilterComposer,
+      $$RemoteCacheTableOrderingComposer,
+      $$RemoteCacheTableAnnotationComposer,
+      $$RemoteCacheTableCreateCompanionBuilder,
+      $$RemoteCacheTableUpdateCompanionBuilder,
+      (
+        RemoteCacheData,
+        BaseReferences<_$AppDatabase, $RemoteCacheTable, RemoteCacheData>,
+      ),
+      RemoteCacheData,
+      PrefetchHooks Function()
+    >;
+typedef $$UploadedTripsTableCreateCompanionBuilder =
+    UploadedTripsCompanion Function({
+      required String tripId,
+      required int uploadedAt,
+      required String summaryHash,
+      Value<int> rowid,
+    });
+typedef $$UploadedTripsTableUpdateCompanionBuilder =
+    UploadedTripsCompanion Function({
+      Value<String> tripId,
+      Value<int> uploadedAt,
+      Value<String> summaryHash,
+      Value<int> rowid,
+    });
+
+class $$UploadedTripsTableFilterComposer
+    extends Composer<_$AppDatabase, $UploadedTripsTable> {
+  $$UploadedTripsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get tripId => $composableBuilder(
+    column: $table.tripId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get uploadedAt => $composableBuilder(
+    column: $table.uploadedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get summaryHash => $composableBuilder(
+    column: $table.summaryHash,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UploadedTripsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UploadedTripsTable> {
+  $$UploadedTripsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get tripId => $composableBuilder(
+    column: $table.tripId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get uploadedAt => $composableBuilder(
+    column: $table.uploadedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get summaryHash => $composableBuilder(
+    column: $table.summaryHash,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UploadedTripsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UploadedTripsTable> {
+  $$UploadedTripsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get tripId =>
+      $composableBuilder(column: $table.tripId, builder: (column) => column);
+
+  GeneratedColumn<int> get uploadedAt => $composableBuilder(
+    column: $table.uploadedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get summaryHash => $composableBuilder(
+    column: $table.summaryHash,
+    builder: (column) => column,
+  );
+}
+
+class $$UploadedTripsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UploadedTripsTable,
+          UploadedTrip,
+          $$UploadedTripsTableFilterComposer,
+          $$UploadedTripsTableOrderingComposer,
+          $$UploadedTripsTableAnnotationComposer,
+          $$UploadedTripsTableCreateCompanionBuilder,
+          $$UploadedTripsTableUpdateCompanionBuilder,
+          (
+            UploadedTrip,
+            BaseReferences<_$AppDatabase, $UploadedTripsTable, UploadedTrip>,
+          ),
+          UploadedTrip,
+          PrefetchHooks Function()
+        > {
+  $$UploadedTripsTableTableManager(_$AppDatabase db, $UploadedTripsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UploadedTripsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UploadedTripsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UploadedTripsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> tripId = const Value.absent(),
+                Value<int> uploadedAt = const Value.absent(),
+                Value<String> summaryHash = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => UploadedTripsCompanion(
+                tripId: tripId,
+                uploadedAt: uploadedAt,
+                summaryHash: summaryHash,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String tripId,
+                required int uploadedAt,
+                required String summaryHash,
+                Value<int> rowid = const Value.absent(),
+              }) => UploadedTripsCompanion.insert(
+                tripId: tripId,
+                uploadedAt: uploadedAt,
+                summaryHash: summaryHash,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$UploadedTripsTable, UploadedTrip>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $UploadedTripsTable,
+                    UploadedTrip
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UploadedTripsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UploadedTripsTable,
+      UploadedTrip,
+      $$UploadedTripsTableFilterComposer,
+      $$UploadedTripsTableOrderingComposer,
+      $$UploadedTripsTableAnnotationComposer,
+      $$UploadedTripsTableCreateCompanionBuilder,
+      $$UploadedTripsTableUpdateCompanionBuilder,
+      (
+        UploadedTrip,
+        BaseReferences<_$AppDatabase, $UploadedTripsTable, UploadedTrip>,
+      ),
+      UploadedTrip,
+      PrefetchHooks Function()
+    >;
+typedef $$BadgeAwardsTableCreateCompanionBuilder =
+    BadgeAwardsCompanion Function({
+      required String badgeId,
+      required int awardedAt,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+typedef $$BadgeAwardsTableUpdateCompanionBuilder =
+    BadgeAwardsCompanion Function({
+      Value<String> badgeId,
+      Value<int> awardedAt,
+      Value<bool> synced,
+      Value<int> rowid,
+    });
+
+class $$BadgeAwardsTableFilterComposer
+    extends Composer<_$AppDatabase, $BadgeAwardsTable> {
+  $$BadgeAwardsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get badgeId => $composableBuilder(
+    column: $table.badgeId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get awardedAt => $composableBuilder(
+    column: $table.awardedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BadgeAwardsTableOrderingComposer
+    extends Composer<_$AppDatabase, $BadgeAwardsTable> {
+  $$BadgeAwardsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get badgeId => $composableBuilder(
+    column: $table.badgeId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get awardedAt => $composableBuilder(
+    column: $table.awardedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get synced => $composableBuilder(
+    column: $table.synced,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BadgeAwardsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BadgeAwardsTable> {
+  $$BadgeAwardsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get badgeId =>
+      $composableBuilder(column: $table.badgeId, builder: (column) => column);
+
+  GeneratedColumn<int> get awardedAt =>
+      $composableBuilder(column: $table.awardedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get synced =>
+      $composableBuilder(column: $table.synced, builder: (column) => column);
+}
+
+class $$BadgeAwardsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BadgeAwardsTable,
+          BadgeAward,
+          $$BadgeAwardsTableFilterComposer,
+          $$BadgeAwardsTableOrderingComposer,
+          $$BadgeAwardsTableAnnotationComposer,
+          $$BadgeAwardsTableCreateCompanionBuilder,
+          $$BadgeAwardsTableUpdateCompanionBuilder,
+          (
+            BadgeAward,
+            BaseReferences<_$AppDatabase, $BadgeAwardsTable, BadgeAward>,
+          ),
+          BadgeAward,
+          PrefetchHooks Function()
+        > {
+  $$BadgeAwardsTableTableManager(_$AppDatabase db, $BadgeAwardsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BadgeAwardsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BadgeAwardsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BadgeAwardsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> badgeId = const Value.absent(),
+                Value<int> awardedAt = const Value.absent(),
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BadgeAwardsCompanion(
+                badgeId: badgeId,
+                awardedAt: awardedAt,
+                synced: synced,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String badgeId,
+                required int awardedAt,
+                Value<bool> synced = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BadgeAwardsCompanion.insert(
+                badgeId: badgeId,
+                awardedAt: awardedAt,
+                synced: synced,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BadgeAwardsTable, BadgeAward>(table),
+                  BaseReferences<_$AppDatabase, $BadgeAwardsTable, BadgeAward>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BadgeAwardsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BadgeAwardsTable,
+      BadgeAward,
+      $$BadgeAwardsTableFilterComposer,
+      $$BadgeAwardsTableOrderingComposer,
+      $$BadgeAwardsTableAnnotationComposer,
+      $$BadgeAwardsTableCreateCompanionBuilder,
+      $$BadgeAwardsTableUpdateCompanionBuilder,
+      (
+        BadgeAward,
+        BaseReferences<_$AppDatabase, $BadgeAwardsTable, BadgeAward>,
+      ),
+      BadgeAward,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -7302,4 +9334,12 @@ class $AppDatabaseManager {
       $$SettingsTableTableManager(_db, _db.settings);
   $$FixBatchesTableTableManager get fixBatches =>
       $$FixBatchesTableTableManager(_db, _db.fixBatches);
+  $$OutboxTableTableManager get outbox =>
+      $$OutboxTableTableManager(_db, _db.outbox);
+  $$RemoteCacheTableTableManager get remoteCache =>
+      $$RemoteCacheTableTableManager(_db, _db.remoteCache);
+  $$UploadedTripsTableTableManager get uploadedTrips =>
+      $$UploadedTripsTableTableManager(_db, _db.uploadedTrips);
+  $$BadgeAwardsTableTableManager get badgeAwards =>
+      $$BadgeAwardsTableTableManager(_db, _db.badgeAwards);
 }

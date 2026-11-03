@@ -1,9 +1,11 @@
 package app.drivalry.tracking
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.content.Intent
+import android.location.Location
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +14,10 @@ import android.os.Looper
 import android.provider.Settings
 import android.util.Log
 import androidx.core.app.ActivityCompat
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
@@ -117,11 +123,92 @@ class TrackingPlugin private constructor(
 
                 "getDiagnostics" -> result.success(runtime.diagnostics())
 
+                "getLastKnownLocation" -> getLastKnownLocation(
+                    maxAgeMs = call.argument<Number>("maxAgeMs")?.toLong() ?: DEFAULT_LAST_KNOWN_MAX_AGE_MS,
+                    result = result,
+                )
+
                 else -> result.notImplemented()
             }
         } catch (e: Exception) {
             Log.w(TAG, "method ${call.method} failed", e)
             result.error("native", e.message ?: e.javaClass.simpleName, null)
+        }
+    }
+
+    // --- getLastKnownLocation (§3) ---------------------------------------------------------------
+
+    /**
+     * The fused provider's cached last fix when it is at most [maxAgeMs] old; otherwise one
+     * fresh balanced-power fix, waited for up to 10 s. Resolves `null` (never an error) when
+     * location permission is missing, the provider has nothing, or the 10 s pass. While a
+     * trip is tentative/active the service's 1 Hz stream keeps the cache fresh, so this
+     * never adds a request on top of the recording.
+     */
+    @SuppressLint("MissingPermission") // guarded by Permissions.hasAnyLocation
+    private fun getLastKnownLocation(maxAgeMs: Long, result: MethodChannel.Result) {
+        if (!Permissions.hasAnyLocation(activity)) {
+            result.success(null)
+            return
+        }
+        val fused = LocationServices.getFusedLocationProviderClient(activity)
+        val reply = SingleReply(result)
+        try {
+            // Task listeners without an executor run on the main thread, where Result must be answered.
+            fused.lastLocation
+                .addOnSuccessListener { loc ->
+                    if (loc != null && System.currentTimeMillis() - loc.time <= maxAgeMs) {
+                        reply.success(TrackingEvents.position(loc))
+                    } else {
+                        requestCurrentLocation(fused, reply)
+                    }
+                }
+                .addOnFailureListener { e ->
+                    Log.w(TAG, "lastLocation failed", e)
+                    requestCurrentLocation(fused, reply)
+                }
+        } catch (e: SecurityException) {
+            reply.success(null)
+        }
+    }
+
+    @SuppressLint("MissingPermission") // guarded by the caller
+    private fun requestCurrentLocation(fused: FusedLocationProviderClient, reply: SingleReply) {
+        val cancel = CancellationTokenSource()
+        val timeout = Runnable {
+            cancel.cancel()
+            reply.success(null)
+        }
+        main.postDelayed(timeout, LAST_KNOWN_FRESH_TIMEOUT_MS)
+        try {
+            fused.getCurrentLocation(Priority.PRIORITY_BALANCED_POWER_ACCURACY, cancel.token)
+                .addOnSuccessListener { loc: Location? ->
+                    main.removeCallbacks(timeout)
+                    reply.success(loc?.let { TrackingEvents.position(it) })
+                }
+                .addOnFailureListener { e ->
+                    main.removeCallbacks(timeout)
+                    Log.w(TAG, "getCurrentLocation failed", e)
+                    reply.success(null)
+                }
+                .addOnCanceledListener {
+                    main.removeCallbacks(timeout)
+                    reply.success(null)
+                }
+        } catch (e: SecurityException) {
+            main.removeCallbacks(timeout)
+            reply.success(null)
+        }
+    }
+
+    /** Answers a [MethodChannel.Result] at most once; a second `success` would throw. Main thread only. */
+    private class SingleReply(private val result: MethodChannel.Result) {
+        private var done = false
+
+        fun success(value: Any?) {
+            if (done) return
+            done = true
+            result.success(value)
         }
     }
 
@@ -257,6 +344,9 @@ class TrackingPlugin private constructor(
         private const val RC_NOTIFICATIONS = 0x4D04
         private const val RC_BLUETOOTH = 0x4D05
         private val REQUEST_CODES = setOf(RC_LOCATION, RC_BACKGROUND, RC_ACTIVITY, RC_NOTIFICATIONS, RC_BLUETOOTH)
+
+        private const val DEFAULT_LAST_KNOWN_MAX_AGE_MS = 120_000L
+        private const val LAST_KNOWN_FRESH_TIMEOUT_MS = 10_000L
 
         fun attach(activity: Activity, engine: FlutterEngine): TrackingPlugin = TrackingPlugin(activity, engine)
     }

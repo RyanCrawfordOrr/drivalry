@@ -11,6 +11,8 @@ import com.google.android.gms.location.GeofencingEvent
  * Parked backstop: leaving the 100 m fence around the last trip end starts a tentative
  * trip. If the phone left on foot the tentative trip discards itself after 120 s and the
  * fence is re-centred where the phone is now (see TrackingRuntime.onPhaseChanged).
+ * The fix that tripped the fence comes with the event and is published as a §4 `parkedFix`
+ * before the trigger runs; nothing extra is requested for it.
  */
 class GeofenceReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
@@ -23,6 +25,7 @@ class GeofenceReceiver : BroadcastReceiver() {
             return
         }
         if (event.geofenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT) {
+            event.triggeringLocation?.let { runtime.parkedFix(it) }
             runtime.trigger("geofence")
         }
     }

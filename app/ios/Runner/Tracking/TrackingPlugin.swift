@@ -27,12 +27,19 @@ final class TrackingPlugin: NSObject, FlutterStreamHandler {
   static let methodChannelName = "app.drivalry/tracking"
   static let eventChannelName = "app.drivalry/tracking/events"
   static let tickInterval: TimeInterval = 10
+  /// `getLastKnownLocation` (docs/08 §3): default `maxAgeMs` and how long one fresh fix may take.
+  static let lastKnownDefaultMaxAgeMs: Int64 = 120_000
+  static let lastKnownFreshTimeout: TimeInterval = 10
+  /// At most one `parkedFix` event per minute (docs/08 §4).
+  static let parkedFixMinIntervalMs: Int64 = 60_000
 
   private enum Key {
     static let enabled = "settings.enabled"
     static let pausedUntil = "settings.pausedUntil"
     static let lastEndLatitude = "trip.lastEndLat"
     static let lastEndLongitude = "trip.lastEndLon"
+    /// Persisted: each significant-change / region wake-up may be a fresh process.
+    static let lastParkedFixAt = "presence.lastParkedFixAt"
   }
 
   private let store: TrackingStore
@@ -185,8 +192,40 @@ final class TrackingPlugin: NSObject, FlutterStreamHandler {
     case "getDiagnostics":
       result(diagnostics.map(serviceRunning: location.mode == .recording))
 
+    case "getLastKnownLocation":
+      let maxAgeMs = (args?["maxAgeMs"] as? NSNumber)?.int64Value ?? TrackingPlugin.lastKnownDefaultMaxAgeMs
+      getLastKnownLocation(maxAgeMs: maxAgeMs, result: result)
+
     default:
       result(FlutterMethodNotImplemented)
+    }
+  }
+
+  // MARK: - getLastKnownLocation (docs/08 §3)
+
+  /// `CLLocationManager.location` when it is at most `maxAgeMs` old, otherwise one `requestLocation()`
+  /// answered within 10 s. Resolves nil (never an error) without permission, without any fix, or on
+  /// timeout. While a trip is tentative/active the 1 Hz stream is already running and a one-shot request
+  /// would cancel it (or be cancelled by it), so the latest recorded fix is returned as is.
+  private func getLastKnownLocation(maxAgeMs: Int64, result: @escaping FlutterResult) {
+    guard location.isAuthorized else {
+      result(nil)
+      return
+    }
+    if stateMachine.phase != .idle {
+      let fix = location.lastFix ?? location.cachedLocation
+      result(fix.map(LocationTracker.positionMap))
+      return
+    }
+    let now = TrackingClock.nowMs()
+    if let cached = location.cachedLocation,
+       cached.horizontalAccuracy >= 0,
+       now - TrackingClock.ms(cached.timestamp) <= maxAgeMs {
+      result(LocationTracker.positionMap(cached))
+      return
+    }
+    location.requestOneShotLocation(timeout: TrackingPlugin.lastKnownFreshTimeout) { fix in
+      result(fix.map(LocationTracker.positionMap))
     }
   }
 
@@ -482,6 +521,13 @@ final class TrackingPlugin: NSObject, FlutterStreamHandler {
     ])
   }
 
+  /// docs/08 §4 `parkedFix`: `{type, tripId: null, t, lat, lon, accuracy, speed?, heading?}`.
+  private func parkedFixEvent(_ fix: CLLocation) -> [String: Any] {
+    var event: [String: Any] = ["type": "parkedFix", "tripId": NSNull()]
+    event.merge(LocationTracker.positionMap(fix)) { _, position in position }
+    return event
+  }
+
   private func hintEvent(tripId: String, route: PhoneEvents.CarRoute, at t: Int64) -> [String: Any] {
     return [
       "type": "hint",
@@ -585,6 +631,18 @@ extension TrackingPlugin: LocationTrackerDelegate {
 
   func locationTracker(_ tracker: LocationTracker, didFireTrigger kind: String, at t: Int64) {
     handleTrigger(kind: kind, at: t)
+  }
+
+  /// A free position while parked: published for presence (ADR-018) at most once a minute. Arrives
+  /// before the matching trigger, so it goes out even when that trigger starts a tentative trip.
+  func locationTracker(_ tracker: LocationTracker, didObserveParkedFix fix: CLLocation) {
+    guard stateMachine.phase == .idle else { return }
+    let now = TrackingClock.nowMs()
+    if let last = store.int64(Key.lastParkedFixAt), now - last < TrackingPlugin.parkedFixMinIntervalMs {
+      return
+    }
+    store.set(now, forKey: Key.lastParkedFixAt)
+    emit(parkedFixEvent(fix))
   }
 
   func locationTrackerDidChangeAuthorization(_ tracker: LocationTracker) {

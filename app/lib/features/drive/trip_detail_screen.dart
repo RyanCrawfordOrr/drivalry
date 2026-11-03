@@ -15,7 +15,10 @@ import '../../data/models/trip_score_view.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../widgets/units.dart';
+import '../../data/repos/leagues_repo.dart';
+import '../../data/supabase/supabase_providers.dart';
 import 'event_text.dart';
+import 'share_card.dart';
 import 'widgets/score_ring.dart';
 import 'widgets/trip_card.dart';
 
@@ -64,6 +67,12 @@ class TripDetailScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(tripDateLabel(t)),
         actions: [
+          if (score != null && score.scored)
+            IconButton(
+              tooltip: 'Share',
+              icon: const Icon(Icons.share_outlined),
+              onPressed: () => _share(context, ref, t, score, units),
+            ),
           PopupMenuButton<String>(
             onSelected: (v) async {
               switch (v) {
@@ -338,6 +347,41 @@ class TripDetailScreen extends ConsumerWidget {
           ),
         ),
       );
+    }
+  }
+}
+
+/// Renders the shareable card (no map, no route) and opens the share sheet.
+Future<void> _share(
+  BuildContext context,
+  WidgetRef ref,
+  Trip trip,
+  TripScoreView score,
+  SpeedUnits units,
+) async {
+  final handle = await lookupHandle(
+    ref.read(supabaseProvider),
+    ref.read(currentUserIdProvider),
+  );
+  LeagueTier? tier;
+  for (final l in ref.read(myLeaguesProvider).value ?? const <League>[]) {
+    if (tier == null || l.myTier.index > tier.index) tier = l.myTier;
+  }
+  if (!context.mounted) return;
+  try {
+    await shareTripCard(
+      context,
+      trip: trip,
+      score: score,
+      units: units,
+      handle: handle,
+      tier: tier,
+    );
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Could not share: $e')));
     }
   }
 }

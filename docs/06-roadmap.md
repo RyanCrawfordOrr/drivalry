@@ -13,7 +13,7 @@ An ordered build plan for one person and Claude Code. The owner chose to build a
 - [x] `packages/drivalry_scoring` Dart port passes every fixture
 - [x] `tools/packs`: pyosmium builder produces one pack (the owner's home state) under 60 MB
 - [x] GitHub Actions workflows: `ci.yml` (TypeScript spec, Dart port, Flutter analyze and test) and `supabase-keepalive.yml` (daily ping that reads the one-row `heartbeat` table; needs `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as repo secrets)
-- [x] GitHub Actions: `packs-monthly.yml` builds every US state and publishes a release with `index.json`
+- [x] GitHub Actions: `packs-monthly.yml` builds every US state and publishes a release with `index.json` (first release `packs-2026.11`: 52 packs, 1.1 GB; TX and CA over the 60 MB target)
 - [x] Supabase schema rewritten for summaries only (no `trip_samples`, `trip_segments`, `convoy_positions`, `share_level`); RLS; `finalize_league_week` function
 - [ ] Request the CarPlay Driving Task entitlement (and Voice Conversation) for `app.drivalry`
 - [ ] First Mac build: hello-world Flutter app signed and uploaded to TestFlight, Android build to Play internal testing
@@ -43,19 +43,19 @@ Milestones:
 
 ## Stage 2: Friends, leagues and public roasts ("The league")
 
-1. **M2.1 Auth and profiles.** Sign in with Apple and Google. Handles, avatars (≤ 100 KB in Storage). Account deletion and export.
-2. **M2.2 Summary upload.** Outbox worker. `trip_summaries` and `trip_events` rows. Profile shows Driver Rating and headline stats.
-3. **M2.3 Friends and leagues.** Friend requests by handle, link, QR. Friend leagues up to 30, Monday to Sunday, tiers, promotion and demotion via `finalize_league_week`. Standings screen.
-4. **M2.4 Public feed.** Trip cards with the roast line posted to every league and circle feed. Reactions, comments, Snitch reaction. Wall of Fame and Wall of Shame. Per-group hiding toggle, visible to the group. Passenger-marked count on the profile.
-5. **M2.5 Badges and streaks.** First 20 badges, clean and phone-free streaks. Exploration badges computed on the phone.
-6. **M2.6 Push.** `push_tokens`, database webhooks, one Edge Function sending through APNs and FCM. Trip scored, league events, quiet hours.
-7. **M2.7 Shareable trip card image** (no route map).
-8. **M2.8 Speed-limit corrections.** "Limit is wrong here" flags; trigger that creates overrides on two agreeing flags; daily override pull; Snitch badge.
+1. **M2.1 Auth and profiles.** _Built 2026-11-03 (native Apple + Google id-token flows; owner must configure providers per docs/09)._ Sign in with Apple and Google. Handles, avatars (≤ 100 KB in Storage). Account deletion and export.
+2. **M2.2 Summary upload.** _Built 2026-11-03 (outbox worker, hash-based re-upload)._ Outbox worker. `trip_summaries` and `trip_events` rows. Profile shows Driver Rating and headline stats.
+3. **M2.3 Friends and leagues.** _Built 2026-11-03 (friends by handle/link/QR; leagues create/join/standings/rollover call)._ Friend requests by handle, link, QR. Friend leagues up to 30, Monday to Sunday, tiers, promotion and demotion via `finalize_league_week`. Standings screen.
+4. **M2.4 Public feed.** _Built 2026-11-03 (feed, reactions incl. Snitch, comments, Fame/Shame filters, per-league hiding)._ Trip cards with the roast line posted to every league and circle feed. Reactions, comments, Snitch reaction. Wall of Fame and Wall of Shame. Per-group hiding toggle, visible to the group. Passenger-marked count on the profile.
+5. **M2.5 Badges and streaks.** _Built 2026-11-03 (20 badges, on-phone engine, streaks provider)._ First 20 badges, clean and phone-free streaks. Exploration badges computed on the phone.
+6. **M2.6 Push.** _Built 2026-11-03 (FCM via programmatic Firebase options, local notifications, quiet hours; Edge Function `supabase/functions/push` unverified until deployed)._ `push_tokens`, database webhooks, one Edge Function sending through APNs and FCM. Trip scored, league events, quiet hours.
+7. **M2.7 Shareable trip card image** (no route map). _Built 2026-11-03._
+8. **M2.8 Speed-limit corrections.** _Built 2026-11-03 (flags sync, daily override pull applied at match time; Snitch badge awarded on confirmation still to wire)._ "Limit is wrong here" flags; trigger that creates overrides on two agreeing flags; daily override pull; Snitch badge.
 
 ## Stage 3: Circles ("The Life360 part")
 
-1. **M3.1 Presence.** Upsert every 30 s driving, significant change parked, nothing while hiding. RLS honours `hiding`.
-2. **M3.2 Live circle map** on Google Maps: positions, driving-now, battery, last seen. Subscribed only while on screen.
+1. **M3.1 Presence.** _Pulled into Stage 2 by ADR-018 and built 2026-11-03 (30 s while driving, parkedFix while parked, app-open refresh)._ Upsert every 30 s driving, significant change parked, nothing while hiding. RLS honours `hiding`.
+2. **M3.2 Live circle map** on Google Maps: _Built 2026-11-03 as the friends map at the top of the Drive tab (friends + circle members); circles themselves still to build._ positions, driving-now, battery, last seen. Subscribed only while on screen.
 3. **M3.3 Places and alerts.** Saved places on the phone; arrive/leave alerts computed from presence on the viewer's phone; quiet hours. Check-ins. Driving status and OS driving-mode auto-reply where available.
 4. **M3.4 Crash detection.** Accelerometer spike plus stop plus no movement; 30 s countdown; push to emergency contacts who use Drivalry; pre-filled SMS for the rest; never an automatic call. Candidate crash trips excluded from scoring.
 5. **M3.5 Parking memory** with photo and walking route back.

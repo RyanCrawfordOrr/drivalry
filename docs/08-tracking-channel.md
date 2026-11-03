@@ -41,6 +41,7 @@ idle ──motion/BT/geofence trigger──► tentative ──speed > 4 m/s for
 | `drainSpool` | – | `List<Map>` | Returns every spooled event in order (see §5) and deletes them. Dart calls this at start-up and after every `phase: ended`. |
 | `setMapsApiKey` | `{key: String}` | `null` | iOS only (`GMSServices.provideAPIKey`). Android ignores it (the key is in the manifest). |
 | `getDiagnostics` | – | `Diagnostics` map (§3.3) | For Settings › Diagnostics. |
+| `getLastKnownLocation` | `{maxAgeMs: int?}` | `{t, lat, lon, accuracy, speed?, heading?}` or `null` | Cheap: the OS's cached last fix (Android `FusedLocationProviderClient.lastLocation`, iOS `CLLocationManager.location`). When it is older than `maxAgeMs` (default 120000) the plugin requests one fresh fix (Android `getCurrentLocation`, iOS `requestLocation`) and waits up to 10 s. Used to publish presence when the app opens. Needs at least while-in-use permission; returns `null` otherwise. |
 
 ### 3.1 `State`
 
@@ -130,6 +131,14 @@ Dart maps these to the engine's `unlock`, `interaction`, `call_handheld` and dro
 
 Passenger hints and vehicle identification. `name` is the Bluetooth device name when available.
 
+### `parkedFix`
+
+```
+{ type: "parkedFix", tripId: null, t, lat, lon, accuracy, speed?, heading? }
+```
+
+Emitted while `idle` whenever the OS wakes the plugin with a position for free: iOS significant-change callbacks and geofence exits, Android the passive-location receiver and geofence exits. The plugin requests nothing extra for this. Dart uses it to update the owner's presence while parked (ADR-018), so friends see a stale-but-honest position without the GPS radio ever turning on for it. Spooled like every other event.
+
 ### `error`
 
 ```
@@ -152,6 +161,7 @@ Because the live stream and the spool carry identical events, Dart must treat a 
 - Bluetooth: `BluetoothDevice.ACTION_ACL_CONNECTED` / `DISCONNECTED` receiver; the device name needs `BLUETOOTH_CONNECT` on API 31+.
 - Recording runs in a foreground service with `foregroundServiceType="location"` and an ongoing notification "Drivalry is recording your drive". The service stops when the trip ends.
 - Fused location `PRIORITY_HIGH_ACCURACY`, interval 1000 ms, `setMaxUpdateDelayMillis(15000)`. Parked backstop: `PRIORITY_PASSIVE` request with a 100 m geofence around the last trip end.
+- Parked fixes: every `PassiveLocationReceiver` result and the `GeofencingEvent.triggeringLocation` of a fence exit are emitted as `parkedFix` (at most one per 60 s; the timestamp is persisted so a receiver woken in a fresh process honours it) *before* the trigger logic runs, and nothing is requested for them. `getLastKnownLocation` reads `FusedLocationProviderClient.lastLocation` and only calls `getCurrentLocation(PRIORITY_BALANCED_POWER_ACCURACY)` when that is older than `maxAgeMs`; while a trip is tentative/active the service's 1 Hz stream keeps that cache fresh, so the method never adds a second request on top of the recording.
 - Sensors: `TYPE_LINEAR_ACCELERATION` at 20 Hz with `maxReportLatencyUs = 1_000_000`.
 - Phone events: `ACTION_USER_PRESENT`, `ACTION_SCREEN_ON/OFF`; calls via `AudioManager.mode == MODE_IN_CALL || MODE_IN_COMMUNICATION` sampled on each fix batch (no `READ_PHONE_STATE`); projection via `UiModeManager.currentModeType == UI_MODE_TYPE_CAR` and `CarConnection` when the car app library is present.
 - Permissions in the manifest: `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`, `ACCESS_BACKGROUND_LOCATION`, `ACTIVITY_RECOGNITION`, `FOREGROUND_SERVICE`, `FOREGROUND_SERVICE_LOCATION`, `POST_NOTIFICATIONS`, `BLUETOOTH_CONNECT`, `RECEIVE_BOOT_COMPLETED`.
@@ -160,10 +170,11 @@ Because the live stream and the spool carry identical events, Dart must treat a 
 **iOS**
 
 - `CMMotionActivityManager.startActivityUpdates` for `automotive`; `CLLocationManager` with `allowsBackgroundLocationUpdates = true`, `pausesLocationUpdatesAutomatically = false`, `activityType = .automotiveNavigation`, `desiredAccuracy = kCLLocationAccuracyBest`, `distanceFilter = kCLDistanceFilterNone` while tentative/active. Parked: `startMonitoringSignificantLocationChanges` plus a 100 m `CLCircularRegion` around the last trip end. Both relaunch the app.
+- Parked fixes: the location of each significant-change `didUpdateLocations` while parked and `CLLocationManager.location` at `didExitRegion` are emitted as `parkedFix` (one per 60 s, persisted in the suite) just before the matching trigger; nothing is requested for them. `getLastKnownLocation` uses `CLLocationManager.location` and falls back to `requestLocation()` only while idle, because `requestLocation()` and `startUpdatingLocation()` cancel each other: during a tentative/active trip it answers with the latest recorded fix and never issues a one-shot request, and while a one-shot is pending the `didUpdateLocations` that answers it counts neither as a trigger nor as a parked fix.
 - `CMMotionManager.startDeviceMotionUpdates` at 20 Hz while active, `userAcceleration` magnitude in the horizontal plane after removing the gravity-aligned component.
 - Phone events: `CXCallObserver` (call start/end), `UIApplication` foreground/background, `UIScreen` connect for CarPlay (`CPTemplateApplicationScene` when the entitlement exists).
 - Bluetooth hint: `AVAudioSession.routeChangeNotification` with an output port of type `bluetoothA2DP`, `bluetoothHFP` or `carAudio`; the port name is the hint `name`.
-- `Info.plist`: `NSLocationWhenInUseUsageDescription`, `NSLocationAlwaysAndWhenInUseUsageDescription`, `NSMotionUsageDescription`, `UIBackgroundModes` = `location`.
+- `Info.plist`: `NSLocationWhenInUseUsageDescription`, `NSLocationAlwaysAndWhenInUseUsageDescription`, `NSMotionUsageDescription`, `UIBackgroundModes` = `location`, `remote-notification` (the latter for push, not tracking).
 - Settings persisted in `UserDefaults` suite `app.drivalry.tracking`.
 
 ## 6.1 Behaviour both plugins share (settled by the first implementations)

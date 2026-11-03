@@ -33,6 +33,10 @@ class TripWithScore {
     LimitFlags,
     Settings,
     FixBatches,
+    Outbox,
+    RemoteCache,
+    UploadedTrips,
+    BadgeAwards,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -45,7 +49,20 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+    onCreate: (m) => m.createAll(),
+    onUpgrade: (m, from, to) async {
+      if (from < 2) {
+        await m.createTable(outbox);
+        await m.createTable(remoteCache);
+        await m.createTable(uploadedTrips);
+        await m.createTable(badgeAwards);
+      }
+    },
+  );
 
   // ---------------------------------------------------------------- trips --
 
@@ -369,6 +386,188 @@ class AppDatabase extends _$AppDatabase {
         SettingsCompanion(key: Value(key), value: Value(value)),
       );
 
+  // --------------------------------------------------------------- outbox --
+
+  /// Adds a pending cloud write. A row with the same id is replaced, so the
+  /// newest intent for a stable id (a setting toggled twice) is what uploads.
+  Future<void> enqueueOutbox(OutboxCompanion row) =>
+      into(outbox).insertOnConflictUpdate(row);
+
+  Future<List<OutboxData>> dueOutbox(int nowMs, {int limit = 50}) =>
+      (select(outbox)
+            ..where((o) => o.nextAttemptAt.isSmallerOrEqualValue(nowMs))
+            ..orderBy([(o) => OrderingTerm.asc(o.createdAt)])
+            ..limit(limit))
+          .get();
+
+  Future<void> deleteOutbox(String id) =>
+      (delete(outbox)..where((o) => o.id.equals(id))).go();
+
+  Future<void> failOutbox(
+    String id, {
+    required int attempts,
+    required int nextAttemptAt,
+    required String error,
+  }) => (update(outbox)..where((o) => o.id.equals(id))).write(
+    OutboxCompanion(
+      attempts: Value(attempts),
+      nextAttemptAt: Value(nextAttemptAt),
+      lastError: Value(error),
+    ),
+  );
+
+  Stream<int> watchOutboxCount() {
+    final c = outbox.id.count();
+    return (selectOnly(
+      outbox,
+    )..addColumns([c])).watchSingle().map((r) => r.read(c) ?? 0);
+  }
+
+  // --------------------------------------------------------- remote cache --
+
+  Future<String?> cacheGet(String key) async {
+    final row = await (select(
+      remoteCache,
+    )..where((c) => c.key.equals(key))).getSingleOrNull();
+    return row?.json;
+  }
+
+  Stream<String?> watchCache(String key) => (select(
+    remoteCache,
+  )..where((c) => c.key.equals(key))).watchSingleOrNull().map((r) => r?.json);
+
+  Future<void> cachePut(String key, String json, int nowMs) =>
+      into(remoteCache).insertOnConflictUpdate(
+        RemoteCacheCompanion(
+          key: Value(key),
+          json: Value(json),
+          updatedAt: Value(nowMs),
+        ),
+      );
+
+  Future<void> cacheDeletePrefix(String prefix) =>
+      (delete(remoteCache)..where((c) => c.key.like('$prefix%'))).go();
+
+  Future<void> cacheClear() => delete(remoteCache).go();
+
+  // ------------------------------------------------------- uploaded trips --
+
+  Future<UploadedTrip?> uploadedTrip(String tripId) => (select(
+    uploadedTrips,
+  )..where((u) => u.tripId.equals(tripId))).getSingleOrNull();
+
+  /// Upload records for several trips in one query.
+  Future<List<UploadedTrip>> uploadedTripsByIds(List<String> tripIds) =>
+      tripIds.isEmpty
+      ? Future.value(const [])
+      : (select(uploadedTrips)..where((u) => u.tripId.isIn(tripIds))).get();
+
+  /// Forgets everything tied to the signed-in account so a different account
+  /// on this phone uploads the trips and badges afresh: upload records,
+  /// badge sync marks, the whole outbox, cached cloud reads, and the hidden-
+  /// location mirror. Local trips and scores are untouched.
+  Future<void> resetAccountState() => transaction(() async {
+    await delete(uploadedTrips).go();
+    await update(
+      badgeAwards,
+    ).write(const BadgeAwardsCompanion(synced: Value(false)));
+    await delete(outbox).go();
+    await delete(remoteCache).go();
+    await (delete(
+      settings,
+    )..where((s) => s.key.equals('location_hidden'))).go();
+  });
+
+  Future<void> markUploaded(String tripId, String summaryHash, int nowMs) =>
+      into(uploadedTrips).insertOnConflictUpdate(
+        UploadedTripsCompanion(
+          tripId: Value(tripId),
+          uploadedAt: Value(nowMs),
+          summaryHash: Value(summaryHash),
+        ),
+      );
+
+  // --------------------------------------------------------------- badges --
+
+  Future<List<BadgeAward>> allBadgeAwards() => select(badgeAwards).get();
+  Stream<List<BadgeAward>> watchAllBadgeAwards() => select(badgeAwards).watch();
+
+  Future<BadgeAward?> badgeAward(String badgeId) => (select(
+    badgeAwards,
+  )..where((b) => b.badgeId.equals(badgeId))).getSingleOrNull();
+
+  /// Records an award once. Returns true when it was new.
+  Future<bool> awardBadge(String badgeId, int nowMs) async {
+    final existing = await (select(
+      badgeAwards,
+    )..where((b) => b.badgeId.equals(badgeId))).getSingleOrNull();
+    if (existing != null) return false;
+    await into(badgeAwards).insert(
+      BadgeAwardsCompanion(badgeId: Value(badgeId), awardedAt: Value(nowMs)),
+      mode: InsertMode.insertOrIgnore,
+    );
+    return true;
+  }
+
+  Future<void> markBadgeSynced(String badgeId) =>
+      (update(badgeAwards)..where((b) => b.badgeId.equals(badgeId))).write(
+        const BadgeAwardsCompanion(synced: Value(true)),
+      );
+
+  // ------------------------------------------------- sync (stage 2, part A) --
+
+  /// Trips that have a score row and may need uploading: scored or unscored
+  /// (passenger), not deleted, not discarded, and either never uploaded or
+  /// scored again since the last upload. The uploader hashes only these and
+  /// compares with [uploadedTrips], so an unchanged trip costs nothing.
+  Stream<List<TripWithScore>> watchUploadCandidates() {
+    final query =
+        select(trips).join([
+            innerJoin(tripScores, tripScores.tripId.equalsExp(trips.id)),
+            leftOuterJoin(
+              uploadedTrips,
+              uploadedTrips.tripId.equalsExp(trips.id),
+            ),
+          ])
+          ..where(
+            trips.deletedAt.isNull() &
+                trips.phase.isIn([
+                  TripPhase.scored.wire,
+                  TripPhase.unscored.wire,
+                ]) &
+                (uploadedTrips.tripId.isNull() |
+                    tripScores.scoredAt.isBiggerThan(uploadedTrips.uploadedAt)),
+          )
+          ..orderBy([OrderingTerm.desc(trips.startedAt)]);
+    return query.watch().map(
+      (rows) => [
+        for (final r in rows)
+          TripWithScore(r.readTable(trips), r.readTable(tripScores)),
+      ],
+    );
+  }
+
+  /// Soft-deleted trips that were uploaded and still need a cloud delete.
+  Stream<List<UploadedTrip>> watchUploadedDeletedTrips() {
+    final query = select(uploadedTrips).join([
+      innerJoin(trips, trips.id.equalsExp(uploadedTrips.tripId)),
+    ])..where(trips.deletedAt.isNotNull());
+    return query.watch().map(
+      (rows) => [for (final r in rows) r.readTable(uploadedTrips)],
+    );
+  }
+
+  Future<void> removeUploaded(String tripId) =>
+      (delete(uploadedTrips)..where((u) => u.tripId.equals(tripId))).go();
+
+  Stream<List<LimitFlag>> watchUnsyncedLimitFlags() =>
+      (select(limitFlags)..where((f) => f.synced.equals(false))).watch();
+
+  Future<void> markLimitFlagSynced(int id) =>
+      (update(limitFlags)..where((f) => f.id.equals(id))).write(
+        const LimitFlagsCompanion(synced: Value(true)),
+      );
+
   // ---------------------------------------------------------- diagnostics --
 
   Future<Map<String, int>> tableCounts() async {
@@ -388,8 +587,39 @@ class AppDatabase extends _$AppDatabase {
       'tripScores': await count(tripScores),
       'packs': await count(packs),
       'limitFlags': await count(limitFlags),
+      'outbox': await count(outbox),
+      'remoteCache': await count(remoteCache),
+      'uploadedTrips': await count(uploadedTrips),
+      'badgeAwards': await count(badgeAwards),
     };
   }
+
+  // ----------------------------------------- stage 2 (badges, streaks) --
+
+  /// Scored driver trips with their scores, newest first. Badges and streaks
+  /// evaluate over this list; it stays small (a few hundred rows at most).
+  Future<List<TripWithScore>> scoredTripsWithScores({int limit = 1000}) =>
+      _scoredTripsQuery(limit).get().then(_rowsToTripsWithScores);
+
+  Stream<List<TripWithScore>> watchScoredTripsWithScores({int limit = 1000}) =>
+      _scoredTripsQuery(limit).watch().map(_rowsToTripsWithScores);
+
+  JoinedSelectStatement<HasResultSet, dynamic> _scoredTripsQuery(int limit) =>
+      select(
+          trips,
+        ).join([innerJoin(tripScores, tripScores.tripId.equalsExp(trips.id))])
+        ..where(
+          trips.deletedAt.isNull() &
+              trips.phase.equals(TripPhase.scored.wire) &
+              (trips.isPassenger.isNull() | trips.isPassenger.equals(false)),
+        )
+        ..orderBy([OrderingTerm.desc(trips.startedAt)])
+        ..limit(limit);
+
+  List<TripWithScore> _rowsToTripsWithScores(List<TypedResult> rows) => [
+    for (final r in rows)
+      TripWithScore(r.readTable(trips), r.readTable(tripScores)),
+  ];
 }
 
 /// The app's database. Overridden in tests with [AppDatabase.memory].

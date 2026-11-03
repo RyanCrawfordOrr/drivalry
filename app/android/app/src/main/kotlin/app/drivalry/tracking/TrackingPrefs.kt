@@ -130,6 +130,16 @@ class TrackingPrefs(context: Context) {
         get() = prefs.getLong(KEY_BACKSTOP_COOLDOWN, 0L)
         set(value) = prefs.edit { putLong(KEY_BACKSTOP_COOLDOWN, value) }
 
+    // --- Parked presence (§4 parkedFix) --------------------------------------------------------
+
+    /**
+     * Wall-clock time of the last `parkedFix` event. Persisted because each passive /
+     * geofence delivery may wake a fresh process; the one-per-60 s rate limit must survive that.
+     */
+    var lastParkedFixAt: Long
+        get() = prefs.getLong(KEY_LAST_PARKED_FIX_AT, 0L)
+        set(value) = prefs.edit { putLong(KEY_LAST_PARKED_FIX_AT, value) }
+
     // --- Diagnostics (§3.3) -----------------------------------------------------------------
 
     var lastTriggerAt: Long?
@@ -182,6 +192,7 @@ class TrackingPrefs(context: Context) {
         const val KEY_PARK_LAT = "parkingLat"
         const val KEY_PARK_LON = "parkingLon"
         const val KEY_BACKSTOP_COOLDOWN = "backstopCooldownUntil"
+        const val KEY_LAST_PARKED_FIX_AT = "lastParkedFixAt"
         const val KEY_LAST_TRIGGER_AT = "lastTriggerAt"
         const val KEY_LAST_TRIGGER_KIND = "lastTriggerKind"
         const val KEY_LAST_END_AT = "lastTripEndedAt"

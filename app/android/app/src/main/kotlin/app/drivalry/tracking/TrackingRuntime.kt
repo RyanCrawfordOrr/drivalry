@@ -1,6 +1,7 @@
 package app.drivalry.tracking
 
 import android.content.Context
+import android.location.Location
 import android.os.BatteryManager
 import android.util.Log
 import java.io.File
@@ -41,6 +42,21 @@ class TrackingRuntime private constructor(context: Context) : TripStateMachine.L
             return false
         }
         return machine.startTentative(kind)
+    }
+
+    /**
+     * The OS handed us a position for free while parked (passive-location result, geofence
+     * triggering location). Emits §4 `parkedFix` when idle, at most once per 60 s, so Dart
+     * can refresh the owner's presence (ADR-018) without the GPS radio ever turning on for it.
+     * Never requests anything itself. Call it *before* [trigger] so the position goes out even
+     * when the same callback starts a tentative trip.
+     */
+    fun parkedFix(location: Location) {
+        if (machine.phase != TripStateMachine.Phase.IDLE) return
+        val now = System.currentTimeMillis()
+        if (now - prefs.lastParkedFixAt < PARKED_FIX_MIN_INTERVAL_MS) return
+        prefs.lastParkedFixAt = now
+        events.parkedFix(location)
     }
 
     fun forceStart(): Boolean {
@@ -156,6 +172,7 @@ class TrackingRuntime private constructor(context: Context) : TripStateMachine.L
         private const val TAG = "Drivalry.Tracking"
         private val BACKSTOP_KINDS = setOf("geofence", "significantChange")
         private const val BACKSTOP_COOLDOWN_MS = 10 * 60_000L
+        private const val PARKED_FIX_MIN_INTERVAL_MS = 60_000L
 
         @Volatile
         private var instance: TrackingRuntime? = null

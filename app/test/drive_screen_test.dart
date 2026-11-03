@@ -1,3 +1,4 @@
+import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/features/drive/drive_screen.dart';
 import 'package:drivalry/features/drive/widgets/score_ring.dart';
@@ -15,6 +16,7 @@ Widget harness(AppDatabase db, FakeTrackingPort port) => ProviderScope(
   overrides: [
     databaseProvider.overrideWithValue(db),
     trackingPortProvider.overrideWithValue(port),
+    deepLinkSourceProvider.overrideWithValue(const NoDeepLinks()),
   ],
   child: const MaterialApp(home: DriveScreen()),
 );
@@ -42,6 +44,11 @@ void main() {
     expect(find.text('Let Drivalry detect your drives'), findsOneWidget);
     expect(find.textContaining('all the time'), findsWidgets);
     expect(find.text('No trips yet'), findsOneWidget);
+    // The friends map card sits on top. Tests build without a cloud project,
+    // so it explains itself instead of building a GoogleMap.
+    expect(find.textContaining('friends map needs'), findsOneWidget);
+    expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
+    expect(find.byIcon(Icons.people_outline), findsOneWidget);
 
     await tester.tap(find.text('Allow'));
     await pumpFor(tester, const Duration(seconds: 1));
