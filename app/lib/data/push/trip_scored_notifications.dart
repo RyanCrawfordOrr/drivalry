@@ -54,12 +54,12 @@ class TripScoredNotifier {
     final score = r.score;
     if (score == null) return false;
     final title = score.reckless
-        ? 'Trip scored ${score.score}. RECKLESS.'
-        : 'Trip scored ${score.score}';
+        ? 'Drive scored ${score.score}. Reckless.'
+        : 'Drive scored ${score.score}';
     await _notifications.show(
       category: NotificationCategory.tripScored,
       title: title,
-      body: score.roastText ?? 'Open the trip for the breakdown.',
+      body: score.roastText ?? 'Tap for the breakdown.',
       route: Routes.tripDetail(r.trip.id),
     );
     return true;

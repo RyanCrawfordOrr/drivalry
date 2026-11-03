@@ -2,6 +2,7 @@ import 'package:drivalry_scoring/drivalry_scoring.dart' show SpeedUnits;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
 import '../../../data/models/trip_phase.dart';
 import '../../../data/models/trip_score_view.dart';
@@ -36,8 +37,13 @@ String tripDateLabel(Trip trip) {
   return '${DateFormat.MMMEd().format(start)}, $time';
 }
 
-/// The trip card: score ring, headline line, components, coverage.
-/// [large] is the "Last trip" card on the Drive tab; otherwise a list row.
+/// Hero tag shared by the list ring and the trip screen ring, so the ring
+/// flies between them (docs/12 §5).
+String tripRingTag(String tripId) => 'trip-ring-$tripId';
+
+/// A trip in the Drive sheet. [large] is the "Last trip" hero: ring 96,
+/// verdict as `title`, three stats. Otherwise a compact row: ring 44, verdict
+/// on one line, the time underneath.
 class TripCard extends StatelessWidget {
   const TripCard({
     super.key,
@@ -56,109 +62,118 @@ class TripCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final s = score;
     final scored = s != null && s.scored;
-    final headline = s?.roastText;
-    final subtitle = <String>[
-      formatDistance(trip.distanceM, units),
-      formatElapsed(Duration(seconds: trip.movingS.round())),
-      if (trip.limitCoverage != null)
-        '${(trip.limitCoverage! * 100).round()}% limit coverage',
-    ].join(' · ');
+    final verdict = scored && s.roastText != null
+        ? s.roastText!
+        : unscoredLabel(trip, s);
+    final italic = scored && s.headlineIsRoast ? FontStyle.italic : null;
+    final distance = formatDistance(trip.distanceM, units);
+    final time = formatElapsed(Duration(seconds: trip.movingS.round()));
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
+    if (!large) {
+      return Tile(
         onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(large ? 16 : 12),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ScoreRing(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Space.lg,
+          vertical: Space.md,
+        ),
+        child: Row(
+          children: [
+            Hero(
+              tag: tripRingTag(trip.id),
+              child: ScoreRing(
                 score: scored ? s.score : null,
-                size: large ? 96 : 56,
-                stroke: large ? 9 : 6,
-                reckless: s?.reckless ?? false,
-                label: scored ? '+${s.xp} XP' : null,
+                size: 44,
+                stroke: 5,
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    verdict,
+                    style: context.body.copyWith(fontStyle: italic),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    '${tripDateLabel(trip)} · $distance · $time',
+                    style: context.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Tile(
+      onTap: onTap,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Hero(
+            tag: tripRingTag(trip.id),
+            child: ScoreRing(
+              score: scored ? s.score : null,
+              size: 96,
+              stroke: 9,
+              reckless: s?.reckless ?? false,
+            ),
+          ),
+          const SizedBox(width: Space.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(tripDateLabel(trip), style: context.caption),
+                const SizedBox(height: Space.xs),
+                Text(
+                  verdict,
+                  style: context.title.copyWith(fontStyle: italic),
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: Space.md),
+                Row(
                   children: [
-                    Text(
-                      tripDateLabel(trip),
-                      style: theme.textTheme.labelLarge,
-                    ),
-                    const SizedBox(height: 4),
-                    if (scored && headline != null)
-                      Text(
-                        headline,
-                        style:
-                            (large
-                                    ? theme.textTheme.titleMedium
-                                    : theme.textTheme.bodyMedium)
-                                ?.copyWith(
-                                  fontStyle: s.headlineIsRoast
-                                      ? FontStyle.italic
-                                      : null,
-                                ),
-                        maxLines: large ? 4 : 2,
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    else
-                      Text(
-                        unscoredLabel(trip, s),
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    const SizedBox(height: 6),
-                    Text(subtitle, style: theme.textTheme.bodySmall),
-                    if (large && scored) ...[
-                      const SizedBox(height: 10),
-                      ComponentChips(score: s),
+                    _MiniStat(value: distance, label: 'Distance'),
+                    const SizedBox(width: Space.xl),
+                    _MiniStat(value: time, label: 'Time'),
+                    if (scored) ...[
+                      const SizedBox(width: Space.xl),
+                      _MiniStat(value: '+${s.xp}', label: 'XP'),
                     ],
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
 }
 
-/// Four small chips, one per score component, showing points lost.
-class ComponentChips extends StatelessWidget {
-  const ComponentChips({super.key, required this.score});
-
-  final TripScoreView score;
+class _MiniStat extends StatelessWidget {
+  const _MiniStat({required this.value, required this.label});
+  final String value;
+  final String label;
 
   @override
   Widget build(BuildContext context) {
-    final p = score.penalties;
-    final items = [
-      ('Speed', p.speed),
-      ('Smooth', p.smoothness),
-      ('Attention', p.attention),
-      ('Efficiency', p.efficiency),
-    ];
-    return Wrap(
-      spacing: 6,
-      runSpacing: 6,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (final (label, lost) in items)
-          Chip(
-            visualDensity: VisualDensity.compact,
-            padding: EdgeInsets.zero,
-            label: Text(
-              lost < 0.05
-                  ? '$label ✓'
-                  : '$label −${lost.toStringAsFixed(lost < 10 ? 1 : 0)}',
-            ),
-          ),
+        Text(value, style: context.label.copyWith(fontWeight: FontWeight.w700)),
+        Text(label, style: context.caption),
       ],
     );
   }

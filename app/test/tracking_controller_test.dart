@@ -154,7 +154,11 @@ void main() {
     await notifier.boot();
 
     await notifier.startNow(); // must not throw
-    expect(c.read(trackingControllerProvider).error, contains('boom'));
+    // The raw exception is logged; the state carries one friendly sentence.
+    final error = c.read(trackingControllerProvider).error;
+    expect(error, isNotNull);
+    expect(error, isNot(contains('boom')));
+    expect(error, contains('Could not change drive detection'));
 
     await notifier.endNow(); // succeeds and clears the error
     expect(c.read(trackingControllerProvider).error, isNull);

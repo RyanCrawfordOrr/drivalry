@@ -80,3 +80,15 @@ String formatElapsed(Duration d) {
   if (d.inMinutes >= 1) return '${d.inMinutes} min';
   return '${d.inSeconds} s';
 }
+
+/// "30 ft" / "10 m", for a GPS accuracy radius. Never metres in copy for
+/// people who drive in miles (docs/12 §6).
+String formatShortDistance(double metres, SpeedUnits u) {
+  if (u == SpeedUnits.mph) {
+    final ft = metres * 3.28084;
+    if (ft < 1000) return '${((ft / 10).round() * 10).clamp(10, 990)} ft';
+    return formatDistance(metres, u);
+  }
+  if (metres < 1000) return '${((metres / 5).round() * 5).clamp(5, 995)} m';
+  return formatDistance(metres, u);
+}
