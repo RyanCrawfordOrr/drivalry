@@ -43,6 +43,7 @@ class SettingsRow extends StatelessWidget {
     this.below,
     this.danger = false,
     this.captionColor,
+    this.haptic = true,
   });
 
   final String title;
@@ -54,6 +55,9 @@ class SettingsRow extends StatelessWidget {
   final Widget? below;
   final bool danger;
   final Color? captionColor;
+
+  /// Light tap haptic on [onTap]; switch rows bring their own.
+  final bool haptic;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,7 @@ class SettingsRow extends StatelessWidget {
       onTap: onTap == null
           ? null
           : () {
-              Haptics.tap();
+              if (haptic) Haptics.tap();
               onTap!();
             },
       child: ConstrainedBox(
@@ -124,10 +128,7 @@ class SettingsRow extends StatelessWidget {
                   ],
                 ],
               ),
-              if (below != null) ...[
-                const SizedBox(height: Space.md),
-                below!,
-              ],
+              if (below != null) ...[const SizedBox(height: Space.md), below!],
             ],
           ),
         ),
@@ -136,8 +137,9 @@ class SettingsRow extends StatelessWidget {
   }
 }
 
-/// A [SettingsRow] with a switch; tapping anywhere on the row toggles it. A
-/// null [onChanged] disables both the switch and the row.
+/// A [SettingsRow] with a switch; tapping anywhere on the row toggles it and
+/// fires the select haptic. A null [onChanged] disables both the switch and
+/// the row.
 class SettingsSwitchRow extends StatelessWidget {
   const SettingsSwitchRow({
     super.key,
@@ -156,12 +158,19 @@ class SettingsSwitchRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final change = onChanged;
+    void toggle(bool v) {
+      Haptics.select();
+      change!(v);
+    }
+
     return SettingsRow(
       title: title,
       caption: caption,
       icon: icon,
-      trailing: Switch(value: value, onChanged: onChanged),
-      onTap: onChanged == null ? null : () => onChanged!(!value),
+      haptic: false,
+      trailing: Switch(value: value, onChanged: change == null ? null : toggle),
+      onTap: change == null ? null : () => toggle(!value),
     );
   }
 }

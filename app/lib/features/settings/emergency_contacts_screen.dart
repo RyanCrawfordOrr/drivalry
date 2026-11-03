@@ -72,28 +72,33 @@ class EmergencyContactsScreen extends ConsumerWidget {
                   Space.xxxl + Space.xxl,
                 ),
                 children: [
-                  SettingsGroup(
-                    children: [
-                      for (final c in rows)
-                        SettingsRow(
-                          leading: Avatar(name: c.name, size: AvatarSize.md),
-                          title: c.name,
-                          caption: c.userId == null
-                              ? c.phone
-                              : '${c.phone} · also gets an alert in the app',
-                          trailing: IconButton(
-                            tooltip: 'Remove',
-                            icon: const Icon(Icons.delete_outline),
-                            onPressed: () => _remove(context, ref, c),
+                  Reveal(
+                    child: SettingsGroup(
+                      children: [
+                        for (final c in rows)
+                          SettingsRow(
+                            leading: Avatar(name: c.name, size: AvatarSize.md),
+                            title: c.name,
+                            caption: c.userId == null
+                                ? c.phone
+                                : '${c.phone} · also gets an alert in the app',
+                            trailing: IconButton(
+                              tooltip: 'Remove',
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () => _remove(context, ref, c),
+                            ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(height: Space.lg),
-                  Text(
-                    'Numbers stay on this phone. The text is readied in your '
-                    'messaging app; someone still presses send.',
-                    style: context.caption,
+                  Reveal(
+                    delay: Reveal.stagger(1),
+                    child: Text(
+                      'Numbers stay on this phone. The text is readied in '
+                      'your messaging app; someone still presses send.',
+                      style: context.caption,
+                    ),
                   ),
                 ],
               ),

@@ -22,10 +22,10 @@ import 'emergency_contacts_screen.dart';
 import 'notifications_settings_screen.dart';
 import 'widgets/settings_rows.dart';
 
-/// Settings as an editorial list (docs/12 §7): Drives, Friends, Safety,
-/// Account and About, each a kicker over one tonal group of rows with a
-/// one-line caption. Packs and Diagnostics are pushed so the back stack
-/// survives (docs/12-ux-audit.md §1).
+/// Settings as an editorial list (docs/12 §7): a large title that collapses
+/// on scroll, then Drives, Friends, Safety, Account and About, each a kicker
+/// over one tonal group of rows with a one-line caption, arriving staggered
+/// (§5b). Packs and Diagnostics are pushed so the back stack survives.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -42,231 +42,231 @@ class SettingsScreen extends ConsumerWidget {
     final quiet = ref.watch(quietHoursProvider);
     final crashOn = ref.watch(_crashEnabledProvider).value ?? true;
     final contacts = ref.watch(emergencyContactsProvider).value?.length ?? 0;
+    final contactsCaption = switch (contacts) {
+      0 => 'Who gets a text if you do not answer.',
+      1 => 'One person gets a text if you do not answer.',
+      _ => '$contacts people get a text if you do not answer.',
+    };
+
+    final sections = <Widget>[
+      EditorialSection(
+        kicker: 'Drives',
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.speed_outlined,
+              title: 'Units',
+              caption: 'Auto follows the roads you drive on.',
+              below: SegmentedButton<UnitsSetting>(
+                key: const Key('units-segments'),
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(value: UnitsSetting.auto, label: Text('Auto')),
+                  ButtonSegment(value: UnitsSetting.mph, label: Text('mph')),
+                  ButtonSegment(value: UnitsSetting.kmh, label: Text('km/h')),
+                ],
+                selected: {units},
+                onSelectionChanged: (s) {
+                  Haptics.select();
+                  ref.read(databaseProvider).setSetting('units', s.first.name);
+                },
+              ),
+            ),
+            SettingsSwitchRow(
+              key: const Key('auto-detect'),
+              icon: Icons.directions_car_outlined,
+              title: 'Record drives automatically',
+              caption: tracking.plugin.enabled
+                  ? 'The app notices when you set off and scores when you '
+                        'park.'
+                  : 'Off. Nothing is recorded until you turn this on.',
+              value: tracking.plugin.enabled,
+              onChanged: (v) => _setAutoDetect(context, ref, v),
+            ),
+            SettingsRow(
+              icon: Icons.record_voice_over_outlined,
+              title: 'Spoken cues',
+              caption: cues.enabled
+                  ? 'On. Short words through the car speakers.'
+                  : 'Off. Short words through the car speakers.',
+              onTap: () => context.push(Routes.cuesSettings),
+            ),
+            SettingsRow(
+              icon: Icons.map_outlined,
+              title: 'Speed-limit packs',
+              caption: 'Roads and limits kept on this phone.',
+              onTap: () => context.push(Routes.packs),
+            ),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Friends',
+        child: SettingsGroup(
+          children: [
+            SettingsSwitchRow(
+              key: const Key('hide-location'),
+              icon: Icons.location_off_outlined,
+              title: 'Hide my location',
+              caption: signedIn
+                  ? 'Friends see that you are hiding, not where you are.'
+                  : 'Sign in to share or hide your location.',
+              value: profile?.locationHidden ?? false,
+              onChanged: signedIn && profile != null
+                  ? (v) => ref
+                        .read(profileRepoProvider)
+                        .setLocationHidden(profile.id, v)
+                  : null,
+            ),
+            SettingsRow(
+              icon: Icons.notifications_outlined,
+              title: 'Notifications',
+              caption: 'Which alerts reach you.',
+              onTap: () => context.push(Routes.notificationsSettings),
+            ),
+            SettingsRow(
+              icon: Icons.bedtime_outlined,
+              title: 'Quiet hours',
+              caption: quiet.enabled
+                  ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
+                        '${QuietHours.formatMinutes(quiet.endMinutes)}. '
+                        'Crash alerts still come through.'
+                  : 'Off. Set a window when nothing buzzes.',
+              onTap: () => context.push(Routes.notificationsSettings),
+            ),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Safety',
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.car_crash_outlined,
+              title: 'Crash detection',
+              caption: crashOn
+                  ? 'On. Checks on you after a hard stop.'
+                  : 'Off. Turn it on to be checked on after a hard stop.',
+              onTap: () => context.push(Routes.crashSettings),
+            ),
+            SettingsRow(
+              icon: Icons.contact_phone_outlined,
+              title: 'Emergency contacts',
+              caption: contactsCaption,
+              onTap: () => context.push(Routes.emergencyContacts),
+            ),
+            SettingsRow(
+              key: const Key('auto-reply'),
+              icon: Icons.sms_outlined,
+              title: 'Auto-reply to texts',
+              caption: 'Your phone can answer texts while you drive.',
+              onTap: () => context.push(Routes.autoReplySettings),
+            ),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Account',
+        child: SettingsGroup(
+          children: [
+            if (!cloud)
+              const SettingsRow(
+                icon: Icons.cloud_off_outlined,
+                title: 'Not available in this version yet.',
+                caption:
+                    'Friends and leagues are coming. Drives still score on '
+                    'this phone.',
+              )
+            else if (!signedIn)
+              SettingsRow(
+                icon: Icons.login,
+                title: 'Sign in',
+                caption: 'Apple or Google. No passwords.',
+                onTap: () => context.push(Routes.signIn),
+              )
+            else ...[
+              SettingsRow(
+                leading: Avatar(
+                  name: profile?.displayName ?? '?',
+                  size: AvatarSize.sm,
+                  isMe: true,
+                ),
+                title: profile == null ? 'Your profile' : '@${profile.handle}',
+                caption: profile?.displayName ?? 'Handle, name, photo.',
+                onTap: () => context.push(Routes.profile),
+              ),
+              SettingsRow(
+                icon: Icons.ios_share,
+                title: 'Export my data',
+                caption: 'Every trip on this phone, in a file you keep.',
+                onTap: () => _export(context, ref),
+              ),
+              SettingsRow(
+                icon: Icons.logout,
+                title: 'Sign out',
+                caption: 'Trips stay on this phone.',
+                onTap: () => _signOut(context, ref),
+              ),
+              SettingsRow(
+                icon: Icons.delete_forever_outlined,
+                title: 'Delete account',
+                caption:
+                    'Leaves every league, circle and feed for good. Trips on '
+                    'this phone stay.',
+                danger: true,
+                onTap: () => _deleteAccount(context, ref),
+              ),
+            ],
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'About',
+        gap: 0,
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.info_outline,
+              title: 'About Drivalry',
+              caption: 'Where the roads, maps and weather come from.',
+              onTap: () => context.push(Routes.attribution),
+            ),
+            SettingsRow(
+              icon: Icons.code,
+              title: 'Open source',
+              caption: 'Read the code, report a bug, build your own.',
+              trailing: const Pill('MIT', compact: true),
+              onTap: () => launchUrl(
+                Uri.parse(repoUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+            SettingsRow(
+              icon: Icons.monitor_heart_outlined,
+              title: 'Diagnostics',
+              caption: 'Numbers for bug reports.',
+              onTap: () => context.push(Routes.diagnostics),
+            ),
+          ],
+        ),
+      ),
+    ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
-        children: [
-          EditorialSection(
-            kicker: 'Drives',
-            child: SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.speed_outlined,
-                  title: 'Units',
-                  caption: 'Auto follows the roads you drive on.',
-                  below: SegmentedButton<UnitsSetting>(
-                    key: const Key('units-segments'),
-                    showSelectedIcon: false,
-                    segments: const [
-                      ButtonSegment(
-                        value: UnitsSetting.auto,
-                        label: Text('Auto'),
-                      ),
-                      ButtonSegment(
-                        value: UnitsSetting.mph,
-                        label: Text('mph'),
-                      ),
-                      ButtonSegment(
-                        value: UnitsSetting.kmh,
-                        label: Text('km/h'),
-                      ),
-                    ],
-                    selected: {units},
-                    onSelectionChanged: (s) {
-                      Haptics.select();
-                      ref
-                          .read(databaseProvider)
-                          .setSetting('units', s.first.name);
-                    },
-                  ),
-                ),
-                SettingsSwitchRow(
-                  key: const Key('auto-detect'),
-                  icon: Icons.directions_car_outlined,
-                  title: 'Start drives on their own',
-                  caption: tracking.plugin.enabled
-                      ? 'The app notices when you set off and scores when '
-                            'you park.'
-                      : 'Off. Nothing is recorded until you turn this on.',
-                  value: tracking.plugin.enabled,
-                  onChanged: (v) => _setAutoDetect(context, ref, v),
-                ),
-                SettingsRow(
-                  icon: Icons.record_voice_over_outlined,
-                  title: 'Spoken cues',
-                  caption: cues.enabled
-                      ? 'On. Short words through the car speakers.'
-                      : 'Off. Short words through the car speakers.',
-                  onTap: () => context.push(Routes.cuesSettings),
-                ),
-                SettingsRow(
-                  icon: Icons.map_outlined,
-                  title: 'Speed-limit packs',
-                  caption: 'Roads and limits kept on this phone.',
-                  onTap: () => context.push(Routes.packs),
-                ),
-              ],
-            ),
-          ),
-          EditorialSection(
-            kicker: 'Friends',
-            child: SettingsGroup(
-              children: [
-                SettingsSwitchRow(
-                  key: const Key('hide-location'),
-                  icon: Icons.location_off_outlined,
-                  title: 'Hide my location',
-                  caption: signedIn
-                      ? 'Friends see that you are hiding, not where you are.'
-                      : 'Sign in to share or hide your location.',
-                  value: profile?.locationHidden ?? false,
-                  onChanged: signedIn && profile != null
-                      ? (v) {
-                          Haptics.select();
-                          ref
-                              .read(profileRepoProvider)
-                              .setLocationHidden(profile.id, v);
-                        }
-                      : null,
-                ),
-                SettingsRow(
-                  icon: Icons.notifications_outlined,
-                  title: 'Notifications',
-                  caption: 'What you hear about.',
-                  onTap: () => context.push(Routes.notificationsSettings),
-                ),
-                SettingsRow(
-                  icon: Icons.bedtime_outlined,
-                  title: 'Quiet hours',
-                  caption: quiet.enabled
-                      ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
-                            '${QuietHours.formatMinutes(quiet.endMinutes)}. '
-                            'Crash alerts still come through.'
-                      : 'Off. Set a window when nothing buzzes.',
-                  onTap: () => context.push(Routes.notificationsSettings),
-                ),
-              ],
-            ),
-          ),
-          EditorialSection(
-            kicker: 'Safety',
-            child: SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.car_crash_outlined,
-                  title: 'Crash detection',
-                  caption: crashOn
-                      ? 'On. A 30-second check after a hard stop.'
-                      : 'Off. Turn it on for a 30-second check after a hard '
-                            'stop.',
-                  onTap: () => context.push(Routes.crashSettings),
-                ),
-                SettingsRow(
-                  icon: Icons.contact_phone_outlined,
-                  title: 'Emergency contacts',
-                  caption: contacts == 0
-                      ? 'Who gets a text if you do not answer.'
-                      : '$contacts ${contacts == 1 ? 'person gets' : 'people get'} '
-                            'a text if you do not answer.',
-                  onTap: () => context.push(Routes.emergencyContacts),
-                ),
-                SettingsRow(
-                  key: const Key('auto-reply'),
-                  icon: Icons.sms_outlined,
-                  title: 'Auto-reply to texts',
-                  caption: 'Your phone can answer texts while you drive.',
-                  onTap: () => context.push(Routes.autoReplySettings),
-                ),
-              ],
-            ),
-          ),
-          EditorialSection(
-            kicker: 'Account',
-            child: SettingsGroup(
-              children: [
-                if (!cloud)
-                  const SettingsRow(
-                    icon: Icons.cloud_off_outlined,
-                    title: 'Not available in this version yet.',
-                    caption:
-                        'Friends and leagues are coming. Drives still score '
-                        'on this phone.',
-                  )
-                else if (!signedIn)
-                  SettingsRow(
-                    icon: Icons.login,
-                    title: 'Sign in',
-                    caption: 'Apple or Google. No passwords.',
-                    onTap: () => context.push(Routes.signIn),
-                  )
-                else ...[
-                  SettingsRow(
-                    leading: Avatar(
-                      name: profile?.displayName ?? '?',
-                      size: AvatarSize.sm,
-                      isMe: true,
-                    ),
-                    title: profile == null
-                        ? 'Your profile'
-                        : '@${profile.handle}',
-                    caption: profile?.displayName ?? 'Handle, name, photo.',
-                    onTap: () => context.push(Routes.profile),
-                  ),
-                  SettingsRow(
-                    icon: Icons.ios_share,
-                    title: 'Export my data',
-                    caption: 'Every trip on this phone, in a file you keep.',
-                    onTap: () => _export(context, ref),
-                  ),
-                  SettingsRow(
-                    icon: Icons.logout,
-                    title: 'Sign out',
-                    caption: 'Trips stay on this phone.',
-                    onTap: () => _signOut(context, ref),
-                  ),
-                  SettingsRow(
-                    icon: Icons.delete_forever_outlined,
-                    title: 'Delete account',
-                    caption:
-                        'Leaves every league, circle and feed for good. '
-                        'Trips on this phone stay.',
-                    danger: true,
-                    onTap: () => _deleteAccount(context, ref),
-                  ),
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar.large(title: Text('Settings')),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+            // Five sections: built at once so every reveal starts together.
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < sections.length; i++)
+                    Reveal(delay: Reveal.stagger(i), child: sections[i]),
                 ],
-              ],
-            ),
-          ),
-          EditorialSection(
-            kicker: 'About',
-            gap: 0,
-            child: SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.info_outline,
-                  title: 'About Drivalry',
-                  caption: 'Where the roads, maps and weather come from.',
-                  onTap: () => context.push(Routes.attribution),
-                ),
-                SettingsRow(
-                  icon: Icons.code,
-                  title: 'Open source',
-                  caption: 'Read the code, report a bug, build your own.',
-                  trailing: const Pill('MIT', compact: true),
-                  onTap: () => launchUrl(
-                    Uri.parse(repoUrl),
-                    mode: LaunchMode.externalApplication,
-                  ),
-                ),
-                SettingsRow(
-                  icon: Icons.monitor_heart_outlined,
-                  title: 'Diagnostics',
-                  caption: 'Numbers for bug reports.',
-                  onTap: () => context.push(Routes.diagnostics),
-                ),
-              ],
+              ),
             ),
           ),
         ],
@@ -279,7 +279,6 @@ class SettingsScreen extends ConsumerWidget {
     WidgetRef ref,
     bool enabled,
   ) async {
-    Haptics.select();
     final controller = ref.read(trackingControllerProvider.notifier);
     await controller.setEnabled(enabled);
     if (!context.mounted || enabled) return;
@@ -325,9 +324,8 @@ class SettingsScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: const Text('Delete your account?'),
         content: const Text(
-          'Your profile, friendships, leagues, shared trips and posts are '
-          'deleted for good. Trips on this phone are kept. This cannot be '
-          'undone.',
+          'This removes your profile, friendships, leagues and posts for '
+          'good. Trips on this phone stay. There is no undo.',
         ),
         actions: [
           TextButton(

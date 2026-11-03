@@ -56,7 +56,7 @@ void main() {
   ) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     await tester.pumpWidget(harness(const AutoReplySettingsScreen()));
-    await tester.pump();
+    await pumpFor(tester, const Duration(milliseconds: 500));
     expect(find.textContaining('Drivalry never sends replies'), findsOneWidget);
     expect(find.byKey(const Key('auto-reply-copy')), findsNothing);
     expect(find.byType(PrimaryButton), findsOneWidget);
@@ -80,7 +80,7 @@ void main() {
   ) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     await tester.pumpWidget(harness(const AutoReplySettingsScreen()));
-    await tester.pump();
+    await pumpFor(tester, const Duration(milliseconds: 500));
     expect(find.text('DRIVING FOCUS'), findsOneWidget);
     for (var i = 0; i < AutoReplySettingsScreen.iosSteps.length; i++) {
       expect(find.text(AutoReplySettingsScreen.iosSteps[i]), findsOneWidget);

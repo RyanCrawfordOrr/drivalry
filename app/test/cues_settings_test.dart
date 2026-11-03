@@ -61,6 +61,7 @@ void main() {
     expect(await db.getSetting(CueKeys.over), 'false');
 
     await tester.ensureVisible(find.byKey(const Key('cues-sample')));
+    await pumpFor(tester, const Duration(milliseconds: 300));
     await tester.tap(find.byKey(const Key('cues-sample')));
     await pumpFor(tester, const Duration(milliseconds: 200));
     expect(speaker.spoken, ["Limit's 35. Smooth."]);

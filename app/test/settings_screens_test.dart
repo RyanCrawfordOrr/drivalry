@@ -123,8 +123,12 @@ void main() {
   testWidgets('about lists the data sources with one sentence each', (
     tester,
   ) async {
+    // Tall enough that every section is on screen at once.
+    tester.view.physicalSize = const Size(1080, 3200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(const MaterialApp(home: AttributionScreen()));
-    await tester.pump();
+    await pumpFor(tester, const Duration(milliseconds: 800));
     expect(find.text('Drivalry'), findsOneWidget);
     expect(
       find.text('Free, open source, built on free services.'),

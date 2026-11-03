@@ -42,7 +42,7 @@ class PlaceholderScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 6),
+                          padding: const EdgeInsets.only(top: Space.xs),
                           child: Container(
                             width: Space.sm,
                             height: Space.sm,
@@ -53,9 +53,7 @@ class PlaceholderScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: Space.md),
-                        Expanded(
-                          child: Text(planned[i], style: context.body),
-                        ),
+                        Expanded(child: Text(planned[i], style: context.body)),
                       ],
                     ),
                   ],

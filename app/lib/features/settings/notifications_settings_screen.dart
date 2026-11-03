@@ -20,95 +20,97 @@ class NotificationsSettingsScreen extends ConsumerWidget {
     final status = ref.watch(pushControllerProvider);
     final db = ref.watch(databaseProvider);
     final quiet = ref.watch(quietHoursProvider);
+    final sections = <Widget>[
+      EditorialSection(
+        kicker: 'Permission',
+        child: _PermissionTile(status: status),
+      ),
+      EditorialSection(
+        kicker: 'Quiet hours',
+        child: SettingsGroup(
+          children: [
+            SettingsSwitchRow(
+              key: const Key('quiet-hours'),
+              icon: Icons.bedtime_outlined,
+              title: 'Quiet hours',
+              caption: quiet.enabled
+                  ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
+                        '${QuietHours.formatMinutes(quiet.endMinutes)}. '
+                        'Crash alerts still come through.'
+                  : 'Nothing buzzes while you sleep.',
+              value: quiet.enabled,
+              onChanged: (v) => db.setSetting(
+                QuietHours.settingsKey,
+                quiet.copyWith(enabled: v).toJson(),
+              ),
+            ),
+            if (quiet.enabled) ...[
+              SettingsRow(
+                title: 'Starts',
+                trailing: Text(
+                  QuietHours.formatMinutes(quiet.startMinutes),
+                  style: context.label,
+                ),
+                onTap: () async {
+                  final t = await _pickTime(context, quiet.startMinutes);
+                  if (t != null) {
+                    await db.setSetting(
+                      QuietHours.settingsKey,
+                      quiet.copyWith(startMinutes: t).toJson(),
+                    );
+                  }
+                },
+              ),
+              SettingsRow(
+                title: 'Ends',
+                trailing: Text(
+                  QuietHours.formatMinutes(quiet.endMinutes),
+                  style: context.label,
+                ),
+                onTap: () async {
+                  final t = await _pickTime(context, quiet.endMinutes);
+                  if (t != null) {
+                    await db.setSetting(
+                      QuietHours.settingsKey,
+                      quiet.copyWith(endMinutes: t).toJson(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Alerts',
+        gap: 0,
+        child: SettingsGroup(
+          children: [
+            for (final c in const [
+              NotificationCategory.tripScored,
+              NotificationCategory.social,
+              NotificationCategory.friends,
+            ])
+              _CategorySwitch(category: c),
+            const SettingsSwitchRow(
+              icon: Icons.car_crash_outlined,
+              title: 'Crash alerts',
+              caption: 'Always comes through, even in quiet hours.',
+              value: true,
+              onChanged: null,
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(title: const Text('Notifications')),
       body: ListView(
         padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
         children: [
-          EditorialSection(
-            kicker: 'Permission',
-            child: _PermissionTile(status: status),
-          ),
-          EditorialSection(
-            kicker: 'Quiet hours',
-            child: SettingsGroup(
-              children: [
-                SettingsSwitchRow(
-                  key: const Key('quiet-hours'),
-                  icon: Icons.bedtime_outlined,
-                  title: 'Quiet hours',
-                  caption: quiet.enabled
-                      ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
-                            '${QuietHours.formatMinutes(quiet.endMinutes)}. '
-                            'Crash alerts still come through.'
-                      : 'Nothing buzzes while you sleep.',
-                  value: quiet.enabled,
-                  onChanged: (v) {
-                    Haptics.select();
-                    db.setSetting(
-                      QuietHours.settingsKey,
-                      quiet.copyWith(enabled: v).toJson(),
-                    );
-                  },
-                ),
-                if (quiet.enabled) ...[
-                  SettingsRow(
-                    title: 'Starts',
-                    trailing: Text(
-                      QuietHours.formatMinutes(quiet.startMinutes),
-                      style: context.label,
-                    ),
-                    onTap: () async {
-                      final t = await _pickTime(context, quiet.startMinutes);
-                      if (t != null) {
-                        await db.setSetting(
-                          QuietHours.settingsKey,
-                          quiet.copyWith(startMinutes: t).toJson(),
-                        );
-                      }
-                    },
-                  ),
-                  SettingsRow(
-                    title: 'Ends',
-                    trailing: Text(
-                      QuietHours.formatMinutes(quiet.endMinutes),
-                      style: context.label,
-                    ),
-                    onTap: () async {
-                      final t = await _pickTime(context, quiet.endMinutes);
-                      if (t != null) {
-                        await db.setSetting(
-                          QuietHours.settingsKey,
-                          quiet.copyWith(endMinutes: t).toJson(),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ],
-            ),
-          ),
-          EditorialSection(
-            kicker: 'What you hear about',
-            gap: 0,
-            child: SettingsGroup(
-              children: [
-                for (final c in const [
-                  NotificationCategory.tripScored,
-                  NotificationCategory.social,
-                  NotificationCategory.friends,
-                ])
-                  _CategorySwitch(category: c),
-                const SettingsSwitchRow(
-                  icon: Icons.car_crash_outlined,
-                  title: 'Crash alerts',
-                  caption: 'Always comes through, even in quiet hours.',
-                  value: true,
-                  onChanged: null,
-                ),
-              ],
-            ),
-          ),
+          for (var i = 0; i < sections.length; i++)
+            Reveal(delay: Reveal.stagger(i), child: sections[i]),
         ],
       ),
     );
@@ -143,7 +145,7 @@ class _PermissionTile extends ConsumerWidget {
     final (pill, caption) = switch (status) {
       PushRegistered() => (
         const Pill('On', tone: PillTone.positive, dot: true),
-        'This phone gets them.',
+        'Alerts reach this phone.',
       ),
       PushPermissionDenied() => (
         const Pill('Blocked', tone: PillTone.danger),
@@ -154,7 +156,7 @@ class _PermissionTile extends ConsumerWidget {
         'Turn them on to hear when a friend reacts or a trip scores.',
       ),
       PushUnavailable(reason: final r) => (
-        const Pill('Not available'),
+        const Pill('Unavailable'),
         friendlyError(Exception(r), doing: 'turn on notifications'),
       ),
     };
@@ -180,7 +182,8 @@ class _PermissionTile extends ConsumerWidget {
             PrimaryButton(
               key: const Key('push-enable'),
               label: 'Enable',
-              onPressed: () => ref.read(pushControllerProvider.notifier).start(),
+              onPressed: () =>
+                  ref.read(pushControllerProvider.notifier).start(),
             ),
           ],
         ],
@@ -207,21 +210,19 @@ class _CategorySwitch extends ConsumerWidget {
       },
       title: category.channelName,
       caption: switch (category) {
-        NotificationCategory.tripScored => 'Your score and roast when you park.',
+        NotificationCategory.tripScored =>
+          'Your score and roast when you park.',
         NotificationCategory.social =>
           'When a friend reacts to or comments on a drive.',
         NotificationCategory.friends => 'When someone wants to add you.',
         NotificationCategory.crash =>
           'Always comes through, even in quiet hours.',
-        NotificationCategory.convoy => 'Stops, regroups and arrivals.',
+        NotificationCategory.convoy => 'When your convoy stops or regroups.',
       },
       value: value != 'false',
-      onChanged: (v) {
-        Haptics.select();
-        ref
-            .read(databaseProvider)
-            .setSetting(category.settingsKey, v ? 'true' : 'false');
-      },
+      onChanged: (v) => ref
+          .read(databaseProvider)
+          .setSetting(category.settingsKey, v ? 'true' : 'false'),
     );
   }
 }

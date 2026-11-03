@@ -85,7 +85,7 @@ void main() {
     expect(find.textContaining('No trips yet'), findsNWidgets(2));
     expect(find.text('Work truck'), findsOneWidget);
     expect(find.widgetWithText(Pill, 'Never tracked'), findsOneWidget);
-    expect(find.text('NOT MY CARS'), findsOneWidget);
+    expect(find.text('CARS YOU RIDE IN'), findsOneWidget);
     expect(find.text('Dad Camry'), findsOneWidget);
     expect(find.text('Ignored car audio'), findsNothing);
     await unmountAndSettle(tester);

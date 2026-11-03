@@ -47,7 +47,10 @@ void main() {
     await tester.pump();
     expect(find.byType(EmptyState), findsOneWidget);
     expect(find.text('Not available in this version yet.'), findsOneWidget);
-    expect(find.text('Your cars, their fuel and their papers.'), findsOneWidget);
+    expect(
+      find.text('Your cars, their fuel and their papers.'),
+      findsOneWidget,
+    );
     expect(find.text('COMING SOON'), findsOneWidget);
     expect(find.text('Fuel log'), findsOneWidget);
     expect(find.text('Coming in this tab'), findsNothing);

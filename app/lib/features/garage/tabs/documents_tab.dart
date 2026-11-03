@@ -10,7 +10,8 @@ import '../../../data/db/database.dart';
 import '../../../data/repos/garage_repo.dart';
 import '../../settings/widgets/settings_rows.dart';
 
-/// Insurance card, registration: photos encrypted on this phone.
+/// Insurance card, registration: photos encrypted on this phone. Empty and
+/// populated states cross-fade; rows arrive staggered (docs/12 §5b).
 class DocumentsTab extends ConsumerWidget {
   const DocumentsTab({super.key, required this.vehicle});
 
@@ -21,64 +22,74 @@ class DocumentsTab extends ConsumerWidget {
     final docs = ref.watch(documentsProvider(vehicle.id)).value ?? const [];
     final date = DateFormat.yMMMd();
 
-    if (docs.isEmpty) {
-      return ListView(
-        children: [
-          EmptyState(
-            kicker: 'Documents',
-            headline: 'Keep your papers here.',
-            body:
-                'Insurance card, registration: photos stay encrypted on this '
-                'phone.',
-            actionLabel: 'Add document',
-            onAction: () => _add(context, ref),
-          ),
-        ],
-      );
-    }
-
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'documents-fab',
-        onPressed: () => _add(context, ref),
-        icon: const Icon(Icons.add_a_photo_outlined),
-        label: const Text('Document'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(
-          Space.gutter,
-          Space.lg,
-          Space.gutter,
-          Space.xxxl + Space.xxl,
-        ),
-        children: [
-          Text(
-            'Stored encrypted on this phone only. Never uploaded, never '
-            'shared.',
-            style: context.caption,
-          ),
-          const SizedBox(height: Space.lg),
-          for (final d in docs) ...[
-            SettingsGroup(
-              children: [
-                SettingsRow(
-                  icon: Icons.lock_outline,
-                  title: d.title,
-                  caption: date.format(
-                    DateTime.fromMillisecondsSinceEpoch(d.createdAt),
-                  ),
-                  trailing: IconButton(
-                    tooltip: 'Delete',
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () => _delete(context, ref, d),
-                  ),
-                  onTap: () => _view(context, ref, d),
-                ),
-              ],
+      floatingActionButton: docs.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              heroTag: 'documents-fab',
+              onPressed: () => _add(context, ref),
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: const Text('Document'),
             ),
-            const SizedBox(height: Space.sm),
-          ],
-        ],
+      body: StateSwitcher(
+        child: docs.isEmpty
+            ? ListView(
+                key: const ValueKey('empty'),
+                children: [
+                  EmptyState(
+                    kicker: 'Documents',
+                    headline: "Your car's papers, in one place.",
+                    body:
+                        'Insurance card, registration: photos stay encrypted '
+                        'on this phone.',
+                    actionLabel: 'Add a photo',
+                    onAction: () => _add(context, ref),
+                  ),
+                ],
+              )
+            : ListView(
+                key: const ValueKey('list'),
+                padding: const EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.lg,
+                  Space.gutter,
+                  Space.xxxl + Space.xxl,
+                ),
+                children: [
+                  Text(
+                    'Stored encrypted on this phone only. Never uploaded, '
+                    'never shared.',
+                    style: context.caption,
+                  ),
+                  const SizedBox(height: Space.lg),
+                  for (var i = 0; i < docs.length; i++) ...[
+                    Reveal(
+                      key: ValueKey(docs[i].id),
+                      delay: Reveal.stagger(i),
+                      child: SettingsGroup(
+                        children: [
+                          SettingsRow(
+                            icon: Icons.lock_outline,
+                            title: docs[i].title,
+                            caption: date.format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                docs[i].createdAt,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              tooltip: 'Delete',
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () => _delete(context, ref, docs[i]),
+                            ),
+                            onTap: () => _view(context, ref, docs[i]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: Space.sm),
+                  ],
+                ],
+              ),
       ),
     );
   }

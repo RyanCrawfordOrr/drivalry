@@ -54,7 +54,7 @@ class VehicleDetailScreen extends ConsumerWidget {
                     )
                   : EmptyState(
                       kicker: 'Garage',
-                      headline: 'This vehicle was removed.',
+                      headline: 'This car is no longer in your garage.',
                       body:
                           'Its trips, fuel log and documents stay on the '
                           'phone.',

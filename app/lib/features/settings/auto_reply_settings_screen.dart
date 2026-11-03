@@ -15,9 +15,8 @@ class AutoReplySettingsScreen extends ConsumerWidget {
   static const iosSteps = [
     'Open Settings and tap Focus.',
     'Tap + and choose Driving.',
-    'Turn on Auto-Reply and pick who gets it.',
-    "Under Turn On Automatically, pick Automatically or your car's "
-        'Bluetooth.',
+    'Turn on Auto-Reply and choose who gets the reply.',
+    'Under Turn On Automatically, choose when it should start.',
   ];
 
   static const androidSteps = [
@@ -38,23 +37,25 @@ class AutoReplySettingsScreen extends ConsumerWidget {
       body: ListView(
         padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
         children: [
-          Padding(
-            padding: Space.screen,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Your phone can answer texts for you while you drive. '
-                  'Drivalry never sends replies.',
-                  style: context.body,
-                ),
-                const SizedBox(height: Space.sm),
-                Text(
-                  'It is built into your phone, so no app reads your '
-                  'messages.',
-                  style: context.caption,
-                ),
-              ],
+          Reveal(
+            child: Padding(
+              padding: Space.screen,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Your phone can answer texts for you while you drive. '
+                    'Drivalry never sends replies.',
+                    style: context.body,
+                  ),
+                  const SizedBox(height: Space.sm),
+                  Text(
+                    'It is built into your phone, so no app reads your '
+                    'messages.',
+                    style: context.caption,
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: Space.section),
@@ -65,7 +66,10 @@ class AutoReplySettingsScreen extends ConsumerWidget {
               children: [
                 for (var i = 0; i < steps.length; i++) ...[
                   if (i > 0) const SizedBox(height: Space.sm),
-                  _Step(number: i + 1, text: steps[i]),
+                  Reveal(
+                    delay: Reveal.stagger(i + 1),
+                    child: _Step(number: i + 1, text: steps[i]),
+                  ),
                 ],
               ],
             ),

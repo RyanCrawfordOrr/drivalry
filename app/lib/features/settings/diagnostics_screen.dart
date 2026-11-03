@@ -127,8 +127,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
             if (ui.error != null) ('Error', ui.error!),
             for (final e in ui.recentErrors.reversed)
               ('Plugin ${e.code}', '${e.message} ${_ms(e.t)}'),
-            for (final e in r.counts.entries)
-              ('Stored ${e.key}', '${e.value}'),
+            for (final e in r.counts.entries) ('Stored ${e.key}', '${e.value}'),
             for (final p in r.packs)
               ('Pack ${p.region}', '${p.name}, OSM ${p.osmTimestamp}'),
           ];
