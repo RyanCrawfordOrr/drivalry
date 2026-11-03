@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' hide Tile;
 
 import '../../../app/bootstrap.dart';
 import '../../../app/ui/ui.dart';
@@ -41,38 +41,44 @@ class ParkingScreen extends ConsumerWidget {
       DateTime.now(),
     );
     final sections = <Widget>[
-      ClipRRect(
-        borderRadius: Radii.cardRadius,
-        child: SizedBox(
-          height: 220,
-          child: mapsReady
-              ? GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(spot.lat, spot.lon),
-                    zoom: 16,
-                  ),
-                  markers: {
-                    Marker(
-                      markerId: const MarkerId('car'),
-                      position: LatLng(spot.lat, spot.lon),
-                    ),
-                  },
-                  zoomControlsEnabled: false,
-                  myLocationButtonEnabled: false,
-                  liteModeEnabled: true,
-                )
-              : Container(
-                  color: scheme.surfaceContainerLow,
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(Space.xl),
-                  child: Text(
-                    'Map not available in this version.',
-                    textAlign: TextAlign.center,
-                    style: context.bodyMuted,
-                  ),
+      if (mapsReady)
+        ClipRRect(
+          borderRadius: Radii.cardRadius,
+          child: SizedBox(
+            height: 220,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(spot.lat, spot.lon),
+                zoom: 16,
+              ),
+              markers: {
+                Marker(
+                  markerId: const MarkerId('car'),
+                  position: LatLng(spot.lat, spot.lon),
                 ),
+              },
+              zoomControlsEnabled: false,
+              myLocationButtonEnabled: false,
+              liteModeEnabled: true,
+            ),
+          ),
+        )
+      else
+        // One quiet line, not a 220 px box with a sentence in the middle.
+        Tile(
+          child: Row(
+            children: [
+              Icon(Icons.map_outlined, color: scheme.onSurfaceVariant),
+              const SizedBox(width: Space.md),
+              Expanded(
+                child: Text(
+                  'Map not available in this version.',
+                  style: context.bodyMuted,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
       const SizedBox(height: Space.xl),
       Text('Parked $ago', style: context.headline),
       if (road != null && road.isNotEmpty) ...[
@@ -110,7 +116,12 @@ class ParkingScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Where I parked')),
       body: ListView(
-        padding: Space.screenWithBottom,
+        padding: EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.lg,
+          Space.gutter,
+          Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           for (final (i, s) in sections.indexed)
             Reveal(delay: Reveal.stagger(i), child: s),

@@ -39,11 +39,17 @@ final _segmentsProvider = FutureProvider.family<List<RoadSegment>, String>(
   (ref, id) => ref.watch(databaseProvider).segmentsFor(id),
 );
 
-/// One trip, editorial (docs/12 §7 "Trip"): the route map at 40 % fading
-/// under the content, the ring with XP under it and the verdict beside it,
-/// four thin bars, a grid of six stats, "What happened" as a timeline, and a
-/// one-line footnote about limit coverage. Share is the only app-bar action
-/// besides the overflow.
+/// Replaces the Google map at the top of the trip screen when set. Tests and
+/// the layout audit use it: platform views do not exist there, so they draw
+/// a stand-in and keep everything under it real.
+final tripMapSurfaceProvider = Provider<WidgetBuilder?>((_) => null);
+
+/// One trip, editorial (docs/12 §7 "Trip"): the route map at 40 % under a
+/// pinned app bar, fading into the content, the ring with XP under it and
+/// the verdict beside it, four thin bars, a grid of six stats, "What
+/// happened" as a timeline, and one-line footnotes about limit coverage and
+/// the route. Without a saved route the page starts under the app bar.
+/// Share is the only app-bar action besides the overflow.
 class TripDetailScreen extends ConsumerWidget {
   const TripDetailScreen({super.key, required this.tripId});
 
@@ -91,14 +97,38 @@ class TripDetailScreen extends ConsumerWidget {
     final unitsSetting =
         ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto;
     final units = resolveUnits(unitsSetting, packRegion: t.packRegion);
-    final samples =
-        ref.watch(_samplesProvider(tripId)).value ?? const <Sample>[];
+    final samplesAsync = ref.watch(_samplesProvider(tripId));
+    final samples = samplesAsync.value ?? const <Sample>[];
     final segments =
         ref.watch(_segmentsProvider(tripId)).value ?? const <RoadSegment>[];
     final controller = ref.read(trackingControllerProvider.notifier);
     final scheme = Theme.of(context).colorScheme;
-    final mapH = mapHeight(context);
-    final topPad = MediaQuery.paddingOf(context).top;
+    final media = MediaQuery.of(context);
+    final topPad = media.padding.top;
+
+    // The route map takes the top 40 % only while there is, or may still
+    // be, something to draw. Without a route the page starts straight under
+    // the app bar (docs/12 §2: no empty band at the top) and the fact goes
+    // in the footnotes.
+    final hasRoute = samples.length >= 2;
+    final mapsReady = ref.watch(mapsReadyProvider);
+    final canDraw =
+        ref.watch(tripMapSurfaceProvider) != null ||
+        mapsReady.isLoading ||
+        mapsReady.value == true;
+    final showMap = samplesAsync.isLoading || (hasRoute && canDraw);
+    final String? routeNote;
+    if (showMap) {
+      routeNote = null;
+    } else if (!hasRoute) {
+      routeNote = 'Route not saved for this trip.';
+    } else {
+      routeNote = 'Map not available in this version.';
+    }
+    final notes = <String>[?_coverageNote(t), ?routeNote];
+    // Six stats in two columns on phones: "1 min 14 s" and "Over the limit"
+    // ellipsize in three columns under 600 wide.
+    final columns = media.size.width >= 600 ? 3 : 2;
 
     final sections = <Widget>[
       _Hero(trip: t, score: score, units: units),
@@ -124,6 +154,7 @@ class TripDetailScreen extends ConsumerWidget {
         padding: EdgeInsets.zero,
         gap: 0,
         child: StatGrid(
+          columns: columns,
           children: [
             for (final (label, value) in _stats(t, score, units))
               StatTile(value: value, label: label),
@@ -161,127 +192,135 @@ class TripDetailScreen extends ConsumerWidget {
           ),
         ),
       ],
-      if (_coverageNote(t) != null) ...[
+      if (notes.isNotEmpty) ...[
         const SizedBox(height: Space.xl),
-        Text(_coverageNote(t)!, style: context.caption),
+        for (final (i, n) in notes.indexed) ...[
+          if (i > 0) const SizedBox(height: Space.xs),
+          Text(n, style: context.caption),
+        ],
       ],
     ];
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(tripDateLabel(t)),
-        actions: [
-          if (scored)
-            IconButton(
-              tooltip: 'Share',
-              icon: const Icon(Icons.ios_share),
-              onPressed: () => shareTripFromApp(context, ref, t, score, units),
-            ),
-          PopupMenuButton<String>(
-            tooltip: 'More',
-            onSelected: (v) async {
-              switch (v) {
-                case 'passenger':
-                  await controller.answerPassenger(
-                    tripId,
-                    t.isPassenger != true,
-                  );
-                case 'rescore':
-                  await controller.rescore(tripId);
-                case 'delete':
-                  if (await confirmDeleteTrip(context)) {
-                    await controller.deleteTrip(tripId);
-                    if (context.mounted) context.pop();
-                  }
+    final actions = <Widget>[
+      if (scored)
+        IconButton(
+          tooltip: 'Share',
+          icon: const Icon(Icons.ios_share),
+          onPressed: () => shareTripFromApp(context, ref, t, score, units),
+        ),
+      PopupMenuButton<String>(
+        tooltip: 'More',
+        onSelected: (v) async {
+          switch (v) {
+            case 'passenger':
+              await controller.answerPassenger(tripId, t.isPassenger != true);
+            case 'rescore':
+              await controller.rescore(tripId);
+            case 'delete':
+              if (await confirmDeleteTrip(context)) {
+                await controller.deleteTrip(tripId);
+                if (context.mounted) context.pop();
               }
-            },
-            itemBuilder: (_) => [
-              PopupMenuItem(
-                value: 'passenger',
-                child: Text(
-                  t.isPassenger == true
-                      ? 'I was the driver'
-                      : 'Mark as passenger',
-                ),
-              ),
-              const PopupMenuItem(value: 'rescore', child: Text('Score again')),
-              const PopupMenuItem(value: 'delete', child: Text('Delete trip')),
-            ],
+          }
+        },
+        itemBuilder: (_) => [
+          PopupMenuItem(
+            value: 'passenger',
+            child: Text(
+              t.isPassenger == true ? 'I was the driver' : 'Mark as passenger',
+            ),
           ),
+          const PopupMenuItem(value: 'rescore', child: Text('Score again')),
+          const PopupMenuItem(value: 'delete', child: Text('Delete trip')),
         ],
       ),
-      body: Stack(
-        children: [
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: mapH,
-            child: _TripMap(
-              samples: samples,
-              segments: segments,
-              score: score,
-              units: units,
-            ),
-          ),
-          Positioned.fill(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                SizedBox(height: mapH - fade),
-                Container(
-                  height: fade,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        scheme.surface.withValues(alpha: 0),
-                        scheme.surface,
+    ];
+
+    // A pinned bar: over the map while the page is at the top, solid once
+    // the content scrolls under it, so nothing ever shows through the title.
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            title: Text(tripDateLabel(t)),
+            actions: actions,
+            // The bar's own extent is measured under the status bar.
+            expandedHeight: showMap ? mapHeight(context) - topPad : null,
+            flexibleSpace: !showMap
+                ? null
+                : FlexibleSpaceBar(
+                    // Pinned: the platform view is clipped, never resized,
+                    // as the content slides over it.
+                    collapseMode: CollapseMode.pin,
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        _TripMap(
+                          samples: samples,
+                          segments: segments,
+                          score: score,
+                          units: units,
+                          loading: samplesAsync.isLoading,
+                        ),
+                        // The lower edge fades into the page.
+                        Positioned(
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          height: fade,
+                          child: IgnorePointer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    scheme.surface.withValues(alpha: 0),
+                                    scheme.surface,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Legible title over any map tile.
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: topPad + kToolbarHeight + Space.xl,
+                          child: IgnorePointer(
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    scheme.surface.withValues(alpha: 0.85),
+                                    scheme.surface.withValues(alpha: 0),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                ),
-                Container(
-                  color: scheme.surface,
-                  padding: const EdgeInsets.fromLTRB(
-                    Space.gutter,
-                    0,
-                    Space.gutter,
-                    Space.xxxl,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final (i, s) in sections.indexed)
-                        Reveal(delay: Reveal.stagger(i), child: s),
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ),
-          // Legible title over any map tile.
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: topPad + kToolbarHeight + Space.xl,
-            child: IgnorePointer(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      scheme.surface.withValues(alpha: 0.85),
-                      scheme.surface.withValues(alpha: 0),
-                    ],
-                  ),
-                ),
-              ),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              Space.gutter,
+              Space.lg,
+              Space.gutter,
+              Space.xl + media.padding.bottom,
+            ),
+            sliver: SliverList.list(
+              children: [
+                for (final (i, s) in sections.indexed)
+                  Reveal(delay: Reveal.stagger(i), child: s),
+              ],
             ),
           ),
         ],
@@ -349,48 +388,50 @@ class TripDetailScreen extends ConsumerWidget {
       );
       return;
     }
-    final controller = TextEditingController(
-      text: event.limitMps == null || event.limitMps!.isNaN
-          ? ''
-          : formatSpeed(event.limitMps!, units, withUnit: false),
-    );
     final roadLabel = segName ?? 'this road';
+    final initial = event.limitMps == null || event.limitMps!.isNaN
+        ? ''
+        : formatSpeed(event.limitMps!, units, withUnit: false);
     final posted = await showDrivalrySheet<int>(
       context,
       title: 'Limit is wrong here',
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('On $roadLabel. What does the sign say?', style: ctx.body),
-            const SizedBox(height: Space.sm),
-            Text(
-              'Your fix applies to you now, and to everyone once a second '
-              'driver agrees.',
-              style: ctx.caption,
-            ),
-            const SizedBox(height: Space.lg),
-            TextField(
-              controller: controller,
-              autofocus: true,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Posted limit (${unitLabel(units)})',
+      // The field owns its controller for as long as the sheet is on screen,
+      // exit animation included; the value comes back through the pop.
+      builder: (_) => TextControllers(
+        initial: [initial],
+        builder: (ctx, c) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text('On $roadLabel. What does the sign say?', style: ctx.body),
+              const SizedBox(height: Space.sm),
+              Text(
+                'Your fix applies to you now, and to everyone once a second '
+                'driver agrees.',
+                style: ctx.caption,
               ),
-            ),
-            const SizedBox(height: Space.lg),
-            PrimaryButton(
-              label: 'Send',
-              onPressed: () =>
-                  Navigator.pop(ctx, int.tryParse(controller.text.trim())),
-            ),
-          ],
+              const SizedBox(height: Space.lg),
+              TextField(
+                controller: c.first,
+                autofocus: true,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Posted limit (${unitLabel(units)})',
+                ),
+              ),
+              const SizedBox(height: Space.lg),
+              PrimaryButton(
+                label: 'Send',
+                onPressed: () =>
+                    Navigator.pop(ctx, int.tryParse(c.first.text.trim())),
+              ),
+            ],
+          ),
         ),
       ),
     );
-    controller.dispose();
     if (posted == null || posted <= 0) return;
     final mps = units == SpeedUnits.mph ? posted * mph : posted * kmh;
     final db = ref.read(databaseProvider);
@@ -604,6 +645,7 @@ class _TripMap extends ConsumerWidget {
     required this.segments,
     required this.score,
     required this.units,
+    this.loading = false,
   });
 
   final List<Sample> samples;
@@ -611,20 +653,25 @@ class _TripMap extends ConsumerWidget {
   final TripScoreView? score;
   final SpeedUnits units;
 
+  /// The samples are still on their way from the database.
+  final bool loading;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scheme = Theme.of(context).colorScheme;
     // Never build a GoogleMap before the SDK has its key (bootstrap.dart):
     // on iOS that aborts the process. While the key is on its way the
     // placeholder shows, which is also what a build without a key shows.
+    final surface = ref.watch(tripMapSurfaceProvider);
+    if (surface != null && samples.length >= 2) return surface(context);
     final mapsReady = ref.watch(mapsReadyProvider);
     final ready = mapsReady.value == true;
     if (!ready || samples.length < 2) {
       final String message;
-      if (samples.length < 2) {
-        message = 'Route not saved for this trip.';
-      } else if (mapsReady.isLoading) {
+      if (loading || mapsReady.isLoading) {
         message = 'Loading the map…';
+      } else if (samples.length < 2) {
+        message = 'Route not saved for this trip.';
       } else {
         message = 'Map not available in this version.';
       }

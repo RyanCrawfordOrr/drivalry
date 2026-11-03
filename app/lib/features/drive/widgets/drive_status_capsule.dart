@@ -37,27 +37,54 @@ class DriveStatusCapsule extends StatelessWidget {
       .replaceAll(RegExp(r'[  ]'), ' ')
       .toLowerCase();
 
-  /// The one-line status for every state but recording (null then).
+  /// The one-line status for every state but recording (null then). Short
+  /// on purpose: the capsule shares its row with three round buttons on a
+  /// 360 wide phone, and it must never wrap. The full sentence lives in
+  /// [statusDetail], at the top of the auto-detect sheet.
   static String? statusText(TrackingUiState state, {int? nowMs}) {
     final now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
     final plugin = state.plugin;
-    if (state.simulating) return 'Replaying a drive…';
+    if (state.simulating) return 'Replaying…';
     if (state.live != null) return null;
-    if (!plugin.pluginAvailable) {
-      return 'Auto-detect is not available on this device';
-    }
-    if (!plugin.enabled) return 'Auto-detect is off';
+    if (!plugin.pluginAvailable) return 'Auto-detect unavailable';
+    if (!plugin.enabled) return 'Auto-detect off';
     if (plugin.isPausedAt(now)) {
       final until = DateTime.fromMillisecondsSinceEpoch(plugin.pausedUntil);
       return 'Paused until ${clock(until)}';
+    }
+    if (plugin.phase == TrackingPhase.tentative) return 'Checking…';
+    if (!plugin.permissions.sufficientForAutoTracking) {
+      return 'Set up auto-detect';
+    }
+    return 'Ready';
+  }
+
+  /// What [statusText] stands for, in one or two lines.
+  static String statusDetail(TrackingUiState state, {int? nowMs}) {
+    final now = nowMs ?? DateTime.now().millisecondsSinceEpoch;
+    final plugin = state.plugin;
+    if (state.simulating) {
+      return 'Replaying a drive through the same scoring as a real one.';
+    }
+    if (state.live != null) return 'Recording. Scored when you park.';
+    if (!plugin.pluginAvailable) {
+      return 'Auto-detect is not available on this phone.';
+    }
+    if (!plugin.enabled) {
+      return 'Auto-detect is off, so drives are not recorded.';
+    }
+    if (plugin.isPausedAt(now)) {
+      final until = DateTime.fromMillisecondsSinceEpoch(plugin.pausedUntil);
+      return 'Paused until ${clock(until)}. Drives are not recorded until '
+          'then.';
     }
     if (plugin.phase == TrackingPhase.tentative) {
       return 'Checking if you are driving…';
     }
     if (!plugin.permissions.sufficientForAutoTracking) {
-      return 'Finish setting up auto-detect';
+      return 'Finish setting up auto-detect so drives start on their own.';
     }
-    return 'Ready. Drives start on their own.';
+    return 'Ready. Drives start on their own, even with the app closed.';
   }
 
   @override
@@ -110,37 +137,36 @@ class DriveStatusCapsule extends StatelessWidget {
     } else {
       final busy =
           state.simulating || state.plugin.phase == TrackingPhase.tentative;
-      final watching = text == 'Ready. Drives start on their own.';
-      child = Row(
+      final watching = text == 'Ready';
+      // One line at every width: the row shrinks rather than wraps when a
+      // long paused time meets a narrow phone with the developer button.
+      child = FittedBox(
         key: Key('capsule-$text'),
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (busy)
-            const SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          else if (watching)
-            PulsingDot(color: scheme.primary, size: 8)
-          else
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: scheme.outline,
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (busy)
+              const SizedBox.square(
+                dimension: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            else if (watching)
+              PulsingDot(color: scheme.primary, size: 8)
+            else
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: scheme.outline,
+                ),
               ),
-            ),
-          const SizedBox(width: Space.sm),
-          Flexible(
-            child: Text(
-              text ?? '',
-              style: context.label,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
+            const SizedBox(width: Space.sm),
+            Text(text ?? '', style: context.label, maxLines: 1),
+          ],
+        ),
       );
     }
 

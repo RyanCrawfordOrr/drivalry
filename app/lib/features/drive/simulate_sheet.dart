@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/router.dart';
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../tracking/simulated_tracking.dart';
 import '../../tracking/tracking_controller.dart';
@@ -14,11 +15,11 @@ import '../../widgets/friendly_error.dart';
 Future<void> showSimulateSheet(BuildContext context, WidgetRef ref) async {
   final packs = await ref.read(databaseProvider).installedPacks();
   if (!context.mounted) return;
-  final choice = await showModalBottomSheet<_SimChoice>(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
-    builder: (ctx) => _SimulateSheet(packs: packs),
+  final choice = await showDrivalrySheet<_SimChoice>(
+    context,
+    title: 'Simulate a drive',
+    scrollable: true,
+    builder: (_) => _SimulateSheet(packs: packs),
   );
   if (choice == null || !context.mounted) return;
 
@@ -123,24 +124,17 @@ class _SimulateSheetState extends State<_SimulateSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        0,
-        16,
-        16 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: ListView(
-        shrinkWrap: true,
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Simulate a drive', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 4),
           Text(
             'Plays a pretend drive through the same scoring as a real one.',
-            style: theme.textTheme.bodyMedium,
+            style: context.bodyMuted,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Space.lg),
           SegmentedButton<double>(
             segments: const [
               ButtonSegment(value: 0, label: Text('Instant')),
@@ -150,8 +144,9 @@ class _SimulateSheetState extends State<_SimulateSheet> {
             selected: {_speedUp},
             onSelectionChanged: (s) => setState(() => _speedUp = s.first),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Space.md),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.sentiment_satisfied_alt),
             title: const Text('Clean commute'),
             subtitle: const Text('Synthetic, 20 minutes, nothing to roast'),
@@ -161,6 +156,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
             ),
           ),
           ListTile(
+            contentPadding: EdgeInsets.zero,
             leading: const Icon(Icons.local_fire_department_outlined),
             title: const Text('Messy commute'),
             subtitle: const Text('Synthetic, speeding, a slam and phone use'),
@@ -169,16 +165,13 @@ class _SimulateSheetState extends State<_SimulateSheet> {
               _SimChoice(_SimKind.messy, speedUp: _speedUp),
             ),
           ),
-          const Divider(),
-          Text(
-            'A real route from an installed pack',
-            style: theme.textTheme.titleSmall,
-          ),
-          const SizedBox(height: 4),
+          const SizedBox(height: Space.xl),
+          const Kicker('From an installed pack'),
+          const SizedBox(height: Space.md),
           if (widget.packs.isEmpty)
             Text(
               'Install a speed-limit pack first (Settings › Speed-limit packs).',
-              style: theme.textTheme.bodySmall,
+              style: context.caption,
             )
           else ...[
             DropdownButtonFormField<Pack>(
@@ -198,7 +191,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
               }),
               decoration: const InputDecoration(labelText: 'Pack'),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.md),
             Row(
               children: [
                 Expanded(
@@ -211,7 +204,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: Space.md),
                 Expanded(
                   child: TextField(
                     controller: _lon,
@@ -224,10 +217,10 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.md),
             Row(
               children: [
-                const Text('Speeding'),
+                Text('Speeding', style: context.body),
                 Expanded(
                   child: Slider(
                     value: _speeding,
@@ -238,7 +231,10 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                 ),
               ],
             ),
-            FilledButton.icon(
+            const SizedBox(height: Space.md),
+            PrimaryButton(
+              label: 'Drive from here',
+              icon: Icons.route,
               onPressed: () {
                 final lat = double.tryParse(_lat.text.trim());
                 final lon = double.tryParse(_lon.text.trim());
@@ -255,8 +251,6 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                   ),
                 );
               },
-              icon: const Icon(Icons.route),
-              label: const Text('Drive from here'),
             ),
           ],
         ],

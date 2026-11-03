@@ -204,22 +204,23 @@ class _Page extends StatelessWidget {
       Text(body, style: context.bodyMuted),
       if (status != null) Align(alignment: Alignment.centerLeft, child: status),
     ];
+    // The words start near the top of the page (docs/12 §2: no empty band
+    // over 48 px); the dots and the button sit at the bottom.
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         Space.gutter,
-        Space.xxxl,
+        Space.xl,
         Space.gutter,
         Space.xl,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Spacer(flex: 2),
           for (final (i, w) in staged.indexed) ...[
             if (i > 0) SizedBox(height: i == 1 ? Space.xl : Space.md),
             Reveal(delay: Reveal.stagger(i), child: w),
           ],
-          const Spacer(flex: 3),
+          const Spacer(),
           Reveal(
             delay: Reveal.stagger(staged.length),
             child: Column(

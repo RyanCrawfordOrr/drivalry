@@ -119,52 +119,62 @@ class TripCard extends StatelessWidget {
       );
     }
 
+    // Ring and verdict side by side, the figures across the full width
+    // underneath: three columns beside a 96 ring do not fit at 360 wide.
     return Tile(
       onTap: onTap,
       onLongPress: onLongPress,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Hero(
-            tag: tripRingTag(trip.id),
-            child: ScoreRing(
-              score: scored ? s.score : null,
-              size: 96,
-              stroke: 9,
-              reckless: s?.reckless ?? false,
-              animate: true,
-            ),
-          ),
-          const SizedBox(width: Space.lg),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(tripDateLabel(trip), style: context.caption),
-                const SizedBox(height: Space.xs),
-                Text(
-                  verdict,
-                  style: context.title.copyWith(fontStyle: italic),
-                  maxLines: 3,
-                  overflow: TextOverflow.ellipsis,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Hero(
+                tag: tripRingTag(trip.id),
+                child: ScoreRing(
+                  score: scored ? s.score : null,
+                  size: 96,
+                  stroke: 9,
+                  reckless: s?.reckless ?? false,
+                  animate: true,
                 ),
-                const SizedBox(height: Space.md),
-                Row(
+              ),
+              const SizedBox(width: Space.lg),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: _MiniStat(value: distance, label: 'Distance'),
+                    Text(tripDateLabel(trip), style: context.caption),
+                    const SizedBox(height: Space.xs),
+                    Text(
+                      verdict,
+                      style: context.title.copyWith(fontStyle: italic),
+                      maxLines: 5,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Expanded(
-                      child: _MiniStat(value: time, label: 'Time'),
-                    ),
-                    if (scored)
-                      Expanded(
-                        child: _MiniStat(value: '+${s.xp}', label: 'XP'),
-                      ),
                   ],
                 ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Space.lg),
+          Row(
+            children: [
+              Expanded(
+                child: _MiniStat(value: distance, label: 'Distance'),
+              ),
+              const SizedBox(width: Space.sm),
+              Expanded(
+                child: _MiniStat(value: time, label: 'Time'),
+              ),
+              if (scored) ...[
+                const SizedBox(width: Space.sm),
+                Expanded(
+                  child: _MiniStat(value: '+${s.xp}', label: 'XP'),
+                ),
               ],
-            ),
+            ],
           ),
         ],
       ),
@@ -183,6 +193,7 @@ class _MiniStat extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(value, style: context.label.copyWith(fontWeight: FontWeight.w700)),
+        const SizedBox(height: 2),
         Text(label, style: context.caption),
       ],
     );

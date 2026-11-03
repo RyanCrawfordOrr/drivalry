@@ -128,24 +128,29 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final installed = ref.watch(installedPacksProvider).value ?? const <Pack>[];
     final installedRegions = {for (final p in installed) p.region};
 
     return Scaffold(
       appBar: AppBar(title: const Text('Speed-limit packs')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.lg,
+          Space.gutter,
+          Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           Text(
             'The roads and posted limits for one region, kept on your phone. '
             'Nothing is looked up online while you drive.',
-            style: theme.textTheme.bodyMedium,
+            style: context.bodyMuted,
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Space.lg),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: Space.sm,
+            runSpacing: Space.sm,
             children: [
               FilledButton.icon(
                 onPressed: _busy ? null : _installForLocation,
@@ -165,59 +170,77 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
             ],
           ),
           if (_busy) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.lg),
             LinearProgressIndicator(value: _progress),
           ],
           if (_message != null) ...[
-            const SizedBox(height: 8),
-            Text(_message!, style: theme.textTheme.bodySmall),
+            const SizedBox(height: Space.md),
+            Text(_message!, style: context.caption),
           ],
-          const SizedBox(height: 16),
-          Text('Installed', style: theme.textTheme.titleSmall),
+          const SizedBox(height: Space.section),
+          const Kicker('Installed'),
+          const SizedBox(height: Space.md),
           if (installed.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: Text(
-                'None yet. Trips are still recorded and scored for smoothness, '
-                'attention and efficiency; speeding stays silent until a pack '
-                'covers your area.',
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
-          for (final p in installed)
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.map_outlined),
-                title: Text(p.name),
-                subtitle: Text(
-                  '${p.region} · OSM ${_date(p.osmTimestamp)} · '
-                  '${(p.bytes / 1e6).toStringAsFixed(1)} MB · '
-                  '${NumberFormat.compact().format(p.wayCount)} roads',
-                ),
-                trailing: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  tooltip: 'Remove',
-                  onPressed: _busy
-                      ? null
-                      : () => _run(() => _manager.removeRegion(p.region)),
-                ),
-              ),
-            ),
-          if (_index != null) ...[
-            const SizedBox(height: 16),
             Text(
-              'Available (built ${_date(_index!.builtAt)})',
-              style: theme.textTheme.titleSmall,
+              'None yet. Trips are still recorded and scored for smoothness, '
+              'attention and efficiency; speeding stays silent until a pack '
+              'covers your area.',
+              style: context.bodyMuted,
             ),
+          for (final (i, p) in installed.indexed) ...[
+            if (i > 0) const SizedBox(height: Space.md),
+            Tile(
+              padding: const EdgeInsets.fromLTRB(
+                Space.gutter,
+                Space.lg,
+                Space.sm,
+                Space.lg,
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.map_outlined, color: scheme.primary),
+                  const SizedBox(width: Space.lg),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(p.name, style: context.title),
+                        const SizedBox(height: Space.xs),
+                        Text(
+                          '${p.region} · OSM ${_date(p.osmTimestamp)} · '
+                          '${(p.bytes / 1e6).toStringAsFixed(1)} MB · '
+                          '${NumberFormat.compact().format(p.wayCount)} roads',
+                          style: context.caption,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: Space.sm),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: 'Remove',
+                    onPressed: _busy
+                        ? null
+                        : () => _run(() => _manager.removeRegion(p.region)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (_index != null) ...[
+            const SizedBox(height: Space.section),
+            Kicker('Available (built ${_date(_index!.builtAt)})'),
+            const SizedBox(height: Space.xs),
             for (final e in _index!.packs)
               ListTile(
-                dense: true,
-                title: Text(e.name),
+                contentPadding: EdgeInsets.zero,
+                title: Text(e.name, style: context.body),
                 subtitle: Text(
                   '${e.region} · ${(e.bytes / 1e6).toStringAsFixed(1)} MB',
+                  style: context.caption,
                 ),
                 trailing: installedRegions.contains(e.region)
-                    ? Icon(Icons.check, color: theme.colorScheme.primary)
+                    ? Icon(Icons.check, color: scheme.primary)
                     : TextButton(
                         onPressed: _busy ? null : () => _install(e),
                         child: const Text('Install'),

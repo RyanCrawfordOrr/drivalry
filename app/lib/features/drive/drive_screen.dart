@@ -373,6 +373,12 @@ class _DriveHome extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          // The capsule has room for a word or two; the sentence lives here.
+          Text(
+            DriveStatusCapsule.statusDetail(state, nowMs: now),
+            style: ctx.bodyMuted,
+          ),
+          const SizedBox(height: Space.md),
           if (recording)
             SheetAction(
               icon: Icons.stop_circle_outlined,

@@ -117,7 +117,7 @@ void main() {
 
       // Map-first home: capsule, round buttons, empty sheet copy.
       expect(find.byKey(const Key('first-run')), findsNothing);
-      expect(find.text('Ready. Drives start on their own.'), findsOneWidget);
+      expect(find.text('Ready'), findsOneWidget);
       expect(find.text('Go for a drive.'), findsOneWidget);
       expect(find.text("We'll score it when you park."), findsOneWidget);
       expect(find.textContaining('imulate'), findsNothing);
@@ -158,7 +158,7 @@ void main() {
       await pumpFor(tester, const Duration(seconds: 2));
 
       expect(find.byKey(const Key('first-run')), findsNothing);
-      expect(find.text('Finish setting up auto-detect'), findsOneWidget);
+      expect(find.text('Set up auto-detect'), findsOneWidget);
       expect(find.byKey(const Key('auto-detect-tile')), findsOneWidget);
       expect(find.text('Turn on auto-detect'), findsOneWidget);
       expect(find.text('LAST TRIP'), findsOneWidget);
@@ -169,8 +169,15 @@ void main() {
         closeTo(844 * (1 - DriveSheetSizes.peekIdle), 1),
       );
 
-      await tester.tap(find.text('Finish setting up auto-detect'));
+      await tester.tap(find.text('Set up auto-detect'));
       await pumpFor(tester, const Duration(seconds: 1));
+      // The sheet carries the sentence the capsule has no room for.
+      expect(
+        find.text(
+          'Finish setting up auto-detect so drives start on their own.',
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Start a drive now'), findsOneWidget);
       await tester.tap(find.text('Start a drive now'));
       await pumpFor(tester, const Duration(seconds: 1));
