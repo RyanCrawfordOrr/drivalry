@@ -123,7 +123,7 @@ class _FirstRunFlowState extends State<FirstRunFlow> {
               kicker: 'Location',
               headline: 'Allow location all the time.',
               body:
-                  'That is how a drive starts on its own, even with the app '
+                  'Drives then start on their own, even when the app is '
                   'closed.',
               button: PrimaryButton(
                 label: 'Allow',
@@ -196,6 +196,14 @@ class _Page extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    // Each element arrives a beat after the last (docs/12 §5b).
+    final staged = <Widget>[
+      Icon(icon, size: 48, color: scheme.primary),
+      Kicker(kicker),
+      Text(headline, style: context.headline),
+      Text(body, style: context.bodyMuted),
+      if (status != null) Align(alignment: Alignment.centerLeft, child: status),
+    ];
     return Padding(
       padding: const EdgeInsets.fromLTRB(
         Space.gutter,
@@ -207,25 +215,26 @@ class _Page extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Spacer(flex: 2),
-          Icon(icon, size: 48, color: scheme.primary),
-          const SizedBox(height: Space.xl),
-          Kicker(kicker),
-          const SizedBox(height: Space.md),
-          Text(headline, style: context.headline),
-          const SizedBox(height: Space.md),
-          Text(body, style: context.bodyMuted),
-          if (status != null) ...[
-            const SizedBox(height: Space.lg),
-            Align(alignment: Alignment.centerLeft, child: status),
+          for (final (i, w) in staged.indexed) ...[
+            if (i > 0) SizedBox(height: i == 1 ? Space.xl : Space.md),
+            Reveal(delay: Reveal.stagger(i), child: w),
           ],
           const Spacer(flex: 3),
-          _Dots(count: 3, current: current),
-          const SizedBox(height: Space.xl),
-          button,
-          const SizedBox(height: Space.sm),
-          SizedBox(
-            height: Sizes.touch,
-            child: secondary == null ? null : Center(child: secondary),
+          Reveal(
+            delay: Reveal.stagger(staged.length),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _Dots(count: 3, current: current),
+                const SizedBox(height: Space.xl),
+                button,
+                const SizedBox(height: Space.sm),
+                SizedBox(
+                  height: Sizes.touch,
+                  child: secondary == null ? null : Center(child: secondary),
+                ),
+              ],
+            ),
           ),
         ],
       ),

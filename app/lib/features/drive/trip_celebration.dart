@@ -22,9 +22,8 @@ import 'share_card.dart';
 /// Pure: no clock, no database. The provider below feeds it snapshots and
 /// persists [shown].
 class CelebrationQueue {
-  CelebrationQueue({Set<String> shown = const {}, bool primed = false})
-    : _shown = {...shown},
-      _primed = primed;
+  CelebrationQueue({Set<String> shown = const {}, this._primed = false})
+    : _shown = {...shown};
 
   final Set<String> _shown;
   final List<TripWithScore> _queued = [];
@@ -138,7 +137,12 @@ class TripCelebrations extends Notifier<List<TripWithScore>> {
     await _ready;
     final q = _queue;
     if (q == null || !ref.mounted) return;
-    _emit(q.onTrips(rows, recording: _recording), q);
+    final queuedBefore = q.queued.length;
+    final due = q.onTrips(rows, recording: _recording);
+    // A score that lands mid-drive still gets its buzz; the moment itself
+    // waits until the car is parked (showCelebration buzzes on its own).
+    if (due.isEmpty && q.queued.length > queuedBefore) Haptics.success();
+    _emit(due, q);
   }
 
   Future<void> _onParked() async {

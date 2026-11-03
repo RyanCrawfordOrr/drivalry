@@ -164,6 +164,7 @@ class _CelebrationViewState extends State<_CelebrationView>
                             size: 200,
                             stroke: 16,
                             label: widget.xp == null ? null : '',
+                            animate: true,
                           ),
                           if (_stamp)
                             FadeTransition(

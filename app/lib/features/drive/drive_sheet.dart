@@ -19,7 +19,11 @@ abstract final class DriveSheetSizes {
 /// radius, a handle, and three snap stops. When [recording] flips the sheet
 /// animates to the matching peek so the live block is visible.
 class DriveSheet extends StatefulWidget {
-  const DriveSheet({super.key, required this.recording, required this.children});
+  const DriveSheet({
+    super.key,
+    required this.recording,
+    required this.children,
+  });
 
   final bool recording;
 

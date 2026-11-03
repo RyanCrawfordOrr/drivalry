@@ -81,6 +81,32 @@ String formatElapsed(Duration d) {
   return '${d.inSeconds} s';
 }
 
+/// The figure [formatSpeed] prints, for animated numbers.
+double speedValue(double mps, SpeedUnits u) =>
+    u == SpeedUnits.mph ? mpsToMph(mps) : mpsToKmh(mps);
+
+/// The figure, decimals and unit [formatDistance] prints, for animated
+/// numbers.
+({double value, int decimals, String unit}) distanceParts(
+  double metres,
+  SpeedUnits u,
+) {
+  if (u == SpeedUnits.mph) {
+    final mi = metres / 1609.344;
+    return (value: mi, decimals: mi < 10 ? 1 : 0, unit: 'mi');
+  }
+  final km = metres / 1000;
+  return (value: km, decimals: km < 10 ? 1 : 0, unit: 'km');
+}
+
+/// The figure and unit [formatElapsed] prints while it is a single number
+/// ("14 min", "45 s"); null once hours are involved.
+({int value, String unit})? elapsedParts(Duration d) {
+  if (d.inHours >= 1) return null;
+  if (d.inMinutes >= 1) return (value: d.inMinutes, unit: 'min');
+  return (value: d.inSeconds, unit: 's');
+}
+
 /// "30 ft" / "10 m", for a GPS accuracy radius. Never metres in copy for
 /// people who drive in miles (docs/12 §6).
 String formatShortDistance(double metres, SpeedUnits u) {

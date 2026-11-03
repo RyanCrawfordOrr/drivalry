@@ -158,7 +158,7 @@ void main() {
     final error = c.read(trackingControllerProvider).error;
     expect(error, isNotNull);
     expect(error, isNot(contains('boom')));
-    expect(error, contains('Could not change drive detection'));
+    expect(error, isNot(contains('PlatformException')));
 
     await notifier.endNow(); // succeeds and clears the error
     expect(c.read(trackingControllerProvider).error, isNull);

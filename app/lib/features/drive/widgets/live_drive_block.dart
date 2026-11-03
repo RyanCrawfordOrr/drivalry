@@ -8,7 +8,8 @@ import '../../../widgets/units.dart';
 
 /// The recording block at the top of the Drive sheet (docs/12 §7): the speed
 /// in `display`, its unit in `label`, the limit and road as `title`, distance
-/// and time as stat tiles, and one full-width "End drive".
+/// and time as stat tiles, and one full-width "End drive". The numbers count
+/// rather than jump and the recording dot breathes (docs/12 §5b).
 class LiveDriveBlock extends StatelessWidget {
   const LiveDriveBlock({
     super.key,
@@ -44,6 +45,9 @@ class LiveDriveBlock extends StatelessWidget {
     final hasLimit = limit != null && limit.hasLimit;
     final over = hasLimit ? overBy(limit) : 0;
     final road = limit?.roadName;
+    final distance = distanceParts(live.distanceM, units);
+    final elapsed = live.elapsedAt(now);
+    final time = elapsedParts(elapsed);
 
     return Column(
       key: const Key('live-block'),
@@ -57,17 +61,22 @@ class LiveDriveBlock extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.baseline,
               textBaseline: TextBaseline.alphabetic,
               children: [
-                Text(
-                  formatSpeed(live.speedMps, units, withUnit: false),
+                KeyedSubtree(
                   key: const Key('live-speed'),
-                  style: context.display,
+                  child: AnimatedNumber(
+                    value: speedValue(live.speedMps, units),
+                    style: context.display,
+                    duration: Motion.celebrate,
+                  ),
                 ),
                 const SizedBox(width: Space.sm),
                 Text(unitLabel(units), style: context.label),
               ],
             ),
             const Spacer(),
-            const Pill('Recording', tone: PillTone.live, dot: true),
+            PulsingDot(color: scheme.primary, size: 8),
+            const SizedBox(width: Space.xs),
+            Text('Recording', style: context.label),
           ],
         ),
         const SizedBox(height: Space.sm),
@@ -99,19 +108,67 @@ class LiveDriveBlock extends StatelessWidget {
             style: context.bodyMuted,
           ),
         const SizedBox(height: Space.lg),
-        StatGrid(
-          columns: 2,
+        Row(
           children: [
-            StatTile(
-              value: formatDistance(live.distanceM, units),
-              label: 'Distance',
+            Expanded(
+              child: _LiveStat(
+                label: 'Distance',
+                child: AnimatedNumber(
+                  value: distance.value,
+                  decimals: distance.decimals,
+                  suffix: ' ${distance.unit}',
+                  style: _statStyle(context),
+                ),
+              ),
             ),
-            StatTile(value: formatElapsed(live.elapsedAt(now)), label: 'Time'),
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: _LiveStat(
+                label: 'Time',
+                child: time == null
+                    ? Text(formatElapsed(elapsed), style: _statStyle(context))
+                    : AnimatedNumber(
+                        value: time.value,
+                        suffix: ' ${time.unit}',
+                        style: _statStyle(context),
+                      ),
+              ),
+            ),
           ],
         ),
         const SizedBox(height: Space.lg),
         PrimaryButton(label: 'End drive', onPressed: onEnd),
       ],
+    );
+  }
+
+  static TextStyle _statStyle(BuildContext context) =>
+      context.title.copyWith(fontWeight: FontWeight.w700);
+}
+
+/// Same shape as `StatTile`, but the figure is a widget so it can count.
+class _LiveStat extends StatelessWidget {
+  const _LiveStat({required this.label, required this.child});
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tile(
+      padding: const EdgeInsets.fromLTRB(
+        Space.lg,
+        Space.lg,
+        Space.lg,
+        Space.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          child,
+          const SizedBox(height: Space.xs),
+          Text(label, style: context.caption),
+        ],
+      ),
     );
   }
 }

@@ -38,32 +38,19 @@ class PassengerCard extends StatelessWidget {
           const SizedBox(height: Space.xs),
           Text(detail, style: context.caption),
           const SizedBox(height: Space.lg),
-          Row(
-            children: [
-              Expanded(
-                child: hintPassenger
-                    ? PrimaryButton(
-                        label: 'Passenger',
-                        onPressed: () => onAnswer(true),
-                      )
-                    : SecondaryButton(
-                        label: 'Passenger',
-                        onPressed: () => onAnswer(true),
-                      ),
-              ),
-              const SizedBox(width: Space.md),
-              Expanded(
-                child: hintPassenger
-                    ? SecondaryButton(
-                        label: 'I drove',
-                        onPressed: () => onAnswer(false),
-                      )
-                    : PrimaryButton(
-                        label: 'I drove',
-                        onPressed: () => onAnswer(false),
-                      ),
-              ),
-            ],
+          // One primary button per state (docs/12 §1): the likely answer is
+          // filled, the other is a text button underneath.
+          PrimaryButton(
+            label: hintPassenger ? 'Passenger' : 'I drove',
+            onPressed: () => onAnswer(hintPassenger),
+          ),
+          const SizedBox(height: Space.xs),
+          SizedBox(
+            width: double.infinity,
+            child: TextButton(
+              onPressed: () => onAnswer(!hintPassenger),
+              child: Text(hintPassenger ? 'I drove' : 'Passenger'),
+            ),
           ),
         ],
       ),

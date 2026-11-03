@@ -8,14 +8,17 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/bootstrap.dart';
 import '../../../app/routes.dart';
+import '../../../app/ui/ui.dart';
 import '../../../config/env.dart';
-import '../../../data/repos/presence_repo.dart';
-import '../../../data/supabase/supabase_providers.dart';
-import '../../../tracking/tracking_controller.dart';
-import '../../../tracking/tracking_models.dart';
 import '../../../data/db/database.dart' show Place;
 import '../../../data/repos/circles_sync.dart';
 import '../../../data/repos/places_repo.dart';
+import '../../../data/repos/presence_repo.dart';
+import '../../../data/supabase/supabase_providers.dart';
+import '../../../tracking/providers.dart';
+import '../../../tracking/tracking_controller.dart';
+import '../../../tracking/tracking_models.dart';
+import '../../../widgets/units.dart';
 import '../../places/save_place_sheet.dart';
 import 'friend_marker.dart';
 import 'marker_icons.dart';
@@ -25,13 +28,25 @@ import 'marker_icons.dart';
 /// stand-in and keep the chips, buttons and notices that sit on top real.
 final friendsMapSurfaceProvider = Provider<WidgetBuilder?>((_) => null);
 
-/// Live map of friends and circle members (ADR-018). Embedded at the top of
-/// the Drive tab and shown full screen at [Routes.friendsMap]. Subscribes to
-/// presence only while mounted.
+/// Live map of friends and circle members (ADR-018). Full-bleed under the
+/// Drive tab ([embedded]) and full screen at [Routes.friendsMap]. Subscribes
+/// to presence only while mounted. When it cannot render it explains itself
+/// in one calm line, never in build detail.
 class FriendsMap extends ConsumerStatefulWidget {
-  const FriendsMap({super.key, this.fullScreen = false});
+  const FriendsMap({
+    super.key,
+    this.fullScreen = false,
+    this.embedded = false,
+    this.overlayTop = 0,
+  });
 
   final bool fullScreen;
+
+  /// Behind the Drive tab's floating chrome and sheet: the circle chips and
+  /// notices sit at [overlayTop] instead of the top edge, and there is no
+  /// expand button because the map already fills the screen.
+  final bool embedded;
+  final double overlayTop;
 
   @override
   ConsumerState<FriendsMap> createState() => _FriendsMapState();
@@ -61,15 +76,16 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
     final surface = ref.watch(friendsMapSurfaceProvider);
     if (surface == null && !Env.hasSupabase) {
       return _MapNotice(
-        icon: Icons.cloud_off_outlined,
-        text:
-            'Offline build: the friends map needs the Drivalry cloud project.',
+        kicker: 'Friends',
+        text: 'Friends are not available in this version.',
+        embedded: widget.embedded,
       );
     }
     if (!ref.watch(isSignedInProvider)) {
       return _MapNotice(
-        icon: Icons.people_outline,
-        text: 'Sign in to see your friends on the map.',
+        kicker: 'Friends map',
+        text: 'Sign in to see friends on the map.',
+        embedded: widget.embedded,
         action: FilledButton.tonal(
           onPressed: () => context.push(Routes.signIn),
           child: const Text('Sign in'),
@@ -79,11 +95,11 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
     final mapsReady = ref.watch(mapsReadyProvider);
     if (surface == null && mapsReady.value != true) {
       return _MapNotice(
-        icon: Icons.map_outlined,
+        kicker: 'Map',
         text: mapsReady.isLoading
-            ? 'Loading map…'
-            : 'Map unavailable: build with --dart-define-from-file=../.env '
-                  'to show friends.',
+            ? 'Loading the map…'
+            : 'Map not available in this version.',
+        embedded: widget.embedded,
       );
     }
 
@@ -112,6 +128,20 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
       _fitted = true;
       unawaited(_fit(markers));
     }
+
+    final chips = circles.isEmpty
+        ? null
+        : _CircleChips(
+            options: [for (final c in circles) (c.id, c.name)],
+            selected: filter,
+            onSelected: (id) => setState(() {
+              _circleFilter = id;
+              _fitted = false;
+            }),
+          );
+    final noFriends = markers.isEmpty && !presence.isLoading
+        ? const _NoFriendsNotice()
+        : null;
 
     return Stack(
       children: [
@@ -152,71 +182,57 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
               }
             },
           ),
-        if (circles.isNotEmpty)
+        if (widget.embedded)
           Positioned(
-            top: 8,
-            left: 8,
-            right: 60,
-            child: _CircleChips(
-              options: [for (final c in circles) (c.id, c.name)],
-              selected: filter,
-              onSelected: (id) => setState(() {
-                _circleFilter = id;
-                _fitted = false;
-              }),
+            top: widget.overlayTop,
+            left: Space.gutter,
+            right: Space.gutter,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ?chips,
+                if (chips != null && noFriends != null)
+                  const SizedBox(height: Space.sm),
+                ?noFriends,
+              ],
             ),
-          ),
-        Positioned(
-          top: 8,
-          right: 8,
-          child: Column(
-            children: [
-              if (!widget.fullScreen)
+          )
+        else ...[
+          if (chips != null)
+            Positioned(top: Space.sm, left: Space.sm, right: 60, child: chips),
+          Positioned(
+            top: Space.sm,
+            right: Space.sm,
+            child: Column(
+              children: [
+                if (!widget.fullScreen)
+                  IconButton.filledTonal(
+                    tooltip: 'Expand map',
+                    onPressed: () => context.push(Routes.friendsMap),
+                    icon: const Icon(Icons.open_in_full),
+                  ),
                 IconButton.filledTonal(
-                  tooltip: 'Expand map',
-                  onPressed: () => context.push(Routes.friendsMap),
-                  icon: const Icon(Icons.open_in_full),
+                  tooltip: 'Show everyone',
+                  onPressed: markers.isEmpty ? null : () => _fit(markers),
+                  icon: const Icon(Icons.fit_screen_outlined),
                 ),
-              IconButton.filledTonal(
-                tooltip: 'Show everyone',
-                onPressed: markers.isEmpty ? null : () => _fit(markers),
-                icon: const Icon(Icons.fit_screen_outlined),
-              ),
-            ],
-          ),
-        ),
-        if (markers.isEmpty && !presence.isLoading)
-          Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 8, 12),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'No friends sharing yet',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ),
-                    TextButton.icon(
-                      onPressed: () => context.push(Routes.addFriend),
-                      icon: const Icon(Icons.person_add_alt_1_outlined),
-                      label: const Text('Add friend'),
-                    ),
-                  ],
-                ),
-              ),
+              ],
             ),
           ),
+          if (noFriends != null)
+            Positioned(
+              left: Space.md,
+              right: Space.md,
+              bottom: Space.md,
+              child: noFriends,
+            ),
+        ],
         if (presence.isLoading && markers.isEmpty)
-          const Positioned(
+          Positioned(
             left: 0,
             right: 0,
-            top: 0,
-            child: LinearProgressIndicator(minHeight: 2),
+            top: widget.embedded ? widget.overlayTop : 0,
+            child: const LinearProgressIndicator(minHeight: 2),
           ),
       ],
     );
@@ -308,114 +324,164 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
   };
 
   Future<void> _showFriend(BuildContext context, FriendMarker m) =>
-      showModalBottomSheet<void>(
-        context: context,
-        showDragHandle: true,
-        builder: (ctx) => FriendSheet(marker: m),
-      );
+      showDrivalrySheet<void>(context, builder: (_) => FriendSheet(marker: m));
 }
 
-/// Bottom sheet for a tapped marker.
-class FriendSheet extends StatelessWidget {
+/// Bottom sheet for a tapped marker: who, where they are at, and two ways on.
+class FriendSheet extends ConsumerWidget {
   const FriendSheet({super.key, required this.marker});
 
   final FriendMarker marker;
 
   @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final now = DateTime.now().toUtc();
     final row = marker.row;
     final battery = row.battery;
     final driving = marker.isDriving(now);
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+    final units = resolveUnits(
+      ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
+    );
+    final detail = [
+      marker.statusLine(now),
+      if (battery != null) '${(battery * 100).round()}% battery',
+      if (driving && row.speed != null) formatSpeed(row.speed!, units),
+    ].join(' · ');
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Row(
           children: [
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: CircleAvatar(
-                backgroundColor: driving
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.secondary,
-                foregroundColor: Colors.white,
-                child: Text(marker.initials),
-              ),
-              title: Text(marker.title, style: theme.textTheme.titleMedium),
-              subtitle: Text(
-                [
-                  marker.statusLine(now),
-                  if (battery != null) '${(battery * 100).round()}% battery',
-                  if (driving && row.speed != null)
-                    '${(row.speed! * 2.23694).round()} mph',
-                ].join(' · '),
-              ),
+            Avatar(
+              name: marker.title,
+              size: AvatarSize.lg,
+              color: driving ? scheme.primary : scheme.secondary,
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => launchUrl(
-                      Uri.parse(
-                        'https://www.google.com/maps/search/?api=1&query='
-                        '${row.lat},${row.lon}',
-                      ),
-                      mode: LaunchMode.externalApplication,
-                    ),
-                    icon: const Icon(Icons.directions_outlined),
-                    label: const Text('Open in Google Maps'),
+            const SizedBox(width: Space.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(marker.title, style: context.title),
+                  const SizedBox(height: Space.xs),
+                  Row(
+                    children: [
+                      if (driving) ...[
+                        PulsingDot(color: scheme.primary, size: 6),
+                        const SizedBox(width: Space.xs),
+                      ],
+                      Expanded(child: Text(detail, style: context.caption)),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.tonalIcon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      context.push(Routes.userProfile(row.userId));
-                    },
-                    icon: const Icon(Icons.person_outline),
-                    label: const Text('View profile'),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
+        const SizedBox(height: Space.xl),
+        SecondaryButton(
+          label: 'Directions',
+          icon: Icons.directions_outlined,
+          onPressed: () => launchUrl(
+            Uri.parse(
+              'https://www.google.com/maps/search/?api=1&query='
+              '${row.lat},${row.lon}',
+            ),
+            mode: LaunchMode.externalApplication,
+          ),
+        ),
+        const SizedBox(height: Space.sm),
+        PrimaryButton(
+          label: 'View profile',
+          icon: Icons.person_outline,
+          onPressed: () {
+            Navigator.of(context).pop();
+            context.push(Routes.userProfile(row.userId));
+          },
+        ),
+      ],
+    );
+  }
+}
+
+/// Calm panel in place of the map when it cannot render.
+class _MapNotice extends StatelessWidget {
+  const _MapNotice({
+    required this.kicker,
+    required this.text,
+    this.action,
+    this.embedded = false,
+  });
+
+  final String kicker;
+  final String text;
+  final Widget? action;
+  final bool embedded;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      color: scheme.surfaceContainerLow,
+      // Behind the Drive sheet only the upper half shows.
+      alignment: embedded ? const Alignment(0, -0.45) : Alignment.center,
+      padding: const EdgeInsets.all(Space.xxl),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Kicker(kicker),
+          const SizedBox(height: Space.md),
+          Text(text, textAlign: TextAlign.center, style: context.title),
+          if (action != null) ...[const SizedBox(height: Space.xl), action!],
+        ],
       ),
     );
   }
 }
 
-class _MapNotice extends StatelessWidget {
-  const _MapNotice({required this.icon, required this.text, this.action});
-
-  final IconData icon;
-  final String text;
-  final Widget? action;
+/// "No friends on the map yet · Add friend", floating over the map.
+class _NoFriendsNotice extends StatelessWidget {
+  const _NoFriendsNotice();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      color: theme.colorScheme.surfaceContainerHighest,
-      alignment: Alignment.center,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 32, color: theme.colorScheme.outline),
-          const SizedBox(height: 8),
-          Text(
-            text,
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall,
+    final scheme = Theme.of(context).colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: Radii.cardRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.12),
+            blurRadius: 24,
+            offset: const Offset(0, 8),
           ),
-          if (action != null) ...[const SizedBox(height: 8), action!],
         ],
+      ),
+      child: Material(
+        color: scheme.surfaceContainerHigh,
+        borderRadius: Radii.cardRadius,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            Space.lg,
+            Space.xs,
+            Space.sm,
+            Space.xs,
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text('No friends on the map yet', style: context.label),
+              ),
+              TextButton.icon(
+                onPressed: () => context.push(Routes.addFriend),
+                icon: const Icon(Icons.person_add_alt_1_outlined),
+                label: const Text('Add friend'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -445,7 +511,7 @@ class _CircleChips extends StatelessWidget {
             onSelected: (_) => onSelected(null),
           ),
           for (final (id, name) in options) ...[
-            const SizedBox(width: 6),
+            const SizedBox(width: Space.sm),
             ChoiceChip(
               label: Text(name),
               selected: selected == id,

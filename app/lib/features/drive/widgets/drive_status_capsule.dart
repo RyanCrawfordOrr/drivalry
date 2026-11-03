@@ -11,7 +11,8 @@ import 'live_drive_block.dart';
 
 /// The status capsule floating over the map (docs/12 §7 Drive). One line
 /// that reads the state at a glance; while recording it is the live speed
-/// in `display` with the limit beside it.
+/// in `display` with the limit beside it. Idle and recording cross-fade
+/// through a [StateSwitcher]; the recording dot breathes.
 class DriveStatusCapsule extends StatelessWidget {
   const DriveStatusCapsule({
     super.key,
@@ -28,9 +29,13 @@ class DriveStatusCapsule extends StatelessWidget {
   final VoidCallback? onTap;
   final int? nowMs;
 
-  /// "7 pm" / "7:30 pm".
-  static String clock(DateTime t) =>
-      DateFormat.jm().format(t).replaceAll(':00', '').toLowerCase();
+  /// "7 pm" / "7:30 pm". Plain spaces: the locale's narrow no-break space
+  /// before "pm" renders unevenly in some fonts.
+  static String clock(DateTime t) => DateFormat.jm()
+      .format(t)
+      .replaceAll(':00', '')
+      .replaceAll(RegExp(r'[  ]'), ' ')
+      .toLowerCase();
 
   /// The one-line status for every state but recording (null then).
   static String? statusText(TrackingUiState state, {int? nowMs}) {
@@ -38,13 +43,17 @@ class DriveStatusCapsule extends StatelessWidget {
     final plugin = state.plugin;
     if (state.simulating) return 'Replaying a drive…';
     if (state.live != null) return null;
-    if (!plugin.pluginAvailable) return 'Not available on this device';
+    if (!plugin.pluginAvailable) {
+      return 'Auto-detect is not available on this device';
+    }
     if (!plugin.enabled) return 'Auto-detect is off';
     if (plugin.isPausedAt(now)) {
       final until = DateTime.fromMillisecondsSinceEpoch(plugin.pausedUntil);
       return 'Paused until ${clock(until)}';
     }
-    if (plugin.phase == TrackingPhase.tentative) return 'Looks like a drive…';
+    if (plugin.phase == TrackingPhase.tentative) {
+      return 'Checking if you are driving…';
+    }
     if (!plugin.permissions.sufficientForAutoTracking) {
       return 'Finish setting up auto-detect';
     }
@@ -62,37 +71,48 @@ class DriveStatusCapsule extends StatelessWidget {
       final limit = liveLimit;
       final hasLimit = limit != null && limit.hasLimit;
       final over = hasLimit ? LiveDriveBlock.overBy(limit) : 0;
-      child = Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              Text(
-                formatSpeed(live.speedMps, units, withUnit: false),
-                style: context.display,
-              ),
-              const SizedBox(width: Space.sm),
-              Text(unitLabel(units), style: context.label),
-            ],
-          ),
-          if (hasLimit) ...[
-            const SizedBox(width: Space.md),
-            Pill(
-              'Limit ${limit.posted}',
-              tone: over >= 1 ? PillTone.danger : PillTone.primary,
+      // Scales down rather than clipping when a three-digit speed and the
+      // limit pill meet a narrow phone.
+      child = FittedBox(
+        key: const Key('capsule-recording'),
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            PulsingDot(color: scheme.primary, size: 8),
+            const SizedBox(width: Space.sm),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                AnimatedNumber(
+                  value: speedValue(live.speedMps, units),
+                  style: context.display,
+                  duration: Motion.celebrate,
+                ),
+                const SizedBox(width: Space.sm),
+                Text(unitLabel(units), style: context.label),
+              ],
             ),
+            if (hasLimit) ...[
+              const SizedBox(width: Space.md),
+              Pill(
+                'Limit ${limit.posted}',
+                tone: over >= 1 ? PillTone.danger : PillTone.primary,
+              ),
+            ],
           ],
-        ],
+        ),
       );
     } else {
       final busy =
           state.simulating || state.plugin.phase == TrackingPhase.tentative;
       final watching = text == 'Ready. Drives start on their own.';
       child = Row(
+        key: Key('capsule-$text'),
         mainAxisSize: MainAxisSize.min,
         children: [
           if (busy)
@@ -100,17 +120,26 @@ class DriveStatusCapsule extends StatelessWidget {
               dimension: 16,
               child: CircularProgressIndicator(strokeWidth: 2),
             )
+          else if (watching)
+            PulsingDot(color: scheme.primary, size: 8)
           else
             Container(
               width: 8,
               height: 8,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: watching ? scheme.primary : scheme.outline,
+                color: scheme.outline,
               ),
             ),
           const SizedBox(width: Space.sm),
-          Text(text ?? '', style: context.label),
+          Flexible(
+            child: Text(
+              text ?? '',
+              style: context.label,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       );
     }
@@ -145,7 +174,7 @@ class DriveStatusCapsule extends StatelessWidget {
                 horizontal: Space.lg,
                 vertical: Space.md,
               ),
-              child: child,
+              child: StateSwitcher(child: child),
             ),
           ),
         ),

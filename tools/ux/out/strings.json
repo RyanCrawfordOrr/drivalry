@@ -557,17 +557,17 @@
  {
   "file": "data/push/trip_scored_notifications.dart",
   "line": 57,
-  "text": "Trip scored ${score.score}. RECKLESS."
+  "text": "Drive scored ${score.score}. Reckless."
  },
  {
   "file": "data/push/trip_scored_notifications.dart",
   "line": 58,
-  "text": "Trip scored ${score.score}"
+  "text": "Drive scored ${score.score}"
  },
  {
   "file": "data/push/trip_scored_notifications.dart",
   "line": 62,
-  "text": "Open the trip for the breakdown."
+  "text": "Tap for the breakdown."
  },
  {
   "file": "data/repos/challenges_repo.dart",
@@ -3236,98 +3236,143 @@
  },
  {
   "file": "features/drive/drive_screen.dart",
-  "line": 74,
-  "text": "Friend requests"
- },
- {
-  "file": "features/drive/drive_screen.dart",
-  "line": 90,
-  "text": "Simulate a drive"
- },
- {
-  "file": "features/drive/drive_screen.dart",
-  "line": 91,
-  "text": "Speed-limit packs"
- },
- {
-  "file": "features/drive/drive_screen.dart",
-  "line": 145,
-  "text": "No trips yet"
- },
- {
-  "file": "features/drive/drive_screen.dart",
-  "line": 148,
-  "text": "Your first drive will show up here, scored on this phone. Or simulate one from the menu."
- },
- {
-  "file": "features/drive/drive_screen.dart",
-  "line": 159,
+  "line": 203,
   "text": "Last trip"
  },
  {
   "file": "features/drive/drive_screen.dart",
-  "line": 228,
-  "text": "Automatic (follow the pack / locale)"
+  "line": 337,
+  "text": "Almost there"
  },
  {
   "file": "features/drive/drive_screen.dart",
-  "line": 229,
-  "text": "Miles per hour"
+  "line": 343,
+  "text": "Set location to all the time and allow motion in your phone's settings."
  },
  {
   "file": "features/drive/drive_screen.dart",
-  "line": 230,
-  "text": "Kilometres per hour"
+  "line": 349,
+  "text": "Open settings"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 379,
+  "text": "End drive"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 385,
+  "text": "Turn on auto-detect"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 391,
+  "text": "Resume now"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 398,
+  "text": "Start a drive now"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 403,
+  "text": "Pause for 1 hour"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 408,
+  "text": "Pause for 4 hours"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 413,
+  "text": "Pause until tomorrow"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 418,
+  "text": "Turn off auto-detect"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 453,
+  "text": "I was the driver"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 454,
+  "text": "Mark as passenger"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 460,
+  "text": "Delete trip"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 485,
+  "text": "Go for a drive."
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 487,
+  "text": "We'll score it when you park."
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 556,
+  "text": "Friend requests"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 576,
+  "text": "Sign in"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 625,
+  "text": "Simulate a drive"
+ },
+ {
+  "file": "features/drive/drive_sheet.dart",
+  "line": 146,
+  "text": "Turn on auto-detect"
+ },
+ {
+  "file": "features/drive/drive_sheet.dart",
+  "line": 149,
+  "text": "Drives start on their own, even with the app closed."
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 15,
-  "text": "the highway"
- },
- {
-  "file": "features/drive/event_text.dart",
-  "line": 16,
-  "text": "a residential street"
- },
- {
-  "file": "features/drive/event_text.dart",
-  "line": 17,
-  "text": "that road"
+  "line": 19,
+  "text": "${formatSpeed(max, units, withUnit: false)} in a ${formatSpeed(limit, units, withUnit: false)} for ${formatDuration(e.durationS)}$where"
  },
  {
   "file": "features/drive/event_text.dart",
   "line": 23,
-  "text": "${formatSpeed(max, units, withUnit: false)} in a ${formatSpeed(limit, units, withUnit: false)} for ${formatDuration(e.durationS)} on $road"
+  "text": "${_intensity(e.severity)} brake at ${formatSpeed(_speedAtStart(e), units)}"
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 27,
-  "text": "Hard brake, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}"
+  "line": 26,
+  "text": "${_intensity(e.severity)} acceleration from ${formatSpeed(_speedAtStart(e), units)}"
  },
  {
   "file": "features/drive/event_text.dart",
   "line": 29,
-  "text": "Hard acceleration, ${_g(e.peak)} from ${formatSpeed(_speedAtStart(e), units)}"
- },
- {
-  "file": "features/drive/event_text.dart",
-  "line": 31,
-  "text": "Hard corner, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}"
+  "text": "${_intensity(e.severity)} corner at ${formatSpeed(_speedAtStart(e), units)}"
  },
  {
   "file": "features/drive/event_text.dart",
   "line": 34,
-  "text": "Phone handled ${n == 1 ? "
- },
- {
-  "file": "features/drive/event_text.dart",
-  "line": 34,
-  "text": "} over ${formatDuration(e.durationS)} at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}"
+  "text": "Phone picked up $times, ${formatDuration(e.durationS)} at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}"
  },
  {
   "file": "features/drive/event_text.dart",
   "line": 37,
-  "text": "Idled for ${formatDuration(e.durationS)}"
+  "text": "Engine idling for ${formatDuration(e.durationS)}"
  },
  {
   "file": "features/drive/event_text.dart",
@@ -3336,83 +3381,143 @@
  },
  {
   "file": "features/drive/event_text.dart",
+  "line": 50,
+  "text": "the highway"
+ },
+ {
+  "file": "features/drive/event_text.dart",
   "line": 51,
-  "text": "Harsh brake"
+  "text": "a residential street"
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 52,
-  "text": "Harsh acceleration"
+  "line": 63,
+  "text": "Very hard"
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 53,
+  "line": 69,
+  "text": "Hard brake"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 70,
+  "text": "Hard acceleration"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 71,
   "text": "Hard corner"
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 54,
-  "text": "Phone handling"
+  "line": 72,
+  "text": "Phone use"
  },
  {
   "file": "features/drive/event_text.dart",
-  "line": 56,
-  "text": "High-speed cruise"
+  "line": 74,
+  "text": "Fast cruise"
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 97,
+  "text": "Open settings"
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 113,
+  "text": "Every drive gets a score."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 115,
+  "text": "Drives start and stop on their own and are scored on this phone when you park."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 124,
+  "text": "Allow location all the time."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 126,
+  "text": "Drives then start on their own, even when the app is closed."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 135,
+  "text": "Not now"
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 143,
+  "text": "Allow motion."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 145,
+  "text": "Tells the phone you have started moving, so recording begins on time."
+ },
+ {
+  "file": "features/drive/first_run_flow.dart",
+  "line": 163,
+  "text": "Not now"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 66,
-  "text": "Offline build: the friends map needs the Drivalry cloud project."
+  "line": 80,
+  "text": "Friends are not available in this version."
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 72,
-  "text": "Sign in to see your friends on the map."
+  "line": 86,
+  "text": "Friends map"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 75,
+  "line": 87,
+  "text": "Sign in to see friends on the map."
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 91,
   "text": "Sign in"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 84,
-  "text": "Loading map…"
+  "line": 100,
+  "text": "Loading the map…"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 85,
-  "text": "Map unavailable: build with --dart-define-from-file=../.env to show friends."
+  "line": 101,
+  "text": "Map not available in this version."
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 176,
+  "line": 210,
   "text": "Expand map"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 181,
+  "line": 215,
   "text": "Show everyone"
  },
  {
   "file": "features/drive/friends_map/friends_map.dart",
-  "line": 200,
-  "text": "No friends sharing yet"
- },
- {
-  "file": "features/drive/friends_map/friends_map.dart",
-  "line": 207,
-  "text": "Add friend"
- },
- {
-  "file": "features/drive/friends_map/friends_map.dart",
-  "line": 370,
-  "text": "Open in Google Maps"
- },
- {
-  "file": "features/drive/friends_map/friends_map.dart",
-  "line": 381,
+  "line": 397,
   "text": "View profile"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 475,
+  "text": "No friends on the map yet"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 480,
+  "text": "Add friend"
  },
  {
   "file": "features/drive/friends_map/friends_map_screen.dart",
@@ -3431,503 +3536,453 @@
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 46,
+  "line": 37,
+  "text": "update the packs"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 47,
   "text": "Could not load the catalogue."
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 77,
-  "text": "No location known yet. Record or simulate a trip first."
+  "line": 76,
+  "text": "No location known yet. Take a drive first."
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 89,
-  "text": "No pack covers that location yet."
+  "line": 87,
+  "text": "No speed-limit pack covers your area yet."
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 99,
-  "text": "Import a pack by URL"
+  "line": 97,
+  "text": "Paste a pack link"
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 136,
+  "line": 134,
   "text": "Speed-limit packs"
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 141,
-  "text": "Packs are built from OpenStreetMap every month and hold the road network and posted limits for one region. Matching and scoring use them on this phone; nothing is looked up online during a drive."
+  "line": 139,
+  "text": "The roads and posted limits for one region, kept on your phone. Nothing is looked up online while you drive."
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 154,
+  "line": 151,
   "text": "Install for my location"
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 164,
-  "text": "Import URL"
+  "line": 161,
+  "text": "Paste a link"
  },
  {
   "file": "features/drive/packs_screen.dart",
-  "line": 182,
+  "line": 179,
   "text": "None yet. Trips are still recorded and scored for smoothness, attention and efficiency; speeding stays silent until a pack covers your area."
  },
  {
   "file": "features/drive/parking/parking_card.dart",
-  "line": 101,
-  "text": "Walk back"
+  "line": 40,
+  "text": "Parked near $road"
  },
  {
   "file": "features/drive/parking/parking_card.dart",
-  "line": 106,
+  "line": 92,
+  "text": "Walk to car"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 116,
+  "text": "Walk to car"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 121,
   "text": "Add photo"
  },
  {
   "file": "features/drive/parking/parking_card.dart",
-  "line": 130,
+  "line": 141,
+  "text": "Add a photo"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 148,
   "text": "Take a photo"
  },
  {
   "file": "features/drive/parking/parking_card.dart",
-  "line": 135,
-  "text": "Choose from library"
- },
- {
-  "file": "features/drive/parking/parking_card.dart",
-  "line": 161,
-  "text": "Could not save photo: $e"
- },
- {
-  "file": "features/drive/parking/parking_card.dart",
-  "line": 171,
-  "text": "Parking note"
+  "line": 153,
+  "text": "Pick from photos"
  },
  {
   "file": "features/drive/parking/parking_card.dart",
   "line": 176,
+  "text": "save the photo"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 186,
+  "text": "Parking note"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 198,
   "text": "Level 3, near the lift"
  },
  {
   "file": "features/drive/parking/parking_card.dart",
-  "line": 227,
-  "text": "No maps app available."
+  "line": 219,
+  "text": "Forget this spot?"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 220,
+  "text": "The photo and note go with it."
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 265,
+  "text": "No maps app on this phone."
  },
  {
   "file": "features/drive/parking/parking_screen.dart",
-  "line": 23,
+  "line": 30,
   "text": "Where I parked"
  },
  {
   "file": "features/drive/parking/parking_screen.dart",
-  "line": 29,
-  "text": "No parking spot remembered. The end of your next drive will appear here."
+  "line": 33,
+  "text": "No spot remembered yet."
  },
  {
   "file": "features/drive/parking/parking_screen.dart",
-  "line": 62,
-  "text": "${spot.lat.toStringAsFixed(5)}, ${spot.lon.toStringAsFixed(5)}\\n(map needs a Google Maps key)"
+  "line": 34,
+  "text": "Where you park next shows up here."
  },
  {
   "file": "features/drive/parking/parking_screen.dart",
-  "line": 88,
-  "text": "Accuracy about ${spot.accuracy.round()} m"
+  "line": 69,
+  "text": "Map not available in this version."
  },
  {
   "file": "features/drive/parking/parking_screen.dart",
-  "line": 110,
+  "line": 84,
+  "text": "Within about ${formatShortDistance(spot.accuracy, units)}"
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 106,
   "text": "Parking spots stay on this phone. Nobody else sees them."
  },
  {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 111,
+  "text": "Where I parked"
+ },
+ {
   "file": "features/drive/share_card.dart",
-  "line": 89,
+  "line": 92,
   "text": "DRIVE SCORE"
  },
  {
   "file": "features/drive/share_card.dart",
-  "line": 340,
-  "text": "PNG encoding failed"
+  "line": 343,
+  "text": "Could not make the share image."
  },
  {
   "file": "features/drive/share_card.dart",
-  "line": 392,
+  "line": 432,
   "text": "Drive Score ${score.score}. Reckless. I know."
  },
  {
   "file": "features/drive/share_card.dart",
-  "line": 393,
+  "line": 433,
   "text": "Drive Score ${score.score} on Drivalry."
  },
  {
   "file": "features/drive/share_card.dart",
-  "line": 394,
+  "line": 434,
   "text": "My Drive Score"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 46,
+  "line": 47,
   "text": "No road within 300 m of that point in the pack."
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 59,
-  "text": "Simulation failed: $e"
- },
- {
-  "file": "features/drive/simulate_sheet.dart",
-  "line": 134,
-  "text": "Simulate a drive"
+  "line": 61,
+  "text": "replay the drive"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
   "line": 137,
-  "text": "Replays a trip through the recorder, matcher and scorer exactly as the native plugin would deliver it."
+  "text": "Simulate a drive"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 154,
+  "line": 140,
+  "text": "Plays a pretend drive through the same scoring as a real one."
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 156,
   "text": "Clean commute"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 155,
+  "line": 157,
   "text": "Synthetic, 20 minutes, nothing to roast"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 163,
+  "line": 165,
   "text": "Messy commute"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 164,
+  "line": 166,
   "text": "Synthetic, speeding, a slam and phone use"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 171,
-  "text": "From an installed pack"
+  "line": 174,
+  "text": "A real route from an installed pack"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 175,
-  "text": "Install a speed-limit pack first (menu › Speed-limit packs)."
+  "line": 180,
+  "text": "Install a speed-limit pack first (Settings › Speed-limit packs)."
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 203,
-  "text": "Start latitude"
- },
- {
-  "file": "features/drive/simulate_sheet.dart",
-  "line": 216,
-  "text": "Start longitude"
- },
- {
-  "file": "features/drive/simulate_sheet.dart",
-  "line": 234,
+  "line": 235,
   "text": "${(_speeding * 100).round()}% of roads"
  },
  {
   "file": "features/drive/simulate_sheet.dart",
-  "line": 258,
+  "line": 259,
   "text": "Drive from here"
  },
  {
+  "file": "features/drive/trip_celebration.dart",
+  "line": 247,
+  "text": "Trip scored"
+ },
+ {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 48,
+  "line": 79,
   "text": "This trip is gone."
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 90,
-  "text": "Delete this trip?"
+  "line": 81,
+  "text": "It was deleted from this phone, so there is nothing to show."
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 92,
-  "text": "It disappears from your history. Nothing was uploaded."
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 117,
-  "text": "I was the driver"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 118,
-  "text": "Mark as passenger"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 122,
-  "text": "Delete trip"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 191,
-  "text": "Score breakdown"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 196,
-  "text": "Speed discipline"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 211,
+  "line": 137,
   "text": "What happened"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 236,
-  "text": "${(t.limitCoverage! * 100).round()}% of this drive was on roads with a known speed limit (pack ${t.packRegion}, OSM ${_short(t.packVersion)})."
+  "line": 205,
+  "text": "I was the driver"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 239,
-  "text": "No speed-limit pack covers this area yet, so speeding was not scored."
+  "line": 206,
+  "text": "Mark as passenger"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 240,
-  "text": "No road with a known limit was matched on this drive."
+  "line": 209,
+  "text": "Score again"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 274,
-  "text": "No road from the pack is attached to this event."
+  "line": 210,
+  "text": "Delete trip"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 300,
-  "text": "Limit is wrong here"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 305,
-  "text": "}. What does the sign say? Your flag silences this road for you now; two agreeing flags fix it for everyone."
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 315,
-  "text": "Posted limit (${unitLabel(units)})"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 346,
-  "text": "Thanks. This road is silent for you until the fix is confirmed."
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 384,
-  "text": "Could not share: $e"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 459,
-  "text": "Moving time"
- },
- {
-  "file": "features/drive/trip_detail_screen.dart",
-  "line": 461,
+  "line": 302,
   "text": "Top speed"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 463,
+  "line": 304,
   "text": "Over the limit"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 465,
+  "line": 306,
   "text": "Time saved"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 537,
-  "text": "Observation only: limit not confident · $at"
+  "line": 308,
+  "text": "At night"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 543,
+  "line": 321,
+  "text": "${(c * 100).round()}% of this drive had known limits."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 323,
+  "text": "No speed-limit pack covers this area yet, so speeding was not scored."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 326,
+  "text": "No road with a known limit on this drive."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 348,
+  "text": "This event has no road to flag."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 357,
+  "text": "this road"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 360,
   "text": "Limit is wrong here"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 574,
-  "text": "No route recorded."
+  "line": 367,
+  "text": "On $roadLabel. What does the sign say?"
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 576,
-  "text": "Loading map…"
+  "line": 370,
+  "text": "Your fix applies to you now, and to everyone once a second driver agrees."
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
-  "line": 579,
-  "text": "Map unavailable: build with --dart-define-from-file=../.env to show the route."
+  "line": 380,
+  "text": "Posted limit (${unitLabel(units)})"
  },
  {
-  "file": "features/drive/widgets/passenger_card.dart",
-  "line": 38,
-  "text": "Were you the passenger?"
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 412,
+  "text": "Thanks. This road stays quiet for you until the fix lands."
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 582,
+  "text": "Not scored, the limit here is unsure · $at"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 592,
+  "text": "Limit is wrong here"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 625,
+  "text": "Route not saved for this trip."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 627,
+  "text": "Loading the map…"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 629,
+  "text": "Map not available in this version."
+ },
+ {
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 44,
+  "text": "Replaying a drive…"
+ },
+ {
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 47,
+  "text": "Auto-detect is not available on this device"
+ },
+ {
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 49,
+  "text": "Auto-detect is off"
+ },
+ {
+  "file": "features/drive/widgets/drive_status_capsule.dart",
   "line": 52,
-  "text": "Simulating a drive…"
+  "text": "Paused until ${clock(until)}"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 53,
-  "text": "Replaying a trip through the recorder and scorer."
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 55,
+  "text": "Checking if you are driving…"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 63,
-  "text": "Automatic tracking is not available here"
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 58,
+  "text": "Finish setting up auto-detect"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 65,
-  "text": "This build has no native tracking plugin. Use \"Simulate a drive\" from the menu to exercise scoring."
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 60,
+  "text": "Ready. Drives start on their own."
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 83,
-  "text": "End now"
+  "file": "features/drive/widgets/drive_status_capsule.dart",
+  "line": 113,
+  "text": "Ready. Drives start on their own."
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 126,
+  "file": "features/drive/widgets/live_drive_block.dart",
+  "line": 99,
+  "text": "$over over the limit"
+ },
+ {
+  "file": "features/drive/widgets/live_drive_block.dart",
+  "line": 107,
   "text": "Scored when you park. Nothing leaves the phone."
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 134,
-  "text": "Tracking is off"
+  "file": "features/drive/widgets/live_drive_block.dart",
+  "line": 140,
+  "text": "End drive"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 135,
-  "text": "Drives are not detected or recorded."
+  "file": "features/drive/widgets/passenger_card.dart",
+  "line": 37,
+  "text": "Were you the passenger?"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 142,
-  "text": "Paused until ${DateFormat.jm().format(until)}"
+  "file": "features/drive/widgets/sheet_action.dart",
+  "line": 44,
+  "text": "Delete this trip?"
  },
  {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 143,
-  "text": "Automatic detection resumes on its own."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 149,
-  "text": "Looks like you are driving…"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 150,
-  "text": "Confirming before recording starts."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 156,
-  "text": "Location: allow it, then pick \"Allow all the time\" (Android) or \"Always\" (iOS) so drives are noticed with the app closed."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 159,
-  "text": "Location is \"while using the app\". Automatic trips need \"Allow all the time\" (Android) or \"Always\" (iOS)."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 163,
-  "text": "Precise location is off. Approximate fixes cannot be matched to a road."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 165,
-  "text": "Physical activity (Android) or Motion & Fitness (iOS), to notice when you start driving."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 173,
-  "text": "Let Drivalry detect your drives"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 175,
-  "text": "Trips start and stop on their own once these are set. Raw GPS never leaves this phone."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 196,
-  "text": "Open settings"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 202,
-  "text": "Record a drive now"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 214,
-  "text": "Watching for a drive"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 216,
-  "text": "Starts on its own when you drive. Nothing is recorded until then."
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 233,
-  "text": "Pause for 1 hour"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 234,
-  "text": "Pause for 4 hours"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 237,
-  "text": "Pause until tomorrow"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 239,
-  "text": "Turn tracking off"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 249,
-  "text": "Start now"
- },
- {
-  "file": "features/drive/widgets/tracking_status_card.dart",
-  "line": 345,
-  "text": "$overDisplay over"
+  "file": "features/drive/widgets/sheet_action.dart",
+  "line": 46,
+  "text": "It disappears from your history. Nothing was uploaded."
  },
  {
   "file": "features/drive/widgets/trip_card.dart",
-  "line": 16,
+  "line": 17,
   "text": "Passenger trip"
  },
  {
   "file": "features/drive/widgets/trip_card.dart",
-  "line": 18,
+  "line": 19,
   "text": "Too short to judge"
- },
- {
-  "file": "features/drive/widgets/trip_card.dart",
-  "line": 67,
-  "text": "${(trip.limitCoverage! * 100).round()}% limit coverage"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
@@ -6511,8 +6566,128 @@
  },
  {
   "file": "tracking/tracking_controller.dart",
-  "line": 284,
-  "text": "tracking plugin missing"
+  "line": 160,
+  "text": "listen for drives"
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 180,
+  "text": "start drive detection"
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 279,
+  "text": "check drive detection"
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 296,
+  "text": "change drive detection"
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 300,
+  "text": "Drive detection is not available on this device."
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 304,
+  "text": "change drive detection"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 16,
+  "text": "failed host lookup"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 17,
+  "text": "network is unreachable"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 18,
+  "text": "connection refused"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 19,
+  "text": "connection reset"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 20,
+  "text": "No connection right now. Try again when you are back online."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 22,
+  "text": "timed out"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 23,
+  "text": "That took too long. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "offline build"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "not configured"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 26,
+  "text": "Not available in this version yet."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 29,
+  "text": "not authenticated"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 31,
+  "text": "invalid token"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 32,
+  "text": "Your sign-in expired. Sign in again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 34,
+  "text": "row-level security"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 35,
+  "text": "You do not have access to that."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 37,
+  "text": "rate limit"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 38,
+  "text": "Slow down a little. Try again in a minute."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 40,
+  "text": "Could not $doing. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 41,
+  "text": "Something went wrong. Try again."
  },
  {
   "file": "widgets/placeholder_screen.dart",

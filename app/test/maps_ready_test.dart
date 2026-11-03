@@ -88,7 +88,8 @@ void main() {
     );
     await pumpFor(tester, const Duration(seconds: 1));
 
-    expect(find.textContaining('Map unavailable'), findsOneWidget);
+    expect(find.text('Map not available in this version.'), findsOneWidget);
+    expect(find.textContaining('dart-define'), findsNothing);
     await unmountAndSettle(tester);
     await port.dispose();
     await db.close();

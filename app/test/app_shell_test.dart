@@ -1,6 +1,7 @@
 import 'package:drivalry/app/app.dart';
 import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
+import 'package:drivalry/features/drive/drive_screen.dart';
 import 'package:drivalry/tracking/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,8 +45,8 @@ void main() {
       expect(find.widgetWithText(NavigationDestination, label), findsOneWidget);
     }
 
-    // Drive is the initial tab.
-    expect(find.widgetWithText(AppBar, 'Drive'), findsOneWidget);
+    // Drive is the initial tab (map-first, no app bar of its own).
+    expect(find.byType(DriveScreen), findsOneWidget);
     // Boot read the plugin state and drained the spool. Tests build without a
     // Maps key, so the key is never sent (see maps_ready_test.dart).
     expect(port.calls, containsAll(['getState', 'drainSpool']));

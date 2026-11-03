@@ -24,10 +24,6 @@ class TripScene extends ArtScene {
 
   static const _tripId = 'art-roast';
 
-  /// Height of the route map at the top of the screen; the capture scrolls
-  /// past it so the verdict and the events fill the phone.
-  static const _mapHeight = 260.0;
-
   @override
   String get id => '02-trip';
 
@@ -63,11 +59,18 @@ class TripScene extends ArtScene {
 
   @override
   Future<void> prepare(WidgetTester tester) async {
-    // The outermost Scrollable is the screen's ListView.
+    // Scroll the route map up under the transparent app bar so the hero,
+    // the bars and the events fill the phone.
+    final context = tester.element(find.byType(TripDetailScreen));
+    final target =
+        TripDetailScreen.mapHeight(context) -
+        MediaQuery.paddingOf(context).top -
+        kToolbarHeight -
+        8;
     final position = tester
         .firstState<ScrollableState>(find.byType(Scrollable))
         .position;
-    position.jumpTo(math.min(_mapHeight, position.maxScrollExtent));
+    position.jumpTo(math.min(target, position.maxScrollExtent));
     await tester.pump();
   }
 

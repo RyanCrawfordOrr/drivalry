@@ -8,6 +8,7 @@ import '../../app/router.dart';
 import '../../data/db/database.dart';
 import '../../tracking/simulated_tracking.dart';
 import '../../tracking/tracking_controller.dart';
+import '../../widgets/friendly_error.dart';
 
 /// Developer action: replay a trip through the whole pipeline and open it.
 Future<void> showSimulateSheet(BuildContext context, WidgetRef ref) async {
@@ -56,7 +57,9 @@ Future<void> showSimulateSheet(BuildContext context, WidgetRef ref) async {
     final id = await controller.simulate(input, speedUp: choice.speedUp);
     router.push(Routes.tripDetail(id));
   } catch (e) {
-    messenger.showSnackBar(SnackBar(content: Text('Simulation failed: $e')));
+    messenger.showSnackBar(
+      SnackBar(content: Text(friendlyError(e, doing: 'replay the drive'))),
+    );
   }
 }
 
@@ -134,8 +137,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
           Text('Simulate a drive', style: theme.textTheme.titleLarge),
           const SizedBox(height: 4),
           Text(
-            'Replays a trip through the recorder, matcher and scorer exactly '
-            'as the native plugin would deliver it.',
+            'Plays a pretend drive through the same scoring as a real one.',
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 12),
@@ -168,11 +170,14 @@ class _SimulateSheetState extends State<_SimulateSheet> {
             ),
           ),
           const Divider(),
-          Text('From an installed pack', style: theme.textTheme.titleSmall),
+          Text(
+            'A real route from an installed pack',
+            style: theme.textTheme.titleSmall,
+          ),
           const SizedBox(height: 4),
           if (widget.packs.isEmpty)
             Text(
-              'Install a speed-limit pack first (menu › Speed-limit packs).',
+              'Install a speed-limit pack first (Settings › Speed-limit packs).',
               style: theme.textTheme.bodySmall,
             )
           else ...[
@@ -199,9 +204,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                 Expanded(
                   child: TextField(
                     controller: _lat,
-                    decoration: const InputDecoration(
-                      labelText: 'Start latitude',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Latitude'),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                       signed: true,
@@ -212,9 +215,7 @@ class _SimulateSheetState extends State<_SimulateSheet> {
                 Expanded(
                   child: TextField(
                     controller: _lon,
-                    decoration: const InputDecoration(
-                      labelText: 'Start longitude',
-                    ),
+                    decoration: const InputDecoration(labelText: 'Longitude'),
                     keyboardType: const TextInputType.numberWithOptions(
                       decimal: true,
                       signed: true,

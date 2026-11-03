@@ -52,6 +52,7 @@ class TripCard extends StatelessWidget {
     required this.units,
     this.large = false,
     this.onTap,
+    this.onLongPress,
   });
 
   final Trip trip;
@@ -59,6 +60,9 @@ class TripCard extends StatelessWidget {
   final SpeedUnits units;
   final bool large;
   final VoidCallback? onTap;
+
+  /// Opens the actions sheet (share, passenger, delete).
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +78,7 @@ class TripCard extends StatelessWidget {
     if (!large) {
       return Tile(
         onTap: onTap,
+        onLongPress: onLongPress,
         padding: const EdgeInsets.symmetric(
           horizontal: Space.lg,
           vertical: Space.md,
@@ -116,6 +121,7 @@ class TripCard extends StatelessWidget {
 
     return Tile(
       onTap: onTap,
+      onLongPress: onLongPress,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -126,6 +132,7 @@ class TripCard extends StatelessWidget {
               size: 96,
               stroke: 9,
               reckless: s?.reckless ?? false,
+              animate: true,
             ),
           ),
           const SizedBox(width: Space.lg),
@@ -144,13 +151,16 @@ class TripCard extends StatelessWidget {
                 const SizedBox(height: Space.md),
                 Row(
                   children: [
-                    _MiniStat(value: distance, label: 'Distance'),
-                    const SizedBox(width: Space.xl),
-                    _MiniStat(value: time, label: 'Time'),
-                    if (scored) ...[
-                      const SizedBox(width: Space.xl),
-                      _MiniStat(value: '+${s.xp}', label: 'XP'),
-                    ],
+                    Expanded(
+                      child: _MiniStat(value: distance, label: 'Distance'),
+                    ),
+                    Expanded(
+                      child: _MiniStat(value: time, label: 'Time'),
+                    ),
+                    if (scored)
+                      Expanded(
+                        child: _MiniStat(value: '+${s.xp}', label: 'XP'),
+                      ),
                   ],
                 ),
               ],
