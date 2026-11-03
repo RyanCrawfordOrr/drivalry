@@ -65,7 +65,7 @@ class PersonRow extends StatelessWidget {
                 Text(
                   name,
                   style: context.body.copyWith(fontWeight: FontWeight.w600),
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 if (caption != null)
