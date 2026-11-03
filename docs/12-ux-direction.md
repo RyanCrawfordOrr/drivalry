@@ -152,6 +152,26 @@ Copy: 1,018 distinct strings, 140 flagged (38 technical, 99 unclear, 2 tone, 1 t
 
 Targets for the pass: screen mean above 2.2, Kith at or above 2.0 everywhere, glanceability at or above 2.0 on Drive recording, convoy detail, radio and stops; zero technical strings, under ten flagged, voice above 2.0.
 
+## 8b. After the pass (2026-11-03, same eleven states)
+
+The five area branches merged (Drive and trip, friends and profile, leagues and badges, convoy, settings and garage) on top of The Good Company rebrand. Jev re-scored the eleven states from `tools/ux/screens_after.json` (`tools/ux/out/screens_after_scores.md`); the "before" column is the baseline re-run with the alive dimension, so both columns come from the same rubric.
+
+| Dimension | Before | After | Target |
+| --- | --- | --- | --- |
+| Hierarchy | 1.68 | 2.27 | |
+| Cognitive load | 1.50 | 1.76 | |
+| Waze feel | 1.22 | 2.02 | |
+| Kith feel | 0.95 | 1.85 | 2.0 |
+| One-second glanceability | 0.69 | 1.15 | 2.0 on driving screens |
+| Alive (premium motion and feedback) | 0.15 | 2.35 | 2.0 |
+| Mean | 1.03 | 1.90 | 2.2 |
+
+Per screen: convoy radio 2.30, drive recording 2.28, sign-in 2.16, drive idle 2.00, first run 2.00, convoy detail 1.95, friends feed 1.80, trip detail 1.76, league 1.69, badges 1.59, settings 1.35. Glanceability on the driving screens: drive recording 1.84, convoy radio 1.77, convoy detail 1.30.
+
+Copy: 1,156 distinct strings (the new screens added some), 68 flagged (11 technical, 56 unclear, 1 tone), average voice 1.13. Seven of the eleven "technical" strings are the match patterns inside `widgets/friendly_error.dart`, which are never shown; the other four are on the Diagnostics screen, which keeps its raw numbers by design. No user-facing technical string remains anywhere else.
+
+Still open against the targets: Kith (1.85) and the mean (1.90) are held down by Settings, Badges and League, where Jev still reads density; convoy detail's glanceability (1.30) wants fewer rows at the peek height; voice (1.13) is the widest gap, because most strings are deliberately plain and only verdicts and celebrations carry the playful register. Next pass: a voice sweep of empty states, captions and buttons; a settings root with fewer rows above the fold; a tighter convoy peek.
+
 ## 9. Rebrand hand-off
 
 The rebrand changes `DrivalryTheme` (seed colours, surfaces), `DrivalryType` (families and scale), the mark painter and the store art. It does not touch layout, components, motion or copy. Checklist for whoever lands it: update `lib/app/theme.dart`, `lib/app/ui/typography.dart`, bundle fonts in `pubspec.yaml`, redraw `lib/app/brand/drivalry_mark.dart`, run `DRIVALRY_ART=1 flutter test test/art` to regenerate icons and screenshots, and re-run the Jev screen audit.

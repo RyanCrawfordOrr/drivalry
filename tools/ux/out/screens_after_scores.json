@@ -1,0 +1,101 @@
+[
+ {
+  "id": "drive-idle",
+  "hierarchy": 1.84,
+  "load": 1.57,
+  "waze": 2.9,
+  "kith": 1.98,
+  "driving": 0.84,
+  "alive": 2.88
+ },
+ {
+  "id": "drive-recording",
+  "hierarchy": 2.4,
+  "load": 2.22,
+  "waze": 2.98,
+  "kith": 1.59,
+  "driving": 1.84,
+  "alive": 2.67
+ },
+ {
+  "id": "trip-detail",
+  "hierarchy": 2.18,
+  "load": 0.91,
+  "waze": 2.15,
+  "kith": 1.98,
+  "driving": 0.86,
+  "alive": 2.51
+ },
+ {
+  "id": "first-run",
+  "hierarchy": 2.55,
+  "load": 2.31,
+  "waze": 1.64,
+  "kith": 1.87,
+  "driving": 1.71,
+  "alive": 1.93
+ },
+ {
+  "id": "friends-feed",
+  "hierarchy": 2.11,
+  "load": 1.59,
+  "waze": 1.83,
+  "kith": 1.68,
+  "driving": 0.83,
+  "alive": 2.76
+ },
+ {
+  "id": "sign-in",
+  "hierarchy": 2.74,
+  "load": 2.88,
+  "waze": 1.26,
+  "kith": 2.08,
+  "driving": 2.1,
+  "alive": 1.92
+ },
+ {
+  "id": "settings",
+  "hierarchy": 2.26,
+  "load": 1.18,
+  "waze": 0.27,
+  "kith": 2.06,
+  "driving": 0.34,
+  "alive": 2.01
+ },
+ {
+  "id": "league",
+  "hierarchy": 1.96,
+  "load": 1.25,
+  "waze": 1.98,
+  "kith": 1.75,
+  "driving": 0.77,
+  "alive": 2.44
+ },
+ {
+  "id": "badges",
+  "hierarchy": 1.97,
+  "load": 1.76,
+  "waze": 1.62,
+  "kith": 1.89,
+  "driving": 0.33,
+  "alive": 1.98
+ },
+ {
+  "id": "convoy-detail",
+  "hierarchy": 2.23,
+  "load": 1.53,
+  "waze": 2.78,
+  "kith": 1.51,
+  "driving": 1.3,
+  "alive": 2.37
+ },
+ {
+  "id": "convoy-radio",
+  "hierarchy": 2.75,
+  "load": 2.16,
+  "waze": 2.81,
+  "kith": 1.95,
+  "driving": 1.77,
+  "alive": 2.36
+ }
+]

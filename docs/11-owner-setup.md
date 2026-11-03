@@ -409,14 +409,14 @@ Two things only you can supply: Android Auto screenshots from the Desktop Head U
 
 ### 12b. Start a convoy (phone A, the leader)
 
-1. **Convoy** tab → **New convoy**. Name it (e.g. `Test run`), tap **Destination** and pick anything a few miles away, then **Create convoy**.
+1. **Convoy** tab → the **Start a convoy** icon (top right). Name it (e.g. `Test run`), pick a destination a few miles away, then **Create convoy**.
 2. The convoy opens. Tap the **invite** icon (top right) → the sheet shows a six-character **code** and a **Share link**. Read the code out or send the link.
-3. On phone B: **Convoy** tab → **Join with code** → type the code → **Join**. (Or tap the shared link; it opens straight into the join screen.) Phone B now sees the same convoy.
-4. Back on phone A, tap **Start trip**. The status pill changes to **On the road**. The radio only works while the convoy is On the road; **End trip** switches it off for everyone.
+3. On phone B: **Convoy** tab → the **Join with a code** icon (top right) → type the code → **Join**. (Or tap the shared link; it opens straight into the join screen.) Phone B now sees the same convoy.
+4. Back on phone A, tap **Start trip**. The status pill changes to **On the road** and the big **Talk** button appears. The radio only works while the convoy is On the road; **End trip** (in the ⋮ menu) switches it off for everyone.
 
 ### 12c. Talk
 
-1. On both phones open the convoy and tap **Talk** (in the current build: the **Radio** chip, then **Start radio**).
+1. On both phones open the convoy and tap the big **Talk** button. The radio starts on its own; the screen says *Starting…* for a moment.
 2. The phone asks for the **microphone**. Allow it. If you refused once, the screen says *Microphone needed* with an **Open settings** button; allow it there and come back.
 3. Within a few seconds each phone's **Cars** list shows the other phone as **Connected**. Hold the big button, say something, let go. On the other phone the banner reads *Someone is talking* and the sound plays.
 4. **Mute everyone** silences incoming audio but still lets you transmit. The radio keeps running with the screen off and while you switch apps; the notification's **Stop** ends it.
@@ -425,19 +425,19 @@ Two things only you can supply: Android Auto screenshots from the Desktop Head U
 
 - Both phones show each other under **Cars** as **Connected** within ten seconds.
 - Audio arrives with well under a second of delay.
-- If the phones were on different networks, Settings → About → **Diagnostics** → *Radio: relayed bytes* is above zero on at least one phone after a chat. That proves the Metered relay carried it.
+- If the phones were on different networks, Settings → About → **Diagnostics** → *Radio: relayed data* is above zero on at least one phone after a chat. That proves the Metered relay carried it.
 
 ### 12e. If it fails
 
 | You see | Cause | Fix |
 | --- | --- | --- |
 | *Join a convoy to talk* | No convoy, or you are not a member | Join with the code first |
-| Talk button disabled, *Start the convoy first* | Convoy is still *Planning* | Leader taps **Start trip** |
+| No Talk button, *Waiting for … to start.* | Convoy is still *Planning* | Leader taps **Start trip** |
 | *Microphone needed* | Permission refused | Allow in the phone's app settings |
 | Other car stuck on **Connecting…** for more than 20 seconds | No direct path and no relay | Do Part 6a (Metered), rebuild, reinstall; or put both phones on one Wi-Fi to confirm everything else works |
 | Connected, but silence | Phone media volume at zero, or a Bluetooth headset holding the audio | Turn media volume up; disconnect the headset to test on the speaker |
 | Radio stops when the screen locks | Battery optimisation killed the service (some Android skins) | Phone Settings → Apps → Drivalry → Battery → **Unrestricted** |
-| *Relay available* missing from Diagnostics after Part 6a | `.env` edited but not rebuilt, or the domain is not `<name>.metered.live` | Check the two lines, rebuild (Part 4) |
+| *Works across networks.* missing at the bottom of the radio screen after Part 6a | `.env` edited but not rebuilt, or the domain is not `<name>.metered.live` | Check the two lines, rebuild (Part 4) |
 
 Convoy DJ (same song in every car) is separate: Part 14.
 
@@ -519,20 +519,20 @@ Everything else that needs a person. Order is the order a new phone meets them.
 
 | What | Where | Why |
 | --- | --- | --- |
-| Location **Allow all the time**, precise on | First-run screens, or Drive → the auto-detect tile → **Allow** | Trips start on their own only with "all the time" |
+| Location **Allow all the time**, precise on | First-run screens, or Drive → **Turn on auto-detect** | Trips start on their own only with "all the time" |
 | **Physical activity** (motion) | Same flow | Tells driving from walking without draining the battery |
 | **Notifications** | Settings → Friends → Notifications → **Enable** | Trip scored, reactions, friend requests, crash alerts |
-| **Speed-limit pack for your state** | Settings → Drives → Speed-limit packs → **Install for my location** (today: Drive menu → Speed-limit packs) | Limits come from the pack; it downloads on Wi-Fi only |
+| **Speed-limit pack for your state** | Settings → Drives → Speed-limit packs → **Install for my location** | Limits come from the pack; it downloads on Wi-Fi only |
 | **Units** | Settings → Drives → Units | mph or km/h everywhere |
-| **Your handle and name** | Profile (today: Settings → @handle) | What friends see |
+| **Your handle and name** | Profile (your avatar, top right of the Drive screen) → tap the handle or the name | What friends see |
 | **Add your car** | Garage → **Add vehicle**, or say yes when the app notices new car audio | Trips get credited to the right car; the car's Bluetooth marks you as the driver |
-| **Home and Work** | Friends → Circles → **Places** → **Save a place** (or long-press the map) | Arrive and leave alerts for your circle; better trip names |
+| **Home and Work** | Friends → Circles → **Places** → **Add where I am** | Arrive and leave alerts for your circle; better trip names |
 | **Friends** | Friends → **Add friend** → QR, handle or link | Leagues, feed, map |
 | **A circle** | Friends → Circles → **New circle** → invite | Live location with the people you choose |
 | **Emergency contacts** | Settings → Safety → Crash detection → **Emergency contacts** | Who gets the prefilled text after a crash countdown |
 | **Test the crash countdown** | Settings → Safety → Crash detection → **Test the countdown** | See the 30-second screen once, before you need it |
 | **Spoken cues** (optional) | Settings → Drives → Spoken cues | Off by default; says the limit and "over by" |
-| **Auto-reply while driving** (optional) | Settings → Safety → Auto-reply → follow the numbered steps | Uses the phone's own driving mode |
+| **Auto-reply while driving** (optional) | Settings → Safety → **Auto-reply to texts** → follow the numbered steps | Uses the phone's own driving mode |
 | **Live Activities** (iPhone) | iPhone Settings → Drivalry → Live Activities on | Lock-screen limit and convoy |
 | **Android Auto** | Plug in; the Drivalry icon appears in the car launcher | Part 7 to test on the desktop head unit first |
 

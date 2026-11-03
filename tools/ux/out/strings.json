@@ -1266,237 +1266,267 @@
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 49,
-  "text": "Sign in to check in."
- },
- {
-  "file": "features/circles/checkin_sheet.dart",
-  "line": 50,
-  "text": "Checked in at $label. Your circles and friends can see it."
- },
- {
-  "file": "features/circles/checkin_sheet.dart",
-  "line": 79,
+  "line": 17,
   "text": "Check in"
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 82,
-  "text": "Posts \"Checked in at …\" to your circles and friends. Only the label is shared, never where that is."
+  "line": 51,
+  "text": "Sign in to check in."
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 90,
+  "line": 52,
+  "text": "Checked in at $label. Your circles and friends can see it."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 75,
+  "text": "Tells your circles and friends the name of the place, never where it is."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 84,
   "text": "Save Home first"
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 91,
-  "text": "Places live only on this phone."
+  "line": 85,
+  "text": "Places stay on this phone."
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 106,
-  "text": "Somewhere else"
+  "line": 103,
+  "text": "Place name"
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 119,
-  "text": "Auto check-in when I get Home"
+  "line": 116,
+  "text": "Check in on my own at Home"
  },
  {
   "file": "features/circles/checkin_sheet.dart",
-  "line": 121,
-  "text": "Posts once when a drive ends inside a Home place."
+  "line": 117,
+  "text": "Posts once when a drive ends at Home."
  },
  {
   "file": "features/circles/circles_list_screen.dart",
-  "line": 18,
+  "line": 25,
   "text": "Sign in to share your location with a circle."
  },
  {
-  "file": "features/circles/circles_view.dart",
-  "line": 43,
-  "text": "I got home"
- },
- {
-  "file": "features/circles/circles_view.dart",
-  "line": 66,
-  "text": "No circles yet"
- },
- {
-  "file": "features/circles/circles_view.dart",
-  "line": 69,
-  "text": "A circle is a group that always sees each other on the map: family, roommates, the crew. Everyone is precise; anyone can hide, and the circle sees that they are."
- },
- {
-  "file": "features/circles/circles_view.dart",
-  "line": 100,
+  "file": "features/circles/circles_list_screen.dart",
+  "line": 36,
   "text": "New circle"
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 107,
+  "line": 78,
+  "text": "I got home"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 81,
+  "text": "Tell your circles and friends in one tap."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 116,
+  "text": "No circles yet."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 118,
+  "text": "Family, roommates, the crew: always on each other's map."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 120,
+  "text": "New circle"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 122,
   "text": "Join with code"
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 127,
-  "text": "$count member${count == 1 ? "
+  "line": 128,
+  "text": "Join with code"
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 128,
+  "line": 167,
+  "text": "Save Home to unlock check-ins and alerts."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 169,
+  "text": "${places.length} saved · alerts when friends arrive or leave"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 213,
   "text": "$driving driving now"
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 129,
-  "text": "you are hiding"
+  "line": 247,
+  "text": "$count member${count == 1 ? "
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 139,
+  "line": 270,
   "text": "Join a circle"
  },
  {
   "file": "features/circles/circles_view.dart",
-  "line": 144,
+  "line": 302,
+  "text": "The code is on the invite a member shared with you."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 310,
   "text": "Invite code"
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 38,
-  "text": "Invite to ${live.name}"
+  "line": 15,
+  "text": "Invite to ${circle.name}"
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 41,
-  "text": "The invite code is still syncing. Check your connection and try again in a moment."
+  "line": 36,
+  "text": "The invite code is still on its way. Check your connection and try again in a moment."
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 62,
-  "text": "Invite to ${live.name}"
+  "line": 42,
+  "text": "Try again"
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 65,
+  "line": 54,
   "text": "Everyone in a circle sees everyone's live location, unless they hide."
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 88,
-  "text": "Friends enter this code under Circles, or open the link."
+  "line": 81,
+  "text": "Friends type this code under Circles, or open the link."
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 101,
-  "text": "Link copied"
- },
- {
-  "file": "features/circles/circle_invite_sheet.dart",
-  "line": 106,
-  "text": "Copy link"
- },
- {
-  "file": "features/circles/circle_invite_sheet.dart",
-  "line": 115,
+  "line": 92,
   "text": "Join my Drivalry circle \"${live.name}\": $link (code ${code.toUpperCase()})"
  },
  {
   "file": "features/circles/circle_invite_sheet.dart",
-  "line": 117,
+  "line": 94,
   "text": "Drivalry circle invite"
  },
  {
-  "file": "features/circles/circle_screen.dart",
-  "line": 50,
-  "text": "Leave circle"
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 104,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 107,
+  "text": "Copy link"
  },
  {
   "file": "features/circles/circle_screen.dart",
   "line": 56,
+  "text": "Leave circle"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 62,
   "text": "Sign in to see this circle."
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 59,
-  "text": "This circle is not in your list."
+  "line": 67,
+  "text": "Not in this circle."
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 75,
+  "line": 68,
+  "text": "A member can invite you back."
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 99,
   "text": "Hide from this circle"
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 77,
-  "text": "Everyone in this circle can see that you are hiding."
+  "line": 106,
+  "text": "They can see that you are hiding."
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 90,
+  "line": 135,
   "text": "I got home"
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 115,
-  "text": "Could not load members: ${members.error}"
+  "line": 174,
+  "text": "load the members"
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 132,
+  "line": 196,
   "text": "You stop seeing the circle and they stop seeing you. A member can invite you back."
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 177,
+  "line": 240,
   "text": "No location yet"
  },
  {
   "file": "features/circles/circle_screen.dart",
-  "line": 179,
+  "line": 242,
   "text": "Driving now"
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 31,
+  "line": 33,
   "text": "Give the circle a name."
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 35,
+  "line": 37,
   "text": "Keep it under 40 characters."
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 50,
-  "text": "Could not create the circle: $e"
- },
- {
-  "file": "features/circles/create_circle_screen.dart",
-  "line": 60,
-  "text": "New circle"
+  "line": 53,
+  "text": "create the circle"
  },
  {
   "file": "features/circles/create_circle_screen.dart",
   "line": 62,
+  "text": "New circle"
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 64,
   "text": "Sign in to create a circle."
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 74,
+  "line": 81,
   "text": "Family, Roommates, The Boys"
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 81,
-  "text": "Everyone you invite sees everyone else's live location, precise, and the trips and roasts you all earn. Anyone can hide at any time; the circle can see that they are hiding."
+  "line": 88,
+  "text": "Everyone in it sees each other's live location and roasts. Anyone can hide, and the circle sees that."
  },
  {
   "file": "features/circles/create_circle_screen.dart",
-  "line": 96,
+  "line": 94,
   "text": "Create circle"
  },
  {
@@ -3326,82 +3356,97 @@
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 28,
+  "line": 29,
   "text": "Help was requested"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 36,
+  "line": 37,
   "text": "At $when your phone reported a possible crash."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 57,
+  "line": 59,
+  "text": "tell your friends"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 68,
   "text": "I'm OK now"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 64,
-  "text": "Tell your friends you are fine; this also lets the trip be scored."
+  "line": 75,
+  "text": "Tells your friends you are fine and lets the trip score."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 74,
+  "line": 84,
   "text": "Crash detection"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 83,
+  "line": 93,
   "text": "No crash detected."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 107,
+  "line": 117,
   "text": "Friends and circle members who use Drivalry were notified."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 108,
+  "line": 118,
   "text": "The alert to friends is queued and goes out as soon as the phone is online."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 111,
+  "line": 121,
   "text": "A text with your location was prepared for $texted emergency ${texted == 1 ? "
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 113,
+  "line": 123,
   "text": "No calls were made."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 120,
+  "line": 130,
   "text": "Test finished. Nothing was sent."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 121,
+  "line": 131,
   "text": "Last check: you answered in time. Nothing was sent."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 155,
+  "line": 169,
   "text": "TEST: nothing will be sent"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 161,
+  "line": 175,
   "text": "Possible crash detected"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 170,
-  "text": "If you are OK, tap the button. Otherwise your emergency contacts and friends are alerted when the timer ends."
+  "line": 184,
+  "text": "Tap I'm OK if you are fine. Otherwise your contacts and friends are alerted when the timer ends."
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
-  "line": 223,
+  "line": 222,
+  "text": "stop the countdown"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 250,
+  "text": "send help"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 255,
   "text": "Send help now"
  },
  {
@@ -3417,7 +3462,7 @@
  {
   "file": "features/crash/crash_status_card.dart",
   "line": 49,
-  "text": "Possible crash: countdown running"
+  "text": "Possible crash. Are you OK?"
  },
  {
   "file": "features/crash/crash_status_card.dart",
@@ -4196,532 +4241,662 @@
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 61,
+  "line": 63,
   "text": "No one with that handle."
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 64,
-  "text": "Search failed: $e"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
-  "line": 79,
+  "line": 81,
   "text": "That link points at no one."
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 82,
-  "text": "Could not load that profile: $e"
+  "line": 84,
+  "text": "open that profile"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 92,
+  "line": 94,
   "text": "That is not a Drivalry link."
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 110,
+  "line": 111,
   "text": "Add friend"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 112,
+  "line": 113,
   "text": "Sign in to add friends."
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 117,
-  "text": "Friends see each other on the map, in the feed and in leagues. Adding someone shares your location with them until you hide it."
+  "line": 125,
+  "text": "Friends see each other on the map, in the feed and in leagues. Adding someone shares your location until you hide."
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 122,
-  "text": "By handle"
+  "line": 131,
+  "text": "Find by handle"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 167,
+  "line": 177,
   "text": "Request sent to ${result.name}"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 181,
-  "text": "Your invite"
+  "line": 197,
+  "text": "Share your link"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 185,
+  "line": 201,
   "text": "Paste a link"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 237,
-  "text": "That is you"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
-  "line": 239,
-  "text": "Already friends"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
-  "line": 241,
-  "text": "Request sent"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
-  "line": 248,
-  "text": "Add friend"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
-  "line": 291,
-  "text": "Link copied"
- },
- {
-  "file": "features/friends/add_friend_screen.dart",
   "line": 302,
+  "text": "Friends scan this or open the link to add you."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 308,
+  "text": "Share link"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 312,
   "text": "Add me on Drivalry: $link"
  },
  {
   "file": "features/friends/add_friend_screen.dart",
-  "line": 303,
+  "line": 313,
   "text": "Drivalry invite"
  },
  {
-  "file": "features/friends/feed_controller.dart",
-  "line": 78,
-  "text": "Could not refresh: $e"
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 323,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 326,
+  "text": "Copy link"
  },
  {
   "file": "features/friends/feed_controller.dart",
-  "line": 111,
-  "text": "Could not load more: $e"
+  "line": 81,
+  "text": "refresh the feed"
+ },
+ {
+  "file": "features/friends/feed_controller.dart",
+  "line": 117,
+  "text": "load more"
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 104,
-  "text": "WALL OF SHAME"
+  "line": 43,
+  "text": "Wall of shame"
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 110,
-  "text": "WALL OF FAME"
+  "line": 46,
+  "text": "Wall of fame"
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 142,
+  "line": 132,
   "text": "League week finished"
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 143,
+  "line": 133,
   "text": "Finished #$rank in ${body["
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 148,
+  "line": 138,
   "text": "Convoy recap"
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 158,
+  "line": 145,
   "text": "Checked in at ${body["
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 199,
+  "line": 153,
   "text": "A reckless trip."
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 199,
+  "line": 153,
   "text": "A scored trip."
  },
  {
   "file": "features/friends/feed_post_card.dart",
-  "line": 213,
-  "text": "${_componentLabel(e.key)} −${(e.value as num).toStringAsFixed(0)}"
+  "line": 345,
+  "text": "No comments yet"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 346,
+  "text": "$count comment${count == 1 ? "
  },
  {
   "file": "features/friends/feed_view.dart",
-  "line": 80,
-  "text": "Nothing here yet"
+  "line": 86,
+  "text": "Nothing yet."
  },
  {
   "file": "features/friends/feed_view.dart",
-  "line": 85,
-  "text": "Trips your friends finish show up here with the score and the roast. Add a friend to get started."
+  "line": 87,
+  "text": "Add a friend and the roasts start."
  },
  {
   "file": "features/friends/feed_view.dart",
-  "line": 168,
+  "line": 88,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/feed_view.dart",
+  "line": 187,
   "text": "Add a friend first."
  },
  {
+  "file": "features/friends/feed_view.dart",
+  "line": 192,
+  "text": "Whose drives?"
+ },
+ {
   "file": "features/friends/friends_list_view.dart",
-  "line": 43,
+  "line": 96,
+  "text": "No friends yet."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 97,
+  "text": "Add one by handle or share your link."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 98,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 133,
+  "text": "@${r.other.handle} · not answered yet"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 179,
+  "text": "You stop seeing each other on the map and in the feed."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 220,
   "text": "@${r.other.handle} wants to be friends"
  },
  {
   "file": "features/friends/friends_list_view.dart",
-  "line": 73,
-  "text": "No friends yet"
+  "line": 298,
+  "text": "Driver rating ${rating.toStringAsFixed(0)}"
  },
  {
   "file": "features/friends/friends_list_view.dart",
-  "line": 76,
-  "text": "Friends see each other on the map, in the feed and in leagues. Add one with their handle or your invite link."
- },
- {
-  "file": "features/friends/friends_list_view.dart",
-  "line": 101,
-  "text": "Waiting for @${r.other.handle}"
- },
- {
-  "file": "features/friends/friends_list_view.dart",
-  "line": 123,
-  "text": "You will stop seeing each other on the map and in the feed."
- },
- {
-  "file": "features/friends/friends_list_view.dart",
-  "line": 163,
-  "text": "Not sharing location"
- },
- {
-  "file": "features/friends/friends_list_view.dart",
-  "line": 165,
-  "text": "Driving now"
- },
- {
-  "file": "features/friends/friends_list_view.dart",
-  "line": 185,
+  "line": 313,
   "text": "Remove friend"
  },
  {
   "file": "features/friends/friends_screen.dart",
-  "line": 38,
+  "line": 75,
   "text": "Friend requests"
  },
  {
   "file": "features/friends/friends_screen.dart",
-  "line": 59,
+  "line": 99,
   "text": "Sign in to see friends, their drives and the roasts they earned."
  },
  {
   "file": "features/friends/friends_screen.dart",
-  "line": 68,
+  "line": 128,
+  "text": "New circle"
+ },
+ {
+  "file": "features/friends/friends_screen.dart",
+  "line": 136,
   "text": "Add friend"
  },
  {
   "file": "features/friends/friend_requests_screen.dart",
-  "line": 23,
+  "line": 38,
   "text": "Friend requests"
  },
  {
   "file": "features/friends/friend_requests_screen.dart",
-  "line": 26,
-  "text": "Add friend"
- },
- {
-  "file": "features/friends/friend_requests_screen.dart",
-  "line": 33,
+  "line": 40,
   "text": "Sign in to see friend requests."
  },
  {
   "file": "features/friends/friend_requests_screen.dart",
-  "line": 43,
+  "line": 51,
   "text": "No requests right now."
  },
  {
   "file": "features/friends/friend_requests_screen.dart",
-  "line": 97,
-  "text": "Waiting for @${r.other.handle}"
+  "line": 52,
+  "text": "When someone adds you, they show up here."
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 53,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 92,
+  "text": "@${r.other.handle} · not answered yet"
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 45,
-  "text": "Could not join: $e"
+  "line": 48,
+  "text": "join the circle"
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 55,
-  "text": "Circle invite"
- },
- {
-  "file": "features/friends/join_circle_screen.dart",
-  "line": 57,
+  "line": 60,
   "text": "Sign in to join the circle."
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 71,
+  "line": 70,
+  "text": "Circle invite"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 72,
   "text": "Join this circle?"
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 74,
-  "text": "Code ${widget.code.toUpperCase()}. Everyone in the circle will see your live location, and you theirs. You can hide at any time; they can see that you are hiding."
+  "line": 75,
+  "text": "Everyone in it sees your live location, and you theirs. Hide any time; they see that you did."
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 100,
+  "line": 87,
   "text": "Join circle"
  },
  {
   "file": "features/friends/join_circle_screen.dart",
-  "line": 104,
+  "line": 95,
   "text": "Not now"
  },
  {
-  "file": "features/friends/post_detail_screen.dart",
-  "line": 59,
-  "text": "Could not load: $e"
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 72,
+  "text": "$who scored $score on Drivalry.$quote"
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 77,
+  "text": "$who earned $badge on Drivalry."
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 78,
+  "text": "$who checked in at $place."
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 79,
+  "text": "$who on Drivalry."
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 87,
+  "text": "Report this post?"
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 89,
+  "text": "Use this when a post is abusive or not about the drive."
+ },
+ {
+  "file": "features/friends/post_actions_sheet.dart",
+  "line": 105,
+  "text": "Thanks. We will take a look."
  },
  {
   "file": "features/friends/post_detail_screen.dart",
-  "line": 94,
+  "line": 63,
+  "text": "load the comments"
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 99,
   "text": "Sign in to see posts."
  },
  {
   "file": "features/friends/post_detail_screen.dart",
-  "line": 109,
+  "line": 120,
   "text": "Post not found."
  },
  {
   "file": "features/friends/post_detail_screen.dart",
-  "line": 134,
-  "text": "No comments yet"
+  "line": 121,
+  "text": "The author may have deleted it."
  },
  {
   "file": "features/friends/post_detail_screen.dart",
-  "line": 168,
+  "line": 149,
+  "text": "Nothing yet. Say something about this drive."
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 176,
   "text": "Say something about this drive"
  },
  {
   "file": "features/garage/garage_screen.dart",
-  "line": 34,
+  "line": 39,
   "text": "Add vehicle"
  },
  {
   "file": "features/garage/garage_screen.dart",
-  "line": 38,
-  "text": "Could not load vehicles: $e"
- },
- {
-  "file": "features/garage/garage_screen.dart",
-  "line": 53,
-  "text": "No vehicles yet"
- },
- {
-  "file": "features/garage/garage_screen.dart",
-  "line": 56,
-  "text": "Add your car so trips are credited to it, or wait for the app to notice its Bluetooth and ask."
+  "line": 67,
+  "text": "Could not load your garage."
  },
  {
   "file": "features/garage/garage_screen.dart",
   "line": 68,
-  "text": "Ignored car audio"
+  "text": "load your garage"
  },
  {
   "file": "features/garage/garage_screen.dart",
-  "line": 71,
-  "text": "Rides in these are treated as passenger trips."
+  "line": 74,
+  "text": "Add your car."
  },
  {
   "file": "features/garage/garage_screen.dart",
-  "line": 119,
+  "line": 76,
+  "text": "Trips get credited to it, and the app can spot its Bluetooth."
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 78,
+  "text": "Add vehicle"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 103,
+  "text": "Cars you ride in"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 111,
+  "text": "Rides in these count as passenger trips."
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 177,
+  "text": "No trips yet"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 219,
   "text": "Never tracked"
  },
  {
   "file": "features/garage/tabs/documents_tab.dart",
-  "line": 33,
+  "line": 41,
+  "text": "Your car's papers, in one place."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 43,
+  "text": "Insurance card, registration: photos stay encrypted on this phone."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 45,
+  "text": "Add a photo"
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 60,
   "text": "Stored encrypted on this phone only. Never uploaded, never shared."
  },
  {
   "file": "features/garage/tabs/documents_tab.dart",
-  "line": 42,
-  "text": "No documents yet. Add a photo of your insurance card or registration."
+  "line": 101,
+  "text": "New document"
  },
  {
   "file": "features/garage/tabs/documents_tab.dart",
-  "line": 71,
-  "text": "Add document"
+  "line": 115,
+  "text": "Take a photo"
  },
  {
   "file": "features/garage/tabs/documents_tab.dart",
-  "line": 125,
-  "text": "Could not decrypt this document."
+  "line": 121,
+  "text": "Choose from library"
  },
  {
   "file": "features/garage/tabs/documents_tab.dart",
-  "line": 159,
-  "text": "The encrypted file is wiped from this phone."
+  "line": 164,
+  "text": "This document can't be opened on this phone."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 199,
+  "text": "The photo is wiped from this phone."
  },
  {
   "file": "features/garage/tabs/fuel_tab.dart",
-  "line": 52,
+  "line": 61,
+  "text": "Log your first fill-up."
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 63,
+  "text": "Two full tanks with the odometer and you get real economy."
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 65,
+  "text": "Add fill-up"
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 94,
   "text": "Fuel logged"
  },
  {
   "file": "features/garage/tabs/fuel_tab.dart",
-  "line": 72,
+  "line": 108,
   "text": "Economy appears after two full tanks with odometer readings. Partial fill-ups count toward the next full one."
  },
  {
   "file": "features/garage/tabs/fuel_tab.dart",
-  "line": 154,
+  "line": 170,
+  "text": "Fill-up removed."
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 227,
   "text": "Full tank"
  },
  {
   "file": "features/garage/tabs/maintenance_tab.dart",
-  "line": 41,
-  "text": "No reminders yet. Add oil changes, tyre rotations, registration or inspection by distance, time or both."
+  "line": 59,
+  "text": "Set a reminder."
  },
  {
   "file": "features/garage/tabs/maintenance_tab.dart",
-  "line": 80,
-  "text": "Maintenance reminder"
+  "line": 61,
+  "text": "Oil, tyres, registration, inspection: by distance, time or both."
  },
  {
   "file": "features/garage/tabs/maintenance_tab.dart",
-  "line": 107,
-  "text": "Last done at (${imperial ? "
+  "line": 63,
+  "text": "Add reminder"
  },
  {
   "file": "features/garage/tabs/maintenance_tab.dart",
-  "line": 187,
+  "line": 136,
   "text": "Mark done today"
  },
  {
-  "file": "features/garage/tabs/stats_tab.dart",
-  "line": 35,
-  "text": "scored and unscored"
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 177,
+  "text": "New reminder"
  },
  {
-  "file": "features/garage/tabs/stats_tab.dart",
-  "line": 37,
-  "text": "Average score"
- },
- {
-  "file": "features/garage/tabs/stats_tab.dart",
-  "line": 37,
-  "text": "scored driver trips"
- },
- {
-  "file": "features/garage/tabs/stats_tab.dart",
-  "line": 40,
-  "text": "Fuel economy"
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 210,
+  "text": "Last done at (${imperial ? "
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
   "line": 42,
-  "text": "needs two full tanks with odometer"
+  "text": "Log two full tanks with the odometer to see fuel economy."
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
-  "line": 51,
-  "text": "add a fill-up with the odometer"
+  "line": 43,
+  "text": "Add a fill-up with the odometer to estimate mileage."
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
-  "line": 63,
+  "line": 54,
+  "text": "Average score"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 60,
+  "text": "Fuel economy"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 90,
   "text": "Never tracked"
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
-  "line": 65,
-  "text": "Drives in this vehicle are ended and deleted as soon as the phone connects to it."
+  "line": 97,
+  "text": "Drives in this car are deleted as soon as the phone connects to it."
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
-  "line": 105,
+  "line": 129,
   "text": "Last trip ${relativeTime(DateTime.fromMillisecondsSinceEpoch(stats!.lastTripAt!), DateTime.now())}"
  },
  {
   "file": "features/garage/tabs/stats_tab.dart",
-  "line": 111,
-  "text": "Car audio: ${vehicle.bluetoothNameList.join("
+  "line": 134,
+  "text": "Recognised car audio: $carAudio"
  },
  {
   "file": "features/garage/vehicle_detail_screen.dart",
-  "line": 43,
-  "text": "This vehicle is gone."
+  "line": 57,
+  "text": "This car is no longer in your garage."
+ },
+ {
+  "file": "features/garage/vehicle_detail_screen.dart",
+  "line": 59,
+  "text": "Its trips, fuel log and documents stay on the phone."
+ },
+ {
+  "file": "features/garage/vehicle_detail_screen.dart",
+  "line": 61,
+  "text": "Back to the garage"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 74,
+  "line": 75,
   "text": "Add vehicle"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 74,
+  "line": 75,
   "text": "Edit vehicle"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 93,
-  "text": "Give it a name"
+  "line": 99,
+  "text": "Give it a name."
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 125,
-  "text": "Not a year"
- },
- {
-  "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 146,
-  "text": "Car audio names"
+  "line": 131,
+  "text": "Enter a four-digit year."
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
   "line": 151,
-  "text": "The Bluetooth or CarPlay name the phone sees in this car. Trips are credited to the vehicle automatically."
+  "text": "Car audio"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 172,
+  "line": 154,
+  "text": "The Bluetooth or CarPlay name the phone sees in this car. Trips in it are credited to this vehicle."
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 175,
   "text": "e.g. \"Mazda CX-5\""
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 184,
+  "line": 181,
+  "text": "Add name"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 191,
   "text": "Never track this vehicle"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 186,
-  "text": "Rental, work truck: drives in it are ended and deleted the moment the phone connects to it."
+  "line": 193,
+  "text": "Rental, work truck: drives in it are deleted the moment the phone connects to it."
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 256,
+  "line": 263,
   "text": "Archive this vehicle?"
  },
  {
   "file": "features/garage/vehicle_edit_screen.dart",
-  "line": 258,
+  "line": 265,
   "text": "It disappears from the Garage. Its trips, fuel log and documents stay on the phone."
  },
  {
   "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
-  "line": 33,
+  "line": 32,
   "text": "New car audio '${prompt.name}'. Add it to the Garage?"
  },
  {
   "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
-  "line": 41,
-  "text": "Trips in cars you own are scored for you. Unknown cars are treated as a passenger ride until you say otherwise."
+  "line": 40,
+  "text": "Trips in your own cars are scored for you. Unknown cars count as a passenger ride until you say otherwise."
  },
  {
   "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
-  "line": 61,
-  "text": "It is one of mine"
+  "line": 59,
+  "text": "Pick one of your cars"
  },
  {
   "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
   "line": 65,
+  "text": "It is one of mine"
+ },
+ {
+  "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
+  "line": 69,
   "text": "It's not mine"
  },
  {
@@ -5296,82 +5471,97 @@
  },
  {
   "file": "features/places/places_screen.dart",
-  "line": 29,
-  "text": "Places stay on this phone. Long-press the friends map to save one there, or add where you are now."
+  "line": 43,
+  "text": "Saved on this phone only. Long-press the map to add one, or add where you are."
  },
  {
   "file": "features/places/places_screen.dart",
-  "line": 37,
-  "text": "No places yet"
+  "line": 59,
+  "text": "No places yet."
  },
  {
   "file": "features/places/places_screen.dart",
-  "line": 38,
-  "text": "Start with Home: it powers auto check-ins."
+  "line": 60,
+  "text": "Start with Home. It powers check-ins and alerts."
  },
  {
   "file": "features/places/places_screen.dart",
-  "line": 57,
+  "line": 61,
   "text": "Add where I am"
  },
  {
   "file": "features/places/places_screen.dart",
-  "line": 69,
+  "line": 94,
+  "text": "Add where I am"
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 106,
   "text": "No location yet. Allow location in Drive, or long-press the map."
  },
  {
-  "file": "features/places/place_screen.dart",
-  "line": 31,
-  "text": "This place was removed."
+  "file": "features/places/places_screen.dart",
+  "line": 148,
+  "text": "${radiusText(place.radiusM, units)} · $alerts alert${alerts == 1 ? "
  },
  {
   "file": "features/places/place_screen.dart",
-  "line": 58,
-  "text": "Its alerts go with it."
+  "line": 40,
+  "text": "This place was deleted."
  },
  {
   "file": "features/places/place_screen.dart",
-  "line": 94,
-  "text": "Tell me when…"
+  "line": 41,
+  "text": "Nothing left to show here."
  },
  {
   "file": "features/places/place_screen.dart",
-  "line": 102,
-  "text": "No friends sharing yet"
+  "line": 87,
+  "text": "Within ${radiusText(place.radiusM, units)} of here"
  },
  {
   "file": "features/places/place_screen.dart",
-  "line": 104,
-  "text": "Alerts need a friend or circle member who shares their location."
+  "line": 106,
+  "text": "Pick who to hear about when they arrive or leave."
  },
  {
   "file": "features/places/place_screen.dart",
-  "line": 122,
-  "text": "Worked out on this phone from their live position; nothing about this place is uploaded. Honours quiet hours."
+  "line": 112,
+  "text": "Add a friend who shares their location and they show up here."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 136,
+  "text": "Worked out on this phone from their live position. Nothing about this place is uploaded. Quiet hours apply."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 155,
+  "text": "You stop getting alerts for it."
  },
  {
   "file": "features/places/save_place_sheet.dart",
-  "line": 62,
-  "text": "Give the place a name."
- },
- {
-  "file": "features/places/save_place_sheet.dart",
-  "line": 97,
+  "line": 21,
   "text": "Save a place"
  },
  {
   "file": "features/places/save_place_sheet.dart",
-  "line": 97,
+  "line": 21,
   "text": "Edit place"
  },
  {
   "file": "features/places/save_place_sheet.dart",
-  "line": 102,
-  "text": "Stays on this phone. Friends' arrivals and departures are worked out here from their live position."
+  "line": 65,
+  "text": "Give the place a name."
  },
  {
   "file": "features/places/save_place_sheet.dart",
-  "line": 163,
+  "line": 98,
+  "text": "Stays on this phone. Alerts are worked out here from your friends' live position."
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 158,
   "text": "Save place"
  },
  {
@@ -5411,188 +5601,238 @@
  },
  {
   "file": "features/profile/profile_repo.dart",
-  "line": 113,
-  "text": "Offline build."
+  "line": 114,
+  "text": "Not available in this version yet."
  },
  {
   "file": "features/profile/profile_repo.dart",
-  "line": 117,
+  "line": 119,
   "text": "That handle is taken."
  },
  {
   "file": "features/profile/profile_repo.dart",
-  "line": 154,
+  "line": 156,
   "text": "That image is ${(jpeg.length / 1024).round()} KB; the limit is 100 KB."
  },
  {
   "file": "features/profile/profile_repo.dart",
-  "line": 158,
-  "text": "Offline build."
+  "line": 161,
+  "text": "Not available in this version yet."
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 40,
-  "text": "Sign in to have a profile your friends can see."
+  "line": 42,
+  "text": "Sign in to get a profile."
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 61,
-  "text": "Could not load profile: $e"
+  "line": 102,
+  "text": "Could not load this profile."
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 64,
-  "text": "No profile yet. Pull to refresh."
+  "line": 103,
+  "text": "load the profile"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 94,
-  "text": "Driver Rating"
+  "line": 104,
+  "text": "Try again"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 99,
+  "line": 111,
+  "text": "No profile yet."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 112,
+  "text": "Pull down to check again."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 175,
+  "text": "Driver rating"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 178,
   "text": "Needs 5 scored trips"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 100,
-  "text": "30-day average"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 106,
-  "text": "Passenger trips"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 108,
-  "text": "Marked by them, honour system"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 124,
-  "text": "Display name"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 137,
-  "text": "Hidden from everyone"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 138,
-  "text": "Visible to friends and circles"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 140,
-  "text": "Change in Settings › Location"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 152,
-  "text": "Hiding their location"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 153,
-  "text": "Shares location with friends"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 187,
-  "text": "Could not change handle: $e"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 198,
-  "text": "Display name"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 200,
-  "text": "What friends see"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 311,
-  "text": "Avatar updated."
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 315,
-  "text": "Could not upload: $e"
- },
- {
-  "file": "features/profile/profile_screen.dart",
-  "line": 358,
+  "line": 186,
   "text": "Clean streak"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 360,
-  "text": "Trips at 80+, none reckless"
+  "line": 189,
+  "text": "Scored 80+ in a row"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 366,
+  "line": 192,
+  "text": "Passenger trips"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 194,
+  "text": "Rides as a passenger"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 219,
+  "text": "All stats"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 220,
+  "text": "Totals, records and fun facts."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 226,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 227,
+  "text": "Your season in a few cards."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 261,
+  "text": "Nobody can see your location"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 262,
+  "text": "Friends and circles can see your location"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 263,
+  "text": "Change it in Settings"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 288,
+  "text": "Hiding their location"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 289,
+  "text": "Shares location with friends"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 311,
+  "text": "Lowercase letters, digits, underscores"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 322,
+  "text": "change the handle"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 336,
+  "text": "What friends see"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 405,
+  "text": "All time"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 412,
+  "text": "Average score"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 414,
   "text": "Phone-free streak"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 368,
-  "text": "Trips without touching it"
+  "line": 415,
+  "text": "Passenger trips"
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 399,
+  "line": 435,
+  "text": "All badges"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 438,
   "text": "None yet. Drive well."
  },
  {
+  "file": "features/profile/profile_screen.dart",
+  "line": 628,
+  "text": "Change photo"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 670,
+  "text": "Photo updated."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 676,
+  "text": "change the photo"
+ },
+ {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 20,
+  "line": 29,
   "text": "Adding a friend shares your live location with them. You can hide it any time in Settings."
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 49,
-  "text": "Sign-in failed: $e"
+  "line": 34,
+  "text": "Sign-in isn't available in this version yet."
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 62,
-  "text": "Sign in"
+  "line": 48,
+  "text": "sign in"
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 81,
-  "text": "Sign in to join leagues, see friends and get roasted in public."
+  "line": 52,
+  "text": "sign in"
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 88,
-  "text": "This build has no Drivalry cloud project configured, so sign-in is unavailable."
+  "line": 141,
+  "text": "Score your drives. Beat your friends. Get roasted."
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 92,
+  "line": 161,
   "text": "You are signed in."
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 99,
+  "line": 172,
   "text": "Continue with Apple"
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 115,
+  "line": 188,
   "text": "Continue with Google"
  },
  {
   "file": "features/profile/sign_in_screen.dart",
-  "line": 124,
-  "text": "Google sign-in is not configured for this build."
+  "line": 204,
+  "text": "Continue with Google"
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 236,
+  "text": "Not now"
  },
  {
   "file": "features/seasons/seasons_screen.dart",
@@ -5636,68 +5876,78 @@
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 11,
-  "text": "Speed limits and road geometry come from OpenStreetMap data, © OpenStreetMap contributors, available under the Open Database Licence (ODbL)."
+  "line": 20,
+  "text": "Road shapes and speed limits, drawn by volunteer mappers around the world."
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 17,
-  "text": "Google Maps Platform"
+  "line": 22,
+  "text": "© OpenStreetMap contributors"
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 18,
-  "text": "Maps are rendered by the Google Maps SDK. Place suggestions and route estimates in convoys use the Places and Routes APIs."
+  "line": 27,
+  "text": "The maps you see, and the stops and arrival times in a convoy."
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 24,
-  "text": "Weather at the start of each trip comes from the Open-Meteo API (CC BY 4.0, non-commercial)."
+  "line": 33,
+  "text": "The weather at the start of each trip."
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 30,
-  "text": "Place names for saved places use the OpenStreetMap Nominatim geocoder, sparingly and cached."
+  "line": 39,
+  "text": "Names for the places you save."
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 36,
-  "text": "Regional OpenStreetMap extracts used to build the speed-limit packs."
+  "line": 45,
+  "text": "Where the roads for each region come from."
  },
  {
   "file": "features/settings/attribution_screen.dart",
-  "line": 66,
-  "text": "Drivalry is free, open source (MIT) and runs on free tiers. Raw GPS never leaves your phone."
+  "line": 69,
+  "text": "Free, open source, built on free services."
  },
  {
-  "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 15,
-  "text": "Open Settings and tap Focus."
+  "file": "features/settings/attribution_screen.dart",
+  "line": 103,
+  "text": "Free to use, read and change."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 108,
+  "text": "Raw GPS never leaves your phone."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
   "line": 16,
-  "text": "Tap + and choose Driving."
+  "text": "Open Settings and tap Focus."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
   "line": 17,
-  "text": "Turn on Auto-Reply and pick who gets it (Favourites or Recents)."
+  "text": "Tap + and choose Driving."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
   "line": 18,
-  "text": "Set it to turn on automatically when driving or when connected to CarPlay or your car's Bluetooth."
+  "text": "Turn on Auto-Reply and choose who gets the reply."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 19,
+  "text": "Under Turn On Automatically, choose when it should start."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
   "line": 23,
-  "text": "Open Do Not Disturb settings (button below)."
+  "text": "Tap Open phone settings below."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
   "line": 24,
-  "text": "Add or edit the Driving schedule (on Pixel: Settings › Connected devices › Connection preferences › Driving mode)."
+  "text": "Find Driving under Schedules. On a Pixel it is under Connected devices as Driving mode."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
@@ -5706,593 +5956,768 @@
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 37,
+  "line": 36,
   "text": "Auto-reply to texts"
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 42,
-  "text": "Your phone can answer texts for you while you drive. That feature lives in the operating system, not in Drivalry: it is private, works in every messaging app, and does not need this app to read your messages. Drivalry never sends replies."
+  "line": 47,
+  "text": "Your phone can answer texts for you while you drive. Drivalry never sends replies."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 50,
-  "text": "Set up a Driving Focus"
+  "line": 53,
+  "text": "It is built into your phone, so no app reads your messages."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 50,
-  "text": "Set up Android's driving mode"
+  "line": 63,
+  "text": "Driving Focus"
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 73,
-  "text": "Steps copied"
+  "line": 63,
+  "text": "Driving mode"
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 76,
+  "line": 82,
   "text": "Copy the steps"
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 89,
-  "text": "Could not open it here. Look under Settings › Sound › Do Not Disturb."
+  "line": 93,
+  "text": "Steps copied."
  },
  {
   "file": "features/settings/auto_reply_settings_screen.dart",
-  "line": 95,
-  "text": "Open Do Not Disturb settings"
+  "line": 98,
+  "text": "Open phone settings"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 108,
+  "text": "Could not open it here. Look for Do Not Disturb in your phone's Sound settings."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 22,
-  "text": "Crash detection"
- },
- {
-  "file": "features/settings/crash_settings_screen.dart",
-  "line": 28,
+  "line": 36,
   "text": "Detect crashes"
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 30,
-  "text": "A hard impact followed by a dead stop starts a 30-second check on this phone."
+  "line": 38,
+  "text": "A hard hit and a dead stop start a 30-second check."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 39,
-  "text": "If you tap \"I'm OK\" nothing happens. If nobody answers, friends and circle members who use Drivalry get a push, and a text with your location is prepared for your emergency contacts. Drivalry never places a call. Low-speed bumps and a dropped phone are ignored: the car has to have been moving."
+  "line": 50,
+  "text": "Tap I'm OK and nothing happens. Say nothing and your friends get a push and your contacts a text with your location."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 52,
+  "line": 57,
+  "text": "Drivalry never places a call. Low-speed bumps and dropped phones are ignored."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 81,
   "text": "Help was requested"
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 53,
+  "line": 88,
   "text": "Tap to confirm you are OK."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 60,
+  "line": 104,
+  "text": "Get ready"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 109,
   "text": "Emergency contacts"
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 63,
+  "line": 111,
   "text": "None yet. Add at least one so the text has somewhere to go."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 70,
+  "line": 118,
   "text": "Test the countdown"
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 72,
-  "text": "Runs the full-screen check with sound. Nothing is sent."
+  "line": 120,
+  "text": "Runs the full-screen check, with sound. Nothing is sent."
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 82,
-  "text": "False alarms you dismissed"
+  "line": 137,
+  "text": "False alarm"
  },
  {
   "file": "features/settings/crash_settings_screen.dart",
-  "line": 87,
-  "text": "Last detection"
+  "line": 137,
+  "text": "False alarms"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 145,
+  "text": "Most recent alert"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 153,
+  "text": "Crash detection"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 20,
+  "line": 34,
   "text": "Spoken cues"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 26,
-  "text": "Spoken cues"
+  "line": 36,
+  "text": "Short words through the car speakers. The roast waits until you park."
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 28,
-  "text": "Short spoken cues through the car speakers during a drive. Off by default. The roast always waits until the trip ends."
+  "line": 50,
+  "text": "New speed limit"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 37,
-  "text": "Limit changes"
+  "line": 51,
+  "text": "\"Limit's 35\" when the posted limit changes."
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 38,
-  "text": "\"Limit's 35\" when the posted limit changes"
- },
- {
-  "file": "features/settings/cues_settings_screen.dart",
-  "line": 44,
+  "line": 57,
   "text": "Over the limit"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 46,
-  "text": "\"Over by 8\" after eight seconds at least 5 mph over, at most once a minute"
+  "line": 59,
+  "text": "\"Over by 8\" after eight seconds over, at most once a minute."
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 54,
+  "line": 66,
   "text": "Smooth driving"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 55,
-  "text": "\"Smooth\" after five clean minutes"
+  "line": 67,
+  "text": "\"Smooth\" after five clean minutes."
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 61,
+  "line": 82,
   "text": "Voice speed"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
-  "line": 83,
+  "line": 102,
   "text": "Say a sample"
  },
  {
   "file": "features/settings/cues_settings_screen.dart",
+  "line": 118,
+  "text": "Cues come from the roads stored on this phone. Nothing is said where the limit is unknown, and phone handling is never a cue."
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 126,
+  "text": "Spoken cues"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 75,
+  "text": "read the numbers"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 85,
+  "text": "Tracking available"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
   "line": 89,
-  "text": "Cues use the speed-limit pack on this phone and never the network. Nothing is said on roads without a known limit, and phone handling is never a cue."
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 73,
-  "text": "Plugin available"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 77,
   "text": "Paused until"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 88,
-  "text": "Spooled events"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 89,
-  "text": "Service running"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 97,
-  "text": "Last trigger"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
   "line": 100,
-  "text": "Tentative starts"
+  "text": "Events waiting"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
   "line": 101,
-  "text": "Confirmed trips"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 102,
-  "text": "Discarded tentatives"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 104,
-  "text": "Last trip ended"
+  "text": "Service running"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
   "line": 109,
-  "text": "Radio: relayed bytes (TURN)"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 110,
-  "text": "Crash: last candidate"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 111,
-  "text": "Crash: false alarms dismissed"
+  "text": "Last trigger"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
   "line": 112,
-  "text": "Crash: unresolved alert"
+  "text": "Tentative starts"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 113,
+  "text": "Confirmed trips"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
   "line": 114,
+  "text": "Discarded tentatives"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 116,
+  "text": "Last trip ended"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 121,
+  "text": "Radio: relayed data"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 122,
+  "text": "Crash: last check"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 123,
+  "text": "Crash: false alarms dismissed"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 124,
+  "text": "Crash: alert still open"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 125,
+  "text": "App started"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 126,
   "text": "Live trip"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 178,
-  "text": "Copy debug info"
+  "line": 190,
+  "text": "Copy for a bug report"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 204,
+  "line": 216,
   "text": "Battery: per hour driving (14 d)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 206,
+  "line": 218,
   "text": "not enough data yet (${b.drivingPairs} trips, ${b.drivingHours.toStringAsFixed(1)} h)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 212,
+  "line": 224,
   "text": "Battery: per day parked (14 d)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 214,
+  "line": 226,
   "text": "not enough data yet (${b.parkedDays.toStringAsFixed(1)} days)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 215,
+  "line": 227,
   "text": "${b.parkedPctPerDay!.toStringAsFixed(1)}%/day over ${b.parkedDays.toStringAsFixed(1)} days"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 223,
+  "line": 235,
   "text": "Trips recorded (14 d)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 224,
+  "line": 236,
   "text": "Missed starts"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 224,
+  "line": 236,
   "text": "n/a: a missed start leaves nothing to count"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 225,
+  "line": 238,
   "text": "Trips started by hand (14 d)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
-  "line": 225,
-  "text": "${d.manualStarts} (proxy for missed)"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 227,
-  "text": "False starts"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 228,
-  "text": "${d.discardedTentativesSinceInstall} dropped by the plugin since install; ${d.deletedTrips} deleted by you (14 d)"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 232,
-  "text": "Late starts (14 d)"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 234,
-  "text": "n/a: no trips with a stored trigger time yet"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 235,
-  "text": "${d.lateStarts} of ${d.lateStartsCountable} confirmed over 2 min after the trigger"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
   "line": 239,
-  "text": "Late ends (14 d)"
- },
- {
-  "file": "features/settings/diagnostics_screen.dart",
-  "line": 241,
-  "text": "n/a: no stationary-ended trips with samples"
+  "text": "${d.manualStarts} (closest stand-in for missed)"
  },
  {
   "file": "features/settings/diagnostics_screen.dart",
   "line": 242,
+  "text": "False starts"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 243,
+  "text": "${d.discardedTentativesSinceInstall} dropped before they became trips; ${d.deletedTrips} deleted by you (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 247,
+  "text": "Late starts (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 249,
+  "text": "n/a: no trips with a stored trigger time yet"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 250,
+  "text": "${d.lateStarts} of ${d.lateStartsCountable} confirmed over 2 min after the trigger"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 254,
+  "text": "Late ends (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 256,
+  "text": "n/a: no stationary-ended trips with samples"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 257,
   "text": "${d.lateEnds} of ${d.lateEndsCountable} ended over a minute after the 3-min rule"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 21,
+  "line": 25,
   "text": "Emergency contacts"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 40,
-  "text": "${c.phone}  ·  also gets the push"
- },
- {
-  "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 53,
-  "text": "Numbers stay on this phone. The text is prepared in your messaging app; you (or whoever has your phone) still press send."
- },
- {
-  "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 65,
+  "line": 32,
   "text": "Add contact"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 88,
-  "text": "No emergency contacts"
+  "line": 49,
+  "text": "Emergency contacts"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 93,
-  "text": "Add the people who should get a text with your location if a crash check goes unanswered."
+  "line": 50,
+  "text": "Could not load your contacts."
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 130,
+  "line": 51,
+  "text": "load your contacts"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 57,
+  "text": "Emergency contacts"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 58,
+  "text": "Who should get the text?"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 60,
+  "text": "If a crash check goes unanswered, they get a text with your location."
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 62,
+  "text": "Add contact"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 84,
+  "text": "${c.phone} · also gets an alert in the app"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 98,
+  "text": "Numbers stay on this phone. The text is readied in your messaging app; someone still presses send."
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 145,
   "text": "Add emergency contact"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 140,
-  "text": "Name is required"
+  "line": 165,
+  "text": "Add a name."
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 147,
+  "line": 172,
   "text": "Phone number"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 152,
-  "text": "Enter a phone number"
+  "line": 177,
+  "text": "Enter a phone number."
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 161,
-  "text": "Also a Drivalry friend? (optional)"
+  "line": 186,
+  "text": "Also a friend on Drivalry?"
  },
  {
   "file": "features/settings/emergency_contacts_screen.dart",
-  "line": 163,
-  "text": "Only accepted friends can be linked. They get the push alert as well as the text."
+  "line": 188,
+  "text": "They get an alert in the app as well as the text."
  },
  {
   "file": "features/settings/notifications_settings_screen.dart",
-  "line": 32,
-  "text": "Push from friends"
- },
- {
-  "file": "features/settings/notifications_settings_screen.dart",
-  "line": 34,
-  "text": "Registered on this device."
- },
- {
-  "file": "features/settings/notifications_settings_screen.dart",
-  "line": 36,
-  "text": "Permission denied. Allow notifications in the system settings."
- },
- {
-  "file": "features/settings/notifications_settings_screen.dart",
-  "line": 38,
-  "text": "Not registered yet."
- },
- {
-  "file": "features/settings/notifications_settings_screen.dart",
-  "line": 53,
+  "line": 29,
   "text": "Quiet hours"
  },
  {
   "file": "features/settings/notifications_settings_screen.dart",
-  "line": 56,
+  "line": 35,
+  "text": "Quiet hours"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 37,
   "text": "${QuietHours.formatMinutes(quiet.startMinutes)} to ${QuietHours.formatMinutes(quiet.endMinutes)}. Crash alerts still come through."
  },
  {
   "file": "features/settings/notifications_settings_screen.dart",
-  "line": 104,
+  "line": 40,
+  "text": "Nothing buzzes while you sleep."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 97,
   "text": "Crash alerts"
  },
  {
   "file": "features/settings/notifications_settings_screen.dart",
-  "line": 105,
-  "text": "Always on. Ignores quiet hours."
+  "line": 98,
+  "text": "Always comes through, even in quiet hours."
  },
  {
-  "file": "features/settings/settings_screen.dart",
-  "line": 37,
-  "text": "Offline build"
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 148,
+  "text": "Alerts reach this phone."
  },
  {
-  "file": "features/settings/settings_screen.dart",
-  "line": 39,
-  "text": "No Drivalry cloud project is configured. Tracking and scoring work; friends and leagues do not."
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 152,
+  "text": "Allow notifications for Drivalry in your phone settings."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 156,
+  "text": "Turn them on to hear when a friend reacts or a trip scores."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 160,
+  "text": "turn on notifications"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 171,
+  "text": "Push from friends"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 214,
+  "text": "Your score and roast when you park."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 216,
+  "text": "When a friend reacts to or comments on a drive."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 217,
+  "text": "When someone wants to add you."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 219,
+  "text": "Always comes through, even in quiet hours."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 220,
+  "text": "When your convoy stops or regroups."
  },
  {
   "file": "features/settings/settings_screen.dart",
   "line": 46,
-  "text": "Sign in"
+  "text": "Who gets a text if you do not answer."
  },
  {
   "file": "features/settings/settings_screen.dart",
   "line": 47,
-  "text": "Apple or Google. No passwords."
+  "text": "One person gets a text if you do not answer."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 54,
-  "text": "Your profile"
+  "line": 48,
+  "text": "$contacts people get a text if you do not answer."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 61,
-  "text": "Export my data"
+  "line": 59,
+  "text": "Auto follows the roads you drive on."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 62,
-  "text": "Every trip on this phone, as JSON"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 67,
-  "text": "Sign out"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 76,
-  "text": "Delete account"
+  "line": 78,
+  "text": "Record drives automatically"
  },
  {
   "file": "features/settings/settings_screen.dart",
   "line": 80,
-  "text": "Removes you from every league, circle and feed. Trips on this phone stay."
+  "text": "The app notices when you set off and scores when you park."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 107,
-  "text": "Hide my location from everyone"
+  "line": 82,
+  "text": "Off. Nothing is recorded until you turn this on."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 110,
-  "text": "Friends and circles stop seeing where you are. They can see that you are hiding."
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 112,
-  "text": "Sign in to share or hide your location."
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 125,
-  "text": "Crash detection"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 127,
-  "text": "A 30-second check after a hard stop; help is requested only if you do not answer"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 134,
-  "text": "Emergency contacts"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 135,
-  "text": "Who gets the text if you do not respond"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 139,
-  "text": "During a drive"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 142,
+  "line": 88,
   "text": "Spoken cues"
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 144,
-  "text": "Short limit and smoothness cues through the car speakers. Off by default."
+  "line": 90,
+  "text": "On. Short words through the car speakers."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 152,
-  "text": "Auto-reply to texts"
+  "line": 91,
+  "text": "Off. Short words through the car speakers."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 154,
-  "text": "Your phone's driving mode does this. Drivalry shows you where."
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 163,
-  "text": "Quiet hours, what to be told about"
- },
- {
-  "file": "features/settings/settings_screen.dart",
-  "line": 168,
+  "line": 96,
   "text": "Speed-limit packs"
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 186,
+  "line": 97,
+  "text": "Roads and limits kept on this phone."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 110,
+  "text": "Hide my location"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 112,
+  "text": "Friends see that you are hiding, not where you are."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 113,
+  "text": "Sign in to share or hide your location."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 124,
+  "text": "Which alerts reach you."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 129,
+  "text": "Quiet hours"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 131,
+  "text": "${QuietHours.formatMinutes(quiet.startMinutes)} to ${QuietHours.formatMinutes(quiet.endMinutes)}. Crash alerts still come through."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 134,
+  "text": "Off. Set a window when nothing buzzes."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 146,
+  "text": "Crash detection"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 148,
+  "text": "On. Checks on you after a hard stop."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 149,
+  "text": "Off. Turn it on to be checked on after a hard stop."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 154,
+  "text": "Emergency contacts"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 161,
+  "text": "Auto-reply to texts"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 162,
+  "text": "Your phone can answer texts while you drive."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 175,
+  "text": "Not available in this version yet."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 177,
+  "text": "Friends and leagues are coming. Drives still score on this phone."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 183,
+  "text": "Sign in"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 184,
+  "text": "Apple or Google. No passwords."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 194,
+  "text": "Your profile"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 200,
+  "text": "Export my data"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 201,
+  "text": "Every trip on this phone, in a file you keep."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 206,
+  "text": "Sign out"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 207,
+  "text": "Trips stay on this phone."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 212,
+  "text": "Delete account"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 214,
+  "text": "Leaves every league, circle and feed for good. Trips on this phone stay."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 230,
+  "text": "About Drivalry"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 231,
+  "text": "Where the roads, maps and weather come from."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 236,
   "text": "Open source"
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 187,
-  "text": "MIT licence, built in public"
+  "line": 237,
+  "text": "Read the code, report a bug, build your own."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 209,
-  "text": "Export failed: $e"
+  "line": 247,
+  "text": "Numbers for bug reports."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 216,
+  "line": 287,
+  "text": "Drives are no longer recorded."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 307,
+  "text": "export your data"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 315,
   "text": "Signed out."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 218,
-  "text": "Sign-out failed: $e"
+  "line": 317,
+  "text": "sign out"
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 226,
+  "line": 325,
   "text": "Delete your account?"
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 228,
-  "text": "Your profile, friendships, league memberships, uploaded trip summaries and posts are deleted for good. The trips stored on this phone are kept. This cannot be undone."
+  "line": 327,
+  "text": "This removes your profile, friendships, leagues and posts for good. Trips on this phone stay. There is no undo."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 252,
+  "line": 351,
   "text": "Account deleted."
  },
  {
   "file": "features/settings/settings_screen.dart",
-  "line": 254,
-  "text": "Delete failed: $e"
+  "line": 354,
+  "text": "delete your account"
  },
  {
   "file": "features/stats/fun_facts.dart",
@@ -6711,132 +7136,132 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 71,
+  "line": 73,
   "text": "trip as the driver"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 71,
+  "line": 73,
   "text": "trips as the driver"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 76,
+  "line": 78,
   "text": "Distance driven"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 78,
+  "line": 80,
   "text": "${formatHours(t.movingS)} behind the wheel"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 83,
+  "line": 85,
   "text": "Average Drive Score"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 86,
+  "line": 88,
   "text": "No scored trips this season"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 87,
+  "line": 89,
   "text": "Best ${t.bestScore} · ${t.cleanTrips} clean trips"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 92,
+  "line": 94,
   "text": "Night Owl"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 94,
+  "line": 96,
   "text": "driven after dark · ${h.weekendPercent} % at weekends"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 99,
+  "line": 101,
   "text": "States visited"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 102,
+  "line": 104,
   "text": "None yet. Drive somewhere new."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 109,
+  "line": 111,
   "text": "Your repeat route"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 112,
+  "line": 114,
   "text": "No route repeated yet"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 114,
+  "line": 116,
   "text": "The same route, over and over"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 119,
+  "line": 121,
   "text": "Time over the limit"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 122,
+  "line": 124,
   "text": "Barely at all. Respect."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 123,
+  "line": 125,
   "text": "It saved you ${formatSaved(rc.timeSavedS)}."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 128,
+  "line": 130,
   "text": "Longest trip"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 132,
+  "line": 134,
   "text": "Highest point ${formatAltitude(r.highestAltitudeM!, units)}"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 133,
+  "line": 135,
   "text": "Busiest day ${r.mostTripsInDay} trips"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 142,
+  "line": 144,
   "text": "Start one from the Convoy tab"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 152,
+  "line": 154,
   "text": "XP earned"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 154,
+  "line": 156,
   "text": "Drive well. See you next season."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 213,
+  "line": 215,
   "text": "Season Wrapped"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 217,
+  "line": 219,
   "text": "Your season"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 244,
+  "line": 246,
   "text": "Swipe through your season."
  },
  {
@@ -7035,199 +7460,14 @@
   "text": "Something went wrong. Try again."
  },
  {
-  "file": "widgets/friendly_error.dart",
-  "line": 16,
-  "text": "failed host lookup"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 17,
-  "text": "network is unreachable"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 18,
-  "text": "connection refused"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 19,
-  "text": "connection reset"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 20,
-  "text": "No connection right now. Try again when you are back online."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 22,
-  "text": "timed out"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 23,
-  "text": "That took too long. Try again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 25,
-  "text": "offline build"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 25,
-  "text": "not configured"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 26,
-  "text": "Not available in this version yet."
- },
- {
-  "file": "widgets/friendly_error.dart",
+  "file": "widgets/placeholder_screen.dart",
   "line": 29,
-  "text": "not authenticated"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 31,
-  "text": "invalid token"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 32,
-  "text": "Your sign-in expired. Sign in again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 34,
-  "text": "row-level security"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 35,
-  "text": "You do not have access to that."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 37,
-  "text": "rate limit"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 38,
-  "text": "Slow down a little. Try again in a minute."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 40,
-  "text": "Could not $doing. Try again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 41,
-  "text": "Something went wrong. Try again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 16,
-  "text": "failed host lookup"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 17,
-  "text": "network is unreachable"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 18,
-  "text": "connection refused"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 19,
-  "text": "connection reset"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 20,
-  "text": "No connection right now. Try again when you are back online."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 22,
-  "text": "timed out"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 23,
-  "text": "That took too long. Try again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 25,
-  "text": "offline build"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 25,
-  "text": "not configured"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 26,
   "text": "Not available in this version yet."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 29,
-  "text": "not authenticated"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 31,
-  "text": "invalid token"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 32,
-  "text": "Your sign-in expired. Sign in again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 34,
-  "text": "row-level security"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 35,
-  "text": "You do not have access to that."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 37,
-  "text": "rate limit"
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 38,
-  "text": "Slow down a little. Try again in a minute."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 40,
-  "text": "Could not $doing. Try again."
- },
- {
-  "file": "widgets/friendly_error.dart",
-  "line": 41,
-  "text": "Something went wrong. Try again."
  },
  {
   "file": "widgets/placeholder_screen.dart",
   "line": 33,
-  "text": "Coming in this tab"
+  "text": "Coming soon"
  },
  {
   "file": "widgets/relative_time.dart",
@@ -7246,27 +7486,27 @@
  },
  {
   "file": "widgets/signed_in_scope.dart",
-  "line": 15,
-  "text": "Sign in to use this with friends."
+  "line": 17,
+  "text": "See what your friends are up to."
  },
  {
   "file": "widgets/signed_in_scope.dart",
-  "line": 28,
-  "text": "Offline build"
+  "line": 51,
+  "text": "Not available in this version yet."
  },
  {
   "file": "widgets/signed_in_scope.dart",
-  "line": 30,
-  "text": "This build has no Drivalry cloud project configured, so friends, leagues and the feed are unavailable. Tracking and scoring still work."
+  "line": 53,
+  "text": "Friends, leagues and convoys are coming. Drives still score on this phone."
  },
  {
   "file": "widgets/signed_in_scope.dart",
-  "line": 38,
-  "text": "Not signed in"
+  "line": 62,
+  "text": "Sign in to see this."
  },
  {
   "file": "widgets/signed_in_scope.dart",
-  "line": 43,
+  "line": 64,
   "text": "Sign in"
  }
 ]
