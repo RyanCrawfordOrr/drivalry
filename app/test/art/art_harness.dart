@@ -432,6 +432,7 @@ class StoreFrame extends StatelessWidget {
                     child: ClipRect(
                       child: OverflowBox(
                         alignment: Alignment.topCenter,
+                        minWidth: 0,
                         minHeight: 0,
                         maxHeight: double.infinity,
                         child: PhoneMock(scene: scene),
