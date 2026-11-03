@@ -3,110 +3,166 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/repos/presence_repo.dart';
-import '../../widgets/relative_time.dart';
-import 'widgets/user_avatar.dart';
+import 'feed_view.dart' show fabClearance;
+import 'widgets/decline_with_undo.dart';
+import 'widgets/live_badge.dart';
+import 'widgets/person_row.dart';
+import 'widgets/tab_scroll_view.dart';
 
-/// Friends with where they are, incoming requests on top, sent requests at
-/// the bottom.
-class FriendsListView extends ConsumerWidget {
+/// Friends as rows (avatar, name, handle and Driver rating), incoming
+/// requests on top, sent requests at the bottom. A request can be swiped
+/// away to decline, and declining gets an Undo. The Friends root wraps this
+/// in pull to refresh.
+class FriendsListView extends ConsumerStatefulWidget {
   const FriendsListView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FriendsListView> createState() => _FriendsListViewState();
+}
+
+class _FriendsListViewState extends ConsumerState<FriendsListView> {
+  /// Requests hidden while their Undo snackbar is up.
+  final _declining = <String>{};
+
+  @override
+  Widget build(BuildContext context) {
     final snapshot = ref.watch(friendsSnapshotProvider);
     final presence = ref.watch(visiblePresenceProvider).value ?? const [];
     final byUser = {for (final p in presence) p.userId: p};
     final repo = ref.read(friendsRepoProvider);
-    final theme = Theme.of(context);
     final s = snapshot.value ?? const FriendsSnapshot();
     final now = DateTime.now().toUtc();
+    final incoming = [
+      for (final r in s.incoming)
+        if (!_declining.contains(r.other.id)) r,
+    ];
+    final skeletons =
+        snapshot.isLoading && s.friends.isEmpty && s.incoming.isEmpty;
 
-    return RefreshIndicator(
-      onRefresh: () => ref.read(friendsSnapshotProvider.notifier).refresh(),
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 88),
-        children: [
-          if (snapshot.isLoading && s.friends.isEmpty)
-            const LinearProgressIndicator(minHeight: 2),
-          if (s.incoming.isNotEmpty) ...[
-            _Header('Requests'),
-            for (final r in s.incoming)
-              ListTile(
-                leading: UserAvatar(
-                  name: r.other.name,
-                  avatarPath: r.other.avatarPath,
-                ),
-                title: Text(r.other.name),
-                subtitle: Text('@${r.other.handle} wants to be friends'),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      tooltip: 'Decline',
-                      onPressed: () => repo.remove(r.other.id),
-                      icon: const Icon(Icons.close),
+    return TabScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.only(top: Space.sm, bottom: fabClearance),
+          sliver: SliverToBoxAdapter(
+            child: StateSwitcher(
+              child: skeletons
+                  ? Column(
+                      key: const ValueKey('skeleton'),
+                      children: [
+                        for (var i = 0; i < 3; i++)
+                          const Padding(
+                            padding: EdgeInsets.fromLTRB(
+                              Space.gutter,
+                              0,
+                              Space.gutter,
+                              Space.md,
+                            ),
+                            child: SkeletonTile(height: 56),
+                          ),
+                      ],
+                    )
+                  : Column(
+                      key: const ValueKey('list'),
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (incoming.isNotEmpty)
+                          EditorialSection(
+                            kicker: 'Requests',
+                            child: Column(
+                              children: [
+                                for (var i = 0; i < incoming.length; i++)
+                                  Reveal(
+                                    delay: Reveal.stagger(i),
+                                    child: _RequestRow(
+                                      request: incoming[i],
+                                      onAccept: () {
+                                        Haptics.success();
+                                        repo.accept(incoming[i]);
+                                      },
+                                      onDecline: () =>
+                                          _decline(repo, incoming[i]),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        if (s.friends.isEmpty)
+                          EmptyState(
+                            kicker: 'Friends',
+                            headline: 'No friends yet.',
+                            body: 'Add one by handle or share your link.',
+                            actionLabel: 'Add friend',
+                            onAction: () => context.push(Routes.addFriend),
+                          )
+                        else
+                          EditorialSection(
+                            kicker: 'Friends',
+                            child: Column(
+                              children: [
+                                for (var i = 0; i < s.friends.length; i++)
+                                  Reveal(
+                                    delay: Reveal.stagger(i),
+                                    child: _FriendRow(
+                                      friend: s.friends[i],
+                                      presence: byUser[s.friends[i].id],
+                                      now: now,
+                                      onRemove: () => _confirmRemove(
+                                        context,
+                                        repo,
+                                        s.friends[i],
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        if (s.outgoing.isNotEmpty)
+                          EditorialSection(
+                            kicker: 'Sent',
+                            child: Column(
+                              children: [
+                                for (final r in s.outgoing)
+                                  PersonRow(
+                                    name: r.other.name,
+                                    avatarPath: r.other.avatarPath,
+                                    caption:
+                                        '@${r.other.handle} · not answered yet',
+                                    trailing: TextButton(
+                                      onPressed: () => repo.remove(r.other.id),
+                                      child: const Text('Cancel'),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                      ],
                     ),
-                    FilledButton(
-                      onPressed: () => repo.accept(r),
-                      child: const Text('Accept'),
-                    ),
-                  ],
-                ),
-              ),
-            const Divider(),
-          ],
-          _Header('Friends'),
-          if (s.friends.isEmpty && !snapshot.isLoading)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.people_outline,
-                    size: 48,
-                    color: theme.colorScheme.outline,
-                  ),
-                  const SizedBox(height: 12),
-                  Text('No friends yet', style: theme.textTheme.titleMedium),
-                  const SizedBox(height: 4),
-                  Text(
-                    'Friends see each other on the map, in the feed and in '
-                    'leagues. Add one with their handle or your invite link.',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                ],
-              ),
             ),
-          for (final f in s.friends)
-            _FriendTile(
-              friend: f,
-              presence: byUser[f.id],
-              now: now,
-              onRemove: () => _confirmRemove(context, repo, f),
-            ),
-          if (s.outgoing.isNotEmpty) ...[
-            const Divider(),
-            _Header('Sent'),
-            for (final r in s.outgoing)
-              ListTile(
-                leading: UserAvatar(
-                  name: r.other.name,
-                  avatarPath: r.other.avatarPath,
-                ),
-                title: Text(r.other.name),
-                subtitle: Text('Waiting for @${r.other.handle}'),
-                trailing: TextButton(
-                  onPressed: () => repo.remove(r.other.id),
-                  child: const Text('Cancel'),
-                ),
-              ),
-          ],
-        ],
-      ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _decline(FriendsRepo repo, FriendRequest r) {
+    declineWithUndo(
+      context,
+      request: r,
+      repo: repo,
+      onHidden: (hidden) {
+        if (!mounted) return;
+        setState(() {
+          if (hidden) {
+            _declining.add(r.other.id);
+          } else {
+            _declining.remove(r.other.id);
+          }
+        });
+      },
     );
   }
 
@@ -120,7 +176,7 @@ class FriendsListView extends ConsumerWidget {
       builder: (ctx) => AlertDialog(
         title: Text('Remove ${f.name}?'),
         content: const Text(
-          'You will stop seeing each other on the map and in the feed.',
+          'You stop seeing each other on the map and in the feed.',
         ),
         actions: [
           TextButton(
@@ -138,8 +194,86 @@ class FriendsListView extends ConsumerWidget {
   }
 }
 
-class _FriendTile extends StatelessWidget {
-  const _FriendTile({
+/// An incoming request: swipe left to decline, or use the buttons.
+class _RequestRow extends StatelessWidget {
+  const _RequestRow({
+    required this.request,
+    required this.onAccept,
+    required this.onDecline,
+  });
+
+  final FriendRequest request;
+  final VoidCallback onAccept;
+  final VoidCallback onDecline;
+
+  @override
+  Widget build(BuildContext context) {
+    final r = request;
+    return Dismissible(
+      key: ValueKey('request-${r.other.id}'),
+      direction: DismissDirection.endToStart,
+      background: const DeclineBackground(),
+      onDismissed: (_) => onDecline(),
+      child: PersonRow(
+        name: r.other.name,
+        avatarPath: r.other.avatarPath,
+        caption: '@${r.other.handle} wants to be friends',
+        heroTag: 'avatar-${r.other.id}',
+        onTap: () => context.push(Routes.userProfile(r.other.id)),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              tooltip: 'Decline',
+              onPressed: onDecline,
+              icon: const Icon(Icons.close),
+            ),
+            FilledButton.tonal(
+              onPressed: onAccept,
+              style: FilledButton.styleFrom(
+                minimumSize: const Size(0, Sizes.touch),
+                padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+              ),
+              child: const Text('Accept'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// What shows behind a request as it is swiped away.
+class DeclineBackground extends StatelessWidget {
+  const DeclineBackground({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Container(
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: Space.gutter),
+      decoration: BoxDecoration(
+        color: scheme.errorContainer,
+        borderRadius: Radii.tileRadius,
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.close, color: scheme.onErrorContainer),
+          const SizedBox(width: Space.sm),
+          Text(
+            'Decline',
+            style: context.label.copyWith(color: scheme.onErrorContainer),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FriendRow extends StatelessWidget {
+  const _FriendRow({
     required this.friend,
     required this.presence,
     required this.now,
@@ -158,26 +292,20 @@ class _FriendTile extends StatelessWidget {
         p != null &&
         p.driving &&
         now.difference(p.updatedAt) < const Duration(hours: 24);
-    final String where;
-    if (p == null) {
-      where = 'Not sharing location';
-    } else if (driving) {
-      where = 'Driving now';
-    } else {
-      where = 'Parked · ${relativeTime(p.updatedAt, now)}';
-    }
     final rating = friend.driverRating;
-    return ListTile(
-      leading: UserAvatar(
-        name: friend.name,
-        avatarPath: friend.avatarPath,
-        highlighted: driving,
-      ),
-      title: Text(friend.name),
-      subtitle: Text(
-        rating == null ? where : '$where · rating ${rating.toStringAsFixed(0)}',
-      ),
+    final caption = [
+      '@${friend.handle}',
+      if (rating != null) 'Driver rating ${rating.toStringAsFixed(0)}',
+    ].join(' · ');
+    return PersonRow(
+      name: friend.name,
+      avatarPath: friend.avatarPath,
+      caption: caption,
+      highlighted: driving,
+      heroTag: 'avatar-${friend.id}',
+      badge: driving ? const LiveBadge('Driving') : null,
       trailing: PopupMenuButton<String>(
+        tooltip: 'More',
         onSelected: (v) {
           if (v == 'remove') onRemove();
         },
@@ -188,15 +316,4 @@ class _FriendTile extends StatelessWidget {
       onTap: () => context.push(Routes.userProfile(friend.id)),
     );
   }
-}
-
-class _Header extends StatelessWidget {
-  const _Header(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
-    child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-  );
 }

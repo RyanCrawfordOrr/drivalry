@@ -6,11 +6,13 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/deep_links.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/supabase/supabase_providers.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
-import 'widgets/user_avatar.dart';
+import 'widgets/person_row.dart';
 
 /// Find someone by handle, show your own invite QR and link, or paste a
 /// link someone sent you (docs/01 §4.5). Adding a friend shares your
@@ -61,7 +63,7 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
         _message = found == null ? 'No one with that handle.' : null;
       });
     } catch (e) {
-      setState(() => _message = 'Search failed: $e');
+      setState(() => _message = friendlyError(e, doing: 'search'));
     } finally {
       if (mounted) setState(() => _searching = false);
     }
@@ -79,7 +81,7 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
         _message = found == null ? 'That link points at no one.' : null;
       });
     } catch (e) {
-      setState(() => _message = 'Could not load that profile: $e');
+      setState(() => _message = friendlyError(e, doing: 'open that profile'));
     } finally {
       if (mounted) setState(() => _searching = false);
     }
@@ -102,7 +104,6 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final me = ref.watch(currentUserIdProvider);
     final snapshot = ref.watch(friendsSnapshotProvider).value;
     final result = _result;
@@ -111,98 +112,112 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
       body: SignedInScope(
         message: 'Sign in to add friends.',
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
           children: [
-            Text(
-              'Friends see each other on the map, in the feed and in leagues. '
-              'Adding someone shares your location with them until you hide it.',
-              style: theme.textTheme.bodyMedium,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.section,
+              ),
+              child: Text(
+                'Friends see each other on the map, in the feed and in '
+                'leagues. Adding someone shares your location until you hide.',
+                style: context.bodyMuted,
+              ),
             ),
-            const SizedBox(height: 16),
-            Text('By handle', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _handle,
-                    decoration: const InputDecoration(
-                      prefixText: '@',
-                      hintText: 'handle',
-                      border: OutlineInputBorder(),
-                    ),
-                    textInputAction: TextInputAction.search,
-                    autocorrect: false,
-                    onSubmitted: (_) => _search(),
+            EditorialSection(
+              kicker: 'Find by handle',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _handle,
+                          decoration: const InputDecoration(
+                            prefixText: '@',
+                            hintText: 'handle',
+                          ),
+                          textInputAction: TextInputAction.search,
+                          autocorrect: false,
+                          onSubmitted: (_) => _search(),
+                        ),
+                      ),
+                      const SizedBox(width: Space.sm),
+                      FilledButton.tonal(
+                        onPressed: _searching ? null : _search,
+                        child: const Text('Find'),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _searching ? null : _search,
-                  child: const Text('Find'),
-                ),
-              ],
+                  if (_searching) ...[
+                    const SizedBox(height: Space.md),
+                    const SkeletonTile(height: 56),
+                  ],
+                  if (_message != null) ...[
+                    const SizedBox(height: Space.md),
+                    Text(_message!, style: context.caption),
+                  ],
+                  if (result != null) ...[
+                    const SizedBox(height: Space.md),
+                    _ResultTile(
+                      profile: result,
+                      isMe: result.id == me,
+                      isFriend: snapshot?.isFriend(result.id) ?? false,
+                      requested: snapshot?.hasOutgoingTo(result.id) ?? false,
+                      incoming: snapshot?.hasIncomingFrom(result.id) ?? false,
+                      onAdd: () async {
+                        await ref.read(friendsRepoProvider).sendRequest(result);
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Request sent to ${result.name}'),
+                            ),
+                          );
+                        }
+                      },
+                      onAccept: () async {
+                        final s = snapshot;
+                        if (s == null) return;
+                        final req = s.incoming.firstWhere(
+                          (r) => r.requesterId == result.id,
+                        );
+                        await ref.read(friendsRepoProvider).accept(req);
+                      },
+                    ),
+                  ],
+                ],
+              ),
             ),
-            if (_searching)
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: LinearProgressIndicator(minHeight: 2),
+            if (me != null)
+              EditorialSection(
+                kicker: 'Share your link',
+                child: _Invite(link: FriendsRepo.inviteLink(me)),
               ),
-            if (_message != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(_message!, style: theme.textTheme.bodySmall),
-              ),
-            if (result != null)
-              _ResultCard(
-                profile: result,
-                isMe: result.id == me,
-                isFriend: snapshot?.isFriend(result.id) ?? false,
-                requested: snapshot?.hasOutgoingTo(result.id) ?? false,
-                incoming: snapshot?.hasIncomingFrom(result.id) ?? false,
-                onAdd: () async {
-                  await ref.read(friendsRepoProvider).sendRequest(result);
-                  if (context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Request sent to ${result.name}')),
-                    );
-                  }
-                },
-                onAccept: () async {
-                  final s = snapshot;
-                  if (s == null) return;
-                  final req = s.incoming.firstWhere(
-                    (r) => r.requesterId == result.id,
-                  );
-                  await ref.read(friendsRepoProvider).accept(req);
-                },
-              ),
-            const SizedBox(height: 24),
-            Text('Your invite', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 8),
-            if (me != null) _Invite(link: FriendsRepo.inviteLink(me)),
-            const SizedBox(height: 24),
-            Text('Paste a link', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _link,
-                    decoration: const InputDecoration(
-                      hintText: 'drivalry://friend/…',
-                      border: OutlineInputBorder(),
+            EditorialSection(
+              kicker: 'Paste a link',
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _link,
+                      decoration: const InputDecoration(
+                        hintText: 'drivalry://friend/…',
+                      ),
+                      autocorrect: false,
+                      onSubmitted: (_) => _pasteLink(),
                     ),
-                    autocorrect: false,
-                    onSubmitted: (_) => _pasteLink(),
                   ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton.tonal(
-                  onPressed: _pasteLink,
-                  child: const Text('Open'),
-                ),
-              ],
+                  const SizedBox(width: Space.sm),
+                  FilledButton.tonal(
+                    onPressed: _pasteLink,
+                    child: const Text('Open'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -211,8 +226,8 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
   }
 }
 
-class _ResultCard extends StatelessWidget {
-  const _ResultCard({
+class _ResultTile extends StatelessWidget {
+  const _ResultTile({
     required this.profile,
     required this.isMe,
     required this.isFriend,
@@ -234,26 +249,30 @@ class _ResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final Widget action;
     if (isMe) {
-      action = const Text('That is you');
+      action = const Pill('You', compact: true);
     } else if (isFriend) {
-      action = const Text('Already friends');
+      action = const Pill(
+        'Friends',
+        tone: PillTone.positive,
+        icon: Icons.check,
+        compact: true,
+      );
     } else if (requested) {
-      action = const Text('Request sent');
+      action = const Pill('Invited', compact: true);
     } else if (incoming) {
       action = FilledButton(onPressed: onAccept, child: const Text('Accept'));
     } else {
-      action = FilledButton.icon(
-        onPressed: onAdd,
-        icon: const Icon(Icons.person_add_alt_1_outlined),
-        label: const Text('Add friend'),
-      );
+      action = FilledButton(onPressed: onAdd, child: const Text('Add'));
     }
-    return Card(
-      margin: const EdgeInsets.only(top: 12),
-      child: ListTile(
-        leading: UserAvatar(name: profile.name, avatarPath: profile.avatarPath),
-        title: Text(profile.name),
-        subtitle: Text('@${profile.handle}'),
+    return Tile(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Space.lg,
+        vertical: Space.sm,
+      ),
+      child: PersonRow(
+        name: profile.name,
+        avatarPath: profile.avatarPath,
+        caption: '@${profile.handle}',
         trailing: action,
       ),
     );
@@ -266,50 +285,47 @@ class _Invite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Container(
+    return Tile(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Center(
+            child: Container(
+              // QR codes need a white quiet zone whatever the theme.
               color: Colors.white,
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(Space.sm),
               child: QrImageView(data: link, size: 180),
             ),
-            const SizedBox(height: 8),
-            SelectableText(link, style: theme.textTheme.bodySmall),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextButton.icon(
-                  onPressed: () async {
-                    await Clipboard.setData(ClipboardData(text: link));
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Link copied')),
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.copy_outlined),
-                  label: const Text('Copy'),
-                ),
-                const SizedBox(width: 8),
-                FilledButton.tonalIcon(
-                  onPressed: () => SharePlus.instance.share(
-                    ShareParams(
-                      text: 'Add me on Drivalry: $link',
-                      subject: 'Drivalry invite',
-                    ),
-                  ),
-                  icon: const Icon(Icons.share_outlined),
-                  label: const Text('Share'),
-                ),
-              ],
+          ),
+          const SizedBox(height: Space.md),
+          Text(
+            'Friends scan this or open the link to add you.',
+            textAlign: TextAlign.center,
+            style: context.caption,
+          ),
+          const SizedBox(height: Space.lg),
+          SecondaryButton(
+            label: 'Share link',
+            icon: Icons.share_outlined,
+            onPressed: () => SharePlus.instance.share(
+              ShareParams(
+                text: 'Add me on Drivalry: $link',
+                subject: 'Drivalry invite',
+              ),
             ),
-          ],
-        ),
+          ),
+          TextButton(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: link));
+              if (context.mounted) {
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('Link copied')));
+              }
+            },
+            child: const Text('Copy link'),
+          ),
+        ],
       ),
     );
   }

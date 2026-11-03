@@ -2,13 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/repos/circles_sync.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/repos/places_repo.dart';
 import '../../data/repos/presence_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
+import '../../tracking/providers.dart';
+import '../../widgets/units.dart';
 import '../friends/widgets/user_avatar.dart';
+import 'radius_text.dart';
 import 'save_place_sheet.dart';
 
 /// One saved place: edit, delete, and who to be told about.
@@ -19,16 +23,23 @@ class PlaceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final place = ref.watch(placeProvider(placeId)).value;
     final alerts = ref.watch(placeAlertsForProvider(placeId)).value ?? const [];
     final people = _people(ref);
     final repo = ref.read(placesRepoProvider);
+    final units = resolveUnits(
+      ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
+    );
+    final scheme = Theme.of(context).colorScheme;
 
     if (place == null) {
       return Scaffold(
-        appBar: AppBar(title: const Text('Place')),
-        body: const Center(child: Text('This place was removed.')),
+        appBar: AppBar(),
+        body: const EmptyState(
+          kicker: 'Place',
+          headline: 'This place was deleted.',
+          body: 'Nothing left to show here.',
+        ),
       );
     }
     final kind = PlaceKind.fromWire(place.kind);
@@ -50,83 +61,114 @@ class PlaceScreen extends ConsumerWidget {
           ),
           IconButton(
             tooltip: 'Delete',
-            onPressed: () async {
-              final ok = await showDialog<bool>(
-                context: context,
-                builder: (ctx) => AlertDialog(
-                  title: Text('Delete ${place.label}?'),
-                  content: const Text('Its alerts go with it.'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(ctx).pop(false),
-                      child: const Text('Cancel'),
-                    ),
-                    FilledButton(
-                      onPressed: () => Navigator.of(ctx).pop(true),
-                      child: const Text('Delete'),
-                    ),
-                  ],
-                ),
-              );
-              if (ok == true && context.mounted) {
-                await repo.deletePlace(place.id);
-                if (context.mounted) context.pop();
-              }
-            },
+            onPressed: () => _delete(context, repo, place),
             icon: const Icon(Icons.delete_outline),
           ),
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
         children: [
-          ListTile(
-            leading: Icon(kind.icon),
-            title: Text(kind.label),
-            subtitle: Text(
-              '${place.radiusM.round()} m radius · '
-              '${place.lat.toStringAsFixed(3)}, ${place.lon.toStringAsFixed(3)}',
+          Padding(
+            padding: Space.screen,
+            child: Reveal(
+              child: Tile(
+                child: Row(
+                  children: [
+                    Icon(kind.icon, size: 28, color: scheme.primary),
+                    const SizedBox(width: Space.lg),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(kind.label, style: context.title),
+                          const SizedBox(height: Space.xs),
+                          Text(
+                            'Within ${radiusText(place.radiusM, units)} of '
+                            'here',
+                            style: context.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: Space.section),
+          EditorialSection(
+            kicker: 'Alerts',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Pick who to hear about when they arrive or leave.',
+                  style: context.caption,
+                ),
+                const SizedBox(height: Space.md),
+                if (people.isEmpty)
+                  Text(
+                    'Add a friend who shares their location and they show '
+                    'up here.',
+                    style: context.bodyMuted,
+                  ),
+                for (var i = 0; i < people.length; i++)
+                  Reveal(
+                    delay: Reveal.stagger(i),
+                    child: _PersonAlertRow(
+                      person: people[i],
+                      alert: byMember[people[i].id],
+                      onChanged: (arrive, leave) => repo.setAlert(
+                        place.id,
+                        people[i].id,
+                        onArrive: arrive,
+                        onLeave: leave,
+                      ),
+                    ),
+                  ),
+              ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+            padding: Space.screen,
             child: Text(
-              'Tell me when…',
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-          if (people.isEmpty)
-            const ListTile(
-              title: Text('No friends sharing yet'),
-              subtitle: Text(
-                'Alerts need a friend or circle member who shares their '
-                'location.',
-              ),
-            ),
-          for (final person in people)
-            _PersonRow(
-              person: person,
-              alert: byMember[person.id],
-              onChanged: (arrive, leave) => repo.setAlert(
-                place.id,
-                person.id,
-                onArrive: arrive,
-                onLeave: leave,
-              ),
-            ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Worked out on this phone from their live position; nothing about '
-              'this place is uploaded. Honours quiet hours.',
-              style: theme.textTheme.bodySmall,
+              'Worked out on this phone from their live position. Nothing '
+              'about this place is uploaded. Quiet hours apply.',
+              style: context.caption,
             ),
           ),
         ],
       ),
     );
+  }
+
+  Future<void> _delete(
+    BuildContext context,
+    PlacesRepo repo,
+    Place place,
+  ) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Delete ${place.label}?'),
+        content: const Text('You stop getting alerts for it.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+    if (ok == true && context.mounted) {
+      await repo.deletePlace(place.id);
+      if (context.mounted) context.pop();
+    }
   }
 
   /// Friends plus anyone visible through a circle, minus me.
@@ -166,8 +208,8 @@ class _Person {
   final String? avatarPath;
 }
 
-class _PersonRow extends StatelessWidget {
-  const _PersonRow({
+class _PersonAlertRow extends StatelessWidget {
+  const _PersonAlertRow({
     required this.person,
     required this.alert,
     required this.onChanged,
@@ -181,21 +223,46 @@ class _PersonRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final arrive = alert?.onArrive ?? false;
     final leave = alert?.onLeave ?? false;
-    return ListTile(
-      leading: UserAvatar(name: person.name, avatarPath: person.avatarPath),
-      title: Text(person.name),
-      subtitle: Wrap(
-        spacing: 8,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Space.md),
+      child: Row(
         children: [
-          FilterChip(
-            label: const Text('arrives'),
-            selected: arrive,
-            onSelected: (v) => onChanged(v, leave),
-          ),
-          FilterChip(
-            label: const Text('leaves'),
-            selected: leave,
-            onSelected: (v) => onChanged(arrive, v),
+          UserAvatar(name: person.name, avatarPath: person.avatarPath),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  person.name,
+                  style: context.body.copyWith(fontWeight: FontWeight.w600),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: Space.sm),
+                Wrap(
+                  spacing: Space.sm,
+                  children: [
+                    FilterChip(
+                      label: const Text('Arrives'),
+                      selected: arrive,
+                      onSelected: (v) {
+                        Haptics.select();
+                        onChanged(v, leave);
+                      },
+                    ),
+                    FilterChip(
+                      label: const Text('Leaves'),
+                      selected: leave,
+                      onSelected: (v) {
+                        Haptics.select();
+                        onChanged(arrive, v);
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

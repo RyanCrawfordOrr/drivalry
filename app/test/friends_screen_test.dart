@@ -1,5 +1,6 @@
 import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
+import 'package:drivalry/features/friends/feed_view.dart';
 import 'package:drivalry/features/friends/friends_screen.dart';
 import 'package:drivalry/tracking/providers.dart';
 import 'package:flutter/material.dart';
@@ -37,10 +38,10 @@ void main() {
       ),
     );
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.widgetWithText(AppBar, 'Friends'), findsOneWidget);
-    // Tests build without SUPABASE_URL, so SignedInScope shows the notice
-    // and there is no Add-friend button.
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Friends'), findsWidgets);
+    // Tests build without SUPABASE_URL, so SignedInScope shows its notice
+    // instead of the feed, and there is no Add-friend button.
+    expect(find.byType(FeedView), findsNothing);
     expect(find.text('Add friend'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
