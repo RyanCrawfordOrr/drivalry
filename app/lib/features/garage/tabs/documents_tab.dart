@@ -5,10 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
 import '../../../data/repos/garage_repo.dart';
+import '../../settings/widgets/settings_rows.dart';
 
-/// Insurance card, registration: photos encrypted on this phone.
+/// Insurance card, registration: photos encrypted on this phone. Empty and
+/// populated states cross-fade; rows arrive staggered (docs/12 §5b).
 class DocumentsTab extends ConsumerWidget {
   const DocumentsTab({super.key, required this.vehicle});
 
@@ -17,77 +20,110 @@ class DocumentsTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final docs = ref.watch(documentsProvider(vehicle.id)).value ?? const [];
-    final theme = Theme.of(context);
     final date = DateFormat.yMMMd();
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        heroTag: 'documents-fab',
-        onPressed: () => _add(context, ref),
-        icon: const Icon(Icons.add_a_photo_outlined),
-        label: const Text('Document'),
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-        children: [
-          Text(
-            'Stored encrypted on this phone only. Never uploaded, never '
-            'shared.',
-            style: theme.textTheme.bodySmall,
-          ),
-          const SizedBox(height: 8),
-          if (docs.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32),
-              child: Text(
-                'No documents yet. Add a photo of your insurance card or '
-                'registration.',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium,
-              ),
+      floatingActionButton: docs.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              heroTag: 'documents-fab',
+              onPressed: () => _add(context, ref),
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: const Text('Document'),
             ),
-          for (final d in docs)
-            ListTile(
-              leading: const Icon(Icons.lock_outline),
-              title: Text(d.title),
-              subtitle: Text(
-                date.format(DateTime.fromMillisecondsSinceEpoch(d.createdAt)),
+      body: StateSwitcher(
+        child: docs.isEmpty
+            ? ListView(
+                key: const ValueKey('empty'),
+                children: [
+                  EmptyState(
+                    kicker: 'Documents',
+                    headline: "Your car's papers, in one place.",
+                    body:
+                        'Insurance card, registration: photos stay encrypted '
+                        'on this phone.',
+                    actionLabel: 'Add a photo',
+                    onAction: () => _add(context, ref),
+                  ),
+                ],
+              )
+            : ListView(
+                key: const ValueKey('list'),
+                padding: const EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.lg,
+                  Space.gutter,
+                  Space.xxxl + Space.xxl,
+                ),
+                children: [
+                  Text(
+                    'Stored encrypted on this phone only. Never uploaded, '
+                    'never shared.',
+                    style: context.caption,
+                  ),
+                  const SizedBox(height: Space.lg),
+                  for (var i = 0; i < docs.length; i++) ...[
+                    Reveal(
+                      key: ValueKey(docs[i].id),
+                      delay: Reveal.stagger(i),
+                      child: SettingsGroup(
+                        children: [
+                          SettingsRow(
+                            icon: Icons.lock_outline,
+                            title: docs[i].title,
+                            caption: date.format(
+                              DateTime.fromMillisecondsSinceEpoch(
+                                docs[i].createdAt,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              tooltip: 'Delete',
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () => _delete(context, ref, docs[i]),
+                            ),
+                            onTap: () => _view(context, ref, docs[i]),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: Space.sm),
+                  ],
+                ],
               ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () => _delete(context, ref, d),
-              ),
-              onTap: () => _view(context, ref, d),
-            ),
-        ],
       ),
     );
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
     final title = TextEditingController();
-    final source = await showDialog<ImageSource>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Add document'),
-        content: TextField(
-          controller: title,
-          autofocus: true,
-          decoration: const InputDecoration(labelText: 'Title'),
+    final source = await showDrivalrySheet<ImageSource>(
+      context,
+      title: 'New document',
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: title,
+              autofocus: true,
+              decoration: const InputDecoration(labelText: 'Title'),
+            ),
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Take a photo',
+              icon: Icons.photo_camera_outlined,
+              onPressed: () => Navigator.of(ctx).pop(ImageSource.camera),
+            ),
+            const SizedBox(height: Space.sm),
+            SecondaryButton(
+              label: 'Choose from library',
+              icon: Icons.photo_library_outlined,
+              onPressed: () => Navigator.of(ctx).pop(ImageSource.gallery),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(ImageSource.gallery),
-            child: const Text('Library'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(ImageSource.camera),
-            child: const Text('Camera'),
-          ),
-        ],
       ),
     );
     if (source == null) return;
@@ -106,6 +142,7 @@ class DocumentsTab extends ConsumerWidget {
           bytes: bytes,
           mimeType: picked.mimeType ?? 'image/jpeg',
         );
+    Haptics.success();
   }
 
   Future<void> _view(
@@ -117,12 +154,15 @@ class DocumentsTab extends ConsumerWidget {
     try {
       bytes = await ref.read(garageRepoProvider).readDocument(d.id);
     } catch (e) {
+      debugPrint('document ${d.id} unreadable: $e');
       bytes = null;
     }
     if (!context.mounted) return;
     if (bytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not decrypt this document.')),
+        const SnackBar(
+          content: Text("This document can't be opened on this phone."),
+        ),
       );
       return;
     }
@@ -133,8 +173,8 @@ class DocumentsTab extends ConsumerWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(d.title, style: Theme.of(ctx).textTheme.titleMedium),
+              padding: const EdgeInsets.all(Space.lg),
+              child: Text(d.title, style: ctx.title),
             ),
             Flexible(child: InteractiveViewer(child: Image.memory(bytes!))),
             TextButton(
@@ -156,13 +196,17 @@ class DocumentsTab extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text('Delete "${d.title}"?'),
-        content: const Text('The encrypted file is wiped from this phone.'),
+        content: const Text('The photo is wiped from this phone.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
             child: const Text('Cancel'),
           ),
           FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(ctx).colorScheme.error,
+              foregroundColor: Theme.of(ctx).colorScheme.onError,
+            ),
             onPressed: () => Navigator.of(ctx).pop(true),
             child: const Text('Delete'),
           ),

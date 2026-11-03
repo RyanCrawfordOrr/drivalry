@@ -58,7 +58,15 @@ void main() {
 
     await tester.tap(find.widgetWithText(NavigationDestination, 'Garage'));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.widgetWithText(AppBar, 'Garage'), findsOneWidget);
+    // Garage uses a large collapsing title, which carries the text twice
+    // (expanded and collapsed), so look for the sliver app bar instead.
+    expect(
+      find.descendant(
+        of: find.byType(SliverAppBar),
+        matching: find.text('Garage'),
+      ),
+      findsWidgets,
+    );
     await unmountAndSettle(tester);
   }, skip: skip);
 }

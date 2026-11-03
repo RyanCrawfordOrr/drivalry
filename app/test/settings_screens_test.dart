@@ -31,10 +31,14 @@ void main() {
     child: MaterialApp(home: home),
   );
 
+  Switch switchIn(WidgetTester tester, Key key) => tester.widget<Switch>(
+    find.descendant(of: find.byKey(key), matching: find.byType(Switch)),
+  );
+
   testWidgets('units segment writes the setting', (tester) async {
     await tester.pumpWidget(harness(const SettingsScreen()));
     await pumpFor(tester, const Duration(milliseconds: 500));
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('DRIVES'), findsOneWidget);
     expect(find.byKey(const Key('units-segments')), findsOneWidget);
 
     await tester.tap(find.text('km/h'));
@@ -46,23 +50,64 @@ void main() {
     expect(await db.getSetting('units'), 'mph');
 
     // Hiding needs a signed-in profile.
-    final hide = tester.widget<SwitchListTile>(
-      find.byKey(const Key('hide-location')),
-    );
-    expect(hide.onChanged, isNull);
+    expect(switchIn(tester, const Key('hide-location')).onChanged, isNull);
     await unmountAndSettle(tester);
   }, skip: skip);
 
-  testWidgets('attribution lists the data sources', (tester) async {
+  testWidgets('a version without the online service says so plainly', (
+    tester,
+  ) async {
+    await tester.pumpWidget(harness(const SettingsScreen()));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    await tester.scrollUntilVisible(
+      find.text('Not available in this version yet.'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
+    expect(find.text('Offline build'), findsNothing);
+    expect(find.textContaining('cloud project'), findsNothing);
+    expect(find.textContaining('JSON'), findsNothing);
+    await unmountAndSettle(tester);
+  }, skip: skip);
+
+  testWidgets('turning auto-detect off offers Undo', (tester) async {
+    await tester.pumpWidget(harness(const SettingsScreen()));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(switchIn(tester, const Key('auto-detect')).value, isTrue);
+
+    await tester.tap(find.byKey(const Key('auto-detect')));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(port.calls, contains('setEnabled:false'));
+    expect(switchIn(tester, const Key('auto-detect')).value, isFalse);
+    expect(find.text('Undo'), findsOneWidget);
+
+    await tester.tap(find.text('Undo'));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(port.calls.last, 'setEnabled:true');
+    expect(switchIn(tester, const Key('auto-detect')).value, isTrue);
+    await unmountAndSettle(tester);
+  }, skip: skip);
+
+  testWidgets('about lists the data sources with one sentence each', (
+    tester,
+  ) async {
+    // Tall enough that every section is on screen at once.
+    tester.view.physicalSize = const Size(1080, 3200);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
     await tester.pumpWidget(const MaterialApp(home: AttributionScreen()));
-    await tester.pump();
-    for (final name in [
-      'OpenStreetMap',
-      'Google Maps Platform',
-      'Open-Meteo',
-      'Nominatim',
-    ]) {
-      expect(find.text(name), findsOneWidget);
+    await pumpFor(tester, const Duration(milliseconds: 800));
+    expect(find.text('Drivalry'), findsOneWidget);
+    expect(
+      find.text('Free, open source, built on free services.'),
+      findsOneWidget,
+    );
+    for (final (name, sentence, _, _) in AttributionScreen.entries) {
+      expect(find.text(name.toUpperCase()), findsOneWidget);
+      expect(find.text(sentence), findsOneWidget);
     }
+    expect(find.textContaining('SDK'), findsNothing);
+    expect(find.textContaining('API'), findsNothing);
   });
 }

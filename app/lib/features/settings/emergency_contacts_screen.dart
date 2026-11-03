@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/crash/crash_sms.dart';
 import '../../data/db/database.dart';
 import '../../data/repos/friends_repo.dart' show FriendProfile;
 import '../../data/repos/friends_sync.dart';
+import '../../widgets/friendly_error.dart';
+import 'widgets/settings_rows.dart';
 
 /// Settings › Emergency contacts: who gets the prefilled text when a crash
 /// countdown runs out. Stored on this phone only. A contact who is also a
@@ -17,87 +20,118 @@ class EmergencyContactsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final contacts = ref.watch(emergencyContactsProvider);
+    final rows = contacts.value ?? const <EmergencyContact>[];
     return Scaffold(
       appBar: AppBar(title: const Text('Emergency contacts')),
+      floatingActionButton: rows.isEmpty
+          ? null
+          : FloatingActionButton.extended(
+              key: const Key('contact-add'),
+              onPressed: () => showAddContactSheet(context, ref),
+              icon: const Icon(Icons.add),
+              label: const Text('Add contact'),
+            ),
       body: contacts.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('$e')),
+        loading: () => ListView(
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.sm,
+            Space.gutter,
+            Space.xxxl,
+          ),
+          children: const [
+            SkeletonTile(height: 72),
+            SizedBox(height: Space.sm),
+            SkeletonTile(height: 72),
+          ],
+        ),
+        error: (e, _) => EmptyState(
+          kicker: 'Emergency contacts',
+          headline: 'Could not load your contacts.',
+          body: friendlyError(e, doing: 'load your contacts'),
+        ),
         data: (rows) => rows.isEmpty
-            ? const _Empty()
-            : ListView(
+            ? ListView(
                 children: [
-                  for (final c in rows)
-                    ListTile(
-                      leading: Icon(
-                        c.userId == null
-                            ? Icons.person_outline
-                            : Icons.verified_user_outlined,
-                      ),
-                      title: Text(c.name),
-                      subtitle: Text(
-                        c.userId == null
-                            ? c.phone
-                            : '${c.phone}  ·  also gets the push',
-                      ),
-                      trailing: IconButton(
-                        tooltip: 'Remove',
-                        icon: const Icon(Icons.delete_outline),
-                        onPressed: () => ref
-                            .read(databaseProvider)
-                            .deleteEmergencyContact(c.id),
-                      ),
+                  EmptyState(
+                    kicker: 'Emergency contacts',
+                    headline: 'Who should get the text?',
+                    body:
+                        'If a crash check goes unanswered, they get a text '
+                        'with your location.',
+                    actionLabel: 'Add contact',
+                    onAction: () => showAddContactSheet(context, ref),
+                  ),
+                ],
+              )
+            : ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.sm,
+                  Space.gutter,
+                  Space.xxxl + Space.xxl,
+                ),
+                children: [
+                  Reveal(
+                    child: SettingsGroup(
+                      children: [
+                        for (final c in rows)
+                          SettingsRow(
+                            leading: Avatar(name: c.name, size: AvatarSize.md),
+                            title: c.name,
+                            caption: c.userId == null
+                                ? c.phone
+                                : '${c.phone} · also gets an alert in the app',
+                            trailing: IconButton(
+                              tooltip: 'Remove',
+                              icon: const Icon(Icons.delete_outline),
+                              onPressed: () => _remove(context, ref, c),
+                            ),
+                          ),
+                      ],
                     ),
-                  const Padding(
-                    padding: EdgeInsets.all(16),
+                  ),
+                  const SizedBox(height: Space.lg),
+                  Reveal(
+                    delay: Reveal.stagger(1),
                     child: Text(
-                      'Numbers stay on this phone. The text is prepared in '
-                      'your messaging app; you (or whoever has your phone) '
-                      'still press send.',
+                      'Numbers stay on this phone. The text is readied in '
+                      'your messaging app; someone still presses send.',
+                      style: context.caption,
                     ),
                   ),
                 ],
               ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        key: const Key('contact-add'),
-        onPressed: () => showAddContactSheet(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Add contact'),
+    );
+  }
+
+  Future<void> _remove(
+    BuildContext context,
+    WidgetRef ref,
+    EmergencyContact c,
+  ) async {
+    final db = ref.read(databaseProvider);
+    await db.deleteEmergencyContact(c.id);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('${c.name} removed.'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => db.upsertEmergencyContact(
+            EmergencyContactsCompanion.insert(
+              id: c.id,
+              name: c.name,
+              phone: c.phone,
+              userId: Value(c.userId),
+              createdAt: c.createdAt,
+            ),
+          ),
+        ),
       ),
     );
   }
-}
-
-class _Empty extends StatelessWidget {
-  const _Empty();
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.contact_phone_outlined,
-            size: 48,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'No emergency contacts',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Add the people who should get a text with your location if a '
-            'crash check goes unanswered.',
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 /// Name + phone, with an optional friend to link for the push.
@@ -106,16 +140,11 @@ Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
   final phone = TextEditingController();
   String? linkedUserId;
   final formKey = GlobalKey<FormState>();
-  return showModalBottomSheet<void>(
-    context: context,
-    isScrollControlled: true,
+  return showDrivalrySheet<void>(
+    context,
+    title: 'Add emergency contact',
     builder: (sheet) => Padding(
-      padding: EdgeInsets.fromLTRB(
-        16,
-        16,
-        16,
-        16 + MediaQuery.viewInsetsOf(sheet).bottom,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(sheet).bottom),
       child: StatefulBuilder(
         builder: (sheet, setState) {
           final friends =
@@ -125,21 +154,17 @@ Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
             key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Add emergency contact',
-                  style: Theme.of(sheet).textTheme.titleLarge,
-                ),
-                const SizedBox(height: 12),
                 TextFormField(
                   key: const Key('contact-name'),
                   controller: name,
                   decoration: const InputDecoration(labelText: 'Name'),
                   textCapitalization: TextCapitalization.words,
-                  validator: (v) => (v == null || v.trim().isEmpty)
-                      ? 'Name is required'
-                      : null,
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Add a name.' : null,
                 ),
+                const SizedBox(height: Space.md),
                 TextFormField(
                   key: const Key('contact-phone'),
                   controller: phone,
@@ -149,19 +174,18 @@ Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
                   ),
                   keyboardType: TextInputType.phone,
                   validator: (v) => normalisePhone(v ?? '').length < 5
-                      ? 'Enter a phone number'
+                      ? 'Enter a phone number.'
                       : null,
                 ),
                 if (friends.isNotEmpty) ...[
-                  const SizedBox(height: 8),
+                  const SizedBox(height: Space.md),
                   DropdownButtonFormField<String?>(
                     key: const Key('contact-friend'),
                     initialValue: linkedUserId,
                     decoration: const InputDecoration(
-                      labelText: 'Also a Drivalry friend? (optional)',
+                      labelText: 'Also a friend on Drivalry?',
                       helperText:
-                          'Only accepted friends can be linked. They get the '
-                          'push alert as well as the text.',
+                          'They get an alert in the app as well as the text.',
                     ),
                     items: [
                       const DropdownMenuItem<String?>(
@@ -177,9 +201,10 @@ Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
                     onChanged: (v) => setState(() => linkedUserId = v),
                   ),
                 ],
-                const SizedBox(height: 16),
-                FilledButton(
+                const SizedBox(height: Space.xl),
+                PrimaryButton(
                   key: const Key('contact-save'),
+                  label: 'Save',
                   onPressed: () async {
                     if (!(formKey.currentState?.validate() ?? false)) return;
                     await ref
@@ -193,9 +218,9 @@ Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
                             createdAt: DateTime.now().millisecondsSinceEpoch,
                           ),
                         );
+                    Haptics.success();
                     if (sheet.mounted) Navigator.of(sheet).pop();
                   },
-                  child: const Text('Save'),
                 ),
               ],
             ),

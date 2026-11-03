@@ -4,13 +4,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/garage/vehicle_matcher.dart';
 import '../../data/repos/garage_repo.dart';
 import '../../tracking/providers.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
 
-/// Your cars: stats, fuel, maintenance, documents (docs/01 §4.7).
+/// Your cars: stats, fuel, maintenance, documents (docs/01 §4.7). A large
+/// title that collapses on scroll; vehicles are tiles with a 48 px icon
+/// disc, a name and one caption line, arriving staggered; loading shimmers
+/// and the empty and populated states cross-fade (docs/12 §5b).
 class GarageScreen extends ConsumerWidget {
   const GarageScreen({super.key});
 
@@ -25,76 +30,129 @@ class GarageScreen extends ConsumerWidget {
     final units = resolveUnits(
       ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
     );
-    final theme = Theme.of(context);
+    final hasVehicles = vehicles.value?.isNotEmpty ?? false;
     return Scaffold(
-      appBar: AppBar(title: const Text('Garage')),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => context.push(Routes.newVehicle),
-        icon: const Icon(Icons.add),
-        label: const Text('Add vehicle'),
-      ),
-      body: vehicles.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Could not load vehicles: $e')),
-        data: (list) => ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-          children: [
-            if (list.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                child: Column(
-                  children: [
-                    Icon(
-                      Icons.garage_outlined,
-                      size: 48,
-                      color: theme.colorScheme.outline,
+      floatingActionButton: hasVehicles
+          ? FloatingActionButton.extended(
+              onPressed: () => context.push(Routes.newVehicle),
+              icon: const Icon(Icons.add),
+              label: const Text('Add vehicle'),
+            )
+          : null,
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar.large(title: Text('Garage')),
+          SliverPadding(
+            padding: const EdgeInsets.only(
+              top: Space.sm,
+              bottom: Space.xxxl + Space.xxl,
+            ),
+            sliver: SliverToBoxAdapter(
+              child: StateSwitcher(
+                child: vehicles.when(
+                  loading: () => const Padding(
+                    key: ValueKey('loading'),
+                    padding: Space.screen,
+                    child: Column(
+                      children: [
+                        SkeletonTile(),
+                        SizedBox(height: Space.md),
+                        SkeletonTile(),
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    Text('No vehicles yet', style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Add your car so trips are credited to it, or wait for '
-                      'the app to notice its Bluetooth and ask.',
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                  ],
+                  ),
+                  error: (e, _) => EmptyState(
+                    key: const ValueKey('error'),
+                    kicker: 'Garage',
+                    headline: 'Could not load your garage.',
+                    body: friendlyError(e, doing: 'load your garage'),
+                  ),
+                  data: (list) => list.isEmpty
+                      ? EmptyState(
+                          key: const ValueKey('empty'),
+                          kicker: 'Garage',
+                          headline: 'Add your car.',
+                          body:
+                              'Trips get credited to it, and the app can spot '
+                              'its Bluetooth.',
+                          actionLabel: 'Add vehicle',
+                          onAction: () => context.push(Routes.newVehicle),
+                        )
+                      : Padding(
+                          key: const ValueKey('list'),
+                          padding: Space.screen,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              for (var i = 0; i < list.length; i++) ...[
+                                if (i > 0) const SizedBox(height: Space.md),
+                                Reveal(
+                                  key: ValueKey(list[i].id),
+                                  delay: Reveal.stagger(i),
+                                  child: _VehicleTile(
+                                    vehicle: list[i],
+                                    units: units,
+                                  ),
+                                ),
+                              ],
+                              if (ignored.isNotEmpty) ...[
+                                const SizedBox(height: Space.section),
+                                Reveal(
+                                  delay: Reveal.stagger(list.length),
+                                  child: EditorialSection(
+                                    kicker: 'Cars you ride in',
+                                    padding: EdgeInsets.zero,
+                                    gap: 0,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Rides in these count as passenger '
+                                          'trips.',
+                                          style: context.caption,
+                                        ),
+                                        const SizedBox(height: Space.md),
+                                        Wrap(
+                                          spacing: Space.sm,
+                                          runSpacing: Space.sm,
+                                          children: [
+                                            for (final n in ignored)
+                                              InputChip(
+                                                label: Text(n),
+                                                deleteButtonTooltipMessage:
+                                                    'Forget',
+                                                onDeleted: () =>
+                                                    _unignore(ref, ignored, n),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
                 ),
-              )
-            else
-              for (final v in list) _VehicleTile(vehicle: v, units: units),
-            if (ignored.isNotEmpty) ...[
-              const SizedBox(height: 16),
-              Text('Ignored car audio', style: theme.textTheme.titleSmall),
-              const SizedBox(height: 4),
-              Text(
-                'Rides in these are treated as passenger trips.',
-                style: theme.textTheme.bodySmall,
               ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                children: [
-                  for (final n in ignored)
-                    InputChip(
-                      label: Text(n),
-                      onDeleted: () => _unignore(ref, ignored, n),
-                    ),
-                ],
-              ),
-            ],
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _unignore(WidgetRef ref, List<String> all, String name) => ref
-      .read(databaseProvider)
-      .setSetting(
-        VehicleMatcher.ignoredNamesKey,
-        VehicleMatcher.encodeNames(all.where((n) => n != name)),
-      );
+  Future<void> _unignore(WidgetRef ref, List<String> all, String name) {
+    Haptics.select();
+    return ref
+        .read(databaseProvider)
+        .setSetting(
+          VehicleMatcher.ignoredNamesKey,
+          VehicleMatcher.encodeNames(all.where((n) => n != name)),
+        );
+  }
 }
 
 class _VehicleTile extends ConsumerWidget {
@@ -105,32 +163,78 @@ class _VehicleTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final stats = ref.watch(vehicleStatsProvider(vehicle.id)).value;
-    final subtitle = <String>[
-      if (vehicle.year != null || vehicle.make != null || vehicle.model != null)
-        [
-          vehicle.year?.toString(),
-          vehicle.make,
-          vehicle.model,
-        ].whereType<String>().join(' '),
+    final model = [
+      vehicle.year?.toString(),
+      vehicle.make,
+      vehicle.model,
+    ].whereType<String>().join(' ');
+    final caption = <String>[
+      if (model.isNotEmpty) model,
       if (stats != null)
-        '${stats.trips} trips · ${formatDistance(stats.distanceM, units)}'
-            '${stats.averageScore == null ? '' : ' · avg ${stats.averageScore!.round()}'}',
-      if (vehicle.neverTrack) 'Never tracked',
-    ].where((s) => s.isNotEmpty).join('\n');
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Icon(
-          vehicle.neverTrack
-              ? Icons.no_crash_outlined
-              : Icons.directions_car_filled_outlined,
-        ),
-        title: Text(vehicle.name),
-        subtitle: subtitle.isEmpty ? null : Text(subtitle),
-        isThreeLine: subtitle.contains('\n'),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => context.push(Routes.vehicle(vehicle.id)),
+        stats.trips == 0
+            ? 'No trips yet'
+            : '${stats.trips} ${stats.trips == 1 ? 'trip' : 'trips'}',
+      if (stats != null && stats.trips > 0)
+        formatDistance(stats.distanceM, units),
+      if (stats?.averageScore != null) 'avg ${stats!.averageScore!.round()}',
+    ].join(' · ');
+    return Tile(
+      onTap: () => context.push(Routes.vehicle(vehicle.id)),
+      child: Row(
+        children: [
+          Container(
+            width: Sizes.touch,
+            height: Sizes.touch,
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHigh,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              vehicle.neverTrack
+                  ? Icons.no_crash_outlined
+                  : Icons.directions_car_filled_outlined,
+              color: scheme.onSurfaceVariant,
+            ),
+          ),
+          const SizedBox(width: Space.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        vehicle.name,
+                        style: context.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    if (vehicle.neverTrack) ...[
+                      const SizedBox(width: Space.sm),
+                      const Pill('Never tracked', compact: true),
+                    ],
+                  ],
+                ),
+                if (caption.isNotEmpty) ...[
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    caption,
+                    style: context.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(width: Space.sm),
+          Icon(Icons.chevron_right, color: scheme.onSurfaceVariant),
+        ],
       ),
     );
   }

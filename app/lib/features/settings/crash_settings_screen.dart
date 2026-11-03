@@ -4,10 +4,14 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
+import 'widgets/settings_rows.dart';
 
-/// Settings › Crash detection (docs/01 §4.5, docs/06 M3.4).
+/// Settings › Crash detection (docs/01 §4.5, docs/06 M3.4): the switch, two
+/// sentences on what happens, the contacts and test rows, and the history as
+/// two stat tiles.
 class CrashSettingsScreen extends ConsumerWidget {
   const CrashSettingsScreen({super.key});
 
@@ -18,81 +22,140 @@ class CrashSettingsScreen extends ConsumerWidget {
     final falsePositives = ref.watch(crashFalsePositivesProvider).value ?? 0;
     final lastAt = ref.watch(_lastCandidateProvider).value;
     final contacts = ref.watch(_contactCountProvider).value ?? 0;
+    final blocks = <Widget>[
+      Padding(
+        padding: Space.screen,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            SettingsGroup(
+              children: [
+                SettingsSwitchRow(
+                  key: const Key('crash-enabled'),
+                  icon: Icons.car_crash_outlined,
+                  title: 'Detect crashes',
+                  caption:
+                      'A hard hit and a dead stop start a 30-second check.',
+                  value: state.enabled,
+                  onChanged: monitor.setEnabled,
+                ),
+              ],
+            ),
+            const SizedBox(height: Space.md),
+            Tile(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Tap I'm OK and nothing happens. Say nothing and your "
+                    'friends get a push and your contacts a text with your '
+                    'location.',
+                    style: context.body,
+                  ),
+                  const SizedBox(height: Space.sm),
+                  Text(
+                    'Drivalry never places a call. Low-speed bumps and '
+                    'dropped phones are ignored.',
+                    style: context.caption,
+                  ),
+                ],
+              ),
+            ),
+            if (state.unresolved != null) ...[
+              const SizedBox(height: Space.md),
+              Tile(
+                tone: TileTone.danger,
+                onTap: () => context.push(Routes.crash),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.emergency_share,
+                      color: Theme.of(context).colorScheme.onErrorContainer,
+                    ),
+                    const SizedBox(width: Space.lg),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Help was requested',
+                            style: context.body.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Tap to confirm you are OK.',
+                            style: context.caption,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.chevron_right),
+                  ],
+                ),
+              ),
+            ],
+            const SizedBox(height: Space.section),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Get ready',
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.contact_phone_outlined,
+              title: 'Emergency contacts',
+              caption: contacts == 0
+                  ? 'None yet. Add at least one so the text has somewhere '
+                        'to go.'
+                  : '$contacts ${contacts == 1 ? 'contact' : 'contacts'}',
+              onTap: () => context.push(Routes.emergencyContacts),
+            ),
+            SettingsRow(
+              icon: Icons.play_circle_outline,
+              title: 'Test the countdown',
+              caption:
+                  'Runs the full-screen check, with sound. Nothing is sent.',
+              onTap: () {
+                monitor.startTest();
+                context.push(Routes.crash);
+              },
+            ),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'History',
+        gap: 0,
+        child: StatGrid(
+          columns: 2,
+          children: [
+            StatTile(
+              value: '$falsePositives',
+              label: falsePositives == 1 ? 'False alarm' : 'False alarms',
+            ),
+            StatTile(
+              value: lastAt == null
+                  ? 'Never'
+                  : DateFormat.MMMd().format(
+                      DateTime.fromMillisecondsSinceEpoch(lastAt),
+                    ),
+              label: 'Most recent alert',
+            ),
+          ],
+        ),
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(title: const Text('Crash detection')),
       body: ListView(
+        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
         children: [
-          SwitchListTile(
-            key: const Key('crash-enabled'),
-            secondary: const Icon(Icons.car_crash_outlined),
-            title: const Text('Detect crashes'),
-            subtitle: const Text(
-              'A hard impact followed by a dead stop starts a 30-second '
-              'check on this phone.',
-            ),
-            value: state.enabled,
-            onChanged: monitor.setEnabled,
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Text(
-              'If you tap "I\'m OK" nothing happens. If nobody answers, '
-              'friends and circle members who use Drivalry get a push, and a '
-              'text with your location is prepared for your emergency '
-              'contacts. Drivalry never places a call. Low-speed bumps and a '
-              'dropped phone are ignored: the car has to have been moving.',
-            ),
-          ),
-          if (state.unresolved != null)
-            Card(
-              margin: const EdgeInsets.all(16),
-              color: Theme.of(context).colorScheme.errorContainer,
-              child: ListTile(
-                leading: const Icon(Icons.emergency_share),
-                title: const Text('Help was requested'),
-                subtitle: const Text('Tap to confirm you are OK.'),
-                onTap: () => context.push(Routes.crash),
-              ),
-            ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.contact_phone_outlined),
-            title: const Text('Emergency contacts'),
-            subtitle: Text(
-              contacts == 0
-                  ? 'None yet. Add at least one so the text has somewhere to go.'
-                  : '$contacts ${contacts == 1 ? 'contact' : 'contacts'}',
-            ),
-            onTap: () => context.push(Routes.emergencyContacts),
-          ),
-          ListTile(
-            leading: const Icon(Icons.play_circle_outline),
-            title: const Text('Test the countdown'),
-            subtitle: const Text(
-              'Runs the full-screen check with sound. Nothing is sent.',
-            ),
-            onTap: () {
-              monitor.startTest();
-              context.push(Routes.crash);
-            },
-          ),
-          const Divider(),
-          ListTile(
-            dense: true,
-            title: const Text('False alarms you dismissed'),
-            trailing: Text('$falsePositives'),
-          ),
-          ListTile(
-            dense: true,
-            title: const Text('Last detection'),
-            trailing: Text(
-              lastAt == null
-                  ? 'never'
-                  : DateFormat.yMd().add_jm().format(
-                      DateTime.fromMillisecondsSinceEpoch(lastAt),
-                    ),
-            ),
-          ),
+          for (var i = 0; i < blocks.length; i++)
+            Reveal(delay: Reveal.stagger(i), child: blocks[i]),
         ],
       ),
     );

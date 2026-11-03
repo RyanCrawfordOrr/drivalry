@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-/// Temporary body for tabs whose feature has not been built yet. Lists what
-/// the tab will do so the shell is reviewable before the features land.
+import '../app/ui/ui.dart';
+
+/// Temporary body for tabs whose feature has not been built yet: the same
+/// empty-state grammar as the rest of the app, then what is coming.
 class PlaceholderScreen extends StatelessWidget {
   const PlaceholderScreen({
     super.key,
@@ -16,34 +18,45 @@ class PlaceholderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(bottom: Space.xxxl),
         children: [
-          Text(tagline, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 16),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+          EmptyState(
+            kicker: title,
+            headline: 'Not available in this version yet.',
+            body: tagline,
+          ),
+          EditorialSection(
+            kicker: 'Coming soon',
+            gap: 0,
+            child: Tile(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Coming in this tab', style: theme.textTheme.labelLarge),
-                  const SizedBox(height: 8),
-                  for (final item in planned)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Icon(Icons.check_box_outline_blank, size: 18),
-                          const SizedBox(width: 8),
-                          Expanded(child: Text(item)),
-                        ],
-                      ),
+                  for (var i = 0; i < planned.length; i++) ...[
+                    if (i > 0) const SizedBox(height: Space.md),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: Space.xs),
+                          child: Container(
+                            width: Space.sm,
+                            height: Space.sm,
+                            decoration: BoxDecoration(
+                              color: scheme.primary,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: Space.md),
+                        Expanded(child: Text(planned[i], style: context.body)),
+                      ],
                     ),
+                  ],
                 ],
               ),
             ),

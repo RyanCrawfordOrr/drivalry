@@ -3,26 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/ui/ui.dart';
 import '../../tracking/providers.dart';
 
-/// Settings › During a drive › Auto-reply to texts (docs/01 §4.2). The OS
-/// already does this well and privately; Drivalry only shows the way there.
-/// Nothing here reads or sends a message.
+/// Settings › Safety › Auto-reply to texts (docs/01 §4.2). The phone already
+/// does this well and privately; Drivalry only shows the way there. Nothing
+/// here reads or sends a message.
 class AutoReplySettingsScreen extends ConsumerWidget {
   const AutoReplySettingsScreen({super.key});
 
   static const iosSteps = [
     'Open Settings and tap Focus.',
     'Tap + and choose Driving.',
-    'Turn on Auto-Reply and pick who gets it (Favourites or Recents).',
-    'Set it to turn on automatically when driving or when connected to '
-        'CarPlay or your car\'s Bluetooth.',
+    'Turn on Auto-Reply and choose who gets the reply.',
+    'Under Turn On Automatically, choose when it should start.',
   ];
 
   static const androidSteps = [
-    'Open Do Not Disturb settings (button below).',
-    'Add or edit the Driving schedule (on Pixel: Settings › Connected '
-        'devices › Connection preferences › Driving mode).',
+    'Tap Open phone settings below.',
+    'Find Driving under Schedules. On a Pixel it is under Connected '
+        'devices as Driving mode.',
     'Choose what gets through and whether to reply with a text.',
   ];
 
@@ -32,68 +32,86 @@ class AutoReplySettingsScreen extends ConsumerWidget {
         defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS;
     final steps = ios ? iosSteps : androidSteps;
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Auto-reply to texts')),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
         children: [
-          Text(
-            'Your phone can answer texts for you while you drive. That '
-            'feature lives in the operating system, not in Drivalry: it is '
-            'private, works in every messaging app, and does not need this '
-            'app to read your messages. Drivalry never sends replies.',
-            style: theme.textTheme.bodyMedium,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            ios ? 'Set up a Driving Focus' : 'Set up Android\'s driving mode',
-            style: theme.textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          for (var i = 0; i < steps.length; i++)
-            ListTile(
-              dense: true,
-              leading: CircleAvatar(radius: 12, child: Text('${i + 1}')),
-              title: Text(steps[i]),
-            ),
-          const SizedBox(height: 16),
-          if (ios)
-            OutlinedButton.icon(
-              key: const Key('auto-reply-copy'),
-              onPressed: () async {
-                await Clipboard.setData(
-                  ClipboardData(
-                    text: [
-                      for (var i = 0; i < steps.length; i++)
-                        '${i + 1}. ${steps[i]}',
-                    ].join('\n'),
+          Reveal(
+            child: Padding(
+              padding: Space.screen,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Your phone can answer texts for you while you drive. '
+                    'Drivalry never sends replies.',
+                    style: context.body,
                   ),
-                );
-                if (context.mounted) _toast(context, 'Steps copied');
-              },
-              icon: const Icon(Icons.copy),
-              label: const Text('Copy the steps'),
-            )
-          else
-            FilledButton.icon(
-              key: const Key('auto-reply-open'),
-              onPressed: () async {
-                final opened = await ref
-                    .read(trackingPortProvider)
-                    .openDrivingModeSettings();
-                if (!context.mounted) return;
-                if (!opened) {
-                  _toast(
-                    context,
-                    'Could not open it here. Look under Settings › Sound › '
-                    'Do Not Disturb.',
-                  );
-                }
-              },
-              icon: const Icon(Icons.open_in_new),
-              label: const Text('Open Do Not Disturb settings'),
+                  const SizedBox(height: Space.sm),
+                  Text(
+                    'It is built into your phone, so no app reads your '
+                    'messages.',
+                    style: context.caption,
+                  ),
+                ],
+              ),
             ),
+          ),
+          const SizedBox(height: Space.section),
+          EditorialSection(
+            kicker: ios ? 'Driving Focus' : 'Driving mode',
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                for (var i = 0; i < steps.length; i++) ...[
+                  if (i > 0) const SizedBox(height: Space.sm),
+                  Reveal(
+                    delay: Reveal.stagger(i + 1),
+                    child: _Step(number: i + 1, text: steps[i]),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Padding(
+            padding: Space.screen,
+            child: ios
+                ? SecondaryButton(
+                    key: const Key('auto-reply-copy'),
+                    label: 'Copy the steps',
+                    icon: Icons.copy,
+                    onPressed: () async {
+                      await Clipboard.setData(
+                        ClipboardData(
+                          text: [
+                            for (var i = 0; i < steps.length; i++)
+                              '${i + 1}. ${steps[i]}',
+                          ].join('\n'),
+                        ),
+                      );
+                      if (context.mounted) _toast(context, 'Steps copied.');
+                    },
+                  )
+                : PrimaryButton(
+                    key: const Key('auto-reply-open'),
+                    label: 'Open phone settings',
+                    icon: Icons.open_in_new,
+                    onPressed: () async {
+                      final opened = await ref
+                          .read(trackingPortProvider)
+                          .openDrivingModeSettings();
+                      if (!context.mounted) return;
+                      if (!opened) {
+                        _toast(
+                          context,
+                          'Could not open it here. Look for Do Not Disturb '
+                          "in your phone's Sound settings.",
+                        );
+                      }
+                    },
+                  ),
+          ),
         ],
       ),
     );
@@ -103,4 +121,39 @@ class AutoReplySettingsScreen extends ConsumerWidget {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
+}
+
+/// One numbered step: a 32 px numeral in the display face beside the text.
+class _Step extends StatelessWidget {
+  const _Step({required this.number, required this.text});
+  final int number;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tile(
+      padding: const EdgeInsets.symmetric(
+        horizontal: Space.gutter,
+        vertical: Space.lg,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: Space.xxl,
+            child: Text(
+              '$number',
+              style: context.displaySmall.copyWith(
+                fontSize: 32,
+                color: scheme.primary,
+              ),
+            ),
+          ),
+          const SizedBox(width: Space.lg),
+          Expanded(child: Text(text, style: context.body)),
+        ],
+      ),
+    );
+  }
 }

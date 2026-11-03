@@ -45,6 +45,7 @@ void main() {
     expect(find.widgetWithText(AppBar, 'Circles'), findsOneWidget);
     // Signed out / offline: the scope notice, never the circles list.
     expect(find.byType(CirclesView), findsNothing);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     expect(find.text('I got home'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -55,6 +56,7 @@ void main() {
     // Signed out / offline: the scope notice, never the router error page.
     expect(find.byType(JoinCircleScreen), findsOneWidget);
     expect(find.text('Join this circle?'), findsNothing);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 

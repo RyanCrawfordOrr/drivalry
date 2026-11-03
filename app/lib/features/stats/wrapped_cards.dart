@@ -249,7 +249,7 @@ class _WrappedIntroCardState extends State<WrappedIntroCard>
               0.4,
             ),
             const Spacer(),
-            const Icon(
+            Icon(
               Icons.swipe_left_outlined,
               color: DrivalryTheme.paper.withValues(alpha: 0.6),
             ),

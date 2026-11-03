@@ -6,16 +6,26 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../app/routes.dart';
-import '../../config/env.dart';
+import '../../app/ui/ui.dart';
+import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
+import '../../data/push/quiet_hours.dart';
 import '../../data/supabase/auth_service.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../tracking/providers.dart';
+import '../../tracking/tracking_controller.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
+import '../cues/cue_settings.dart';
 import '../profile/profile_repo.dart';
+import 'emergency_contacts_screen.dart';
+import 'notifications_settings_screen.dart';
+import 'widgets/settings_rows.dart';
 
-/// Account, units, location visibility, notifications, diagnostics,
-/// attribution (docs/06 M2.1, ADR-018).
+/// Settings as an editorial list (docs/12 §7): a large title that collapses
+/// on scroll, then Drives, Friends, Safety, Account and About, each a kicker
+/// over one tonal group of rows with a one-line caption, arriving staggered
+/// (§5b). Packs and Diagnostics are pushed so the back stack survives.
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
@@ -23,175 +33,262 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final cloud = ref.watch(cloudConfiguredProvider);
     final signedIn = ref.watch(isSignedInProvider);
     final units = ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto;
     final profile = ref.watch(myProfileProvider).value;
-    return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
-      body: ListView(
-        children: [
-          const _Header('Account'),
-          if (!Env.hasSupabase)
-            const ListTile(
-              leading: Icon(Icons.cloud_off_outlined),
-              title: Text('Offline build'),
-              subtitle: Text(
-                'No Drivalry cloud project is configured. Tracking and '
-                'scoring work; friends and leagues do not.',
+    final tracking = ref.watch(trackingControllerProvider);
+    final cues = ref.watch(cueSettingsProvider).value ?? const CueSettings();
+    final quiet = ref.watch(quietHoursProvider);
+    final crashOn = ref.watch(_crashEnabledProvider).value ?? true;
+    final contacts = ref.watch(emergencyContactsProvider).value?.length ?? 0;
+    final contactsCaption = switch (contacts) {
+      0 => 'Who gets a text if you do not answer.',
+      1 => 'One person gets a text if you do not answer.',
+      _ => '$contacts people get a text if you do not answer.',
+    };
+
+    final sections = <Widget>[
+      EditorialSection(
+        kicker: 'Drives',
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.speed_outlined,
+              title: 'Units',
+              caption: 'Auto follows the roads you drive on.',
+              below: SegmentedButton<UnitsSetting>(
+                key: const Key('units-segments'),
+                showSelectedIcon: false,
+                segments: const [
+                  ButtonSegment(value: UnitsSetting.auto, label: Text('Auto')),
+                  ButtonSegment(value: UnitsSetting.mph, label: Text('mph')),
+                  ButtonSegment(value: UnitsSetting.kmh, label: Text('km/h')),
+                ],
+                selected: {units},
+                onSelectionChanged: (s) {
+                  Haptics.select();
+                  ref.read(databaseProvider).setSetting('units', s.first.name);
+                },
               ),
-            )
-          else if (!signedIn)
-            ListTile(
-              leading: const Icon(Icons.login),
-              title: const Text('Sign in'),
-              subtitle: const Text('Apple or Google. No passwords.'),
-              onTap: () => context.push(Routes.signIn),
-            )
-          else ...[
-            ListTile(
-              leading: const Icon(Icons.person_outline),
-              title: Text(
-                profile == null ? 'Your profile' : '@${profile.handle}',
-              ),
-              subtitle: Text(profile?.displayName ?? 'Handle, name, avatar'),
-              onTap: () => context.push(Routes.profile),
             ),
-            ListTile(
-              leading: const Icon(Icons.ios_share),
-              title: const Text('Export my data'),
-              subtitle: const Text('Every trip on this phone, as JSON'),
-              onTap: () => _export(context, ref),
+            SettingsSwitchRow(
+              key: const Key('auto-detect'),
+              icon: Icons.directions_car_outlined,
+              title: 'Record drives automatically',
+              caption: tracking.plugin.enabled
+                  ? 'The app notices when you set off and scores when you '
+                        'park.'
+                  : 'Off. Nothing is recorded until you turn this on.',
+              value: tracking.plugin.enabled,
+              onChanged: (v) => _setAutoDetect(context, ref, v),
             ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Sign out'),
-              onTap: () => _signOut(context, ref),
+            SettingsRow(
+              icon: Icons.record_voice_over_outlined,
+              title: 'Spoken cues',
+              caption: cues.enabled
+                  ? 'On. Short words through the car speakers.'
+                  : 'Off. Short words through the car speakers.',
+              onTap: () => context.push(Routes.cuesSettings),
             ),
-            ListTile(
-              leading: Icon(
-                Icons.delete_forever_outlined,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              title: Text(
-                'Delete account',
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-              subtitle: const Text(
-                'Removes you from every league, circle and feed. Trips on '
-                'this phone stay.',
-              ),
-              onTap: () => _deleteAccount(context, ref),
+            SettingsRow(
+              icon: Icons.map_outlined,
+              title: 'Speed-limit packs',
+              caption: 'Roads and limits kept on this phone.',
+              onTap: () => context.push(Routes.packs),
             ),
           ],
-          const Divider(),
-          const _Header('Units'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: SegmentedButton<UnitsSetting>(
-              key: const Key('units-segments'),
-              segments: const [
-                ButtonSegment(value: UnitsSetting.auto, label: Text('Auto')),
-                ButtonSegment(value: UnitsSetting.mph, label: Text('mph')),
-                ButtonSegment(value: UnitsSetting.kmh, label: Text('km/h')),
-              ],
-              selected: {units},
-              onSelectionChanged: (s) =>
-                  ref.read(databaseProvider).setSetting('units', s.first.name),
-            ),
-          ),
-          const Divider(),
-          const _Header('Location'),
-          SwitchListTile(
-            key: const Key('hide-location'),
-            secondary: const Icon(Icons.location_off_outlined),
-            title: const Text('Hide my location from everyone'),
-            subtitle: Text(
-              signedIn
-                  ? 'Friends and circles stop seeing where you are. They can '
-                        'see that you are hiding.'
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Friends',
+        child: SettingsGroup(
+          children: [
+            SettingsSwitchRow(
+              key: const Key('hide-location'),
+              icon: Icons.location_off_outlined,
+              title: 'Hide my location',
+              caption: signedIn
+                  ? 'Friends see that you are hiding, not where you are.'
                   : 'Sign in to share or hide your location.',
+              value: profile?.locationHidden ?? false,
+              onChanged: signedIn && profile != null
+                  ? (v) => ref
+                        .read(profileRepoProvider)
+                        .setLocationHidden(profile.id, v)
+                  : null,
             ),
-            value: profile?.locationHidden ?? false,
-            onChanged: signedIn && profile != null
-                ? (v) => ref
-                      .read(profileRepoProvider)
-                      .setLocationHidden(profile.id, v)
-                : null,
-          ),
-          const Divider(),
-          const _Header('Safety'),
-          ListTile(
-            leading: const Icon(Icons.car_crash_outlined),
-            title: const Text('Crash detection'),
-            subtitle: const Text(
-              'A 30-second check after a hard stop; help is requested only '
-              'if you do not answer',
+            SettingsRow(
+              icon: Icons.notifications_outlined,
+              title: 'Notifications',
+              caption: 'Which alerts reach you.',
+              onTap: () => context.push(Routes.notificationsSettings),
             ),
-            onTap: () => context.push(Routes.crashSettings),
-          ),
-          ListTile(
-            leading: const Icon(Icons.contact_phone_outlined),
-            title: const Text('Emergency contacts'),
-            subtitle: const Text('Who gets the text if you do not respond'),
-            onTap: () => context.push(Routes.emergencyContacts),
-          ),
-          const Divider(),
-          const _Header('During a drive'),
-          ListTile(
-            leading: const Icon(Icons.record_voice_over_outlined),
-            title: const Text('Spoken cues'),
-            subtitle: const Text(
-              'Short limit and smoothness cues through the car speakers. '
-              'Off by default.',
+            SettingsRow(
+              icon: Icons.bedtime_outlined,
+              title: 'Quiet hours',
+              caption: quiet.enabled
+                  ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
+                        '${QuietHours.formatMinutes(quiet.endMinutes)}. '
+                        'Crash alerts still come through.'
+                  : 'Off. Set a window when nothing buzzes.',
+              onTap: () => context.push(Routes.notificationsSettings),
             ),
-            onTap: () => context.push(Routes.cuesSettings),
-          ),
-          ListTile(
-            key: const Key('auto-reply'),
-            leading: const Icon(Icons.sms_outlined),
-            title: const Text('Auto-reply to texts'),
-            subtitle: const Text(
-              "Your phone's driving mode does this. Drivalry shows you where.",
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Safety',
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.car_crash_outlined,
+              title: 'Crash detection',
+              caption: crashOn
+                  ? 'On. Checks on you after a hard stop.'
+                  : 'Off. Turn it on to be checked on after a hard stop.',
+              onTap: () => context.push(Routes.crashSettings),
             ),
-            onTap: () => context.push(Routes.autoReplySettings),
-          ),
-          const Divider(),
-          const _Header('App'),
-          ListTile(
-            leading: const Icon(Icons.notifications_outlined),
-            title: const Text('Notifications'),
-            subtitle: const Text('Quiet hours, what to be told about'),
-            onTap: () => context.push(Routes.notificationsSettings),
-          ),
-          ListTile(
-            leading: const Icon(Icons.map_outlined),
-            title: const Text('Speed-limit packs'),
-            onTap: () => context.go(Routes.packs),
-          ),
-          ListTile(
-            leading: const Icon(Icons.monitor_heart_outlined),
-            title: const Text('Diagnostics'),
-            onTap: () => context.go(Routes.diagnostics),
-          ),
-          ListTile(
-            leading: const Icon(Icons.info_outline),
-            title: const Text('Attribution'),
-            subtitle: const Text(
-              'OpenStreetMap, Google, Open-Meteo, Nominatim',
+            SettingsRow(
+              icon: Icons.contact_phone_outlined,
+              title: 'Emergency contacts',
+              caption: contactsCaption,
+              onTap: () => context.push(Routes.emergencyContacts),
             ),
-            onTap: () => context.push(Routes.attribution),
-          ),
-          ListTile(
-            leading: const Icon(Icons.code),
-            title: const Text('Open source'),
-            subtitle: const Text('MIT licence, built in public'),
-            onTap: () => launchUrl(
-              Uri.parse(repoUrl),
-              mode: LaunchMode.externalApplication,
+            SettingsRow(
+              key: const Key('auto-reply'),
+              icon: Icons.sms_outlined,
+              title: 'Auto-reply to texts',
+              caption: 'Your phone can answer texts while you drive.',
+              onTap: () => context.push(Routes.autoReplySettings),
+            ),
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'Account',
+        child: SettingsGroup(
+          children: [
+            if (!cloud)
+              const SettingsRow(
+                icon: Icons.cloud_off_outlined,
+                title: 'Not available in this version yet.',
+                caption:
+                    'Friends and leagues are coming. Drives still score on '
+                    'this phone.',
+              )
+            else if (!signedIn)
+              SettingsRow(
+                icon: Icons.login,
+                title: 'Sign in',
+                caption: 'Apple or Google. No passwords.',
+                onTap: () => context.push(Routes.signIn),
+              )
+            else ...[
+              SettingsRow(
+                leading: Avatar(
+                  name: profile?.displayName ?? '?',
+                  size: AvatarSize.sm,
+                  isMe: true,
+                ),
+                title: profile == null ? 'Your profile' : '@${profile.handle}',
+                caption: profile?.displayName ?? 'Handle, name, photo.',
+                onTap: () => context.push(Routes.profile),
+              ),
+              SettingsRow(
+                icon: Icons.ios_share,
+                title: 'Export my data',
+                caption: 'Every trip on this phone, in a file you keep.',
+                onTap: () => _export(context, ref),
+              ),
+              SettingsRow(
+                icon: Icons.logout,
+                title: 'Sign out',
+                caption: 'Trips stay on this phone.',
+                onTap: () => _signOut(context, ref),
+              ),
+              SettingsRow(
+                icon: Icons.delete_forever_outlined,
+                title: 'Delete account',
+                caption:
+                    'Leaves every league, circle and feed for good. Trips on '
+                    'this phone stay.',
+                danger: true,
+                onTap: () => _deleteAccount(context, ref),
+              ),
+            ],
+          ],
+        ),
+      ),
+      EditorialSection(
+        kicker: 'About',
+        gap: 0,
+        child: SettingsGroup(
+          children: [
+            SettingsRow(
+              icon: Icons.info_outline,
+              title: 'About Drivalry',
+              caption: 'Where the roads, maps and weather come from.',
+              onTap: () => context.push(Routes.attribution),
+            ),
+            SettingsRow(
+              icon: Icons.code,
+              title: 'Open source',
+              caption: 'Read the code, report a bug, build your own.',
+              trailing: const Pill('MIT', compact: true),
+              onTap: () => launchUrl(
+                Uri.parse(repoUrl),
+                mode: LaunchMode.externalApplication,
+              ),
+            ),
+            SettingsRow(
+              icon: Icons.monitor_heart_outlined,
+              title: 'Diagnostics',
+              caption: 'Numbers for bug reports.',
+              onTap: () => context.push(Routes.diagnostics),
+            ),
+          ],
+        ),
+      ),
+    ];
+
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          const SliverAppBar.large(title: Text('Settings')),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+            // Five sections: built at once so every reveal starts together.
+            sliver: SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (var i = 0; i < sections.length; i++)
+                    Reveal(delay: Reveal.stagger(i), child: sections[i]),
+                ],
+              ),
             ),
           ),
-          const SizedBox(height: 24),
         ],
+      ),
+    );
+  }
+
+  Future<void> _setAutoDetect(
+    BuildContext context,
+    WidgetRef ref,
+    bool enabled,
+  ) async {
+    final controller = ref.read(trackingControllerProvider.notifier);
+    await controller.setEnabled(enabled);
+    if (!context.mounted || enabled) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Drives are no longer recorded.'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => controller.setEnabled(true),
+        ),
       ),
     );
   }
@@ -206,7 +303,9 @@ class SettingsScreen extends ConsumerWidget {
             profileJson: profile == null ? null : jsonEncode(profile.toJson()),
           );
     } catch (e) {
-      if (context.mounted) _toast(context, 'Export failed: $e');
+      if (context.mounted) {
+        _toast(context, friendlyError(e, doing: 'export your data'));
+      }
     }
   }
 
@@ -215,7 +314,7 @@ class SettingsScreen extends ConsumerWidget {
       await ref.read(authServiceProvider).signOut();
       if (context.mounted) _toast(context, 'Signed out.');
     } catch (e) {
-      if (context.mounted) _toast(context, 'Sign-out failed: $e');
+      if (context.mounted) _toast(context, friendlyError(e, doing: 'sign out'));
     }
   }
 
@@ -225,9 +324,8 @@ class SettingsScreen extends ConsumerWidget {
       builder: (context) => AlertDialog(
         title: const Text('Delete your account?'),
         content: const Text(
-          'Your profile, friendships, league memberships, uploaded trip '
-          'summaries and posts are deleted for good. The trips stored on this '
-          'phone are kept. This cannot be undone.',
+          'This removes your profile, friendships, leagues and posts for '
+          'good. Trips on this phone stay. There is no undo.',
         ),
         actions: [
           TextButton(
@@ -237,6 +335,7 @@ class SettingsScreen extends ConsumerWidget {
           FilledButton(
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
             onPressed: () => Navigator.of(context).pop(true),
             child: const Text('Delete'),
@@ -251,7 +350,9 @@ class SettingsScreen extends ConsumerWidget {
           .deleteAccount(ref.read(databaseProvider));
       if (context.mounted) _toast(context, 'Account deleted.');
     } catch (e) {
-      if (context.mounted) _toast(context, 'Delete failed: $e');
+      if (context.mounted) {
+        _toast(context, friendlyError(e, doing: 'delete your account'));
+      }
     }
   }
 }
@@ -260,18 +361,11 @@ void _toast(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
-class _Header extends StatelessWidget {
-  const _Header(this.text);
-  final String text;
-
-  @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-    child: Text(
-      text,
-      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    ),
-  );
-}
+/// Crash detection on/off, read straight from the setting so Settings never
+/// has to wake the crash monitor (default on, docs/01 §4.5).
+final _crashEnabledProvider = StreamProvider<bool>(
+  (ref) => ref
+      .watch(databaseProvider)
+      .watchSetting(CrashKeys.enabled)
+      .map((v) => v != 'false'),
+);

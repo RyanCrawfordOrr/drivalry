@@ -1,3 +1,4 @@
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/crash/crash_monitor.dart';
 import 'package:drivalry/data/crash/crash_speaker.dart';
 import 'package:drivalry/data/db/database.dart';
@@ -56,6 +57,10 @@ void main() {
       find.text('None yet. Add at least one so the text has somewhere to go.'),
       findsOneWidget,
     );
+    // The false-alarm counter is a stat tile, the explainer two sentences.
+    expect(find.byType(StatTile), findsNWidgets(2));
+    expect(find.text('False alarms'), findsOneWidget);
+    expect(find.text('Never'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('crash-enabled')));
     await pumpFor(tester, const Duration(milliseconds: 500));
@@ -70,9 +75,11 @@ void main() {
   testWidgets('emergency contacts can be added and removed', (tester) async {
     await tester.pumpWidget(harness(const EmergencyContactsScreen()));
     await pumpFor(tester, const Duration(milliseconds: 500));
-    expect(find.text('No emergency contacts'), findsOneWidget);
+    expect(find.byType(EmptyState), findsOneWidget);
+    expect(find.text('Who should get the text?'), findsOneWidget);
+    expect(find.byType(FloatingActionButton), findsNothing);
 
-    await tester.tap(find.byKey(const Key('contact-add')));
+    await tester.tap(find.widgetWithText(FilledButton, 'Add contact'));
     await pumpFor(tester, const Duration(milliseconds: 500));
     await tester.enterText(find.byKey(const Key('contact-name')), 'Sam');
     await tester.enterText(
@@ -87,10 +94,17 @@ void main() {
     expect(rows.single.name, 'Sam');
     expect(rows.single.phone, '+15550102020');
     expect(find.text('Sam'), findsOneWidget);
+    expect(find.byType(Avatar), findsOneWidget);
+    expect(find.byKey(const Key('contact-add')), findsOneWidget);
 
     await tester.tap(find.byIcon(Icons.delete_outline));
     await pumpFor(tester, const Duration(milliseconds: 500));
     expect(await db.allEmergencyContacts(), isEmpty);
+    expect(find.text('Undo'), findsOneWidget);
+
+    await tester.tap(find.text('Undo'));
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect((await db.allEmergencyContacts()).single.name, 'Sam');
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -108,6 +122,13 @@ void main() {
       expect(find.text('TEST: nothing will be sent'), findsOneWidget);
       expect(find.byKey(const Key('crash-im-ok')), findsOneWidget);
       expect(navigated, ['/crash']);
+
+      // The in-car sizes are the reference for the whole app.
+      expect(tester.getSize(find.byKey(const Key('crash-im-ok'))).height, 96);
+      expect(
+        tester.getSize(find.byKey(const Key('crash-send-help'))).height,
+        56,
+      );
 
       // Twelve seconds pass.
       now += 12_000;

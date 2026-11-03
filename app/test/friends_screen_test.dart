@@ -42,6 +42,7 @@ void main() {
     // Tests build without SUPABASE_URL, so SignedInScope shows its notice
     // instead of the feed, and there is no Add-friend button.
     expect(find.byType(FeedView), findsNothing);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     expect(find.text('Add friend'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);

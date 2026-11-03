@@ -73,14 +73,14 @@ void main() {
           .read(crashMonitorProvider.notifier)
           .onCandidate(candidate());
       await pumpFor(tester, const Duration(milliseconds: 300));
-      expect(find.text('Possible crash: countdown running'), findsOneWidget);
+      expect(find.text('Possible crash. Are you OK?'), findsOneWidget);
       expect(find.byKey(const Key('crash-card-im-ok')), findsOneWidget);
       expect(find.byKey(const Key('crash-card-show')), findsOneWidget);
 
       await tester.tap(find.byKey(const Key('crash-card-im-ok')));
       await pumpFor(tester, const Duration(milliseconds: 500));
       expect(container.read(crashMonitorProvider).countingDown, isFalse);
-      expect(find.text('Possible crash: countdown running'), findsNothing);
+      expect(find.text('Possible crash. Are you OK?'), findsNothing);
       await unmountAndSettle(tester);
     },
     skip: skip,

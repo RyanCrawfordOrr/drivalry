@@ -1,3 +1,4 @@
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/features/settings/auto_reply_settings_screen.dart';
 import 'package:drivalry/features/settings/settings_screen.dart';
@@ -34,7 +35,7 @@ void main() {
     child: MaterialApp(home: home),
   );
 
-  testWidgets('Settings lists the row under During a drive', (tester) async {
+  testWidgets('Settings lists the row under Safety', (tester) async {
     await tester.pumpWidget(harness(const SettingsScreen()));
     await pumpFor(tester, const Duration(milliseconds: 300));
     // The row sits below the fold of the settings list.
@@ -46,6 +47,7 @@ void main() {
     await tester.pump();
     expect(find.byKey(const Key('auto-reply')), findsOneWidget);
     expect(find.text('Auto-reply to texts'), findsOneWidget);
+    expect(find.text('SAFETY'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -54,9 +56,10 @@ void main() {
   ) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.android;
     await tester.pumpWidget(harness(const AutoReplySettingsScreen()));
-    await tester.pump();
+    await pumpFor(tester, const Duration(milliseconds: 500));
     expect(find.textContaining('Drivalry never sends replies'), findsOneWidget);
     expect(find.byKey(const Key('auto-reply-copy')), findsNothing);
+    expect(find.byType(PrimaryButton), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('auto-reply-open')));
     await tester.pump();
@@ -72,16 +75,20 @@ void main() {
     debugDefaultTargetPlatformOverride = null;
   });
 
-  testWidgets('iOS: steps to a Driving Focus and a copy button', (
+  testWidgets('iOS: numbered steps to a Driving Focus and a copy button', (
     tester,
   ) async {
     debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     await tester.pumpWidget(harness(const AutoReplySettingsScreen()));
-    await tester.pump();
-    expect(find.text('Set up a Driving Focus'), findsOneWidget);
-    for (final step in AutoReplySettingsScreen.iosSteps) {
-      expect(find.text(step), findsOneWidget);
+    await pumpFor(tester, const Duration(milliseconds: 500));
+    expect(find.text('DRIVING FOCUS'), findsOneWidget);
+    for (var i = 0; i < AutoReplySettingsScreen.iosSteps.length; i++) {
+      expect(find.text(AutoReplySettingsScreen.iosSteps[i]), findsOneWidget);
+      expect(find.text('${i + 1}'), findsOneWidget);
     }
+    // The step numerals are the 32 px display face.
+    final numeral = tester.widget<Text>(find.text('1'));
+    expect(numeral.style?.fontSize, 32);
     expect(find.byKey(const Key('auto-reply-open')), findsNothing);
     expect(find.byKey(const Key('auto-reply-copy')), findsOneWidget);
     expect(port.calls, isNot(contains('openDrivingModeSettings')));
