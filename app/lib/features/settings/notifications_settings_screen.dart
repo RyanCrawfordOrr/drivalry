@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/push/local_notifications.dart';
 import '../../data/push/push_service.dart';
 import '../../data/push/quiet_hours.dart';
+import '../../widgets/friendly_error.dart';
+import 'widgets/settings_rows.dart';
 
-/// Registration status, quiet hours and the per-category switches
-/// (docs/01 §4.10). Crash alerts are always on.
+/// Permission state as a pill with one action, quiet hours, then the
+/// categories with friendly titles and one-line captions (docs/01 §4.10).
+/// Crash alerts are always on.
 class NotificationsSettingsScreen extends ConsumerWidget {
   const NotificationsSettingsScreen({super.key});
 
@@ -15,95 +19,95 @@ class NotificationsSettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final status = ref.watch(pushControllerProvider);
     final db = ref.watch(databaseProvider);
-    final quiet = QuietHours.fromJson(
-      ref.watch(_settingProvider(QuietHours.settingsKey)).value,
-    );
+    final quiet = ref.watch(quietHoursProvider);
     return Scaffold(
       appBar: AppBar(title: const Text('Notifications')),
       body: ListView(
+        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
         children: [
-          ListTile(
-            leading: Icon(switch (status) {
-              PushRegistered() => Icons.notifications_active_outlined,
-              PushPermissionDenied() => Icons.notifications_off_outlined,
-              PushPending() => Icons.notifications_none,
-              PushUnavailable() => Icons.cloud_off_outlined,
-            }),
-            title: const Text('Push from friends'),
-            subtitle: Text(switch (status) {
-              PushRegistered() => 'Registered on this device.',
-              PushPermissionDenied() =>
-                'Permission denied. Allow notifications in the system '
-                    'settings.',
-              PushPending() => 'Not registered yet.',
-              PushUnavailable(reason: final r) => r,
-            }),
-            trailing: status is PushPending
-                ? TextButton(
-                    onPressed: () =>
-                        ref.read(pushControllerProvider.notifier).start(),
-                    child: const Text('Enable'),
-                  )
-                : null,
+          EditorialSection(
+            kicker: 'Permission',
+            child: _PermissionTile(status: status),
           ),
-          const Divider(),
-          SwitchListTile(
-            key: const Key('quiet-hours'),
-            secondary: const Icon(Icons.bedtime_outlined),
-            title: const Text('Quiet hours'),
-            subtitle: Text(
-              quiet.enabled
-                  ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
-                        '${QuietHours.formatMinutes(quiet.endMinutes)}. '
-                        'Crash alerts still come through.'
-                  : 'Off',
-            ),
-            value: quiet.enabled,
-            onChanged: (v) => db.setSetting(
-              QuietHours.settingsKey,
-              quiet.copyWith(enabled: v).toJson(),
+          EditorialSection(
+            kicker: 'Quiet hours',
+            child: SettingsGroup(
+              children: [
+                SettingsSwitchRow(
+                  key: const Key('quiet-hours'),
+                  icon: Icons.bedtime_outlined,
+                  title: 'Quiet hours',
+                  caption: quiet.enabled
+                      ? '${QuietHours.formatMinutes(quiet.startMinutes)} to '
+                            '${QuietHours.formatMinutes(quiet.endMinutes)}. '
+                            'Crash alerts still come through.'
+                      : 'Nothing buzzes while you sleep.',
+                  value: quiet.enabled,
+                  onChanged: (v) {
+                    Haptics.select();
+                    db.setSetting(
+                      QuietHours.settingsKey,
+                      quiet.copyWith(enabled: v).toJson(),
+                    );
+                  },
+                ),
+                if (quiet.enabled) ...[
+                  SettingsRow(
+                    title: 'Starts',
+                    trailing: Text(
+                      QuietHours.formatMinutes(quiet.startMinutes),
+                      style: context.label,
+                    ),
+                    onTap: () async {
+                      final t = await _pickTime(context, quiet.startMinutes);
+                      if (t != null) {
+                        await db.setSetting(
+                          QuietHours.settingsKey,
+                          quiet.copyWith(startMinutes: t).toJson(),
+                        );
+                      }
+                    },
+                  ),
+                  SettingsRow(
+                    title: 'Ends',
+                    trailing: Text(
+                      QuietHours.formatMinutes(quiet.endMinutes),
+                      style: context.label,
+                    ),
+                    onTap: () async {
+                      final t = await _pickTime(context, quiet.endMinutes);
+                      if (t != null) {
+                        await db.setSetting(
+                          QuietHours.settingsKey,
+                          quiet.copyWith(endMinutes: t).toJson(),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ],
             ),
           ),
-          if (quiet.enabled) ...[
-            ListTile(
-              title: const Text('Start'),
-              trailing: Text(QuietHours.formatMinutes(quiet.startMinutes)),
-              onTap: () async {
-                final t = await _pickTime(context, quiet.startMinutes);
-                if (t != null) {
-                  await db.setSetting(
-                    QuietHours.settingsKey,
-                    quiet.copyWith(startMinutes: t).toJson(),
-                  );
-                }
-              },
+          EditorialSection(
+            kicker: 'What you hear about',
+            gap: 0,
+            child: SettingsGroup(
+              children: [
+                for (final c in const [
+                  NotificationCategory.tripScored,
+                  NotificationCategory.social,
+                  NotificationCategory.friends,
+                ])
+                  _CategorySwitch(category: c),
+                const SettingsSwitchRow(
+                  icon: Icons.car_crash_outlined,
+                  title: 'Crash alerts',
+                  caption: 'Always comes through, even in quiet hours.',
+                  value: true,
+                  onChanged: null,
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('End'),
-              trailing: Text(QuietHours.formatMinutes(quiet.endMinutes)),
-              onTap: () async {
-                final t = await _pickTime(context, quiet.endMinutes);
-                if (t != null) {
-                  await db.setSetting(
-                    QuietHours.settingsKey,
-                    quiet.copyWith(endMinutes: t).toJson(),
-                  );
-                }
-              },
-            ),
-          ],
-          const Divider(),
-          for (final c in const [
-            NotificationCategory.tripScored,
-            NotificationCategory.social,
-            NotificationCategory.friends,
-          ])
-            _CategorySwitch(category: c),
-          const ListTile(
-            leading: Icon(Icons.car_crash_outlined),
-            title: Text('Crash alerts'),
-            subtitle: Text('Always on. Ignores quiet hours.'),
-            trailing: Switch(value: true, onChanged: null),
           ),
         ],
       ),
@@ -119,9 +123,71 @@ class NotificationsSettingsScreen extends ConsumerWidget {
   }
 }
 
+/// The quiet-hours setting, live. Settings shows it too.
+final quietHoursProvider = Provider<QuietHours>(
+  (ref) => QuietHours.fromJson(
+    ref.watch(_settingProvider(QuietHours.settingsKey)).value,
+  ),
+);
+
 final _settingProvider = StreamProvider.family<String?, String>(
   (ref, key) => ref.watch(databaseProvider).watchSetting(key),
 );
+
+class _PermissionTile extends ConsumerWidget {
+  const _PermissionTile({required this.status});
+  final PushStatus status;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (pill, caption) = switch (status) {
+      PushRegistered() => (
+        const Pill('On', tone: PillTone.positive, dot: true),
+        'This phone gets them.',
+      ),
+      PushPermissionDenied() => (
+        const Pill('Blocked', tone: PillTone.danger),
+        'Allow notifications for Drivalry in your phone settings.',
+      ),
+      PushPending() => (
+        const Pill('Off'),
+        'Turn them on to hear when a friend reacts or a trip scores.',
+      ),
+      PushUnavailable(reason: final r) => (
+        const Pill('Not available'),
+        friendlyError(Exception(r), doing: 'turn on notifications'),
+      ),
+    };
+    return Tile(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Push from friends',
+                  style: context.body.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ),
+              pill,
+            ],
+          ),
+          const SizedBox(height: Space.xs),
+          Text(caption, style: context.caption),
+          if (status is PushPending) ...[
+            const SizedBox(height: Space.lg),
+            PrimaryButton(
+              key: const Key('push-enable'),
+              label: 'Enable',
+              onPressed: () => ref.read(pushControllerProvider.notifier).start(),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
 
 class _CategorySwitch extends ConsumerWidget {
   const _CategorySwitch({required this.category});
@@ -130,20 +196,32 @@ class _CategorySwitch extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final value = ref.watch(_settingProvider(category.settingsKey)).value;
-    return SwitchListTile(
+    return SettingsSwitchRow(
       key: Key('notify-${category.channelId}'),
-      secondary: Icon(switch (category) {
+      icon: switch (category) {
         NotificationCategory.tripScored => Icons.speed,
         NotificationCategory.social => Icons.chat_bubble_outline,
         NotificationCategory.friends => Icons.person_add_alt_1_outlined,
         NotificationCategory.crash => Icons.car_crash_outlined,
         NotificationCategory.convoy => Icons.route_outlined,
-      }),
-      title: Text(category.channelName),
+      },
+      title: category.channelName,
+      caption: switch (category) {
+        NotificationCategory.tripScored => 'Your score and roast when you park.',
+        NotificationCategory.social =>
+          'When a friend reacts to or comments on a drive.',
+        NotificationCategory.friends => 'When someone wants to add you.',
+        NotificationCategory.crash =>
+          'Always comes through, even in quiet hours.',
+        NotificationCategory.convoy => 'Stops, regroups and arrivals.',
+      },
       value: value != 'false',
-      onChanged: (v) => ref
-          .read(databaseProvider)
-          .setSetting(category.settingsKey, v ? 'true' : 'false'),
+      onChanged: (v) {
+        Haptics.select();
+        ref
+            .read(databaseProvider)
+            .setSetting(category.settingsKey, v ? 'true' : 'false');
+      },
     );
   }
 }

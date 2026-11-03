@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/garage_repo.dart';
 import 'tabs/documents_tab.dart';
 import 'tabs/fuel_tab.dart';
@@ -17,12 +18,13 @@ class VehicleDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vehicle = ref.watch(vehicleProvider(vehicleId)).value;
+    final vehicle = ref.watch(vehicleProvider(vehicleId));
+    final v = vehicle.value;
     return DefaultTabController(
       length: 4,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(vehicle?.name ?? 'Vehicle'),
+          title: Text(v?.name ?? 'Vehicle'),
           actions: [
             IconButton(
               tooltip: 'Edit',
@@ -39,14 +41,32 @@ class VehicleDetailScreen extends ConsumerWidget {
             ],
           ),
         ),
-        body: vehicle == null
-            ? const Center(child: Text('This vehicle is gone.'))
+        body: v == null
+            ? (vehicle.isLoading
+                  ? const Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        Space.gutter,
+                        Space.lg,
+                        Space.gutter,
+                        0,
+                      ),
+                      child: SkeletonTile(height: 120),
+                    )
+                  : EmptyState(
+                      kicker: 'Garage',
+                      headline: 'This vehicle was removed.',
+                      body:
+                          'Its trips, fuel log and documents stay on the '
+                          'phone.',
+                      actionLabel: 'Back to the garage',
+                      onAction: () => context.go(Routes.garage),
+                    ))
             : TabBarView(
                 children: [
-                  StatsTab(vehicle: vehicle),
-                  FuelTab(vehicle: vehicle),
-                  MaintenanceTab(vehicle: vehicle),
-                  DocumentsTab(vehicle: vehicle),
+                  StatsTab(vehicle: v),
+                  FuelTab(vehicle: v),
+                  MaintenanceTab(vehicle: v),
+                  DocumentsTab(vehicle: v),
                 ],
               ),
       ),

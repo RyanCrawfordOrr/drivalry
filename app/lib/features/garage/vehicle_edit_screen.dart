@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/garage/fuel_math.dart';
 import '../../data/garage/vehicle_matcher.dart';
@@ -84,13 +85,18 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
       body: Form(
         key: _form,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.lg,
+            Space.gutter,
+            Space.xxxl,
+          ),
           children: [
             TextFormField(
               controller: _name,
               decoration: const InputDecoration(labelText: 'Name'),
               validator: (v) =>
-                  (v == null || v.trim().isEmpty) ? 'Give it a name' : null,
+                  (v == null || v.trim().isEmpty) ? 'Give it a name.' : null,
             ),
             const SizedBox(height: 12),
             Row(
@@ -122,7 +128,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                       if (v == null || v.isEmpty) return null;
                       final y = int.tryParse(v);
                       return (y == null || y < 1900 || y > 2100)
-                          ? 'Not a year'
+                          ? 'Enter a four-digit year.'
                           : null;
                     },
                   ),
@@ -141,18 +147,15 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: Space.xl),
+            const Kicker('Car audio'),
+            const SizedBox(height: Space.xs),
             Text(
-              'Car audio names',
-              style: Theme.of(context).textTheme.titleSmall,
+              'The Bluetooth or CarPlay name the phone sees in this car. '
+              'Trips in it are credited to this vehicle.',
+              style: context.caption,
             ),
-            const SizedBox(height: 4),
-            Text(
-              'The Bluetooth or CarPlay name the phone sees in this car. Trips '
-              'are credited to the vehicle automatically.',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.sm),
             Wrap(
               spacing: 8,
               children: [
@@ -174,7 +177,11 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                     onSubmitted: (_) => _addBt(),
                   ),
                 ),
-                IconButton(onPressed: _addBt, icon: const Icon(Icons.add)),
+                IconButton(
+                  tooltip: 'Add name',
+                  onPressed: _addBt,
+                  icon: const Icon(Icons.add),
+                ),
               ],
             ),
             const SizedBox(height: 12),
@@ -183,16 +190,16 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
               contentPadding: EdgeInsets.zero,
               title: const Text('Never track this vehicle'),
               subtitle: const Text(
-                'Rental, work truck: drives in it are ended and deleted the '
-                'moment the phone connects to it.',
+                'Rental, work truck: drives in it are deleted the moment the '
+                'phone connects to it.',
               ),
               value: _neverTrack,
               onChanged: (v) => setState(() => _neverTrack = v),
             ),
-            const SizedBox(height: 24),
-            FilledButton(
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Save',
               onPressed: () => _save(context, gallons),
-              child: const Text('Save'),
             ),
           ],
         ),

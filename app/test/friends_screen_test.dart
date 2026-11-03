@@ -40,7 +40,7 @@ void main() {
     expect(find.widgetWithText(AppBar, 'Friends'), findsOneWidget);
     // Tests build without SUPABASE_URL, so SignedInScope shows the notice
     // and there is no Add-friend button.
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     expect(find.text('Add friend'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);

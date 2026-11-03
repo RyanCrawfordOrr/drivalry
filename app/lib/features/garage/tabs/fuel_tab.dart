@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
 import '../../../data/garage/fuel_math.dart';
 import '../../../data/repos/garage_repo.dart';
 import '../../../tracking/providers.dart';
 import '../../../widgets/units.dart';
+import '../../settings/widgets/settings_rows.dart';
 
-/// Fill-ups and the economy they prove.
+/// Fill-ups and the economy they prove. Empty: one headline and one button;
+/// populated: a stat grid, the log as tiles and a FAB.
 class FuelTab extends ConsumerWidget {
   const FuelTab({super.key, required this.vehicle});
 
@@ -23,8 +26,21 @@ class FuelTab extends ConsumerWidget {
     final entries =
         ref.watch(fuelEntriesProvider(vehicle.id)).value ?? const [];
     final stats = ref.watch(fuelStatsProvider(vehicle.id));
-    final theme = Theme.of(context);
     final date = DateFormat.yMMMd();
+
+    if (entries.isEmpty) {
+      return ListView(
+        children: [
+          EmptyState(
+            kicker: 'Fuel',
+            headline: 'Log your first fill-up.',
+            body: 'Two full tanks with the odometer and you get real economy.',
+            actionLabel: 'Add fill-up',
+            onAction: () => _addFillUp(context, ref, imperial),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
@@ -34,74 +50,90 @@ class FuelTab extends ConsumerWidget {
         label: const Text('Fill-up'),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+        padding: const EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.lg,
+          Space.gutter,
+          Space.xxxl + Space.xxl,
+        ),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _Stat(
-                      'Economy',
-                      formatEconomy(stats.lPer100km, useMpg: imperial),
-                    ),
-                  ),
-                  Expanded(
-                    child: _Stat(
-                      'Fuel logged',
-                      formatVolume(stats.totalLitres, useGallons: imperial),
-                    ),
-                  ),
-                  Expanded(
-                    child: _Stat(
-                      'Spent',
-                      stats.totalCostCents == 0
-                          ? '–'
-                          : formatCents(stats.totalCostCents),
-                    ),
-                  ),
-                ],
+          StatGrid(
+            children: [
+              StatTile(
+                value: formatEconomy(stats.lPer100km, useMpg: imperial),
+                label: 'Economy',
               ),
-            ),
+              StatTile(
+                value: formatVolume(stats.totalLitres, useGallons: imperial),
+                label: 'Fuel logged',
+              ),
+              StatTile(
+                value: stats.totalCostCents == 0
+                    ? '–'
+                    : formatCents(stats.totalCostCents),
+                label: 'Spent',
+              ),
+            ],
           ),
-          if (!stats.hasEconomy)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text(
-                'Economy appears after two full tanks with odometer readings. '
-                'Partial fill-ups count toward the next full one.',
-                style: theme.textTheme.bodySmall,
-              ),
+          if (!stats.hasEconomy) ...[
+            const SizedBox(height: Space.md),
+            Text(
+              'Economy appears after two full tanks with odometer readings. '
+              'Partial fill-ups count toward the next full one.',
+              style: context.caption,
             ),
-          for (final e in entries.reversed)
-            ListTile(
-              leading: Icon(
-                e.fullTank
-                    ? Icons.local_gas_station
-                    : Icons.local_gas_station_outlined,
-              ),
-              title: Text(
-                '${formatVolume(e.litres, useGallons: imperial)}'
-                '${e.costCents == null ? '' : ' · ${formatCents(e.costCents!)} ${e.currency}'}',
-              ),
-              subtitle: Text(
-                [
-                  date.format(DateTime.fromMillisecondsSinceEpoch(e.at)),
-                  if (e.odometerKm != null)
-                    imperial
-                        ? '${kmToMiles(e.odometerKm!).round()} mi'
-                        : '${e.odometerKm!.round()} km',
-                  if (!e.fullTank) 'partial',
-                ].join(' · '),
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline),
-                onPressed: () =>
-                    ref.read(garageRepoProvider).deleteFuelEntry(e.id),
-              ),
+          ],
+          const SizedBox(height: Space.xl),
+          for (final e in entries.reversed) ...[
+            SettingsGroup(
+              children: [
+                SettingsRow(
+                  icon: e.fullTank
+                      ? Icons.local_gas_station
+                      : Icons.local_gas_station_outlined,
+                  title:
+                      '${formatVolume(e.litres, useGallons: imperial)}'
+                      '${e.costCents == null ? '' : ' · ${formatCents(e.costCents!)} ${e.currency}'}',
+                  caption: [
+                    date.format(DateTime.fromMillisecondsSinceEpoch(e.at)),
+                    if (e.odometerKm != null)
+                      imperial
+                          ? '${kmToMiles(e.odometerKm!).round()} mi'
+                          : '${e.odometerKm!.round()} km',
+                    if (!e.fullTank) 'partial',
+                  ].join(' · '),
+                  trailing: IconButton(
+                    tooltip: 'Remove',
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => _remove(context, ref, e),
+                  ),
+                ),
+              ],
             ),
+            const SizedBox(height: Space.sm),
+          ],
         ],
+      ),
+    );
+  }
+
+  Future<void> _remove(BuildContext context, WidgetRef ref, FuelEntry e) async {
+    final repo = ref.read(garageRepoProvider);
+    await repo.deleteFuelEntry(e.id);
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: const Text('Fill-up removed.'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () => repo.addFuelEntry(
+            vehicleId: e.vehicleId,
+            litres: e.litres,
+            odometerKm: e.odometerKm,
+            costCents: e.costCents,
+            fullTank: e.fullTank,
+          ),
+        ),
       ),
     );
   }
@@ -115,13 +147,15 @@ class FuelTab extends ConsumerWidget {
     final odo = TextEditingController();
     final cost = TextEditingController();
     var full = true;
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => AlertDialog(
-          title: const Text('Fill-up'),
-          content: Column(
+    final ok = await showDrivalrySheet<bool>(
+      context,
+      title: 'Fill-up',
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: StatefulBuilder(
+          builder: (ctx, setState) => Column(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               TextField(
                 controller: volume,
@@ -133,6 +167,7 @@ class FuelTab extends ConsumerWidget {
                   labelText: imperial ? 'Gallons' : 'Litres',
                 ),
               ),
+              const SizedBox(height: Space.md),
               TextField(
                 controller: odo,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -142,6 +177,7 @@ class FuelTab extends ConsumerWidget {
                   labelText: imperial ? 'Odometer (mi)' : 'Odometer (km)',
                 ),
               ),
+              const SizedBox(height: Space.md),
               TextField(
                 controller: cost,
                 keyboardType: const TextInputType.numberWithOptions(
@@ -149,24 +185,19 @@ class FuelTab extends ConsumerWidget {
                 ),
                 decoration: const InputDecoration(labelText: 'Cost (optional)'),
               ),
-              SwitchListTile(
-                contentPadding: EdgeInsets.zero,
-                title: const Text('Full tank'),
+              const SizedBox(height: Space.sm),
+              SettingsSwitchRow(
+                title: 'Full tank',
                 value: full,
                 onChanged: (v) => setState(() => full = v),
               ),
+              const SizedBox(height: Space.lg),
+              PrimaryButton(
+                label: 'Save',
+                onPressed: () => Navigator.of(ctx).pop(true),
+              ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(ctx).pop(false),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () => Navigator.of(ctx).pop(true),
-              child: const Text('Save'),
-            ),
-          ],
         ),
       ),
     );
@@ -184,23 +215,6 @@ class FuelTab extends ConsumerWidget {
           costCents: c == null ? null : (c * 100).round(),
           fullTank: full,
         );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  const _Stat(this.label, this.value);
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Column(
-      children: [
-        Text(label, style: theme.textTheme.labelMedium),
-        const SizedBox(height: 2),
-        Text(value, style: theme.textTheme.titleMedium),
-      ],
-    );
+    Haptics.success();
   }
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
 import '../../../data/garage/fuel_math.dart';
 import '../../../data/garage/maintenance.dart';
 import '../../../data/repos/garage_repo.dart';
 import '../../../tracking/providers.dart';
 import '../../../widgets/units.dart';
+import '../../settings/widgets/settings_rows.dart';
 
 /// Oil, tyres, registration, inspection: by distance and/or time.
 class MaintenanceTab extends ConsumerWidget {
@@ -24,7 +26,21 @@ class MaintenanceTab extends ConsumerWidget {
         ref.watch(maintenanceItemsProvider(vehicle.id)).value ?? const [];
     final odo = ref.watch(odometerEstimateProvider(vehicle.id)).value;
     final now = DateTime.now().millisecondsSinceEpoch;
-    final theme = Theme.of(context);
+
+    if (items.isEmpty) {
+      return ListView(
+        children: [
+          EmptyState(
+            kicker: 'Maintenance',
+            headline: 'Set a reminder.',
+            body: 'Oil, tyres, registration, inspection: by distance, time '
+                'or both.',
+            actionLabel: 'Add reminder',
+            onAction: () => _addItem(context, ref, imperial, odo),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
@@ -33,30 +49,25 @@ class MaintenanceTab extends ConsumerWidget {
         icon: const Icon(Icons.build_outlined),
         label: const Text('Reminder'),
       ),
-      body: items.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  'No reminders yet. Add oil changes, tyre rotations, '
-                  'registration or inspection by distance, time or both.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ),
-            )
-          : ListView(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
-              children: [
-                for (final item in items)
-                  _ItemTile(
-                    item: item,
-                    due: dueStatus(item, nowMs: now, odometerKm: odo),
-                    imperial: imperial,
-                    odometerKm: odo,
-                  ),
-              ],
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.lg,
+          Space.gutter,
+          Space.xxxl + Space.xxl,
+        ),
+        children: [
+          for (final item in items) ...[
+            _ItemTile(
+              item: item,
+              due: dueStatus(item, nowMs: now, odometerKm: odo),
+              imperial: imperial,
+              odometerKm: odo,
             ),
+            const SizedBox(height: Space.sm),
+          ],
+        ],
+      ),
     );
   }
 
@@ -74,18 +85,21 @@ class MaintenanceTab extends ConsumerWidget {
           ? ''
           : (imperial ? kmToMiles(odo) : odo).round().toString(),
     );
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Maintenance reminder'),
-        content: Column(
+    final ok = await showDrivalrySheet<bool>(
+      context,
+      title: 'New reminder',
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: title,
               autofocus: true,
               decoration: const InputDecoration(labelText: 'What'),
             ),
+            const SizedBox(height: Space.md),
             TextField(
               controller: km,
               keyboardType: TextInputType.number,
@@ -93,6 +107,7 @@ class MaintenanceTab extends ConsumerWidget {
                 labelText: 'Every (${imperial ? 'mi' : 'km'}, optional)',
               ),
             ),
+            const SizedBox(height: Space.md),
             TextField(
               controller: days,
               keyboardType: TextInputType.number,
@@ -100,6 +115,7 @@ class MaintenanceTab extends ConsumerWidget {
                 labelText: 'Every (days, optional)',
               ),
             ),
+            const SizedBox(height: Space.md),
             TextField(
               controller: lastKm,
               keyboardType: TextInputType.number,
@@ -107,18 +123,13 @@ class MaintenanceTab extends ConsumerWidget {
                 labelText: 'Last done at (${imperial ? 'mi' : 'km'})',
               ),
             ),
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Save',
+              onPressed: () => Navigator.of(ctx).pop(true),
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Save'),
-          ),
-        ],
       ),
     );
     if (ok != true || title.text.trim().isEmpty) return;
@@ -138,6 +149,7 @@ class MaintenanceTab extends ConsumerWidget {
           lastDoneKm: last == null ? null : (imperial ? milesToKm(last) : last),
           lastDoneAt: DateTime.now().millisecondsSinceEpoch,
         );
+    Haptics.success();
   }
 }
 
@@ -156,39 +168,43 @@ class _ItemTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final color = due.isDue
-        ? theme.colorScheme.error
+        ? scheme.error
         : due.isSoon
-        ? theme.colorScheme.tertiary
-        : theme.colorScheme.onSurfaceVariant;
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      child: ListTile(
-        leading: Icon(
-          due.isDue ? Icons.warning_amber_rounded : Icons.build_outlined,
-          color: color,
+        ? scheme.tertiary
+        : null;
+    return SettingsGroup(
+      children: [
+        SettingsRow(
+          leading: Icon(
+            due.isDue ? Icons.warning_amber_rounded : Icons.build_outlined,
+            color: color ?? scheme.onSurfaceVariant,
+          ),
+          title: item.title,
+          caption: due.describe(useMiles: imperial),
+          captionColor: color,
+          trailing: PopupMenuButton<String>(
+            tooltip: 'More',
+            onSelected: (v) async {
+              final repo = ref.read(garageRepoProvider);
+              if (v == 'done') {
+                await repo.markMaintenanceDone(
+                  item.id,
+                  odometerKm: odometerKm,
+                );
+                Haptics.success();
+              } else if (v == 'delete') {
+                await repo.deleteMaintenance(item.id);
+              }
+            },
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: 'done', child: Text('Mark done today')),
+              PopupMenuItem(value: 'delete', child: Text('Delete')),
+            ],
+          ),
         ),
-        title: Text(item.title),
-        subtitle: Text(
-          due.describe(useMiles: imperial),
-          style: TextStyle(color: color),
-        ),
-        trailing: PopupMenuButton<String>(
-          onSelected: (v) async {
-            final repo = ref.read(garageRepoProvider);
-            if (v == 'done') {
-              await repo.markMaintenanceDone(item.id, odometerKm: odometerKm);
-            } else if (v == 'delete') {
-              await repo.deleteMaintenance(item.id);
-            }
-          },
-          itemBuilder: (_) => const [
-            PopupMenuItem(value: 'done', child: Text('Mark done today')),
-            PopupMenuItem(value: 'delete', child: Text('Delete')),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }

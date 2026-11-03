@@ -57,7 +57,7 @@ void main() {
     await tester.pumpWidget(wrap(const ConvoyScreen()));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.widgetWithText(AppBar, 'Convoy'), findsOneWidget);
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -65,7 +65,7 @@ void main() {
     await tester.pumpWidget(wrap(const JoinConvoyScreen(code: 'abc12345')));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.widgetWithText(AppBar, 'Convoy invite'), findsOneWidget);
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 

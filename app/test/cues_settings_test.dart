@@ -1,3 +1,4 @@
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/features/cues/cue_settings.dart';
 import 'package:drivalry/features/cues/cue_speaker.dart';
@@ -28,20 +29,22 @@ void main() {
     child: const MaterialApp(home: CuesSettingsScreen()),
   );
 
+  Switch switchIn(WidgetTester tester, Key key) => tester.widget<Switch>(
+    find.descendant(of: find.byKey(key), matching: find.byType(Switch)),
+  );
+
   testWidgets('defaults: off, sub-toggles disabled until enabled', (
     tester,
   ) async {
     await tester.pumpWidget(harness());
     await pumpFor(tester, const Duration(milliseconds: 300));
-    final master = tester.widget<SwitchListTile>(
-      find.byKey(const Key('cues-enabled')),
-    );
-    expect(master.value, isFalse);
-    final limit = tester.widget<SwitchListTile>(
-      find.byKey(const Key('cues-limit')),
-    );
+    expect(switchIn(tester, const Key('cues-enabled')).value, isFalse);
+    final limit = switchIn(tester, const Key('cues-limit'));
     expect(limit.value, isTrue);
     expect(limit.onChanged, isNull);
+    expect(find.text('VOICE SPEED'), findsOneWidget);
+    expect(find.widgetWithText(FilledButton, 'Say a sample'), findsOneWidget);
+    expect(find.byType(SecondaryButton), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -63,20 +66,9 @@ void main() {
     expect(speaker.spoken, ["Limit's 35. Smooth."]);
 
     // The settings stream feeds the switches back.
-    expect(
-      tester.widget<SwitchListTile>(find.byKey(const Key('cues-over'))).value,
-      isFalse,
-    );
-    expect(
-      tester.widget<SwitchListTile>(find.byKey(const Key('cues-limit'))).value,
-      isTrue,
-    );
-    expect(
-      tester
-          .widget<SwitchListTile>(find.byKey(const Key('cues-limit')))
-          .onChanged,
-      isNotNull,
-    );
+    expect(switchIn(tester, const Key('cues-over')).value, isFalse);
+    expect(switchIn(tester, const Key('cues-limit')).value, isTrue);
+    expect(switchIn(tester, const Key('cues-limit')).onChanged, isNotNull);
     await unmountAndSettle(tester);
   }, skip: skip);
 

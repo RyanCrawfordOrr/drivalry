@@ -38,7 +38,7 @@ void main() {
     );
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(find.text('Leagues'), findsOneWidget);
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     expect(find.byTooltip('Badges'), findsOneWidget);
     await unmountAndSettle(tester);
   });

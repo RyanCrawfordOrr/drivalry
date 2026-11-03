@@ -46,7 +46,7 @@ class CrashStatusCard extends ConsumerWidget {
         color: scheme.errorContainer,
         child: ListTile(
           leading: Icon(Icons.car_crash, color: scheme.onErrorContainer),
-          title: const Text('Possible crash: countdown running'),
+          title: const Text('Possible crash. Are you OK?'),
           subtitle: const Text(
             "Your contacts are alerted when it ends unless you tap I'm OK.",
           ),

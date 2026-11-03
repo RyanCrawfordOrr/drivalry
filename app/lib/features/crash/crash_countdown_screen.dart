@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/crash/crash_monitor.dart';
+import '../../widgets/friendly_error.dart';
 
 /// Full-screen "Possible crash detected" prompt (docs/01 §4.5): a 30 s
 /// countdown with one huge "I'm OK" button. Also the place to resolve an
@@ -49,7 +50,17 @@ class CrashCountdownScreen extends ConsumerWidget {
                 child: FilledButton.icon(
                   key: const Key('crash-resolve'),
                   onPressed: () async {
-                    await monitor.resolveUnresolved();
+                    try {
+                      await monitor.resolveUnresolved();
+                    } catch (e) {
+                      if (context.mounted) {
+                        _toast(
+                          context,
+                          friendlyError(e, doing: 'tell your friends'),
+                        );
+                      }
+                      return;
+                    }
                     if (context.mounted) await Navigator.of(context).maybePop();
                   },
                   icon: const Icon(Icons.check_circle_outline, size: 32),
@@ -61,8 +72,7 @@ class CrashCountdownScreen extends ConsumerWidget {
               ),
               const SizedBox(height: 8),
               const Text(
-                'Tell your friends you are fine; this also lets the trip be '
-                'scored.',
+                'Tells your friends you are fine and lets the trip score.',
                 textAlign: TextAlign.center,
               ),
             ],
@@ -122,6 +132,10 @@ class CrashCountdownScreen extends ConsumerWidget {
   };
 }
 
+void _toast(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+}
+
 class _Countdown extends StatelessWidget {
   const _Countdown({required this.state, required this.monitor});
 
@@ -167,8 +181,8 @@ class _Countdown extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'If you are OK, tap the button. Otherwise your emergency '
-                  'contacts and friends are alerted when the timer ends.',
+                  "Tap I'm OK if you are fine. Otherwise your contacts and "
+                  'friends are alerted when the timer ends.',
                   style: text.bodyLarge?.copyWith(
                     color: scheme.onErrorContainer,
                   ),
@@ -199,7 +213,17 @@ class _Countdown extends StatelessWidget {
                       ),
                     ),
                     onPressed: () async {
-                      await monitor.imOk();
+                      try {
+                        await monitor.imOk();
+                      } catch (e) {
+                        if (context.mounted) {
+                          _toast(
+                            context,
+                            friendlyError(e, doing: 'stop the countdown'),
+                          );
+                        }
+                        return;
+                      }
                       // Plain pop: PopScope only blocks system back/maybePop.
                       if (context.mounted && Navigator.of(context).canPop()) {
                         Navigator.of(context).pop();
@@ -218,7 +242,15 @@ class _Countdown extends StatelessWidget {
                       foregroundColor: scheme.onErrorContainer,
                       side: BorderSide(color: scheme.onErrorContainer),
                     ),
-                    onPressed: () => monitor.sendHelpNow(),
+                    onPressed: () async {
+                      try {
+                        await monitor.sendHelpNow();
+                      } catch (e) {
+                        if (context.mounted) {
+                          _toast(context, friendlyError(e, doing: 'send help'));
+                        }
+                      }
+                    },
                     icon: const Icon(Icons.emergency_share),
                     label: const Text('Send help now'),
                   ),

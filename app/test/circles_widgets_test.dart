@@ -42,7 +42,7 @@ void main() {
     await tester.pumpWidget(wrap(const CirclesListScreen()));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.widgetWithText(AppBar, 'Circles'), findsOneWidget);
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     expect(find.text('I got home'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -52,7 +52,7 @@ void main() {
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.widgetWithText(AppBar, 'Circle invite'), findsOneWidget);
     // Signed out / offline: the scope notice, never the router error page.
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.text('Not available in this version yet.'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 

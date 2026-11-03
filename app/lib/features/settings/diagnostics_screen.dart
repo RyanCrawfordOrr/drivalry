@@ -13,6 +13,7 @@ import '../convoy/radio/radio_stats.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../tracking/tracking_models.dart';
+import '../../widgets/friendly_error.dart';
 
 /// Settings › Diagnostics (docs/06 M1.5): what the plugin has seen, what is
 /// in the database, which packs are installed. Nothing here leaves the phone
@@ -56,6 +57,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
         title: const Text('Diagnostics'),
         actions: [
           IconButton(
+            tooltip: 'Refresh',
             icon: const Icon(Icons.refresh),
             onPressed: () => setState(() => _report = _load()),
           ),
@@ -65,12 +67,22 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
         future: _report,
         builder: (context, snap) {
           if (!snap.hasData) {
-            if (snap.hasError) return Center(child: Text('${snap.error}'));
+            if (snap.hasError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Text(
+                    friendlyError(snap.error!, doing: 'read the numbers'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }
             return const Center(child: CircularProgressIndicator());
           }
           final r = snap.data!;
           final rows = <(String, String)>[
-            ('Plugin available', '${r.state.pluginAvailable}'),
+            ('Tracking available', '${r.state.pluginAvailable}'),
             ('Phase', r.state.phase.name),
             ('Enabled', '${r.state.enabled}'),
             (
@@ -85,7 +97,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
             ('Motion', r.state.permissions.motion.name),
             ('Notifications', r.state.permissions.notifications.name),
             ('Bluetooth', r.state.permissions.bluetooth.name),
-            ('Spooled events', '${r.state.spooledEvents}'),
+            ('Events waiting', '${r.state.spooledEvents}'),
             ('Service running', '${r.diagnostics.serviceRunning}'),
             (
               'Battery',
@@ -106,16 +118,17 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
             ),
             for (final (k, v) in batteryRows(r.battery)) (k, v),
             for (final (k, v) in detectionRows(r.detection)) (k, v),
-            ('Radio: relayed bytes (TURN)', _bytes(relayed)),
-            ('Crash: last candidate', _ms(r.crashLastCandidateAt)),
+            ('Radio: relayed data', _bytes(relayed)),
+            ('Crash: last check', _ms(r.crashLastCandidateAt)),
             ('Crash: false alarms dismissed', '${r.crashFalsePositives}'),
-            ('Crash: unresolved alert', '${r.crashUnresolved}'),
-            ('Booted (Dart)', '${ui.booted}'),
+            ('Crash: alert still open', '${r.crashUnresolved}'),
+            ('App started', '${ui.booted}'),
             ('Live trip', ui.live == null ? '–' : '${ui.live!.fixCount} fixes'),
             if (ui.error != null) ('Error', ui.error!),
             for (final e in ui.recentErrors.reversed)
               ('Plugin ${e.code}', '${e.message} ${_ms(e.t)}'),
-            for (final e in r.counts.entries) ('DB ${e.key}', '${e.value}'),
+            for (final e in r.counts.entries)
+              ('Stored ${e.key}', '${e.value}'),
             for (final p in r.packs)
               ('Pack ${p.region}', '${p.name}, OSM ${p.osmTimestamp}'),
           ];
@@ -175,7 +188,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                   }
                 },
                 icon: const Icon(Icons.copy),
-                label: const Text('Copy debug info'),
+                label: const Text('Copy for a bug report'),
               ),
             ],
           );
@@ -222,11 +235,14 @@ List<(String, String)> batteryRows(BatteryStats b) => [
 List<(String, String)> detectionRows(DetectionCounters d) => [
   ('Trips recorded (14 d)', '${d.trips}'),
   ('Missed starts', 'n/a: a missed start leaves nothing to count'),
-  ('Trips started by hand (14 d)', '${d.manualStarts} (proxy for missed)'),
+  (
+    'Trips started by hand (14 d)',
+    '${d.manualStarts} (closest stand-in for missed)',
+  ),
   (
     'False starts',
-    '${d.discardedTentativesSinceInstall} dropped by the plugin since '
-        'install; ${d.deletedTrips} deleted by you (14 d)',
+    '${d.discardedTentativesSinceInstall} dropped before they became trips; '
+        '${d.deletedTrips} deleted by you (14 d)',
   ),
   (
     'Late starts (14 d)',

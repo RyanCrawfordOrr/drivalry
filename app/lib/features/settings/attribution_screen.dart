@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-/// Credits for the free data and services Drivalry is built on (ADR-012).
+import '../../app/brand/drivalry_mark.dart';
+import '../../app/ui/ui.dart';
+
+/// About: the mark, one line on what Drivalry is, then a section per free
+/// data source with one plain sentence each (ADR-012, docs/12 §7).
 class AttributionScreen extends StatelessWidget {
   const AttributionScreen({super.key});
 
-  static const List<(String, String, String)> entries = [
+  static const String licenceUrl =
+      'https://github.com/RyanCrawfordOrr/drivalry/blob/main/LICENSE';
+
+  /// (name, sentence, link shown as a caption, full URL).
+  static const List<(String, String, String, String)> entries = [
     (
       'OpenStreetMap',
-      'Speed limits and road geometry come from OpenStreetMap data, '
-          '© OpenStreetMap contributors, available under the Open Database '
-          'Licence (ODbL).',
+      'Road shapes and speed limits come from OpenStreetMap contributors.',
+      'openstreetmap.org/copyright',
       'https://www.openstreetmap.org/copyright',
     ),
     (
       'Google Maps Platform',
-      'Maps are rendered by the Google Maps SDK. Place suggestions and '
-          'route estimates in convoys use the Places and Routes APIs.',
+      'Maps, convoy stops and arrival times come from Google.',
+      'cloud.google.com/maps-platform',
       'https://cloud.google.com/maps-platform/terms',
     ),
     (
       'Open-Meteo',
-      'Weather at the start of each trip comes from the Open-Meteo API '
-          '(CC BY 4.0, non-commercial).',
+      'The weather at the start of each trip comes from Open-Meteo.',
+      'open-meteo.com',
       'https://open-meteo.com/',
     ),
     (
       'Nominatim',
-      'Place names for saved places use the OpenStreetMap Nominatim '
-          'geocoder, sparingly and cached.',
+      'Names for your saved places come from Nominatim, part of '
+          'OpenStreetMap.',
+      'nominatim.org',
       'https://nominatim.org/',
     ),
     (
       'Geofabrik',
-      'Regional OpenStreetMap extracts used to build the speed-limit packs.',
+      'The regional road files behind the speed-limit packs come from '
+          'Geofabrik.',
+      'download.geofabrik.de',
       'https://download.geofabrik.de/',
     ),
   ];
@@ -41,33 +51,100 @@ class AttributionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Attribution')),
+      appBar: AppBar(title: const Text('About')),
       body: ListView(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
         children: [
-          for (final (name, text, url) in entries)
-            Card(
-              child: ListTile(
-                title: Text(name),
-                subtitle: Padding(
-                  padding: const EdgeInsets.only(top: 4),
-                  child: Text(text),
+          Padding(
+            padding: Space.screen,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const DrivalryMark.tile(size: 72),
+                const SizedBox(height: Space.lg),
+                Text('Drivalry', style: context.headline),
+                const SizedBox(height: Space.sm),
+                Text(
+                  'Free, open source, built on free services.',
+                  style: context.body,
                 ),
-                trailing: const Icon(Icons.open_in_new, size: 18),
-                onTap: () => launchUrl(
-                  Uri.parse(url),
-                  mode: LaunchMode.externalApplication,
-                ),
-              ),
-            ),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Drivalry is free, open source (MIT) and runs on free tiers. '
-              'Raw GPS never leaves your phone.',
-              textAlign: TextAlign.center,
+              ],
             ),
           ),
+          const SizedBox(height: Space.section),
+          for (final (name, sentence, link, url) in entries)
+            EditorialSection(
+              kicker: name,
+              child: _SourceTile(sentence: sentence, link: link, url: url),
+            ),
+          EditorialSection(
+            kicker: 'Licence',
+            gap: 0,
+            child: Tile(
+              onTap: () => _open(licenceUrl),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Free to use, read and change.',
+                          style: context.body,
+                        ),
+                        const SizedBox(height: Space.xs),
+                        Text(
+                          'Raw GPS never leaves your phone.',
+                          style: context.caption,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: Space.md),
+                  const Pill('MIT'),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Future<void> _open(String url) =>
+      launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+}
+
+class _SourceTile extends StatelessWidget {
+  const _SourceTile({
+    required this.sentence,
+    required this.link,
+    required this.url,
+  });
+
+  final String sentence;
+  final String link;
+  final String url;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tile(
+      onTap: () => AttributionScreen._open(url),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(sentence, style: context.body),
+                const SizedBox(height: Space.xs),
+                Text(link, style: context.caption),
+              ],
+            ),
+          ),
+          const SizedBox(width: Space.md),
+          Icon(Icons.open_in_new, size: 18, color: scheme.onSurfaceVariant),
         ],
       ),
     );

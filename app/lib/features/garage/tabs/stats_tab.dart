@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
 import '../../../data/garage/fuel_math.dart';
 import '../../../data/repos/garage_repo.dart';
-import '../../../widgets/relative_time.dart';
 import '../../../tracking/providers.dart';
+import '../../../widgets/relative_time.dart';
 import '../../../widgets/units.dart';
 
-/// Trips, distance, average score, fuel economy and odometer for one vehicle.
+/// Trips, distance, average score, fuel economy and odometer for one vehicle
+/// as a stat grid, with one caption per figure that is still missing.
 class StatsTab extends ConsumerWidget {
   const StatsTab({super.key, required this.vehicle});
 
@@ -23,94 +25,102 @@ class StatsTab extends ConsumerWidget {
     final stats = ref.watch(vehicleStatsProvider(vehicle.id)).value;
     final fuel = ref.watch(fuelStatsProvider(vehicle.id));
     final odo = ref.watch(odometerEstimateProvider(vehicle.id)).value;
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
 
     String score(double? v) => v == null ? '–' : v.round().toString();
 
-    final tiles = <(String, String, String?)>[
-      ('Trips', '${stats?.trips ?? 0}', null),
-      (
-        'Distance',
-        formatDistance(stats?.distanceM ?? 0, units),
-        'scored and unscored',
-      ),
-      ('Average score', score(stats?.averageScore), 'scored driver trips'),
-      ('Last 30 days', score(stats?.averageScore30d), null),
-      (
-        'Fuel economy',
-        formatEconomy(fuel.lPer100km, useMpg: imperial),
-        fuel.segments.isEmpty ? 'needs two full tanks with odometer' : null,
-      ),
-      (
-        'Odometer',
-        odo == null
-            ? '–'
-            : imperial
-            ? '${kmToMiles(odo).round()} mi'
-            : '${odo.round()} km',
-        odo == null ? 'add a fill-up with the odometer' : 'estimated',
-      ),
+    final notes = <String>[
+      if (fuel.segments.isEmpty)
+        'Fuel economy appears after two full tanks with the odometer noted.',
+      if (odo == null) 'Add a fill-up with the odometer to estimate mileage.',
     ];
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.gutter,
+        Space.xxxl,
+      ),
       children: [
-        if (vehicle.neverTrack)
-          Card(
-            color: theme.colorScheme.surfaceContainerHighest,
-            child: const ListTile(
-              leading: Icon(Icons.no_crash_outlined),
-              title: Text('Never tracked'),
-              subtitle: Text(
-                'Drives in this vehicle are ended and deleted as soon as the '
-                'phone connects to it.',
-              ),
-            ),
-          ),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.6,
-          children: [
-            for (final (label, value, hint) in tiles)
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
+        if (vehicle.neverTrack) ...[
+          Tile(
+            tone: TileTone.raised,
+            child: Row(
+              children: [
+                Icon(Icons.no_crash_outlined, color: scheme.onSurfaceVariant),
+                const SizedBox(width: Space.lg),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(label, style: theme.textTheme.labelMedium),
-                      const SizedBox(height: 4),
-                      Text(value, style: theme.textTheme.headlineSmall),
-                      if (hint != null)
-                        Text(
-                          hint,
-                          style: theme.textTheme.bodySmall,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        'Never tracked',
+                        style: context.body.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Drives in this car are deleted as soon as the phone '
+                        'connects to it.',
+                        style: context.caption,
+                      ),
                     ],
                   ),
                 ),
-              ),
+              ],
+            ),
+          ),
+          const SizedBox(height: Space.md),
+        ],
+        StatGrid(
+          columns: 2,
+          children: [
+            StatTile(value: '${stats?.trips ?? 0}', label: 'Trips'),
+            StatTile(
+              value: formatDistance(stats?.distanceM ?? 0, units),
+              label: 'Distance',
+            ),
+            StatTile(
+              value: score(stats?.averageScore),
+              label: 'Average score',
+            ),
+            StatTile(
+              value: score(stats?.averageScore30d),
+              label: 'Last 30 days',
+            ),
+            StatTile(
+              value: formatEconomy(fuel.lPer100km, useMpg: imperial),
+              label: 'Fuel economy',
+            ),
+            StatTile(
+              value: odo == null
+                  ? '–'
+                  : imperial
+                  ? '${kmToMiles(odo).round()} mi'
+                  : '${odo.round()} km',
+              label: odo == null ? 'Odometer' : 'Odometer, estimated',
+            ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: Space.lg),
+        for (final n in notes) ...[
+          Text(n, style: context.caption),
+          const SizedBox(height: Space.xs),
+        ],
         if (stats?.lastTripAt != null)
           Text(
             'Last trip ${relativeTime(DateTime.fromMillisecondsSinceEpoch(stats!.lastTripAt!), DateTime.now())}',
-            style: theme.textTheme.bodyMedium,
+            style: context.caption,
           ),
-        const SizedBox(height: 8),
-        if (vehicle.bluetoothNameList.isNotEmpty)
+        if (vehicle.bluetoothNameList.isNotEmpty) ...[
+          const SizedBox(height: Space.xs),
           Text(
-            'Car audio: ${vehicle.bluetoothNameList.join(', ')}',
-            style: theme.textTheme.bodySmall,
+            'Recognised car audio: ${vehicle.bluetoothNameList.join(', ')}',
+            style: context.caption,
           ),
+        ],
       ],
     );
   }

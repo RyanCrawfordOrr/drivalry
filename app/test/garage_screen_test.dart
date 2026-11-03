@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart' show Value;
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/garage/vehicle_matcher.dart';
 import 'package:drivalry/features/garage/garage_screen.dart';
@@ -32,17 +33,27 @@ void main() {
     await db.close();
   });
 
-  testWidgets('empty garage explains itself and offers to add a vehicle', (
-    tester,
-  ) async {
+  testWidgets('empty garage is one headline and one button', (tester) async {
     await tester.pumpWidget(harness(db, port));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.text('No vehicles yet'), findsOneWidget);
-    expect(find.text('Add vehicle'), findsOneWidget);
+    expect(find.byType(EmptyState), findsOneWidget);
+    expect(find.text('GARAGE'), findsOneWidget);
+    expect(find.text('Add your car.'), findsOneWidget);
+    expect(
+      find.text(
+        'Trips get credited to it, and the app can spot its Bluetooth.',
+      ),
+      findsOneWidget,
+    );
+    // The one action is the empty state's button; no FAB doubles it.
+    expect(find.widgetWithText(FilledButton, 'Add vehicle'), findsOneWidget);
+    expect(find.byType(FloatingActionButton), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
 
-  testWidgets('vehicles and ignored names are listed', (tester) async {
+  testWidgets('vehicles are tiles with one caption line and a pill', (
+    tester,
+  ) async {
     await db.upsertVehicle(
       VehiclesCompanion.insert(
         id: 'v1',
@@ -67,12 +78,16 @@ void main() {
     );
     await tester.pumpWidget(harness(db, port));
     await pumpFor(tester, const Duration(seconds: 1));
+    expect(find.byType(EmptyState), findsNothing);
+    expect(find.byType(FloatingActionButton), findsOneWidget);
     expect(find.text('Mazda'), findsOneWidget);
     expect(find.textContaining('2021 Mazda CX-5'), findsOneWidget);
+    expect(find.textContaining('No trips yet'), findsNWidgets(2));
     expect(find.text('Work truck'), findsOneWidget);
-    expect(find.textContaining('Never tracked'), findsOneWidget);
-    expect(find.text('Ignored car audio'), findsOneWidget);
+    expect(find.widgetWithText(Pill, 'Never tracked'), findsOneWidget);
+    expect(find.text('NOT MY CARS'), findsOneWidget);
     expect(find.text('Dad Camry'), findsOneWidget);
+    expect(find.text('Ignored car audio'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
 }
