@@ -241,6 +241,115 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     type: DriftSqlType.int,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _minLatMeta = const VerificationMeta('minLat');
+  @override
+  late final GeneratedColumn<double> minLat = GeneratedColumn<double>(
+    'min_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxLatMeta = const VerificationMeta('maxLat');
+  @override
+  late final GeneratedColumn<double> maxLat = GeneratedColumn<double>(
+    'max_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _minLonMeta = const VerificationMeta('minLon');
+  @override
+  late final GeneratedColumn<double> minLon = GeneratedColumn<double>(
+    'min_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxLonMeta = const VerificationMeta('maxLon');
+  @override
+  late final GeneratedColumn<double> maxLon = GeneratedColumn<double>(
+    'max_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxAltitudeMMeta = const VerificationMeta(
+    'maxAltitudeM',
+  );
+  @override
+  late final GeneratedColumn<double> maxAltitudeM = GeneratedColumn<double>(
+    'max_altitude_m',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startLatMeta = const VerificationMeta(
+    'startLat',
+  );
+  @override
+  late final GeneratedColumn<double> startLat = GeneratedColumn<double>(
+    'start_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _startLonMeta = const VerificationMeta(
+    'startLon',
+  );
+  @override
+  late final GeneratedColumn<double> startLon = GeneratedColumn<double>(
+    'start_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endLatMeta = const VerificationMeta('endLat');
+  @override
+  late final GeneratedColumn<double> endLat = GeneratedColumn<double>(
+    'end_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _endLonMeta = const VerificationMeta('endLon');
+  @override
+  late final GeneratedColumn<double> endLon = GeneratedColumn<double>(
+    'end_lon',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roadNamesMeta = const VerificationMeta(
+    'roadNames',
+  );
+  @override
+  late final GeneratedColumn<String> roadNames = GeneratedColumn<String>(
+    'road_names',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statsAtMeta = const VerificationMeta(
+    'statsAt',
+  );
+  @override
+  late final GeneratedColumn<int> statsAt = GeneratedColumn<int>(
+    'stats_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _deletedAtMeta = const VerificationMeta(
     'deletedAt',
   );
@@ -274,6 +383,17 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     nightFraction,
     weather,
     createdAt,
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+    maxAltitudeM,
+    startLat,
+    startLon,
+    endLat,
+    endLon,
+    roadNames,
+    statsAt,
     deletedAt,
   ];
   @override
@@ -440,6 +560,75 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('min_lat')) {
+      context.handle(
+        _minLatMeta,
+        minLat.isAcceptableOrUnknown(data['min_lat']!, _minLatMeta),
+      );
+    }
+    if (data.containsKey('max_lat')) {
+      context.handle(
+        _maxLatMeta,
+        maxLat.isAcceptableOrUnknown(data['max_lat']!, _maxLatMeta),
+      );
+    }
+    if (data.containsKey('min_lon')) {
+      context.handle(
+        _minLonMeta,
+        minLon.isAcceptableOrUnknown(data['min_lon']!, _minLonMeta),
+      );
+    }
+    if (data.containsKey('max_lon')) {
+      context.handle(
+        _maxLonMeta,
+        maxLon.isAcceptableOrUnknown(data['max_lon']!, _maxLonMeta),
+      );
+    }
+    if (data.containsKey('max_altitude_m')) {
+      context.handle(
+        _maxAltitudeMMeta,
+        maxAltitudeM.isAcceptableOrUnknown(
+          data['max_altitude_m']!,
+          _maxAltitudeMMeta,
+        ),
+      );
+    }
+    if (data.containsKey('start_lat')) {
+      context.handle(
+        _startLatMeta,
+        startLat.isAcceptableOrUnknown(data['start_lat']!, _startLatMeta),
+      );
+    }
+    if (data.containsKey('start_lon')) {
+      context.handle(
+        _startLonMeta,
+        startLon.isAcceptableOrUnknown(data['start_lon']!, _startLonMeta),
+      );
+    }
+    if (data.containsKey('end_lat')) {
+      context.handle(
+        _endLatMeta,
+        endLat.isAcceptableOrUnknown(data['end_lat']!, _endLatMeta),
+      );
+    }
+    if (data.containsKey('end_lon')) {
+      context.handle(
+        _endLonMeta,
+        endLon.isAcceptableOrUnknown(data['end_lon']!, _endLonMeta),
+      );
+    }
+    if (data.containsKey('road_names')) {
+      context.handle(
+        _roadNamesMeta,
+        roadNames.isAcceptableOrUnknown(data['road_names']!, _roadNamesMeta),
+      );
+    }
+    if (data.containsKey('stats_at')) {
+      context.handle(
+        _statsAtMeta,
+        statsAt.isAcceptableOrUnknown(data['stats_at']!, _statsAtMeta),
+      );
+    }
     if (data.containsKey('deleted_at')) {
       context.handle(
         _deletedAtMeta,
@@ -535,6 +724,50 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
         DriftSqlType.int,
         data['${effectivePrefix}created_at'],
       )!,
+      minLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_lat'],
+      ),
+      maxLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}max_lat'],
+      ),
+      minLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}min_lon'],
+      ),
+      maxLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}max_lon'],
+      ),
+      maxAltitudeM: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}max_altitude_m'],
+      ),
+      startLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lat'],
+      ),
+      startLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_lon'],
+      ),
+      endLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lat'],
+      ),
+      endLon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_lon'],
+      ),
+      roadNames: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}road_names'],
+      ),
+      statsAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}stats_at'],
+      ),
       deletedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}deleted_at'],
@@ -593,6 +826,19 @@ class Trip extends DataClass implements Insertable<Trip> {
   /// clear | rain | snow
   final String? weather;
   final int createdAt;
+  final double? minLat;
+  final double? maxLat;
+  final double? minLon;
+  final double? maxLon;
+  final double? maxAltitudeM;
+  final double? startLat;
+  final double? startLon;
+  final double? endLat;
+  final double? endLon;
+
+  /// JSON array of the distinct named roads from the matched segments.
+  final String? roadNames;
+  final int? statsAt;
 
   /// Soft delete: hidden everywhere, purged with the samples.
   final int? deletedAt;
@@ -617,6 +863,17 @@ class Trip extends DataClass implements Insertable<Trip> {
     this.nightFraction,
     this.weather,
     required this.createdAt,
+    this.minLat,
+    this.maxLat,
+    this.minLon,
+    this.maxLon,
+    this.maxAltitudeM,
+    this.startLat,
+    this.startLon,
+    this.endLat,
+    this.endLon,
+    this.roadNames,
+    this.statsAt,
     this.deletedAt,
   });
   @override
@@ -664,6 +921,39 @@ class Trip extends DataClass implements Insertable<Trip> {
       map['weather'] = Variable<String>(weather);
     }
     map['created_at'] = Variable<int>(createdAt);
+    if (!nullToAbsent || minLat != null) {
+      map['min_lat'] = Variable<double>(minLat);
+    }
+    if (!nullToAbsent || maxLat != null) {
+      map['max_lat'] = Variable<double>(maxLat);
+    }
+    if (!nullToAbsent || minLon != null) {
+      map['min_lon'] = Variable<double>(minLon);
+    }
+    if (!nullToAbsent || maxLon != null) {
+      map['max_lon'] = Variable<double>(maxLon);
+    }
+    if (!nullToAbsent || maxAltitudeM != null) {
+      map['max_altitude_m'] = Variable<double>(maxAltitudeM);
+    }
+    if (!nullToAbsent || startLat != null) {
+      map['start_lat'] = Variable<double>(startLat);
+    }
+    if (!nullToAbsent || startLon != null) {
+      map['start_lon'] = Variable<double>(startLon);
+    }
+    if (!nullToAbsent || endLat != null) {
+      map['end_lat'] = Variable<double>(endLat);
+    }
+    if (!nullToAbsent || endLon != null) {
+      map['end_lon'] = Variable<double>(endLon);
+    }
+    if (!nullToAbsent || roadNames != null) {
+      map['road_names'] = Variable<String>(roadNames);
+    }
+    if (!nullToAbsent || statsAt != null) {
+      map['stats_at'] = Variable<int>(statsAt);
+    }
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<int>(deletedAt);
     }
@@ -714,6 +1004,39 @@ class Trip extends DataClass implements Insertable<Trip> {
           ? const Value.absent()
           : Value(weather),
       createdAt: Value(createdAt),
+      minLat: minLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(minLat),
+      maxLat: maxLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxLat),
+      minLon: minLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(minLon),
+      maxLon: maxLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxLon),
+      maxAltitudeM: maxAltitudeM == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxAltitudeM),
+      startLat: startLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startLat),
+      startLon: startLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(startLon),
+      endLat: endLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endLat),
+      endLon: endLon == null && nullToAbsent
+          ? const Value.absent()
+          : Value(endLon),
+      roadNames: roadNames == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roadNames),
+      statsAt: statsAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(statsAt),
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
@@ -746,6 +1069,17 @@ class Trip extends DataClass implements Insertable<Trip> {
       nightFraction: serializer.fromJson<double?>(json['nightFraction']),
       weather: serializer.fromJson<String?>(json['weather']),
       createdAt: serializer.fromJson<int>(json['createdAt']),
+      minLat: serializer.fromJson<double?>(json['minLat']),
+      maxLat: serializer.fromJson<double?>(json['maxLat']),
+      minLon: serializer.fromJson<double?>(json['minLon']),
+      maxLon: serializer.fromJson<double?>(json['maxLon']),
+      maxAltitudeM: serializer.fromJson<double?>(json['maxAltitudeM']),
+      startLat: serializer.fromJson<double?>(json['startLat']),
+      startLon: serializer.fromJson<double?>(json['startLon']),
+      endLat: serializer.fromJson<double?>(json['endLat']),
+      endLon: serializer.fromJson<double?>(json['endLon']),
+      roadNames: serializer.fromJson<String?>(json['roadNames']),
+      statsAt: serializer.fromJson<int?>(json['statsAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
     );
   }
@@ -773,6 +1107,17 @@ class Trip extends DataClass implements Insertable<Trip> {
       'nightFraction': serializer.toJson<double?>(nightFraction),
       'weather': serializer.toJson<String?>(weather),
       'createdAt': serializer.toJson<int>(createdAt),
+      'minLat': serializer.toJson<double?>(minLat),
+      'maxLat': serializer.toJson<double?>(maxLat),
+      'minLon': serializer.toJson<double?>(minLon),
+      'maxLon': serializer.toJson<double?>(maxLon),
+      'maxAltitudeM': serializer.toJson<double?>(maxAltitudeM),
+      'startLat': serializer.toJson<double?>(startLat),
+      'startLon': serializer.toJson<double?>(startLon),
+      'endLat': serializer.toJson<double?>(endLat),
+      'endLon': serializer.toJson<double?>(endLon),
+      'roadNames': serializer.toJson<String?>(roadNames),
+      'statsAt': serializer.toJson<int?>(statsAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
     };
   }
@@ -798,6 +1143,17 @@ class Trip extends DataClass implements Insertable<Trip> {
     Value<double?> nightFraction = const Value.absent(),
     Value<String?> weather = const Value.absent(),
     int? createdAt,
+    Value<double?> minLat = const Value.absent(),
+    Value<double?> maxLat = const Value.absent(),
+    Value<double?> minLon = const Value.absent(),
+    Value<double?> maxLon = const Value.absent(),
+    Value<double?> maxAltitudeM = const Value.absent(),
+    Value<double?> startLat = const Value.absent(),
+    Value<double?> startLon = const Value.absent(),
+    Value<double?> endLat = const Value.absent(),
+    Value<double?> endLon = const Value.absent(),
+    Value<String?> roadNames = const Value.absent(),
+    Value<int?> statsAt = const Value.absent(),
     Value<int?> deletedAt = const Value.absent(),
   }) => Trip(
     id: id ?? this.id,
@@ -824,6 +1180,17 @@ class Trip extends DataClass implements Insertable<Trip> {
         : this.nightFraction,
     weather: weather.present ? weather.value : this.weather,
     createdAt: createdAt ?? this.createdAt,
+    minLat: minLat.present ? minLat.value : this.minLat,
+    maxLat: maxLat.present ? maxLat.value : this.maxLat,
+    minLon: minLon.present ? minLon.value : this.minLon,
+    maxLon: maxLon.present ? maxLon.value : this.maxLon,
+    maxAltitudeM: maxAltitudeM.present ? maxAltitudeM.value : this.maxAltitudeM,
+    startLat: startLat.present ? startLat.value : this.startLat,
+    startLon: startLon.present ? startLon.value : this.startLon,
+    endLat: endLat.present ? endLat.value : this.endLat,
+    endLon: endLon.present ? endLon.value : this.endLon,
+    roadNames: roadNames.present ? roadNames.value : this.roadNames,
+    statsAt: statsAt.present ? statsAt.value : this.statsAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   Trip copyWithCompanion(TripsCompanion data) {
@@ -868,6 +1235,19 @@ class Trip extends DataClass implements Insertable<Trip> {
           : this.nightFraction,
       weather: data.weather.present ? data.weather.value : this.weather,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      minLat: data.minLat.present ? data.minLat.value : this.minLat,
+      maxLat: data.maxLat.present ? data.maxLat.value : this.maxLat,
+      minLon: data.minLon.present ? data.minLon.value : this.minLon,
+      maxLon: data.maxLon.present ? data.maxLon.value : this.maxLon,
+      maxAltitudeM: data.maxAltitudeM.present
+          ? data.maxAltitudeM.value
+          : this.maxAltitudeM,
+      startLat: data.startLat.present ? data.startLat.value : this.startLat,
+      startLon: data.startLon.present ? data.startLon.value : this.startLon,
+      endLat: data.endLat.present ? data.endLat.value : this.endLat,
+      endLon: data.endLon.present ? data.endLon.value : this.endLon,
+      roadNames: data.roadNames.present ? data.roadNames.value : this.roadNames,
+      statsAt: data.statsAt.present ? data.statsAt.value : this.statsAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
@@ -895,6 +1275,17 @@ class Trip extends DataClass implements Insertable<Trip> {
           ..write('nightFraction: $nightFraction, ')
           ..write('weather: $weather, ')
           ..write('createdAt: $createdAt, ')
+          ..write('minLat: $minLat, ')
+          ..write('maxLat: $maxLat, ')
+          ..write('minLon: $minLon, ')
+          ..write('maxLon: $maxLon, ')
+          ..write('maxAltitudeM: $maxAltitudeM, ')
+          ..write('startLat: $startLat, ')
+          ..write('startLon: $startLon, ')
+          ..write('endLat: $endLat, ')
+          ..write('endLon: $endLon, ')
+          ..write('roadNames: $roadNames, ')
+          ..write('statsAt: $statsAt, ')
           ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
@@ -922,6 +1313,17 @@ class Trip extends DataClass implements Insertable<Trip> {
     nightFraction,
     weather,
     createdAt,
+    minLat,
+    maxLat,
+    minLon,
+    maxLon,
+    maxAltitudeM,
+    startLat,
+    startLon,
+    endLat,
+    endLon,
+    roadNames,
+    statsAt,
     deletedAt,
   ]);
   @override
@@ -948,6 +1350,17 @@ class Trip extends DataClass implements Insertable<Trip> {
           other.nightFraction == this.nightFraction &&
           other.weather == this.weather &&
           other.createdAt == this.createdAt &&
+          other.minLat == this.minLat &&
+          other.maxLat == this.maxLat &&
+          other.minLon == this.minLon &&
+          other.maxLon == this.maxLon &&
+          other.maxAltitudeM == this.maxAltitudeM &&
+          other.startLat == this.startLat &&
+          other.startLon == this.startLon &&
+          other.endLat == this.endLat &&
+          other.endLon == this.endLon &&
+          other.roadNames == this.roadNames &&
+          other.statsAt == this.statsAt &&
           other.deletedAt == this.deletedAt);
 }
 
@@ -972,6 +1385,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   final Value<double?> nightFraction;
   final Value<String?> weather;
   final Value<int> createdAt;
+  final Value<double?> minLat;
+  final Value<double?> maxLat;
+  final Value<double?> minLon;
+  final Value<double?> maxLon;
+  final Value<double?> maxAltitudeM;
+  final Value<double?> startLat;
+  final Value<double?> startLon;
+  final Value<double?> endLat;
+  final Value<double?> endLon;
+  final Value<String?> roadNames;
+  final Value<int?> statsAt;
   final Value<int?> deletedAt;
   final Value<int> rowid;
   const TripsCompanion({
@@ -995,6 +1419,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     this.nightFraction = const Value.absent(),
     this.weather = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.minLat = const Value.absent(),
+    this.maxLat = const Value.absent(),
+    this.minLon = const Value.absent(),
+    this.maxLon = const Value.absent(),
+    this.maxAltitudeM = const Value.absent(),
+    this.startLat = const Value.absent(),
+    this.startLon = const Value.absent(),
+    this.endLat = const Value.absent(),
+    this.endLon = const Value.absent(),
+    this.roadNames = const Value.absent(),
+    this.statsAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
@@ -1019,6 +1454,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     this.nightFraction = const Value.absent(),
     this.weather = const Value.absent(),
     required int createdAt,
+    this.minLat = const Value.absent(),
+    this.maxLat = const Value.absent(),
+    this.minLon = const Value.absent(),
+    this.maxLon = const Value.absent(),
+    this.maxAltitudeM = const Value.absent(),
+    this.startLat = const Value.absent(),
+    this.startLon = const Value.absent(),
+    this.endLat = const Value.absent(),
+    this.endLon = const Value.absent(),
+    this.roadNames = const Value.absent(),
+    this.statsAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
@@ -1046,6 +1492,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Expression<double>? nightFraction,
     Expression<String>? weather,
     Expression<int>? createdAt,
+    Expression<double>? minLat,
+    Expression<double>? maxLat,
+    Expression<double>? minLon,
+    Expression<double>? maxLon,
+    Expression<double>? maxAltitudeM,
+    Expression<double>? startLat,
+    Expression<double>? startLon,
+    Expression<double>? endLat,
+    Expression<double>? endLon,
+    Expression<String>? roadNames,
+    Expression<int>? statsAt,
     Expression<int>? deletedAt,
     Expression<int>? rowid,
   }) {
@@ -1070,6 +1527,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
       if (nightFraction != null) 'night_fraction': nightFraction,
       if (weather != null) 'weather': weather,
       if (createdAt != null) 'created_at': createdAt,
+      if (minLat != null) 'min_lat': minLat,
+      if (maxLat != null) 'max_lat': maxLat,
+      if (minLon != null) 'min_lon': minLon,
+      if (maxLon != null) 'max_lon': maxLon,
+      if (maxAltitudeM != null) 'max_altitude_m': maxAltitudeM,
+      if (startLat != null) 'start_lat': startLat,
+      if (startLon != null) 'start_lon': startLon,
+      if (endLat != null) 'end_lat': endLat,
+      if (endLon != null) 'end_lon': endLon,
+      if (roadNames != null) 'road_names': roadNames,
+      if (statsAt != null) 'stats_at': statsAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (rowid != null) 'rowid': rowid,
     });
@@ -1096,6 +1564,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Value<double?>? nightFraction,
     Value<String?>? weather,
     Value<int>? createdAt,
+    Value<double?>? minLat,
+    Value<double?>? maxLat,
+    Value<double?>? minLon,
+    Value<double?>? maxLon,
+    Value<double?>? maxAltitudeM,
+    Value<double?>? startLat,
+    Value<double?>? startLon,
+    Value<double?>? endLat,
+    Value<double?>? endLon,
+    Value<String?>? roadNames,
+    Value<int?>? statsAt,
     Value<int?>? deletedAt,
     Value<int>? rowid,
   }) {
@@ -1120,6 +1599,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
       nightFraction: nightFraction ?? this.nightFraction,
       weather: weather ?? this.weather,
       createdAt: createdAt ?? this.createdAt,
+      minLat: minLat ?? this.minLat,
+      maxLat: maxLat ?? this.maxLat,
+      minLon: minLon ?? this.minLon,
+      maxLon: maxLon ?? this.maxLon,
+      maxAltitudeM: maxAltitudeM ?? this.maxAltitudeM,
+      startLat: startLat ?? this.startLat,
+      startLon: startLon ?? this.startLon,
+      endLat: endLat ?? this.endLat,
+      endLon: endLon ?? this.endLon,
+      roadNames: roadNames ?? this.roadNames,
+      statsAt: statsAt ?? this.statsAt,
       deletedAt: deletedAt ?? this.deletedAt,
       rowid: rowid ?? this.rowid,
     );
@@ -1188,6 +1678,39 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     if (createdAt.present) {
       map['created_at'] = Variable<int>(createdAt.value);
     }
+    if (minLat.present) {
+      map['min_lat'] = Variable<double>(minLat.value);
+    }
+    if (maxLat.present) {
+      map['max_lat'] = Variable<double>(maxLat.value);
+    }
+    if (minLon.present) {
+      map['min_lon'] = Variable<double>(minLon.value);
+    }
+    if (maxLon.present) {
+      map['max_lon'] = Variable<double>(maxLon.value);
+    }
+    if (maxAltitudeM.present) {
+      map['max_altitude_m'] = Variable<double>(maxAltitudeM.value);
+    }
+    if (startLat.present) {
+      map['start_lat'] = Variable<double>(startLat.value);
+    }
+    if (startLon.present) {
+      map['start_lon'] = Variable<double>(startLon.value);
+    }
+    if (endLat.present) {
+      map['end_lat'] = Variable<double>(endLat.value);
+    }
+    if (endLon.present) {
+      map['end_lon'] = Variable<double>(endLon.value);
+    }
+    if (roadNames.present) {
+      map['road_names'] = Variable<String>(roadNames.value);
+    }
+    if (statsAt.present) {
+      map['stats_at'] = Variable<int>(statsAt.value);
+    }
     if (deletedAt.present) {
       map['deleted_at'] = Variable<int>(deletedAt.value);
     }
@@ -1220,6 +1743,17 @@ class TripsCompanion extends UpdateCompanion<Trip> {
           ..write('nightFraction: $nightFraction, ')
           ..write('weather: $weather, ')
           ..write('createdAt: $createdAt, ')
+          ..write('minLat: $minLat, ')
+          ..write('maxLat: $maxLat, ')
+          ..write('minLon: $minLon, ')
+          ..write('maxLon: $maxLon, ')
+          ..write('maxAltitudeM: $maxAltitudeM, ')
+          ..write('startLat: $startLat, ')
+          ..write('startLon: $startLon, ')
+          ..write('endLat: $endLat, ')
+          ..write('endLon: $endLon, ')
+          ..write('roadNames: $roadNames, ')
+          ..write('statsAt: $statsAt, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
@@ -10814,6 +11348,17 @@ typedef $$TripsTableCreateCompanionBuilder =
       Value<double?> nightFraction,
       Value<String?> weather,
       required int createdAt,
+      Value<double?> minLat,
+      Value<double?> maxLat,
+      Value<double?> minLon,
+      Value<double?> maxLon,
+      Value<double?> maxAltitudeM,
+      Value<double?> startLat,
+      Value<double?> startLon,
+      Value<double?> endLat,
+      Value<double?> endLon,
+      Value<String?> roadNames,
+      Value<int?> statsAt,
       Value<int?> deletedAt,
       Value<int> rowid,
     });
@@ -10839,6 +11384,17 @@ typedef $$TripsTableUpdateCompanionBuilder =
       Value<double?> nightFraction,
       Value<String?> weather,
       Value<int> createdAt,
+      Value<double?> minLat,
+      Value<double?> maxLat,
+      Value<double?> minLon,
+      Value<double?> maxLon,
+      Value<double?> maxAltitudeM,
+      Value<double?> startLat,
+      Value<double?> startLon,
+      Value<double?> endLat,
+      Value<double?> endLon,
+      Value<String?> roadNames,
+      Value<int?> statsAt,
       Value<int?> deletedAt,
       Value<int> rowid,
     });
@@ -10948,6 +11504,61 @@ class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
 
   ColumnFilters<int> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minLat => $composableBuilder(
+    column: $table.minLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get maxLat => $composableBuilder(
+    column: $table.maxLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get minLon => $composableBuilder(
+    column: $table.minLon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get maxLon => $composableBuilder(
+    column: $table.maxLon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get maxAltitudeM => $composableBuilder(
+    column: $table.maxAltitudeM,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startLat => $composableBuilder(
+    column: $table.startLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startLon => $composableBuilder(
+    column: $table.startLon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get endLat => $composableBuilder(
+    column: $table.endLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get endLon => $composableBuilder(
+    column: $table.endLon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roadNames => $composableBuilder(
+    column: $table.roadNames,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get statsAt => $composableBuilder(
+    column: $table.statsAt,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -11066,6 +11677,61 @@ class $$TripsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<double> get minLat => $composableBuilder(
+    column: $table.minLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get maxLat => $composableBuilder(
+    column: $table.maxLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get minLon => $composableBuilder(
+    column: $table.minLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get maxLon => $composableBuilder(
+    column: $table.maxLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get maxAltitudeM => $composableBuilder(
+    column: $table.maxAltitudeM,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startLat => $composableBuilder(
+    column: $table.startLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startLon => $composableBuilder(
+    column: $table.startLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get endLat => $composableBuilder(
+    column: $table.endLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get endLon => $composableBuilder(
+    column: $table.endLon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roadNames => $composableBuilder(
+    column: $table.roadNames,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get statsAt => $composableBuilder(
+    column: $table.statsAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<int> get deletedAt => $composableBuilder(
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
@@ -11161,6 +11827,41 @@ class $$TripsTableAnnotationComposer
   GeneratedColumn<int> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
+  GeneratedColumn<double> get minLat =>
+      $composableBuilder(column: $table.minLat, builder: (column) => column);
+
+  GeneratedColumn<double> get maxLat =>
+      $composableBuilder(column: $table.maxLat, builder: (column) => column);
+
+  GeneratedColumn<double> get minLon =>
+      $composableBuilder(column: $table.minLon, builder: (column) => column);
+
+  GeneratedColumn<double> get maxLon =>
+      $composableBuilder(column: $table.maxLon, builder: (column) => column);
+
+  GeneratedColumn<double> get maxAltitudeM => $composableBuilder(
+    column: $table.maxAltitudeM,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get startLat =>
+      $composableBuilder(column: $table.startLat, builder: (column) => column);
+
+  GeneratedColumn<double> get startLon =>
+      $composableBuilder(column: $table.startLon, builder: (column) => column);
+
+  GeneratedColumn<double> get endLat =>
+      $composableBuilder(column: $table.endLat, builder: (column) => column);
+
+  GeneratedColumn<double> get endLon =>
+      $composableBuilder(column: $table.endLon, builder: (column) => column);
+
+  GeneratedColumn<String> get roadNames =>
+      $composableBuilder(column: $table.roadNames, builder: (column) => column);
+
+  GeneratedColumn<int> get statsAt =>
+      $composableBuilder(column: $table.statsAt, builder: (column) => column);
+
   GeneratedColumn<int> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 }
@@ -11213,6 +11914,17 @@ class $$TripsTableTableManager
                 Value<double?> nightFraction = const Value.absent(),
                 Value<String?> weather = const Value.absent(),
                 Value<int> createdAt = const Value.absent(),
+                Value<double?> minLat = const Value.absent(),
+                Value<double?> maxLat = const Value.absent(),
+                Value<double?> minLon = const Value.absent(),
+                Value<double?> maxLon = const Value.absent(),
+                Value<double?> maxAltitudeM = const Value.absent(),
+                Value<double?> startLat = const Value.absent(),
+                Value<double?> startLon = const Value.absent(),
+                Value<double?> endLat = const Value.absent(),
+                Value<double?> endLon = const Value.absent(),
+                Value<String?> roadNames = const Value.absent(),
+                Value<int?> statsAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TripsCompanion(
@@ -11236,6 +11948,17 @@ class $$TripsTableTableManager
                 nightFraction: nightFraction,
                 weather: weather,
                 createdAt: createdAt,
+                minLat: minLat,
+                maxLat: maxLat,
+                minLon: minLon,
+                maxLon: maxLon,
+                maxAltitudeM: maxAltitudeM,
+                startLat: startLat,
+                startLon: startLon,
+                endLat: endLat,
+                endLon: endLon,
+                roadNames: roadNames,
+                statsAt: statsAt,
                 deletedAt: deletedAt,
                 rowid: rowid,
               ),
@@ -11261,6 +11984,17 @@ class $$TripsTableTableManager
                 Value<double?> nightFraction = const Value.absent(),
                 Value<String?> weather = const Value.absent(),
                 required int createdAt,
+                Value<double?> minLat = const Value.absent(),
+                Value<double?> maxLat = const Value.absent(),
+                Value<double?> minLon = const Value.absent(),
+                Value<double?> maxLon = const Value.absent(),
+                Value<double?> maxAltitudeM = const Value.absent(),
+                Value<double?> startLat = const Value.absent(),
+                Value<double?> startLon = const Value.absent(),
+                Value<double?> endLat = const Value.absent(),
+                Value<double?> endLon = const Value.absent(),
+                Value<String?> roadNames = const Value.absent(),
+                Value<int?> statsAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TripsCompanion.insert(
@@ -11284,6 +12018,17 @@ class $$TripsTableTableManager
                 nightFraction: nightFraction,
                 weather: weather,
                 createdAt: createdAt,
+                minLat: minLat,
+                maxLat: maxLat,
+                minLon: minLon,
+                maxLon: maxLon,
+                maxAltitudeM: maxAltitudeM,
+                startLat: startLat,
+                startLon: startLon,
+                endLat: endLat,
+                endLon: endLon,
+                roadNames: roadNames,
+                statsAt: statsAt,
                 deletedAt: deletedAt,
                 rowid: rowid,
               ),

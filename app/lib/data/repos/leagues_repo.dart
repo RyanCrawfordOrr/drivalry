@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
 
+import '../badges/badges_sync.dart';
 import '../db/database.dart';
 import '../supabase/supabase_providers.dart';
 import '../sync/outbox.dart';
@@ -48,6 +49,7 @@ class League {
     required this.myTier,
     required this.myHiding,
     required this.memberCount,
+    this.closedAt,
   });
 
   factory League.fromJson(Map<String, dynamic> j) => League(
@@ -63,6 +65,7 @@ class League {
     myTier: LeagueTier.fromWire(j['my_tier'] as String?),
     myHiding: j['my_hiding'] as bool? ?? false,
     memberCount: (j['member_count'] as num?)?.toInt() ?? 1,
+    closedAt: DateTime.tryParse(j['closed_at'] as String? ?? ''),
   );
 
   final String id;
@@ -76,6 +79,13 @@ class League {
   final bool myHiding;
   final int memberCount;
 
+  /// Set on a global league once Monday's matchmaking replaced it. Its
+  /// finalised week stays readable (the badge pass needs it) but it is no
+  /// longer one of "my leagues".
+  final DateTime? closedAt;
+
+  bool get isClosed => closedAt != null;
+
   Map<String, dynamic> toJson() => {
     'id': id,
     'name': name,
@@ -87,6 +97,7 @@ class League {
     'my_tier': myTier.wire,
     'my_hiding': myHiding,
     'member_count': memberCount,
+    'closed_at': closedAt?.toIso8601String(),
   };
 
   League copyWith({bool? myHiding, LeagueTier? myTier, int? memberCount}) =>
@@ -101,10 +112,15 @@ class League {
         myTier: myTier ?? this.myTier,
         myHiding: myHiding ?? this.myHiding,
         memberCount: memberCount ?? this.memberCount,
+        closedAt: closedAt,
       );
 
   /// `drivalry://join/league/<code>`; opened by the app's deep-link handler.
   String get inviteLink => 'drivalry://join/league/$inviteCode';
+
+  /// Matchmade every Monday (docs/02 §12.4): no invite code, no owner, and
+  /// leaving goes through `leave_global_league`.
+  bool get isGlobal => kind == 'global';
 }
 
 class LeagueMember {
@@ -373,6 +389,12 @@ abstract class LeaguesApi {
 
   /// `week_start` date → standings json, newest first.
   Future<List<(String, List<dynamic>)>> weeks(String leagueId);
+
+  /// Every finalised week the caller can read (RLS: leagues they belong to,
+  /// closed global ones included) with `week_start >= sinceDate`, as
+  /// `(league_id, week_start, standings)`. Feeds the week-badge pass, which
+  /// must not depend on the league still being listed.
+  Future<List<(String, String, List<dynamic>)>> recentWeeks(String sinceDate);
   Future<String> joinByCode(String code);
   Future<void> leave(String leagueId, String userId);
   Future<void> finalizeWeek(String leagueId, String weekStartDate);
@@ -386,6 +408,12 @@ abstract class LeaguesApi {
     required String userId,
     required bool hiding,
   });
+
+  /// `join_global_league()`: joins the pool and returns this week's league.
+  Future<String> joinGlobalLeague();
+
+  /// `leave_global_league()`: out of this week's league and the pool.
+  Future<void> leaveGlobalLeague();
 }
 
 class SupabaseLeaguesApi implements LeaguesApi {
@@ -402,7 +430,7 @@ class SupabaseLeaguesApi implements LeaguesApi {
         .from('league_members')
         .select(
           'tier, hiding, leagues(id, name, kind, invite_code, created_by, '
-          'max_members, created_at)',
+          'max_members, created_at, closed_at)',
         )
         .eq('user_id', userId);
     final leagues = <League>[];
@@ -489,6 +517,26 @@ class SupabaseLeaguesApi implements LeaguesApi {
   }
 
   @override
+  Future<List<(String, String, List<dynamic>)>> recentWeeks(
+    String sinceDate,
+  ) async {
+    final rows = await client
+        .from('league_weeks')
+        .select('league_id, week_start, standings')
+        .gte('week_start', sinceDate)
+        .order('week_start', ascending: false)
+        .limit(60);
+    return [
+      for (final r in rows)
+        (
+          r['league_id'] as String,
+          r['week_start'] as String,
+          (r['standings'] as List?) ?? const [],
+        ),
+    ];
+  }
+
+  @override
   Future<String> joinByCode(String code) async {
     try {
       final id = await client.rpc('join_league', params: {'code': code.trim()});
@@ -544,6 +592,19 @@ class SupabaseLeaguesApi implements LeaguesApi {
       .update({'hiding': hiding})
       .eq('league_id', leagueId)
       .eq('user_id', userId);
+
+  @override
+  Future<String> joinGlobalLeague() async {
+    try {
+      final id = await client.rpc('join_global_league');
+      return id as String;
+    } catch (e) {
+      throw LeagueJoinException(mapJoinError(e), e.toString());
+    }
+  }
+
+  @override
+  Future<void> leaveGlobalLeague() => client.rpc('leave_global_league');
 }
 
 // ---------------------------------------------------------------------------
@@ -632,13 +693,59 @@ class LeaguesRepo {
     final a = api;
     final uid = userId();
     if (a == null || uid == null) return cachedMyLeagues();
-    final leagues = await a.myLeagues(uid);
+    // A closed global league is last week's table: readable for its week
+    // row, no longer somewhere to play.
+    final leagues = [
+      for (final l in await a.myLeagues(uid))
+        if (!l.isClosed) l,
+    ];
     await db.cachePut(
       _mineKey,
       jsonEncode([for (final l in leagues) l.toJson()]),
       _now(),
     );
     return leagues;
+  }
+
+  /// Settings key holding the newest `week_start` the badge pass has seen.
+  static String weekBadgesKey(String uid) => 'league_week_badges:$uid';
+
+  /// Awards `league_week` and `promoted` from every finalised week that
+  /// includes me, reading `league_weeks` directly so a global league that
+  /// was closed on Monday (or a friend league I since left) still counts.
+  /// Looks back eight weeks the first time, then from the last week seen.
+  /// Returns the number of my rows processed; 0 offline or signed out.
+  Future<int> awardRecentWeekBadges(
+    Future<bool> Function(String badgeId) award, {
+    DateTime? now,
+  }) async {
+    final a = api;
+    final uid = userId();
+    if (a == null || uid == null) return 0;
+    final seen = await db.getSetting(weekBadgesKey(uid));
+    final since = seen != null && seen.isNotEmpty
+        ? parseWeekStartDate(seen).add(const Duration(days: 1))
+        : (now ?? DateTime.fromMillisecondsSinceEpoch(_now())).subtract(
+            const Duration(days: 56),
+          );
+    final rows = await a.recentWeeks(weekStartDate(since));
+    var mine = 0;
+    String? newest;
+    for (final (_, weekStart, standings) in rows) {
+      if (newest == null || weekStart.compareTo(newest) > 0) {
+        newest = weekStart;
+      }
+      for (final raw in standings) {
+        if (raw is! Map || raw['user_id'] != uid) continue;
+        mine++;
+        await award('league_week');
+        final before = LeagueTier.fromWire(raw['tier_before'] as String?);
+        final after = LeagueTier.fromWire(raw['tier_after'] as String?);
+        if (after.index > before.index) await award('promoted');
+      }
+    }
+    if (newest != null) await db.setSetting(weekBadgesKey(uid), newest);
+    return mine;
   }
 
   Future<League> createLeague(String name) async {
@@ -691,9 +798,31 @@ class LeaguesRepo {
 
   Future<void> leave(String leagueId) async {
     final uid = _requireUser();
-    await api?.leave(leagueId, uid);
+    final a = api;
+    League? league;
+    for (final l in await cachedMyLeagues()) {
+      if (l.id == leagueId) league = l;
+    }
+    if (league != null && league.isGlobal) {
+      await a?.leaveGlobalLeague();
+    } else {
+      await a?.leave(leagueId, uid);
+    }
     await db.cacheDeletePrefix('league:$leagueId:');
     await refreshMyLeagues();
+  }
+
+  /// Joins the global pool (docs/02 §12.4) and returns this week's league
+  /// id. Needs the cloud: there is nothing to queue, the server seats you.
+  Future<String> joinGlobalLeague() async {
+    _requireUser();
+    final a = api;
+    if (a == null) {
+      throw const LeagueJoinException(LeagueJoinError.unavailable);
+    }
+    final id = await a.joinGlobalLeague();
+    await refreshMyLeagues();
+    return id;
   }
 
   /// Optimistic: the cache flips at once, the cloud follows via the outbox.
@@ -915,6 +1044,30 @@ final myLeaguesProvider = StreamProvider<List<League>>((ref) {
 final refreshMyLeaguesProvider = FutureProvider<List<League>>((ref) {
   ref.watch(currentUserIdProvider);
   return ref.watch(leaguesRepoProvider).refreshMyLeagues();
+});
+
+/// Runs the week-badge pass once per sign-in and whenever invalidated;
+/// watched by the Leagues tab and the league screen (docs/02 §7).
+final leagueWeekBadgesProvider = FutureProvider<int>((ref) async {
+  if (ref.watch(currentUserIdProvider) == null) return 0;
+  final engine = ref.read(badgesSyncProvider).engine;
+  try {
+    return await ref
+        .watch(leaguesRepoProvider)
+        .awardRecentWeekBadges(engine.award);
+  } catch (e) {
+    debugPrint('week badges: $e');
+    return 0;
+  }
+});
+
+/// The global league I sit in this week, if I joined the pool.
+final myGlobalLeagueProvider = Provider<League?>((ref) {
+  final leagues = ref.watch(myLeaguesProvider).value ?? const <League>[];
+  for (final l in leagues) {
+    if (l.isGlobal) return l;
+  }
+  return null;
 });
 
 final leagueMembersProvider = FutureProvider.family<List<LeagueMember>, String>(

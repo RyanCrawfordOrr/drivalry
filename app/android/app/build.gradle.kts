@@ -78,8 +78,12 @@ dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
     // Java 8+ library desugaring (java.time etc.) required by flutter_local_notifications.
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
-    // JVM unit tests for the pure tracking rules (CrashDetector).
+    // Android Auto templates (docs/04 §3): CarAppService, TabTemplate, PlaceListMapTemplate.
+    implementation("androidx.car.app:app:1.7.0")
+    // JVM unit tests for the pure tracking rules (CrashDetector) and the car snapshot
+    // parser; the real org.json replaces the android.jar stubs on the test classpath.
     testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20250107")
 }
 
 flutter {

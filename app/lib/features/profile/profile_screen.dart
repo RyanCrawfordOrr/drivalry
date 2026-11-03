@@ -9,6 +9,7 @@ import '../../data/badges/badges_providers.dart';
 import '../../data/badges/streaks.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../stats/profile_stats_card.dart';
 import 'profile_model.dart';
 import 'profile_repo.dart';
 
@@ -155,6 +156,7 @@ class _ProfileBody extends ConsumerWidget {
               if (own) ...[
                 const SizedBox(height: 8),
                 const _StreaksRow(),
+                const ProfileStatsCard(),
                 const _BadgesRow(),
               ],
             ],

@@ -1,5 +1,6 @@
 package app.drivalry
 
+import app.drivalry.car.CarPlugin
 import app.drivalry.convoy.ConvoyAudioPlugin
 import app.drivalry.tracking.TrackingPlugin
 import io.flutter.embedding.android.FlutterActivity
@@ -8,11 +9,13 @@ import io.flutter.embedding.engine.FlutterEngine
 class MainActivity : FlutterActivity() {
     private var tracking: TrackingPlugin? = null
     private var convoyAudio: ConvoyAudioPlugin? = null
+    private var car: CarPlugin? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         tracking = TrackingPlugin.attach(this, flutterEngine)
         convoyAudio = ConvoyAudioPlugin.attach(this, flutterEngine)
+        car = CarPlugin.attach(this, flutterEngine)
     }
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
@@ -20,6 +23,8 @@ class MainActivity : FlutterActivity() {
         tracking = null
         convoyAudio?.detach()
         convoyAudio = null
+        car?.detach()
+        car = null
         super.cleanUpFlutterEngine(flutterEngine)
     }
 

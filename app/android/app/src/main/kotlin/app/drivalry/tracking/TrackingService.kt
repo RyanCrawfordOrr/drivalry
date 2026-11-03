@@ -28,6 +28,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
+import app.drivalry.car.CarAction
+import app.drivalry.car.CarActions
+import app.drivalry.car.CarState
+import app.drivalry.car.NotificationLines
 import androidx.core.content.ContextCompat
 import app.drivalry.MainActivity
 import app.drivalry.R
@@ -78,6 +82,9 @@ class TrackingService : Service(), TripStateMachine.Listener {
     private var inCall = false
     private var projecting = false
 
+    /** Re-posts the notification when Dart pushes a new live line (docs/04 §3 "Without Android Auto"). */
+    private val carListener = CarState.Listener { refreshNotification() }
+
     /** Fixes processed in the current batch while active, emitted as one `fixes` event. */
     private val pendingFixes = ArrayList<Map<String, Any?>>()
 
@@ -114,6 +121,8 @@ class TrackingService : Service(), TripStateMachine.Listener {
         }
         isRunning = true
         runtime.serviceListener = this
+        CarState.init(this)
+        CarState.addListener(carListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -121,6 +130,12 @@ class TrackingService : Service(), TripStateMachine.Listener {
 
         if (intent?.action == ACTION_END_TRIP) {
             runtime.machine.end("manual")
+            return START_NOT_STICKY
+        }
+        if (intent?.action == ACTION_MARK_PASSENGER) {
+            // Goes to Dart when the app is alive (it sets the trip's passenger hint); otherwise
+            // it is queued and the line is updated natively so the tap is acknowledged.
+            CarActions.dispatch(this, CarAction("markPassenger", mapOf("tripId" to runtime.machine.tripId)))
             return START_NOT_STICKY
         }
 
@@ -143,6 +158,7 @@ class TrackingService : Service(), TripStateMachine.Listener {
     }
 
     override fun onDestroy() {
+        CarState.removeListener(carListener)
         stopRecording()
         if (runtime.serviceListener === this) runtime.serviceListener = null
         isRunning = false
@@ -445,25 +461,48 @@ class TrackingService : Service(), TripStateMachine.Listener {
         NotificationManagerCompat.from(this).createNotificationChannel(channel)
     }
 
-    private fun buildNotification() = NotificationCompat.Builder(this, CHANNEL_ID)
-        .setSmallIcon(R.drawable.ic_stat_tracking)
-        .setContentTitle("Drivalry")
-        .setContentText("Drivalry is recording your drive")
-        .setOngoing(true)
-        .setSilent(true)
-        .setOnlyAlertOnce(true)
-        .setCategory(NotificationCompat.CATEGORY_SERVICE)
-        .setPriority(NotificationCompat.PRIORITY_LOW)
-        .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
-        .setContentIntent(
-            PendingIntent.getActivity(
-                this,
+    /**
+     * The live line comes from Dart over `app.drivalry/car` ("Recording · Limit 35 · 31 mph ·
+     * Clean so far"); it is used only when it belongs to the current trip, so a line left
+     * over from a trip the app never saw end cannot describe the next one. Without a line
+     * (app asleep) the static text shows. `setOnlyAlertOnce` keeps the once-a-second
+     * updates silent.
+     */
+    private fun buildNotification(): android.app.Notification {
+        val tripId = runtime.machine.tripId
+        val line = NotificationLines.forTrip(CarState.notification, tripId)
+        val builder = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_stat_tracking)
+            .setContentTitle(line?.title ?: "Drivalry")
+            .setContentText(line?.text ?: "Drivalry is recording your drive")
+            .setOngoing(true)
+            .setSilent(true)
+            .setOnlyAlertOnce(true)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setForegroundServiceBehavior(NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+            .setContentIntent(
+                PendingIntent.getActivity(
+                    this,
+                    0,
+                    Intent(this, MainActivity::class.java),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                ),
+            )
+        line?.subText?.let { builder.setSubText(it) }
+        if (line?.passengerAction == true) {
+            builder.addAction(
                 0,
-                Intent(this, MainActivity::class.java),
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            ),
-        )
-        .addAction(
+                "Passenger",
+                PendingIntent.getService(
+                    this,
+                    2,
+                    Intent(this, TrackingService::class.java).setAction(ACTION_MARK_PASSENGER),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
+                ),
+            )
+        }
+        builder.addAction(
             0,
             "End trip",
             PendingIntent.getService(
@@ -473,7 +512,19 @@ class TrackingService : Service(), TripStateMachine.Listener {
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
             ),
         )
-        .build()
+        return builder.build()
+    }
+
+    /** Re-posts the foreground notification with the current line. Safe to call often. */
+    @SuppressLint("MissingPermission") // the foreground notification already exists; notify() only updates it
+    private fun refreshNotification() {
+        if (!isRunning) return
+        try {
+            NotificationManagerCompat.from(this).notify(NOTIFICATION_ID, buildNotification())
+        } catch (e: SecurityException) {
+            Log.w(TAG, "notification update denied", e)
+        }
+    }
 
     /**
      * Per-second peaks of the linear-acceleration magnitude. The phone's orientation in the
@@ -520,6 +571,7 @@ class TrackingService : Service(), TripStateMachine.Listener {
         private const val TAG = "Drivalry.Service"
         const val CHANNEL_ID = "tracking"
         const val ACTION_END_TRIP = "app.drivalry.tracking.END_TRIP"
+        const val ACTION_MARK_PASSENGER = "app.drivalry.tracking.MARK_PASSENGER"
         private const val NOTIFICATION_ID = 0x7D1
         private const val SENSOR_PERIOD_US = 50_000
         private const val SENSOR_LATENCY_US = 1_000_000

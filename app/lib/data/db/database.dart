@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:drift_flutter/drift_flutter.dart';
@@ -59,7 +61,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -86,6 +88,24 @@ class AppDatabase extends _$AppDatabase {
       if (from < 4) {
         await m.createTable(convoyTracks);
         await m.createTable(convoyLocal);
+      }
+      if (from < 5) {
+        // Stats aggregates; left null and filled by the lazy backfill.
+        for (final c in [
+          trips.minLat,
+          trips.maxLat,
+          trips.minLon,
+          trips.maxLon,
+          trips.maxAltitudeM,
+          trips.startLat,
+          trips.startLon,
+          trips.endLat,
+          trips.endLon,
+          trips.roadNames,
+          trips.statsAt,
+        ]) {
+          await m.addColumn(trips, c);
+        }
       }
     },
   );
@@ -425,6 +445,14 @@ class AppDatabase extends _$AppDatabase {
             ..where((o) => o.nextAttemptAt.isSmallerOrEqualValue(nowMs))
             ..orderBy([(o) => OrderingTerm.asc(o.createdAt)])
             ..limit(limit))
+          .get();
+
+  /// Every queued row of one kind, oldest first (the duels repo keeps the
+  /// optimistic rows of creates still in flight).
+  Future<List<OutboxData>> outboxOfKind(String kind) =>
+      (select(outbox)
+            ..where((o) => o.kind.equals(kind))
+            ..orderBy([(o) => OrderingTerm.asc(o.createdAt)]))
           .get();
 
   Future<void> deleteOutbox(String id) =>
@@ -890,6 +918,123 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> upsertConvoyLocal(ConvoyLocalCompanion row) =>
       into(convoyLocal).insertOnConflictUpdate(row);
+
+  // --------------------------------------------- stage 5 (stats, fun facts) --
+
+  /// How many un-aggregated trips one backfill pass takes on.
+  static const int tripStatsBatch = 25;
+
+  /// Bounding box and highest altitude of one trip, from its samples. Null
+  /// when the trip has none left (purged after 90 days, or never recorded).
+  Future<TripExtent?> tripExtentFor(String tripId) async {
+    final minLat = samples.lat.min();
+    final maxLat = samples.lat.max();
+    final minLon = samples.lon.min();
+    final maxLon = samples.lon.max();
+    final maxAlt = samples.altitude.max();
+    final r =
+        await (selectOnly(samples)
+              ..addColumns([minLat, maxLat, minLon, maxLon, maxAlt])
+              ..where(samples.tripId.equals(tripId)))
+            .getSingle();
+    final lo = r.read(minLat);
+    if (lo == null) return null;
+    return TripExtent(
+      minLat: lo,
+      maxLat: r.read(maxLat) ?? lo,
+      minLon: r.read(minLon) ?? 0,
+      maxLon: r.read(maxLon) ?? 0,
+      maxAltitudeM: r.read(maxAlt),
+    );
+  }
+
+  /// First and last fix of one trip (start and end point), two indexed reads.
+  Future<TripEndpoints?> tripEndpointsFor(String tripId) async {
+    final first =
+        await (select(samples)
+              ..where((s) => s.tripId.equals(tripId))
+              ..orderBy([(s) => OrderingTerm.asc(s.t)])
+              ..limit(1))
+            .getSingleOrNull();
+    if (first == null) return null;
+    final last =
+        await (select(samples)
+              ..where((s) => s.tripId.equals(tripId))
+              ..orderBy([(s) => OrderingTerm.desc(s.t)])
+              ..limit(1))
+            .getSingle();
+    return TripEndpoints(
+      startLat: first.lat,
+      startLon: first.lon,
+      endLat: last.lat,
+      endLon: last.lon,
+    );
+  }
+
+  /// Distinct named roads of one trip, from its matched segments.
+  Future<Set<String>> roadNamesFor(String tripId) async {
+    final rows =
+        await (selectOnly(segments, distinct: true)
+              ..addColumns([segments.name])
+              ..where(
+                segments.tripId.equals(tripId) & segments.name.isNotNull(),
+              ))
+            .get();
+    return {
+      for (final r in rows)
+        if ((r.read(segments.name) ?? '').isNotEmpty) r.read(segments.name)!,
+    };
+  }
+
+  /// Computes the per-trip aggregates the stats engine reads and stores them
+  /// on the trip row: three indexed queries over one trip. Called by the
+  /// finaliser for every trip and by the backfill for rows from before
+  /// schema 5. Marks the trip done (`statsAt`) even without samples.
+  Future<void> computeTripStats(String tripId, int nowMs) async {
+    final e = await tripExtentFor(tripId);
+    final p = await tripEndpointsFor(tripId);
+    final roads = await roadNamesFor(tripId);
+    await updateTrip(
+      tripId,
+      TripsCompanion(
+        minLat: Value(e?.minLat),
+        maxLat: Value(e?.maxLat),
+        minLon: Value(e?.minLon),
+        maxLon: Value(e?.maxLon),
+        maxAltitudeM: Value(e?.maxAltitudeM),
+        startLat: Value(p?.startLat),
+        startLon: Value(p?.startLon),
+        endLat: Value(p?.endLat),
+        endLon: Value(p?.endLon),
+        roadNames: Value(
+          roads.isEmpty ? null : jsonEncode(roads.toList()..sort()),
+        ),
+        statsAt: Value(nowMs),
+      ),
+    );
+  }
+
+  /// Ended trips whose aggregates were never computed (rows from before
+  /// schema 5), oldest first, at most [limit].
+  Future<List<String>> tripsNeedingStats({int limit = tripStatsBatch}) async {
+    final rows =
+        await (selectOnly(trips)
+              ..addColumns([trips.id])
+              ..where(
+                trips.statsAt.isNull() &
+                    trips.deletedAt.isNull() &
+                    trips.endedAt.isNotNull(),
+              )
+              ..orderBy([OrderingTerm.asc(trips.startedAt)])
+              ..limit(limit))
+            .get();
+    return [for (final r in rows) r.read(trips.id)!];
+  }
+
+  /// Every convoy this phone took part in (local membership rows).
+  Future<List<ConvoyLocalData>> allConvoyLocal() => (select(
+    convoyLocal,
+  )..orderBy([(c) => OrderingTerm.desc(c.joinedAt)])).get();
 }
 
 /// The app's database. Overridden in tests with [AppDatabase.memory].
@@ -898,3 +1043,74 @@ final databaseProvider = Provider<AppDatabase>((ref) {
   ref.onDispose(db.close);
   return db;
 });
+
+/// Per-trip bounding box and highest altitude, stored on the trip row by
+/// [AppDatabase.computeTripStats].
+class TripExtent {
+  const TripExtent({
+    required this.minLat,
+    required this.maxLat,
+    required this.minLon,
+    required this.maxLon,
+    this.maxAltitudeM,
+  });
+
+  /// Reads the stored aggregate; null until computed or when the trip had
+  /// no samples.
+  static TripExtent? of(Trip t) {
+    final lo = t.minLat;
+    if (lo == null) return null;
+    return TripExtent(
+      minLat: lo,
+      maxLat: t.maxLat ?? lo,
+      minLon: t.minLon ?? 0,
+      maxLon: t.maxLon ?? 0,
+      maxAltitudeM: t.maxAltitudeM,
+    );
+  }
+
+  final double minLat;
+  final double maxLat;
+  final double minLon;
+  final double maxLon;
+  final double? maxAltitudeM;
+}
+
+/// Start and end fix of a trip, stored on the trip row by
+/// [AppDatabase.computeTripStats].
+class TripEndpoints {
+  const TripEndpoints({
+    required this.startLat,
+    required this.startLon,
+    required this.endLat,
+    required this.endLon,
+  });
+
+  static TripEndpoints? of(Trip t) {
+    final lat = t.startLat;
+    if (lat == null) return null;
+    return TripEndpoints(
+      startLat: lat,
+      startLon: t.startLon ?? 0,
+      endLat: t.endLat ?? lat,
+      endLon: t.endLon ?? t.startLon ?? 0,
+    );
+  }
+
+  final double startLat;
+  final double startLon;
+  final double endLat;
+  final double endLon;
+}
+
+/// The distinct named roads stored on a trip row (JSON array), empty until
+/// computed.
+Set<String> tripRoadNames(Trip t) {
+  final raw = t.roadNames;
+  if (raw == null || raw.isEmpty) return const {};
+  try {
+    return {for (final n in jsonDecode(raw) as List) n as String};
+  } catch (_) {
+    return const {};
+  }
+}

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Car-screen icon (ic_stop_photo); simple white glyph, tinted by the Android Auto host. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24"
+    android:tint="#FFFFFFFF">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M4,7h3l2,-2h6l2,2h3a1,1 0 0,1 1,1v11a1,1 0 0,1 -1,1H4a1,1 0 0,1 -1,-1V8a1,1 0 0,1 1,-1zm8,3a4,4 0 1,0 0.01,0zm0,2a2,2 0 1,1 0,4 2,2 0 0,1 0,-4z" />
+</vector>

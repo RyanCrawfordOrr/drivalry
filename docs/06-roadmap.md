@@ -73,14 +73,14 @@ Milestones:
 
 ## Stage 5: In the car
 
-1. **M5.1 Without entitlements.** _Spoken cues built 2026-11-03 (off by default, live matcher every 5 s); Live Activity and the Android ongoing notification still to build._ _Spoken cues built 2026-11-03 (Settings > Spoken cues; off by default; live limit tracker every 5 s against the installed pack; rules in docs/03 §5). Live Activity and ongoing notification still to build._ iOS Live Activity and Dynamic Island (Swift, WidgetKit). Android ongoing notification. Spoken cues via on-device TTS, off by default, live matching every 5 s against the pack.
-2. **M5.2 CarPlay** with `flutter_carplay` once the Driving Task entitlement arrives: Drive, Convoy, Talk, Stops tabs. If Apple refuses, M5.1 is the iOS in-car experience and we stop here on iOS.
-3. **M5.3 Android Auto.** Kotlin `CarAppService` in the POI category: Convoy, Stops, Drive, Talk. Desktop Head Unit testing. Play car-app review.
+1. **M5.1 Without entitlements.** _Built 2026-11-03: spoken cues (off by default, live matcher every 5 s), Android ongoing notification with live limit and a Passenger action, iOS Live Activity / Dynamic Island (widget extension target is created in Xcode per app/ios/README-mac.md)._ _Spoken cues built 2026-11-03 (Settings > Spoken cues; off by default; live limit tracker every 5 s against the installed pack; rules in docs/03 §5). Live Activity and ongoing notification still to build._ iOS Live Activity and Dynamic Island (Swift, WidgetKit). Android ongoing notification. Spoken cues via on-device TTS, off by default, live matching every 5 s against the pack.
+2. **M5.2 CarPlay** _Groundwork 2026-11-03: the four-tab plan is built from the car snapshot (`lib/car/carplay_stub.dart`); the flutter_carplay binding waits for the entitlement._ with `flutter_carplay` once the Driving Task entitlement arrives: Drive, Convoy, Talk, Stops tabs. If Apple refuses, M5.1 is the iOS in-car experience and we stop here on iOS.
+3. **M5.3 Android Auto.** _Built 2026-11-03 (CarAppService, POI category, Convoy/Stops/Drive/Talk tabs, works from the persisted snapshot when the phone app is asleep; DHU and Play steps in docs/04 §3)._ Kotlin `CarAppService` in the POI category: Convoy, Stops, Drive, Talk. Desktop Head Unit testing. Play car-app review.
 
 ## After Stage 5: depth
 
-- Seasons and Season Wrapped; county and state fill-in map.
-- Global leagues with matchmaking (Postgres function), duels, group challenges.
+- Seasons and Season Wrapped; county and state fill-in map. _Seasons, Season Wrapped (10 cards) and a state-chip grid built 2026-11-03; county fill-in not done._
+- Global leagues with matchmaking (Postgres function), duels, group challenges. _Built 2026-11-03 (migration 0007: `join_global_league`, `matchmake_global_leagues`, `finalize_duel`, `finalize_group_challenge`)._
 - OBD-II dongle support for real fuel data.
 - More packs: Canadian provinces, then countries, as users appear.
 - Second pass on the matcher if the wrong-road rate on dense grids demands it.

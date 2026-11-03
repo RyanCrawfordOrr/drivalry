@@ -76,6 +76,16 @@ class FakeLeaguesApi implements LeaguesApi {
     return weekRows;
   }
 
+  List<(String, String, List<dynamic>)> recentRows = [];
+
+  @override
+  Future<List<(String, String, List<dynamic>)>> recentWeeks(
+    String sinceDate,
+  ) async {
+    _call('recentWeeks:$sinceDate');
+    return recentRows;
+  }
+
   @override
   Future<String> joinByCode(String code) async {
     _call('join:$code');
@@ -109,6 +119,15 @@ class FakeLeaguesApi implements LeaguesApi {
     required String userId,
     required bool hiding,
   }) async => _call('hiding:$leagueId:$hiding');
+
+  @override
+  Future<String> joinGlobalLeague() async {
+    _call('joinGlobalLeague');
+    return 'global-1';
+  }
+
+  @override
+  Future<void> leaveGlobalLeague() async => _call('leaveGlobalLeague');
 }
 
 void main() {

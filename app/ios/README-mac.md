@@ -87,6 +87,33 @@ Then, with the `Runner` target selected:
    *Remove Reference*, then right-click `Runner` → *Add Files to "Runner"…* → select the
    `Runner/Tracking` folder, tick *Create groups* and the *Runner* target → Add.
 
+8. **Live Activity widget extension** (docs/04 §2). The sources are already in
+   `ios/DrivalryWidgets/`; Xcode has to create the target:
+   1. *File › New › Target…* → **Widget Extension** → Product Name `DrivalryWidgets`,
+      tick **Include Live Activity**, untick *Include Configuration App Intent* → Finish →
+      *Activate* the scheme when asked. Bundle id becomes `app.drivalry.DrivalryWidgets`;
+      the extension's Minimum Deployment must be **iOS 16.2** (General tab).
+   2. Xcode generated `DrivalryWidgets/DrivalryWidgetsBundle.swift`, `DrivalryWidgets.swift`,
+      `DrivalryWidgetsLiveActivity.swift`, `Assets.xcassets` and an `Info.plist`. Delete
+      the three generated `.swift` files and the generated `Info.plist` (*Move to Trash*),
+      keep `Assets.xcassets`.
+   3. Right-click the `DrivalryWidgets` group → *Add Files to "Runner"…* → select
+      `DrivalryWidgetsBundle.swift`, `DriveLiveActivity.swift` and `Info.plist` from
+      `ios/DrivalryWidgets/`, target **DrivalryWidgets** only.
+   4. Select `Runner/Tracking/DriveActivityAttributes.swift` in the navigator → File
+      inspector → *Target Membership*: tick **DrivalryWidgets** as well as Runner. The
+      ActivityKit type must compile into both.
+   5. *Signing & Capabilities* for the extension: same team, automatic signing.
+   6. `Runner/Info.plist` already has `NSSupportsLiveActivities = YES`. Build and run the
+      **Runner** scheme; start a drive (or the simulator trip in Diagnostics) and the
+      activity appears on the lock screen and in the Dynamic Island (iPhone 14 Pro or
+      later; other models show the lock-screen banner only).
+   7. Run `flutter build ipa` as usual; the extension is embedded automatically once the
+      target exists. If `flutter build` complains about the extension's deployment target,
+      set it to 16.2 in the extension target, not in the Podfile.
+9. **CarPlay** stays off until Apple grants the entitlement; the steps are in
+   `docs/04-car-platforms.md` §2 "When the entitlement arrives".
+
 ## 5. Build to a device
 
 1. Plug in an iPhone, unlock it, trust the Mac. On the phone enable *Settings › Privacy &

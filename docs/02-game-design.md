@@ -209,3 +209,33 @@ Computed per convoy from members' trip summaries over the convoy window, on each
 - Deleting a trip removes its XP.
 - Reckless-flag thresholds are intentionally high so false positives are rare. A flagged trip can be re-scored once per month with a stricter second pass on the phone. The raw trace never leaves the device, so there is no human review.
 - Scores are computed on the driver's own phone, so a modified client could upload a fake summary. We accept this. It is a game among friends, and a friend with a suspiciously perfect month will be asked about it in the comments. We do not build anti-cheat.
+
+## 12. League depth: duels, group challenges, seasons, global leagues
+
+All four are computed from the summaries phones already upload (`trip_summaries`, `trip_events`), live in `supabase/migrations/0007_duels_challenges_seasons.sql`, and rank by XP, Drive Score, phone-free trips or participation. Never by speed, never by distance.
+
+### 12.1 Duels
+
+- A friend challenges a friend on one metric: **XP** (sum over scored driver trips), **Drive Score** (average; fewer than three trips forfeits with 0), or **phone-free trips** (scored trips with no `phone_handling` event).
+- The week starts when the opponent accepts and runs seven days. Unanswered challenges expire after seven days. One open duel per pair.
+- Either phone settles a finished duel (`finalize_duel`, idempotent); the daily cron is the backstop. A tie has no winner.
+- The winner picks the loser's badge from the fixed list (Sunday Driver, Lead Foot, Butterfingers); it is written to `user_badges` with a seven-day `expires_at` by `pick_duel_badge`. A winner who has not picked within three days gets Sunday Driver chosen for them.
+- Duels are visible only to the two participants. Phones compute the live scoreboard themselves from both drivers' summaries, exactly as the server function does.
+
+### 12.2 Group challenges
+
+- One league, one goal, one or two weeks; one running challenge per league at a time. Goals: **clean trips** (80+, the clean-trip score, not reckless, league total), **phone-free trips** (league total), **average score** (over every member trip), **everyone drives** (every member logs at least N scored trips).
+- Progress is computed on the phone from members' summaries (`computeChallengeProgress`), and by `finalize_group_challenge` on the server when the window closes. Success gives every current member the goal's badge: Clean Sweep, Hands Off Together, Class Act, Full House.
+- The creator can call a running challenge off; nobody gets a badge.
+
+### 12.3 Seasons
+
+- A season is a calendar quarter (seeded 2026-Q4 to 2027-Q4). The Leagues tab shows the running season, days left and this phone's numbers; Season Wrapped is built from the phone's own trips.
+- When a season ends, the phone writes one `season_results` row per account (trips, XP, average score, clean and phone-free counts, best score, best tier, duels won and lost, a one-line headline). Counts only, no places. A season with no scored trip on the phone (before the driver had the app) writes no row and is listed as "Before you joined". `season_1` is awarded for at least one scored trip in the first season.
+
+### 12.4 Global leagues
+
+- `join_global_league()` puts you in the pool and seats you at once in this week's open global league at your tier with room (else a new one). Every Monday 06:10 UTC, after the rollover, `matchmake_global_leagues()` carries the new tiers to the pool, drops players with no scored trips in four weeks, marks last week's tables closed (`leagues.closed_at`) and builds fresh ones per tier in even groups of at most 30 ordered by Driver Rating. Closed tables keep their members and their `league_weeks` row, so the week badges (`league_week`, `promoted`) are awarded from `league_weeks` directly whenever the phone next opens the Leagues tab, league listed or not; closed tables are pruned after 60 days once no active group challenge references them.
+- Same week rules as a friend league (XP ranks, rating breaks ties, top five up, bottom five down, no-drive demotes). Hiding works the same. Global leagues have no owner and no usable invite code; `leave_global_league()` leaves the pool and the tier is kept for a later rejoin.
+- Group challenges run in friend leagues only (the insert policy checks `kind = 'friend'`); a global table is replaced weekly and would not outlive a 14-day goal. Joining shows your weekly XP and scored-trip posts to that week's league-mates, as any league does.
+

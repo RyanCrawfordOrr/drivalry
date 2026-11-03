@@ -9,6 +9,7 @@ import '../badges/badges_sync.dart';
 import '../push/push_service.dart';
 import '../repos/circles_sync.dart';
 import '../repos/convoy_sync.dart';
+import '../repos/duels_repo.dart';
 import '../repos/friends_sync.dart';
 import '../push/trip_scored_notifications.dart';
 import '../supabase/supabase_providers.dart';
@@ -124,6 +125,7 @@ final syncBootstrapProvider = Provider<SyncBootstrap>((ref) {
   ref.watch(badgesSyncProvider);
   ref.watch(circlesSyncProvider);
   ref.watch(convoySyncProvider);
+  ref.watch(duelsSignInRefreshProvider);
 
   ref.listen(authStateProvider, (prev, next) {
     final session = next.value?.session;

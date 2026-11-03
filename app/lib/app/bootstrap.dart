@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../car/car_bridge.dart';
+import '../car/live_activity.dart';
 import '../config/env.dart';
 import '../data/crash/crash_monitor.dart';
 import '../data/db/database.dart';
@@ -41,6 +43,12 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   ref.watch(crashMonitorProvider);
   // Spoken cues (docs/01 §4.2): null and free while the switch is off.
   ref.watch(spokenCuesProvider);
+  // Car surfaces (docs/04): the live notification line and Android Auto
+  // read one snapshot pushed over app.drivalry/car.
+  ref.watch(carBridgeProvider);
+  // iOS Live Activity / Dynamic Island mirror of the same snapshot; a no-op
+  // on other platforms.
+  ref.watch(liveActivityProvider);
   await ref.watch(mapsReadyProvider.future);
   try {
     final removed = await ref

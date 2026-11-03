@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../data/repos/duels_repo.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../seasons/season_card.dart';
+import 'global_league_card.dart';
 import 'leagues_routes.dart';
 import 'widgets/tier_chip.dart';
 
@@ -20,6 +23,24 @@ class LeaguesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Leagues'),
         actions: [
+          Consumer(
+            builder: (context, ref, _) {
+              ref.watch(leagueWeekBadgesProvider);
+              // Opening the tab pulls the duel list once; the badge below
+              // follows the cache.
+              ref.watch(refreshMyDuelsProvider);
+              final pending = ref.watch(pendingDuelCountProvider);
+              return IconButton(
+                tooltip: 'Duels',
+                icon: Badge.count(
+                  count: pending,
+                  isLabelVisible: pending > 0,
+                  child: const Icon(Icons.bolt_outlined),
+                ),
+                onPressed: () => context.push(duelsPath),
+              );
+            },
+          ),
           IconButton(
             tooltip: 'Badges',
             icon: const Icon(Icons.military_tech_outlined),
@@ -43,6 +64,11 @@ class _LeaguesBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final refresh = ref.watch(refreshMyLeaguesProvider);
     final leagues = ref.watch(myLeaguesProvider).value ?? const <League>[];
+    // The global league has its own card; the tiles are friend leagues.
+    final friendLeagues = [
+      for (final l in leagues)
+        if (!l.isGlobal) l,
+    ];
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -66,15 +92,21 @@ class _LeaguesBody extends ConsumerWidget {
                   ),
                 ),
               ),
-            if (leagues.isEmpty && !refresh.isLoading)
+            const SeasonCard(),
+            const SizedBox(height: 8),
+            const GlobalLeagueCard(),
+            const SizedBox(height: 16),
+            Text('Friend leagues', style: theme.textTheme.titleSmall),
+            const SizedBox(height: 4),
+            if (friendLeagues.isEmpty && !refresh.isLoading)
               const _EmptyLeagues()
-            else if (leagues.isEmpty)
+            else if (friendLeagues.isEmpty)
               const Padding(
                 padding: EdgeInsets.all(32),
                 child: Center(child: CircularProgressIndicator()),
               )
             else
-              for (final l in leagues) _LeagueTile(league: l),
+              for (final l in friendLeagues) _LeagueTile(league: l),
           ],
         ),
       ),
@@ -199,7 +231,7 @@ class _EmptyLeagues extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
+      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
       child: Column(
         children: [
           Icon(

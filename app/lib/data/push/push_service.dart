@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../app/router.dart';
+import '../../features/leagues/leagues_routes.dart';
+import '../repos/duels_repo.dart';
 import '../../config/env.dart';
 import '../db/database.dart';
 import '../supabase/supabase_providers.dart';
@@ -207,6 +209,20 @@ class PushController extends Notifier<PushStatus> {
           body: body,
           route: m.data['route'],
         );
+    // A duel push means the list changed: pull it so the Leagues-tab badge
+    // is right before the user opens Duels.
+    final route = m.data['route'];
+    if (route is String && route.startsWith(duelsPath)) {
+      unawaited(
+        ref
+            .read(duelsRepoProvider)
+            .refreshMyDuels()
+            .then<void>(
+              (_) {},
+              onError: (Object e) => debugPrint('duel refresh after push: $e'),
+            ),
+      );
+    }
   }
 
   void _navigate(Object? route) {

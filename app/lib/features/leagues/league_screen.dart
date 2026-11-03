@@ -4,10 +4,10 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/routes.dart';
-import '../../data/badges/badges_sync.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/signed_in_scope.dart';
+import 'challenges/challenge_card.dart';
 import 'invite_sheet.dart';
 import 'widgets/standings_table.dart';
 import 'widgets/tier_chip.dart';
@@ -25,7 +25,6 @@ class LeagueScreen extends ConsumerStatefulWidget {
 class _LeagueScreenState extends ConsumerState<LeagueScreen> {
   /// null = the running week; otherwise a finalised week start.
   DateTime? _selectedWeek;
-  bool _badgesChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +36,9 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
     final me = ref.watch(currentUserIdProvider);
     final current = ref.watch(leagueCurrentWeekProvider(widget.leagueId));
     final past = ref.watch(leaguePastWeeksProvider(widget.leagueId));
-    _awardWeekBadges(past.value, me);
+    // Week badges come from `league_weeks` directly, so they do not depend
+    // on this league still existing (a global one is closed every Monday).
+    ref.watch(leagueWeekBadgesProvider);
 
     final WeekStandings? shown = _selectedWeek == null
         ? current.value
@@ -47,7 +48,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
       appBar: AppBar(
         title: Text(league?.name ?? 'League'),
         actions: [
-          if (league != null)
+          if (league != null && !league.isGlobal)
             IconButton(
               tooltip: 'Invite',
               icon: const Icon(Icons.person_add_alt_1_outlined),
@@ -70,9 +71,11 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
                         : 'Hide my trips here',
                   ),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'leave',
-                  child: Text('Leave league'),
+                  child: Text(
+                    league.isGlobal ? 'Leave global league' : 'Leave league',
+                  ),
                 ),
               ],
             ),
@@ -96,6 +99,17 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
                       'You are hiding in this league. Members can see that '
                       'you are hiding; they cannot see your trips or roasts.',
                 ),
+              if (league != null && league.isGlobal)
+                _Banner(
+                  icon: Icons.public,
+                  text:
+                      'Matched by tier and Driver Rating. The table is rebuilt '
+                      'every Monday; your tier carries over.',
+                ),
+              // Global leagues are rebuilt weekly; a challenge needs a table
+              // that outlives the week (docs/02 §12.2).
+              if (league != null && !league.isGlobal)
+                ChallengeCard(leagueId: widget.leagueId),
               _WeekSwitcher(
                 selected: _selectedWeek,
                 current: current.value,
@@ -117,23 +131,6 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
     );
   }
 
-  /// Awards `league_week` and `promoted` once the finalised weeks are known.
-  void _awardWeekBadges(List<WeekStandings>? weeks, String? me) {
-    if (_badgesChecked || weeks == null || me == null) return;
-    _badgesChecked = true;
-    // Awards write to the database; keep that out of the build phase.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      final engine = ref.read(badgesSyncProvider).engine;
-      for (final w in weeks) {
-        final mine = w.rowFor(me);
-        if (mine == null) continue;
-        engine.award('league_week');
-        if (mine.promotes) engine.award('promoted');
-      }
-    });
-  }
-
   Future<void> _onMenu(String value, League league) async {
     final repo = ref.read(leaguesRepoProvider);
     switch (value) {
@@ -145,8 +142,12 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
           context: context,
           builder: (ctx) => AlertDialog(
             title: Text('Leave ${league.name}?'),
-            content: const Text(
-              'Your past weeks stay in the table. You can rejoin with the code.',
+            content: Text(
+              league.isGlobal
+                  ? 'You leave the global pool too. Rejoin any time from the '
+                        'Leagues tab; your tier is kept.'
+                  : 'Your past weeks stay in the table. You can rejoin with '
+                        'the code.',
             ),
             actions: [
               TextButton(

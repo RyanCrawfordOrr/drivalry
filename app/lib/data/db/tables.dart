@@ -54,6 +54,24 @@ class Trips extends Table {
   TextColumn get weather => text().nullable()();
   IntColumn get createdAt => integer()();
 
+  // Per-trip aggregates for the stats engine (schema 5): computed once when
+  // the trip is finalised and backfilled lazily for older rows, so the
+  // engine never scans `samples`. Null until computed; `statsAt` marks the
+  // attempt even when the trip had no samples.
+  RealColumn get minLat => real().nullable()();
+  RealColumn get maxLat => real().nullable()();
+  RealColumn get minLon => real().nullable()();
+  RealColumn get maxLon => real().nullable()();
+  RealColumn get maxAltitudeM => real().nullable()();
+  RealColumn get startLat => real().nullable()();
+  RealColumn get startLon => real().nullable()();
+  RealColumn get endLat => real().nullable()();
+  RealColumn get endLon => real().nullable()();
+
+  /// JSON array of the distinct named roads from the matched segments.
+  TextColumn get roadNames => text().nullable()();
+  IntColumn get statsAt => integer().nullable()();
+
   /// Soft delete: hidden everywhere, purged with the samples.
   IntColumn get deletedAt => integer().nullable()();
 

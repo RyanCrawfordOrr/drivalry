@@ -25,6 +25,8 @@
 		DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A082F2A000100D81A01 /* CrashDetector.swift */; };
 		DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A072F2A000100D81A01 /* Diagnostics.swift */; };
 		DA7B1B092F2A000100D81A01 /* ConvoyAudioPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */; };
+		DA7B1B0A2F2A000100D81A01 /* DriveActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A0A2F2A000100D81A01 /* DriveActivityAttributes.swift */; };
+		DA7B1B0B2F2A000100D81A01 /* LiveActivityPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A0B2F2A000100D81A01 /* LiveActivityPlugin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +79,8 @@
 		DA7B1A082F2A000100D81A01 /* CrashDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashDetector.swift; sourceTree = "<group>"; };
 		DA7B1A072F2A000100D81A01 /* Diagnostics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diagnostics.swift; sourceTree = "<group>"; };
 		DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoyAudioPlugin.swift; sourceTree = "<group>"; };
+		DA7B1A0A2F2A000100D81A01 /* DriveActivityAttributes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DriveActivityAttributes.swift; sourceTree = "<group>"; };
+		DA7B1A0B2F2A000100D81A01 /* LiveActivityPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveActivityPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +163,8 @@
 				DA7B1A082F2A000100D81A01 /* CrashDetector.swift */,
 				DA7B1A072F2A000100D81A01 /* Diagnostics.swift */,
 				DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */,
+				DA7B1A0A2F2A000100D81A01 /* DriveActivityAttributes.swift */,
+				DA7B1A0B2F2A000100D81A01 /* LiveActivityPlugin.swift */,
 			);
 			path = Tracking;
 			sourceTree = "<group>";
@@ -328,6 +334,8 @@
 				DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */,
 				DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */,
 				DA7B1B092F2A000100D81A01 /* ConvoyAudioPlugin.swift in Sources */,
+				DA7B1B0A2F2A000100D81A01 /* DriveActivityAttributes.swift in Sources */,
+				DA7B1B0B2F2A000100D81A01 /* LiveActivityPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

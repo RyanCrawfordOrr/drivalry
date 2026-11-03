@@ -17,6 +17,7 @@ Apply in order by pasting each file into the SQL editor (Dashboard → SQL Edito
 | `migrations/0004_crash_contacts.sql` | `crash_alerts.notify_user_ids` for emergency contacts outside your circles | Not yet applied; then redeploy `functions/push` |
 | `migrations/0005_convoy_vote_withdraw.sql` | Delete policy on `convoy_stop_votes` so a member can withdraw a stop vote | Not yet applied |
 | `migrations/0006_convoy_can_view.sql` | `can_view` also covers current co-members of a convoy, so the recap can read everyone's trip summaries (docs/10 §8) | Not yet applied; apply after 0001 |
+| `migrations/0007_duels_challenges_seasons.sql` | Duels (`respond_duel`, `finalize_duel`, `pick_duel_badge`), group challenges (`finalize_group_challenge`), seasons + `season_results`, global leagues (`join_global_league`, `leave_global_league`, Monday `matchmake_global_leagues`), four `challenge_*` badges (docs/02 §12) | Not yet applied; apply after 0006 |
 
 `0001_init.sql` is written to run once on a fresh project. It creates enum types and policies without `if not exists`, so re-running it fails loudly rather than half-applying. Later changes go in new numbered files that only add or alter.
 

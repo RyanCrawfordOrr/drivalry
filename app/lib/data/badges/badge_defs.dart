@@ -154,6 +154,31 @@ const List<BadgeDef> fallbackBadgeDefs = [
     description: 'Drove through the first season.',
     category: 'season',
   ),
+  // Group challenges (migration 0007).
+  BadgeDef(
+    id: 'challenge_clean_trips',
+    name: 'Clean Sweep',
+    description: 'Your league hit its clean-trips challenge.',
+    category: 'social',
+  ),
+  BadgeDef(
+    id: 'challenge_phone_free',
+    name: 'Hands Off, Together',
+    description: 'Your league hit its phone-free challenge.',
+    category: 'social',
+  ),
+  BadgeDef(
+    id: 'challenge_score_avg',
+    name: 'Class Act',
+    description: 'Your league averaged its target Drive Score.',
+    category: 'social',
+  ),
+  BadgeDef(
+    id: 'challenge_everyone_drives',
+    name: 'Full House',
+    description: 'Everyone in your league showed up for the challenge.',
+    category: 'social',
+  ),
 ];
 
 BadgeDef? badgeDefById(List<BadgeDef> defs, String id) {

@@ -63,6 +63,10 @@ abstract final class Routes {
   static const signIn = '/sign-in';
   static const profile = '/profile';
   static String userProfile(String id) => '/profile/$id';
+
+  /// Stats and fun facts (docs/01 §4.4) and the Season Wrapped, own only.
+  static const stats = '/profile/stats';
+  static const wrapped = '/profile/wrapped';
   static String joinLeague(String code) => '/join/league/$code';
   static String joinCircle(String code) => '/join/circle/$code';
 

@@ -25,6 +25,8 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <!-- Android Auto (docs/04 §3): the host-drawn map behind the convoy place list. -->
+    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
 
     <application
         android:label="Drivalry"
@@ -123,6 +125,24 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Android Auto (docs/04 §3): a Point-of-Interest category Car App Library app
+             (convoy members and stops as places). The host binds the service directly,
+             so it must be exported; it renders only what the phone pushed into CarState.
+             minCarApiLevel 6 is what TabTemplate needs. -->
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="6" />
+        <service
+            android:name=".car.DrivalryCarAppService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
+                <category android:name="androidx.car.app.category.POI" />
+            </intent-filter>
+        </service>
         <!-- Convoy radio foreground service (docs/10 §4). -->
         <service
             android:name=".convoy.ConvoyAudioService"

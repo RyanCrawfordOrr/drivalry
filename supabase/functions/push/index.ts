@@ -136,6 +136,42 @@ async function buildNotification(p: WebhookPayload): Promise<Notification | null
         data: { route: "/friends" },
       };
     }
+    case "duels:INSERT": {
+      if (r.status !== "pending") return null;
+      const who = await handle(r.challenger_id as string);
+      return {
+        recipients: [r.opponent_id as string],
+        title: "Duel challenge",
+        body: `${who} challenged you to a week-long duel on ${duelMetric(r.metric as string)}`,
+        category: "friends",
+        data: { route: "/leagues/duels" },
+      };
+    }
+    case "duels:UPDATE": {
+      if (r.status === p.old_record?.status) return null;
+      if (r.status === "active") {
+        const who = await handle(r.opponent_id as string);
+        return {
+          recipients: [r.challenger_id as string],
+          title: "Duel accepted",
+          body: `${who} accepted. The week is on.`,
+          category: "friends",
+          data: { route: "/leagues/duels" },
+        };
+      }
+      if (r.status === "finished" && r.winner_id) {
+        const winner = await handle(r.winner_id as string);
+        const loser = r.winner_id === r.challenger_id ? r.opponent_id : r.challenger_id;
+        return {
+          recipients: [r.challenger_id as string, r.opponent_id as string],
+          title: "Duel finished",
+          body: `${winner} won the duel.`,
+          category: "social",
+          data: { route: "/leagues/duels", loser: String(loser) },
+        };
+      }
+      return null;
+    }
     case "crash_alerts:INSERT": {
       const who = await handle(r.user_id as string);
       const { data: members } = await admin
@@ -178,6 +214,10 @@ async function postAuthor(postId: string): Promise<{ author_id: string; kind: st
 async function handle(userId: string): Promise<string> {
   const { data } = await admin.from("profiles").select("handle").eq("id", userId).maybeSingle();
   return data?.handle ? `@${data.handle}` : "Someone";
+}
+
+function duelMetric(metric: string): string {
+  return ({ xp: "XP", score_avg: "average Drive Score", phone_free: "phone-free trips" } as Record<string, string>)[metric] ?? "XP";
 }
 
 function postNoun(kind: string): string {

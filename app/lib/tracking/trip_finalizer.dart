@@ -87,6 +87,7 @@ class TripFinalizer {
               : const Value.absent(),
         ),
       );
+      await _db.computeTripStats(tripId, _now());
       return FinalizeResult(trip: (await _db.tripById(tripId))!, score: null);
     }
 
@@ -203,6 +204,9 @@ class TripFinalizer {
             : const Value.absent(),
       ),
     );
+    // The stats engine reads per-trip aggregates off the row, never the
+    // samples (schema 5).
+    await _db.computeTripStats(tripId, _now());
     return FinalizeResult(trip: (await _db.tripById(tripId))!, score: view);
   }
 

@@ -36,6 +36,7 @@ Create one webhook per row, all `POST` to the function URL `https://htqyutdwnngu
 | `feed_reactions` | INSERT |
 | `feed_comments` | INSERT |
 | `friendships` | INSERT, UPDATE |
+| `duels` | INSERT, UPDATE |
 | `crash_alerts` | INSERT |
 
 ## Test
