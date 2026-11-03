@@ -108,7 +108,7 @@ void main() {
     'start joins the mesh, registers the bus; PTT and stop work',
     (tester) async {
       await tester.pumpWidget(app());
-      expect(find.text('Radio is off'), findsOneWidget);
+      expect(find.text('Radio is off.'), findsOneWidget);
       expect(container.read(convoyDataBusProvider('c1')), isA<NoopDataBus>());
 
       await tester.tap(find.byKey(const Key('radio-start')));
@@ -120,7 +120,7 @@ void main() {
       expect(audio.muted, isTrue, reason: 'mic stays muted until held');
       expect(container.read(convoyDataBusProvider('c1')), isA<MeshDataBus>());
       expect(find.text('Hold to talk'), findsOneWidget);
-      expect(find.textContaining('No relay configured'), findsOneWidget);
+      expect(find.textContaining('relay'), findsNothing);
 
       // 'zed' is present: lower id 'me' offers.
       expect(factory.links['zed']!.offerer, isTrue);
@@ -130,7 +130,7 @@ void main() {
       // the state lands after the first pump decided no frame was due.
       await tester.pump();
       await tester.pump();
-      expect(find.textContaining('Direct'), findsOneWidget);
+      expect(find.text('Connected'), findsOneWidget);
       expect(find.text('Zed'), findsOneWidget, reason: 'name, not id');
 
       // Hold to talk.
@@ -147,14 +147,20 @@ void main() {
       // Someone else talks.
       channel.inject('ptt', 'zed', payload: {'on': true});
       await tester.pump();
-      expect(find.text('Someone is talking'), findsOneWidget);
+      expect(find.text('Zed is talking.'), findsOneWidget);
 
       // Mute everyone propagates to links.
       await tester.tap(find.byKey(const Key('radio-mute-incoming')));
       await tester.pump();
       expect(factory.links['zed']!.incomingMutedValue, isTrue);
 
-      // With a peer tile shown the stop button sits below the test viewport.
+      // The stop button sits below the test viewport, past what the list
+      // has built: scroll until it exists, then into view.
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('radio-stop')),
+        200,
+        scrollable: find.byType(Scrollable).first,
+      );
       await tester.ensureVisible(find.byKey(const Key('radio-stop')));
       await tester.pump();
       await tester.tap(find.byKey(const Key('radio-stop')));
@@ -165,7 +171,7 @@ void main() {
       expect(audio.releases, 1);
       expect(factory.links['zed']!.closed, isTrue);
       expect(container.read(convoyDataBusProvider('c1')), isA<NoopDataBus>());
-      expect(find.text('Radio is off'), findsOneWidget);
+      expect(find.text('Radio is off.'), findsOneWidget);
       // The member-name stream is a drift watch: let its timer drain.
       await unmountAndSettle(tester);
     },
@@ -188,7 +194,7 @@ void main() {
     hook.emitStopped();
     await tester.pump();
     await tester.pump();
-    expect(find.text('Radio is off'), findsOneWidget);
+    expect(find.text('Radio is off.'), findsOneWidget);
     expect(hook.stops, 1);
     expect(audio.releases, 1);
     expect(channel.sentTypes(), contains('bye'));
@@ -205,7 +211,7 @@ void main() {
     await tester.tap(find.byKey(const Key('radio-start')));
     await tester.pump();
     await tester.pump();
-    expect(find.text('Microphone needed'), findsOneWidget);
+    expect(find.text('Allow the microphone.'), findsOneWidget);
     expect(find.byKey(const Key('radio-retry')), findsOneWidget);
     expect(channel.joins, 0);
     expect(audio.acquired, isFalse);

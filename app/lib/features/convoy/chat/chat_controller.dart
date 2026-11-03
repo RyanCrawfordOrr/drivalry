@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import '../../../data/db/database.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../data/supabase/supabase_providers.dart';
+import '../../../widgets/friendly_error.dart';
 import '../audio/convoy_audio_session.dart';
 import '../channel/convoy_channel.dart';
 import '../radio/data_bus.dart';
@@ -110,7 +111,8 @@ class RecordVoiceRecorder implements VoiceRecorder {
   @override
   Future<void> start() async {
     final dir = await getTemporaryDirectory();
-    final path = p.join(dir.path, 'voice-${const Uuid().v4()}.m4a');
+    final noteId = const Uuid().v4();
+    final path = p.join(dir.path, 'voice-$noteId.m4a');
     _path = path;
     await _rec.start(
       const RecordConfig(
@@ -264,7 +266,9 @@ class ChatController extends Notifier<ChatState> {
     try {
       await channel.send('chat', {'text': m.text});
     } catch (e) {
-      state = state.copyWith(error: 'Could not send: $e');
+      state = state.copyWith(
+        error: friendlyError(e, doing: 'send the message'),
+      );
     }
   }
 

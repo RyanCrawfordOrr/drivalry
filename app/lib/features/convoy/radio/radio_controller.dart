@@ -8,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../data/supabase/supabase_providers.dart';
 import '../../../tracking/tracking_controller.dart';
 import '../../../tracking/tracking_models.dart';
+import '../../../widgets/friendly_error.dart';
 import '../channel/convoy_channel.dart';
 import '../positions/peer_positions.dart';
 import 'ice_servers.dart';
@@ -261,7 +262,10 @@ class RadioController extends Notifier<RadioState> {
     } catch (e) {
       debugPrint('radio start failed: $e');
       await _teardown();
-      state = state.copyWith(phase: RadioPhase.error, error: '$e');
+      state = state.copyWith(
+        phase: RadioPhase.error,
+        error: friendlyError(e, doing: 'start the radio'),
+      );
     }
   }
 

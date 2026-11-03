@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/repos/convoy_repo.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../data/supabase/supabase_providers.dart';
+import '../../../widgets/friendly_error.dart';
+import '../widgets/convoy_ui.dart';
 
 /// The shared photo roll: small JPEGs (≤ 200 KB, ≤ 50 per convoy) in the
 /// private `convoy-photos` bucket, read through hour-long signed URLs.
@@ -16,7 +19,6 @@ class ConvoyAlbumScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final me = ref.watch(currentUserIdProvider);
     final photos = ref.watch(convoyPhotosProvider(convoyId));
     final list = photos.value ?? const <ConvoyPhoto>[];
@@ -24,80 +26,101 @@ class ConvoyAlbumScreen extends ConsumerWidget {
         ref.watch(convoyMembersProvider(convoyId)).value ?? const [];
     final nameOf = {for (final m in members) m.userId: m.name};
     final full = list.length >= ConvoyRepo.maxPhotos;
+    final loading = photos.isLoading && list.isEmpty;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Album'),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: Space.gutter),
             child: Center(
               child: Text(
-                '${list.length}/${ConvoyRepo.maxPhotos}',
-                style: theme.textTheme.labelMedium,
+                '${list.length} of ${ConvoyRepo.maxPhotos}',
+                style: context.caption,
               ),
             ),
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        key: const Key('add-photo'),
-        onPressed: me == null || full ? null : () => _add(context, ref),
-        icon: const Icon(Icons.add_a_photo_outlined),
-        label: Text(full ? 'Album full' : 'Add photo'),
-      ),
-      body: photos.isLoading && list.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : list.isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(32),
-                child: Text(
-                  'No photos yet. Small ones only: the album is for the '
-                  'recap, not a backup. Passengers, this is your job.',
-                  textAlign: TextAlign.center,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 96),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 4,
-                mainAxisSpacing: 4,
-              ),
-              itemCount: list.length,
-              itemBuilder: (_, i) => _PhotoTile(
-                convoyId: convoyId,
-                photo: list[i],
-                by: nameOf[list[i].userId] ?? 'Someone',
-                mine: list[i].userId == me,
+      body: ListView(
+        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+        children: [
+          Padding(
+            padding: Space.screen,
+            child: PrimaryButton(
+              key: const Key('add-photo'),
+              label: full ? 'Album full' : 'Add photo',
+              icon: Icons.add_a_photo_outlined,
+              onPressed: me == null || full ? null : () => _add(context, ref),
+            ),
+          ),
+          const SizedBox(height: Space.xl),
+          if (loading)
+            const Padding(
+              padding: Space.screen,
+              child: Row(
+                children: [
+                  Expanded(child: SkeletonTile(height: 110)),
+                  SizedBox(width: Space.xs),
+                  Expanded(child: SkeletonTile(height: 110)),
+                  SizedBox(width: Space.xs),
+                  Expanded(child: SkeletonTile(height: 110)),
+                ],
               ),
             ),
+          if (!loading && list.isEmpty)
+            const EmptyState(
+              kicker: 'Album',
+              headline: 'No photos yet.',
+              body: 'Small ones, for the recap. Passengers, this is your job.',
+            ),
+          if (list.isNotEmpty)
+            Padding(
+              padding: Space.screen,
+              child: GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: Space.xs,
+                  mainAxisSpacing: Space.xs,
+                ),
+                itemCount: list.length,
+                itemBuilder: (_, i) => Reveal(
+                  delay: Reveal.stagger(i),
+                  child: _PhotoTile(
+                    convoyId: convoyId,
+                    photo: list[i],
+                    by: nameOf[list[i].userId] ?? 'Someone',
+                    mine: list[i].userId == me,
+                  ),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera_outlined),
-              title: const Text('Take a photo'),
-              onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library_outlined),
-              title: const Text('Choose from the library'),
-              onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
-            ),
-          ],
-        ),
+    final source = await showDrivalrySheet<ImageSource>(
+      context,
+      title: 'Add a photo',
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConvoyRow(
+            leading: const Icon(Icons.photo_camera_outlined, size: 28),
+            title: 'Take a photo',
+            onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
+          ),
+          ConvoyRow(
+            leading: const Icon(Icons.photo_library_outlined, size: 28),
+            title: 'Choose from the library',
+            onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
+          ),
+        ],
       ),
     );
     if (source == null || !context.mounted) return;
@@ -112,6 +135,7 @@ class ConvoyAlbumScreen extends ConsumerWidget {
       final bytes = await picked.readAsBytes();
       await ref.read(convoyRepoProvider).addPhoto(convoyId, bytes);
       if (context.mounted) {
+        Haptics.success();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Added to the album.')));
@@ -124,9 +148,9 @@ class ConvoyAlbumScreen extends ConsumerWidget {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Could not add: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(friendlyError(e, doing: 'add that photo'))),
+        );
       }
     }
   }
@@ -147,35 +171,43 @@ class _PhotoTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final repo = ref.watch(convoyRepoProvider);
     return FutureBuilder<String?>(
       future: repo.photoUrl(convoyId, photo.storagePath),
       builder: (context, snap) {
         final url = snap.data;
-        return GestureDetector(
+        final loading = snap.connectionState != ConnectionState.done;
+        return PressScale(
           onTap: url == null ? null : () => _open(context, ref, url),
-          child: Container(
-            color: theme.colorScheme.surfaceContainerHighest,
-            child: url == null
-                ? Center(
-                    child: Icon(
-                      snap.connectionState == ConnectionState.done
-                          ? Icons.broken_image_outlined
-                          : Icons.image_outlined,
-                      color: theme.colorScheme.outline,
-                    ),
-                  )
-                : CachedNetworkImage(
-                    imageUrl: url,
-                    fit: BoxFit.cover,
-                    errorWidget: (_, _, _) => Center(
-                      child: Icon(
-                        Icons.broken_image_outlined,
-                        color: theme.colorScheme.outline,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Space.md),
+            child: Container(
+              color: scheme.surfaceContainerHigh,
+              child: url == null
+                  ? Shimmer(
+                      enabled: loading,
+                      child: Center(
+                        child: Icon(
+                          loading
+                              ? Icons.image_outlined
+                              : Icons.broken_image_outlined,
+                          color: scheme.outline,
+                        ),
+                      ),
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: url,
+                      fit: BoxFit.cover,
+                      fadeInDuration: Motion.reveal,
+                      errorWidget: (_, _, _) => Center(
+                        child: Icon(
+                          Icons.broken_image_outlined,
+                          color: scheme.outline,
+                        ),
                       ),
                     ),
-                  ),
+            ),
           ),
         );
       },
@@ -186,21 +218,26 @@ class _PhotoTile extends ConsumerWidget {
     await showDialog<void>(
       context: context,
       builder: (ctx) => Dialog(
-        insetPadding: const EdgeInsets.all(12),
+        insetPadding: const EdgeInsets.all(Space.md),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(28),
+                top: Radius.circular(Radii.sheet),
               ),
               child: CachedNetworkImage(imageUrl: url, fit: BoxFit.contain),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+              padding: const EdgeInsets.fromLTRB(
+                Space.lg,
+                Space.sm,
+                Space.sm,
+                Space.sm,
+              ),
               child: Row(
                 children: [
-                  Expanded(child: Text('By $by')),
+                  Expanded(child: Text('By $by', style: ctx.body)),
                   if (mine)
                     TextButton.icon(
                       onPressed: () async {

@@ -52,7 +52,7 @@ class IceServersProvider {
       final res = await _http.get(uri).timeout(const Duration(seconds: 10));
       if (res.statusCode != 200) throw StateError('metered ${res.statusCode}');
       final list = jsonDecode(res.body);
-      if (list is! List || list.isEmpty) throw StateError('empty ice list');
+      if (list is! List || list.isEmpty) throw StateError('empty-ice-list');
       final servers = [
         ...stunOnly,
         for (final s in list)

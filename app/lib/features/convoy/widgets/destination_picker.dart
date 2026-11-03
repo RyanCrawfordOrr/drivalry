@@ -3,10 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/google/places_client.dart';
 import '../../../data/google/routes_client.dart' show LatLon;
 import '../../../data/repos/convoy_models.dart';
 import '../../../tracking/providers.dart';
+import '../../../widgets/friendly_error.dart';
+import 'convoy_ui.dart';
 
 /// Search for a destination (Places text search, capped per device) with
 /// "where I am now" as the no-API fallback. Returns null when dismissed.
@@ -14,17 +17,15 @@ Future<Destination?> showDestinationPicker(
   BuildContext context, {
   String title = 'Destination',
 }) {
-  return showModalBottomSheet<Destination>(
-    context: context,
-    isScrollControlled: true,
-    showDragHandle: true,
-    builder: (_) => _DestinationSheet(title: title),
+  return showDrivalrySheet<Destination>(
+    context,
+    title: title,
+    builder: (_) => const _DestinationSheet(),
   );
 }
 
 class _DestinationSheet extends ConsumerStatefulWidget {
-  const _DestinationSheet({required this.title});
-  final String title;
+  const _DestinationSheet();
 
   @override
   ConsumerState<_DestinationSheet> createState() => _DestinationSheetState();
@@ -79,9 +80,11 @@ class _DestinationSheetState extends ConsumerState<_DestinationSheet> {
       final loc = await ref.read(trackingPortProvider).getLastKnownLocation();
       if (!mounted) return;
       if (loc == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('No location fix yet.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No position yet. Try again in a moment.'),
+          ),
+        );
         return;
       }
       Navigator.of(context).pop(
@@ -95,98 +98,94 @@ class _DestinationSheetState extends ConsumerState<_DestinationSheet> {
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Location unavailable: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(friendlyError(e, doing: 'find where you are')),
+          ),
+        );
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final results = _results;
     return Padding(
       padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Text(widget.title, style: theme.textTheme.titleLarge),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                key: const Key('destination-search'),
-                controller: _controller,
-                autofocus: true,
-                onChanged: _onChanged,
-                onSubmitted: _search,
-                decoration: InputDecoration(
-                  hintText: 'Search a place or town',
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: _searching
-                      ? const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        )
-                      : null,
-                ),
-              ),
-            ),
-            if (_unavailable)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-                child: Text(
-                  'Place search is not available right now (offline, or '
-                  "today's free lookups are used up). You can still set the "
-                  'destination to where you are.',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ),
-            if (results != null && results.isEmpty && !_unavailable)
-              const Padding(
-                padding: EdgeInsets.all(16),
-                child: Text('Nothing found. Try another spelling.'),
-              ),
-            if (results != null && results.isNotEmpty)
-              Flexible(
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: results.length,
-                  itemBuilder: (_, i) {
-                    final p = results[i];
-                    return ListTile(
-                      leading: const Icon(Icons.place_outlined),
-                      title: Text(p.name),
-                      subtitle: p.address == null ? null : Text(p.address!),
-                      onTap: () => Navigator.of(context).pop(
-                        Destination(
-                          name: p.name,
-                          lat: p.location.lat,
-                          lon: p.location.lon,
-                          placeId: p.placeId,
-                        ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            key: const Key('destination-search'),
+            controller: _controller,
+            autofocus: true,
+            onChanged: _onChanged,
+            onSubmitted: _search,
+            decoration: InputDecoration(
+              hintText: 'Search a place or town',
+              prefixIcon: const Icon(Icons.search),
+              suffixIcon: _searching
+                  ? const Padding(
+                      padding: EdgeInsets.all(Space.md),
+                      child: SizedBox.square(
+                        dimension: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                    );
-                  },
-                ),
-              ),
-            ListTile(
-              leading: const Icon(Icons.my_location),
-              title: const Text('Use where I am now'),
-              subtitle: const Text('No lookup needed'),
-              onTap: _useHere,
+                    )
+                  : null,
             ),
-            const SizedBox(height: 8),
-          ],
-        ),
+          ),
+          if (_unavailable)
+            Padding(
+              padding: const EdgeInsets.only(top: Space.md),
+              child: Text(
+                'Search is resting until tomorrow. You can still use where '
+                'you are.',
+                style: context.bodyMuted,
+              ),
+            ),
+          if (results != null && results.isEmpty && !_unavailable)
+            Padding(
+              padding: const EdgeInsets.only(top: Space.md),
+              child: Text(
+                'Nothing found. Try another spelling.',
+                style: context.bodyMuted,
+              ),
+            ),
+          if (results != null && results.isNotEmpty)
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: results.length,
+                itemBuilder: (_, i) {
+                  final p = results[i];
+                  return ConvoyRow(
+                    leading: const Icon(Icons.place_outlined, size: 28),
+                    title: p.name,
+                    titleStyle: context.body,
+                    caption: p.address,
+                    onTap: () => Navigator.of(context).pop(
+                      Destination(
+                        name: p.name,
+                        lat: p.location.lat,
+                        lon: p.location.lon,
+                        placeId: p.placeId,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          const SizedBox(height: Space.sm),
+          ConvoyRow(
+            leading: const Icon(Icons.my_location, size: 28),
+            title: 'Use where I am now',
+            titleStyle: context.body,
+            caption: 'No search needed',
+            onTap: _useHere,
+          ),
+        ],
       ),
     );
   }

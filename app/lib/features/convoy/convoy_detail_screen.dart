@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:drivalry_scoring/drivalry_scoring.dart' show SpeedUnits;
+import 'package:drivalry_scoring/drivalry_scoring.dart'
+    show SpeedUnits, mpsToKmh, mpsToMph;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/convoy/eta.dart';
 import '../../data/google/routes_client.dart' show LatLon;
 import '../../data/repos/convoy_repo.dart';
@@ -14,15 +16,18 @@ import '../../data/supabase/supabase_providers.dart';
 import '../../tracking/providers.dart';
 import '../../widgets/signed_in_scope.dart';
 import '../../widgets/units.dart';
-import '../friends/widgets/user_avatar.dart';
 import 'live/convoy_live.dart';
 import 'positions/peer_positions.dart';
 import 'widgets/convoy_invite_sheet.dart';
 import 'widgets/convoy_map.dart';
+import 'widgets/convoy_ui.dart';
 import 'widgets/destination_picker.dart';
+import 'widgets/member_avatar.dart';
+import 'widgets/talk_button.dart';
 
-/// One convoy: the shared map on top, the cars with their ETAs below, and
-/// the doors to radio, stops, chat, music, games, expenses, album and recap.
+/// One convoy: the shared map is the stage, a status capsule floats over
+/// it, and a sheet holds Talk, the leader's actions and the cars
+/// (docs/12 §7 Convoy, audit items 9 and 14).
 class ConvoyDetailScreen extends ConsumerWidget {
   const ConvoyDetailScreen({super.key, required this.convoyId});
 
@@ -49,26 +54,40 @@ class ConvoyDetailScreen extends ConsumerWidget {
         message: 'Sign in to see the convoy.',
         icon: Icons.route_outlined,
         child: convoy == null
-            ? Center(
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : const Padding(
-                        padding: EdgeInsets.all(32),
-                        child: Text(
-                          'This convoy is not in your list. Pull to refresh '
-                          'the Convoy tab, or ask for a new invite.',
-                          textAlign: TextAlign.center,
-                        ),
+            ? (loading
+                  ? const Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        Space.gutter,
+                        Space.gutter,
+                        Space.gutter,
+                        0,
                       ),
-              )
-            : _Body(convoy: convoy),
+                      child: Column(
+                        children: [
+                          SkeletonTile(height: 240),
+                          SizedBox(height: Space.md),
+                          SkeletonTile(height: Sizes.drivingTouch),
+                        ],
+                      ),
+                    )
+                  : EmptyState(
+                      kicker: 'Convoy',
+                      headline: 'Convoy not found.',
+                      body:
+                          'Pull to refresh the Convoy tab, or ask for a new '
+                          'invite.',
+                      actionLabel: 'Back to convoys',
+                      onAction: () => context.go(Routes.convoy),
+                    ))
+            : ConvoyDetailBody(convoy: convoy),
       ),
     );
   }
 }
 
-class _Body extends ConsumerWidget {
-  const _Body({required this.convoy});
+/// The map, capsule and sheet without the sign-in gate, for tests.
+class ConvoyDetailBody extends ConsumerWidget {
+  const ConvoyDetailBody({super.key, required this.convoy});
   final Convoy convoy;
 
   @override
@@ -77,22 +96,53 @@ class _Body extends ConsumerWidget {
     // Keeps the channel, positions, ETAs and lost-sheep checks alive while
     // this screen is open (the active convoy stays live app-wide anyway).
     ref.watch(convoyLiveProvider(id));
-    return Column(
+    return Stack(
       children: [
-        Expanded(flex: 5, child: ConvoyMap(convoyId: id)),
-        Expanded(flex: 4, child: _Panel(convoy: convoy)),
+        Positioned.fill(child: ConvoyMap(convoyId: id, showNotices: false)),
+        Positioned(
+          top: Space.md,
+          left: Space.gutter,
+          child: _StatusCapsule(convoy: convoy),
+        ),
+        _Sheet(convoy: convoy),
       ],
     );
   }
 }
 
-class _Panel extends ConsumerWidget {
-  const _Panel({required this.convoy});
+class _StatusCapsule extends ConsumerWidget {
+  const _StatusCapsule({required this.convoy});
   final Convoy convoy;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final members =
+        ref.watch(convoyMembersProvider(convoy.id)).value ?? const [];
+    final present = members.where((m) => m.isPresent).length;
+    return FloatingCapsule(
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ConvoyStatusBadge(status: convoy.status, compact: true),
+          const SizedBox(width: Space.sm),
+          Text(
+            '$present of ${convoy.maxCars} cars',
+            key: const Key('convoy-cars'),
+            style: context.label,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Sheet extends ConsumerWidget {
+  const _Sheet({required this.convoy});
+  final Convoy convoy;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final id = convoy.id;
     final me = ref.watch(currentUserIdProvider);
     final amLeader = ref.watch(amConvoyLeaderProvider(id));
@@ -109,146 +159,151 @@ class _Panel extends ConsumerWidget {
         if (m.isPresent) m,
     ];
     final lead = leader == null ? null : positions[leader];
+    final leaderName = members
+        .where((m) => m.userId == leader)
+        .firstOrNull
+        ?.name;
     final dest = convoy.destination;
 
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 24),
-      children: [
-        Row(
-          children: [
-            _StatusChip(status: convoy.status),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                dest == null
-                    ? '${present.length} of ${convoy.maxCars} cars · no '
-                          'destination yet'
-                    : '${present.length} of ${convoy.maxCars} cars · to '
-                          '${dest.name}',
-                style: theme.textTheme.bodySmall,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            if (amLeader && convoy.status == ConvoyStatus.planning)
-              FilledButton.tonal(
-                key: const Key('start-convoy'),
-                onPressed: () => ref
-                    .read(convoyRepoProvider)
-                    .setStatus(id, ConvoyStatus.active),
-                child: const Text('Start trip'),
-              ),
-            if (amLeader && convoy.isActive)
-              OutlinedButton(
-                onPressed: () => _confirmEnd(context, ref),
-                child: const Text('End trip'),
-              ),
-          ],
-        ),
-        if (amLeader && convoy.isActive)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _regroupHere(context, ref),
-                    icon: const Icon(Icons.group_work_outlined),
-                    label: const Text('Regroup here'),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () async {
-                      final d = await showDestinationPicker(context);
-                      if (d != null) {
-                        await ref
-                            .read(convoyRepoProvider)
-                            .setDestination(id, d);
-                      }
-                    },
-                    icon: const Icon(Icons.flag_outlined),
-                    label: Text(dest == null ? 'Set destination' : 'Change'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        const SizedBox(height: 8),
-        for (final m in present)
-          _MemberTile(
-            member: m,
-            isMe: m.userId == me,
-            isLeader: m.userId == leader,
-            position: positions[m.userId],
-            leaderPosition: lead,
-            eta: etas[m.userId],
-            lost: lost.containsKey(m.userId),
-            units: units,
-          ),
-        const SizedBox(height: 12),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _Action(Icons.radio_outlined, 'Radio', Routes.convoyRadio(id)),
-            _Action(
-              Icons.local_gas_station_outlined,
-              'Stops',
-              Routes.convoyStops(id),
-            ),
-            _Action(Icons.chat_bubble_outline, 'Chat', Routes.convoyChat(id)),
-            _Action(Icons.music_note_outlined, 'Music', Routes.convoyMusic(id)),
-            _Action(
-              Icons.sports_esports_outlined,
-              'Games',
-              Routes.convoyGames(id),
-            ),
-            _Action(
-              Icons.receipt_long_outlined,
-              'Expenses',
-              Routes.convoyExpenses(id),
-            ),
-            _Action(
-              Icons.photo_library_outlined,
-              'Album',
-              Routes.convoyAlbum(id),
-            ),
-            _Action(
-              Icons.auto_awesome_outlined,
-              'Recap',
-              Routes.convoyRecap(id),
+    return DraggableScrollableSheet(
+      key: const Key('convoy-sheet'),
+      initialChildSize: 0.46,
+      minChildSize: 0.22,
+      maxChildSize: 0.92,
+      snap: true,
+      snapSizes: const [0.22, 0.46, 0.92],
+      builder: (ctx, controller) => Container(
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerHigh,
+          borderRadius: Radii.sheetRadius,
+          boxShadow: [
+            BoxShadow(
+              color: scheme.shadow.withValues(alpha: 0.12),
+              blurRadius: 24,
+              offset: const Offset(0, -4),
             ),
           ],
         ),
-      ],
+        clipBehavior: Clip.antiAlias,
+        child: ListView(
+          controller: controller,
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.md,
+            Space.gutter,
+            Space.xxxl,
+          ),
+          children: [
+            const SheetHandle(),
+            const SizedBox(height: Space.lg),
+            ..._primaryAction(context, ref, amLeader, leaderName),
+            if (amLeader && convoy.isActive) ...[
+              const SizedBox(height: Space.md),
+              Row(
+                children: [
+                  Expanded(
+                    child: PairedAction(
+                      label: 'Regroup here',
+                      icon: Icons.group_work_outlined,
+                      onPressed: () => _regroupHere(context, ref),
+                    ),
+                  ),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: PairedAction(
+                      label: dest == null
+                          ? 'Set destination'
+                          : 'Move destination',
+                      icon: Icons.flag_outlined,
+                      onPressed: () => _pickDestination(context, ref),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+            if (amLeader && convoy.status == ConvoyStatus.planning) ...[
+              const SizedBox(height: Space.sm),
+              SecondaryButton(
+                label: dest == null ? 'Set destination' : 'Move destination',
+                icon: Icons.flag_outlined,
+                onPressed: () => _pickDestination(context, ref),
+              ),
+            ],
+            const SizedBox(height: Space.xl),
+            const Kicker('Cars'),
+            const SizedBox(height: Space.xs),
+            if (present.isEmpty)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: Space.md),
+                child: Text(
+                  'No cars yet. Share the invite.',
+                  style: context.bodyMuted,
+                ),
+              ),
+            for (final m in present)
+              _MemberRow(
+                member: m,
+                isMe: m.userId == me,
+                isLeader: m.userId == leader,
+                position: positions[m.userId],
+                leaderPosition: lead,
+                eta: etas[m.userId],
+                lost: lost.containsKey(m.userId),
+                units: units,
+              ),
+          ],
+        ),
+      ),
     );
   }
 
-  Future<void> _confirmEnd(BuildContext context, WidgetRef ref) async {
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('End the trip?'),
-        content: const Text(
-          'Positions stop flowing and everyone gets the recap. Stops, '
-          'expenses and photos stay.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Keep going'),
+  List<Widget> _primaryAction(
+    BuildContext context,
+    WidgetRef ref,
+    bool amLeader,
+    String? leaderName,
+  ) {
+    final id = convoy.id;
+    switch (convoy.status) {
+      case ConvoyStatus.active:
+        return [TalkButton(convoyId: id)];
+      case ConvoyStatus.planning:
+        if (amLeader) {
+          return [
+            PrimaryButton(
+              key: const Key('start-convoy'),
+              label: 'Start trip',
+              icon: Icons.play_arrow_rounded,
+              onPressed: () => ref
+                  .read(convoyRepoProvider)
+                  .setStatus(id, ConvoyStatus.active),
+            ),
+          ];
+        }
+        return [
+          Text(
+            leaderName == null
+                ? 'Waiting for the leader to start.'
+                : 'Waiting for $leaderName to start.',
+            style: context.bodyMuted,
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('End trip'),
+        ];
+      case ConvoyStatus.ended:
+        return [
+          PrimaryButton(
+            label: 'See the recap',
+            icon: Icons.auto_awesome_outlined,
+            onPressed: () => context.push(Routes.convoyRecap(id)),
           ),
-        ],
-      ),
-    );
-    if (ok != true || !context.mounted) return;
-    await ref.read(convoyRepoProvider).setStatus(convoy.id, ConvoyStatus.ended);
-    if (context.mounted) context.push(Routes.convoyRecap(convoy.id));
+        ];
+    }
+  }
+
+  Future<void> _pickDestination(BuildContext context, WidgetRef ref) async {
+    final d = await showDestinationPicker(context);
+    if (d != null) {
+      await ref.read(convoyRepoProvider).setDestination(convoy.id, d);
+    }
   }
 
   Future<void> _regroupHere(BuildContext context, WidgetRef ref) async {
@@ -276,12 +331,13 @@ class _Panel extends ConsumerWidget {
     }
     final sent = await live.setRegroup(lat, lon);
     if (context.mounted) {
+      Haptics.success();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             sent
                 ? 'Regroup pin sent.'
-                : 'Pin set here; it could not be sent. Check your connection.',
+                : 'Pin set here. It goes out when you are back online.',
           ),
         ),
       );
@@ -289,30 +345,8 @@ class _Panel extends ConsumerWidget {
   }
 }
 
-class _StatusChip extends StatelessWidget {
-  const _StatusChip({required this.status});
-  final ConvoyStatus status;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final (label, color) = switch (status) {
-      ConvoyStatus.active => ('On the road', theme.colorScheme.primary),
-      ConvoyStatus.planning => ('Planning', theme.colorScheme.secondary),
-      ConvoyStatus.ended => ('Ended', theme.colorScheme.outline),
-    };
-    return Chip(
-      label: Text(label),
-      labelStyle: theme.textTheme.labelSmall?.copyWith(color: color),
-      side: BorderSide(color: color),
-      padding: EdgeInsets.zero,
-      visualDensity: VisualDensity.compact,
-    );
-  }
-}
-
-class _MemberTile extends StatelessWidget {
-  const _MemberTile({
+class _MemberRow extends StatelessWidget {
+  const _MemberRow({
     required this.member,
     required this.isMe,
     required this.isLeader,
@@ -334,76 +368,86 @@ class _MemberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final parts = <String>[];
+    final style = context.label.copyWith(
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+    );
+    // Speed and gap count to their values (docs/12 §5b, "numbers move").
+    final line = <Widget>[];
     final p = position;
     if (p == null) {
-      parts.add('No position yet');
+      line.add(Text(isLeader ? 'Leading' : 'No position yet', style: style));
     } else {
       final age = DateTime.now().millisecondsSinceEpoch - p.t;
       if (age > staleAfter.inMilliseconds) {
-        parts.add('Last seen ${(age / 60000).round()} min ago');
+        line.add(
+          Text('Last seen ${(age / 60000).round()} min ago', style: style),
+        );
       } else if ((p.speed ?? 0) > 2) {
-        parts.add(formatSpeed(p.speed!, units));
+        final mph = units == SpeedUnits.mph;
+        line.add(
+          AnimatedNumber(
+            value: mph ? mpsToMph(p.speed!) : mpsToKmh(p.speed!),
+            style: style,
+            suffix: ' ${unitLabel(units)}',
+          ),
+        );
       } else {
-        parts.add('Stopped');
+        line.add(Text('Stopped', style: style));
       }
       final lead = leaderPosition;
-      if (lead != null && !isLeader) {
+      if (isLeader) {
+        line.add(Text(' · Leading', style: style));
+      } else if (lead != null) {
         final d = LatLon(lead.lat, lead.lon).distanceTo(LatLon(p.lat, p.lon));
-        parts.add('${formatDistance(d, units)} from the leader');
+        final mi = units == SpeedUnits.mph;
+        final value = mi ? d / 1609.344 : d / 1000;
+        line.add(Text(' · ', style: style));
+        line.add(
+          AnimatedNumber(
+            value: value,
+            decimals: value < 10 ? 1 : 0,
+            style: style,
+            suffix: mi ? ' mi back' : ' km back',
+          ),
+        );
       }
     }
-    if (eta != null) parts.add('ETA ${eta!.estimated ? '~' : ''}${eta!.label}');
-    return ListTile(
-      dense: true,
-      contentPadding: EdgeInsets.zero,
-      leading: UserAvatar(
+
+    final e = eta;
+    final pills = <Widget>[
+      if (lost) const Pill('Fallen behind', tone: PillTone.warning),
+      if (e != null && !lost)
+        if (e.seconds < 3600)
+          NumberPill(
+            value: (e.seconds / 60).round(),
+            prefix: e.estimated ? '~' : '',
+            suffix: ' min',
+            compact: true,
+          )
+        else
+          Pill('${e.estimated ? '~' : ''}${e.label}', compact: true),
+    ];
+
+    return ConvoyRow(
+      leading: MemberAvatar(
         name: member.name,
         avatarPath: member.avatarPath,
-        radius: 18,
-        highlighted: isLeader,
+        isMe: isMe,
       ),
-      title: Row(
-        children: [
-          Flexible(
-            child: Text(
-              isMe ? 'You' : member.name,
-              overflow: TextOverflow.ellipsis,
+      title: isMe ? 'You' : member.name,
+      subtitle: Row(mainAxisSize: MainAxisSize.min, children: line),
+      trailing: pills.isEmpty
+          ? null
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < pills.length; i++) ...[
+                  if (i > 0) const SizedBox(height: Space.xs),
+                  pills[i],
+                ],
+              ],
             ),
-          ),
-          if (isLeader) ...[
-            const SizedBox(width: 6),
-            Icon(Icons.star, size: 14, color: theme.colorScheme.primary),
-          ],
-        ],
-      ),
-      subtitle: Text(parts.join(' · ')),
-      trailing: lost
-          ? Tooltip(
-              message: 'Lost sheep',
-              child: Icon(
-                Icons.warning_amber_rounded,
-                color: theme.colorScheme.error,
-              ),
-            )
-          : null,
-    );
-  }
-}
-
-class _Action extends StatelessWidget {
-  const _Action(this.icon, this.label, this.route);
-  final IconData icon;
-  final String label;
-  final String route;
-
-  @override
-  Widget build(BuildContext context) {
-    return ActionChip(
-      avatar: Icon(icon, size: 18),
-      label: Text(label),
-      onPressed: () => context.push(route),
     );
   }
 }
@@ -416,10 +460,13 @@ class _Menu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final amLeader = ref.watch(amConvoyLeaderProvider(convoy.id));
     return PopupMenuButton<String>(
+      tooltip: 'More',
       onSelected: (v) => _on(context, ref, v),
       itemBuilder: (_) => [
         if (amLeader)
           const PopupMenuItem(value: 'rename', child: Text('Rename')),
+        if (amLeader && convoy.isActive)
+          const PopupMenuItem(value: 'end', child: Text('End trip')),
         const PopupMenuItem(value: 'recap', child: Text('Recap')),
         const PopupMenuItem(value: 'leave', child: Text('Leave convoy')),
       ],
@@ -431,30 +478,39 @@ class _Menu extends ConsumerWidget {
     switch (v) {
       case 'rename':
         final controller = TextEditingController(text: convoy.name);
-        final name = await showDialog<String>(
-          context: context,
-          builder: (ctx) => AlertDialog(
-            title: const Text('Rename convoy'),
-            content: TextField(
-              controller: controller,
-              autofocus: true,
-              maxLength: 40,
-              onSubmitted: (s) => Navigator.of(ctx).pop(s),
+        final name = await showDrivalrySheet<String>(
+          context,
+          title: 'Rename convoy',
+          builder: (ctx) => Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery.viewInsetsOf(ctx).bottom,
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(),
-                child: const Text('Cancel'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.of(ctx).pop(controller.text),
-                child: const Text('Save'),
-              ),
-            ],
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextField(
+                  controller: controller,
+                  autofocus: true,
+                  maxLength: 40,
+                  textCapitalization: TextCapitalization.sentences,
+                  onSubmitted: (s) => Navigator.of(ctx).pop(s),
+                ),
+                const SizedBox(height: Space.lg),
+                PrimaryButton(
+                  label: 'Save',
+                  onPressed: () => Navigator.of(ctx).pop(controller.text),
+                ),
+              ],
+            ),
           ),
         );
         controller.dispose();
-        if (name != null) await repo.rename(convoy.id, name);
+        if (name != null && name.trim().isNotEmpty) {
+          await repo.rename(convoy.id, name);
+        }
+      case 'end':
+        await _confirmEnd(context, ref);
       case 'recap':
         if (context.mounted) context.push(Routes.convoyRecap(convoy.id));
       case 'leave':
@@ -482,6 +538,35 @@ class _Menu extends ConsumerWidget {
           await repo.leave(convoy.id);
           if (context.mounted) context.go(Routes.convoy);
         }
+    }
+  }
+
+  Future<void> _confirmEnd(BuildContext context, WidgetRef ref) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('End the trip?'),
+        content: const Text(
+          'Positions stop flowing and everyone gets the recap. Stops, '
+          'expenses and photos stay.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Keep going'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('End trip'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
+    await ref.read(convoyRepoProvider).setStatus(convoy.id, ConvoyStatus.ended);
+    if (context.mounted) {
+      Haptics.success();
+      unawaited(context.push(Routes.convoyRecap(convoy.id)));
     }
   }
 }

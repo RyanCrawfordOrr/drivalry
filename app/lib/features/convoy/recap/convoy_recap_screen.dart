@@ -9,13 +9,16 @@ import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/convoy/recap_builder.dart';
 import '../../../data/convoy/settle_up.dart';
 import '../../../data/db/database.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../tracking/providers.dart';
+import '../../../widgets/friendly_error.dart';
 import '../../../widgets/units.dart';
 import '../../drive/share_card.dart' show renderWidgetToPng;
+import '../widgets/convoy_ui.dart';
 import 'recap_card.dart';
 import 'recap_playback.dart';
 
@@ -88,7 +91,8 @@ final convoyRecapProvider = FutureProvider.autoDispose
     });
 
 /// The end-of-trip recap: an animated replay of every car's line, the
-/// awards, and the numbers. Built on this phone from what it received.
+/// awards as tiles, and the numbers. Built on this phone from what it
+/// received.
 class ConvoyRecapScreen extends ConsumerStatefulWidget {
   const ConvoyRecapScreen({super.key, required this.convoyId});
 
@@ -114,7 +118,6 @@ class _ConvoyRecapScreenState extends ConsumerState<ConvoyRecapScreen>
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final data = ref.watch(convoyRecapProvider(widget.convoyId));
     final units = resolveUnits(
       ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
@@ -135,42 +138,41 @@ class _ConvoyRecapScreenState extends ConsumerState<ConvoyRecapScreen>
             onPressed: data.value == null || _sharing
                 ? null
                 : () => _share(data.value!, units),
-            icon: const Icon(Icons.share_outlined),
+            icon: const Icon(Icons.ios_share),
           ),
         ],
       ),
       body: switch (data) {
-        AsyncData(value: null) => const Center(
-          child: Padding(
-            padding: EdgeInsets.all(32),
-            child: Text(
-              'Nothing to recap yet: this convoy is not in your list.',
-              textAlign: TextAlign.center,
-            ),
-          ),
+        AsyncData(value: null) => const EmptyState(
+          kicker: 'Recap',
+          headline: 'Nothing to recap yet.',
+          body: 'Open it from the Convoy tab first.',
         ),
         AsyncData(value: final d?) => _RecapBody(
           data: d,
           anim: _anim,
           units: units,
         ),
-        AsyncError(:final error) => Center(child: Text('Recap failed: $error')),
-        _ => const Center(child: CircularProgressIndicator()),
+        AsyncError(:final error) => EmptyState(
+          kicker: 'Recap',
+          headline: 'No recap yet.',
+          body: friendlyError(error, doing: 'build the recap'),
+          actionLabel: 'Try again',
+          onAction: () => ref.invalidate(convoyRecapProvider(widget.convoyId)),
+        ),
+        _ => const Padding(
+          padding: EdgeInsets.fromLTRB(Space.gutter, Space.lg, Space.gutter, 0),
+          child: Column(
+            children: [
+              SkeletonTile(height: 72),
+              SizedBox(height: Space.md),
+              SkeletonTile(height: 220),
+              SizedBox(height: Space.md),
+              SkeletonTile(height: 88),
+            ],
+          ),
+        ),
       },
-      bottomNavigationBar: data.value == null
-          ? null
-          : SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                child: Text(
-                  'Built from the positions this phone received and the '
-                  'Drive Scores members chose to upload. Nothing was sent to '
-                  'make it.',
-                  style: theme.textTheme.bodySmall,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
     );
   }
 
@@ -198,9 +200,9 @@ class _ConvoyRecapScreenState extends ConsumerState<ConvoyRecapScreen>
       );
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Could not share: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(friendlyError(e, doing: 'share the recap'))),
+        );
       }
     } finally {
       if (mounted) setState(() => _sharing = false);
@@ -221,125 +223,200 @@ class _RecapBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final r = data.recap;
     final total = r.members.fold(0.0, (a, m) => a + m.distanceM);
     final nameOf = {for (final m in r.members) m.userId: m.name};
     final order = [for (final m in r.members) m.userId];
     final d = r.duration;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
       children: [
-        Text(r.name, style: theme.textTheme.headlineSmall),
-        Text(
-          [
-            '${r.members.length} ${r.members.length == 1 ? 'car' : 'cars'}',
-            formatDistance(total, units),
-            if (d != null) formatElapsed(d),
-            '${r.stopsDone} ${r.stopsDone == 1 ? 'stop' : 'stops'}',
-            if (r.totalCostCents > 0)
-              formatCents(r.totalCostCents, currency: r.costCurrency),
-          ].join(' · '),
-          style: theme.textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 12),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: AspectRatio(
-            aspectRatio: 1.5,
-            child: Stack(
+        Padding(
+          padding: Space.screen,
+          child: Reveal(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AnimatedBuilder(
-                  animation: anim,
-                  builder: (_, _) => RecapPlayback(
-                    tracks: data.tracks,
-                    progress: anim.isAnimating || anim.value > 0
-                        ? anim.value
-                        : 1,
-                    order: order,
-                  ),
-                ),
-                if (data.tracks.isEmpty)
-                  Center(
-                    child: Text(
-                      'No positions were received during this trip.',
-                      style: theme.textTheme.bodySmall,
-                    ),
-                  ),
-                Positioned(
-                  right: 8,
-                  bottom: 8,
-                  child: IconButton.filledTonal(
-                    key: const Key('replay'),
-                    tooltip: 'Replay',
-                    onPressed: data.tracks.isEmpty
-                        ? null
-                        : () => anim.forward(from: 0),
-                    icon: const Icon(Icons.replay),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (data.tracks.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8),
-            child: Wrap(
-              spacing: 12,
-              children: [
-                for (var i = 0; i < order.length; i++)
-                  if (data.tracks.containsKey(order[i]))
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+                const Kicker('Convoy recap'),
+                const SizedBox(height: Space.sm),
+                Text(r.name, style: context.headline),
+                const SizedBox(height: Space.lg),
+                ClipRRect(
+                  borderRadius: Radii.cardRadius,
+                  child: AspectRatio(
+                    aspectRatio: 1.5,
+                    child: Stack(
                       children: [
-                        Container(
-                          width: 10,
-                          height: 10,
-                          decoration: BoxDecoration(
-                            color: trackColors[i % trackColors.length],
-                            shape: BoxShape.circle,
+                        AnimatedBuilder(
+                          animation: anim,
+                          builder: (_, _) => RecapPlayback(
+                            tracks: data.tracks,
+                            progress: anim.isAnimating || anim.value > 0
+                                ? anim.value
+                                : 1,
+                            order: order,
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          nameOf[order[i]] ?? 'Driver',
-                          style: theme.textTheme.labelSmall,
+                        if (data.tracks.isEmpty)
+                          Center(
+                            child: Text(
+                              'No car shared its position this trip.',
+                              style: context.caption,
+                            ),
+                          ),
+                        Positioned(
+                          right: Space.sm,
+                          bottom: Space.sm,
+                          child: IconButton.filledTonal(
+                            key: const Key('replay'),
+                            tooltip: 'Replay',
+                            constraints: const BoxConstraints.tightFor(
+                              width: Sizes.touch,
+                              height: Sizes.touch,
+                            ),
+                            onPressed: data.tracks.isEmpty
+                                ? null
+                                : () {
+                                    Haptics.tap();
+                                    anim.forward(from: 0);
+                                  },
+                            icon: const Icon(Icons.replay),
+                          ),
                         ),
                       ],
                     ),
+                  ),
+                ),
+                if (data.tracks.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: Space.sm),
+                    child: Wrap(
+                      spacing: Space.md,
+                      runSpacing: Space.xs,
+                      children: [
+                        for (var i = 0; i < order.length; i++)
+                          if (data.tracks.containsKey(order[i]))
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 10,
+                                  height: 10,
+                                  decoration: BoxDecoration(
+                                    // Line colours match the drawn tracks.
+                                    color: trackColors[i % trackColors.length],
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                const SizedBox(width: Space.xs),
+                                Text(
+                                  nameOf[order[i]] ?? 'Driver',
+                                  style: context.caption,
+                                ),
+                              ],
+                            ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: Space.xl),
+                StatGrid(
+                  children: [
+                    StatTile(
+                      value: '${r.members.length}',
+                      label: r.members.length == 1 ? 'Car' : 'Cars',
+                    ),
+                    StatTile(
+                      value: formatDistance(total, units),
+                      label: 'Together',
+                    ),
+                    if (d != null)
+                      StatTile(value: formatElapsed(d), label: 'On the road'),
+                    StatTile(
+                      value: '${r.stopsDone}',
+                      label: r.stopsDone == 1 ? 'Stop' : 'Stops',
+                    ),
+                    if (r.totalCostCents > 0)
+                      StatTile(
+                        value: formatCents(
+                          r.totalCostCents,
+                          currency: r.costCurrency,
+                        ),
+                        label: 'Spent',
+                      ),
+                  ],
+                ),
               ],
             ),
           ),
-        const SizedBox(height: 16),
-        Text('Awards', style: theme.textTheme.titleMedium),
-        for (final a in r.awards)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: Icon(
-              _awardIcon(a.id),
-              color: a.honourable
-                  ? theme.colorScheme.primary
-                  : theme.colorScheme.error,
+        ),
+        const SizedBox(height: Space.section),
+        if (r.awards.isNotEmpty)
+          EditorialSection(
+            kicker: 'Awards',
+            child: Column(
+              children: [
+                for (final (i, a) in r.awards.indexed) ...[
+                  if (i > 0) const SizedBox(height: Space.md),
+                  Reveal(
+                    delay: Reveal.stagger(i),
+                    child: Tile(
+                      child: Row(
+                        children: [
+                          Icon(
+                            _awardIcon(a.id),
+                            size: 28,
+                            color: a.honourable ? scheme.primary : scheme.error,
+                          ),
+                          const SizedBox(width: Space.md),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(a.title, style: context.title),
+                                const SizedBox(height: Space.xs),
+                                Text(
+                                  '${nameOf[a.userId] ?? 'Driver'} · ${a.detail}',
+                                  style: context.caption,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
-            title: Text(a.title),
-            subtitle: Text('${nameOf[a.userId] ?? 'Driver'} · ${a.detail}'),
           ),
-        const SizedBox(height: 8),
-        Text('Cars', style: theme.textTheme.titleMedium),
-        for (final m in r.members)
-          ListTile(
-            contentPadding: EdgeInsets.zero,
-            title: Text(m.name),
-            subtitle: Text(
-              [
-                formatDistance(m.distanceM, units),
-                if (m.averageScore != null)
-                  'avg score ${m.averageScore!.round()}',
-                if (m.stopsProposed > 0) '${m.stopsProposed} stops proposed',
-              ].join(' · '),
-            ),
+        EditorialSection(
+          kicker: 'Cars',
+          child: Column(
+            children: [
+              for (final m in r.members)
+                ConvoyRow(
+                  leading: Avatar(name: m.name),
+                  title: m.name,
+                  caption: [
+                    formatDistance(m.distanceM, units),
+                    if (m.averageScore != null)
+                      'score ${m.averageScore!.round()}',
+                    if (m.stopsProposed > 0)
+                      '${m.stopsProposed} ${m.stopsProposed == 1 ? 'stop' : 'stops'} proposed',
+                  ].join(' · '),
+                ),
+            ],
           ),
+        ),
+        Padding(
+          padding: Space.screen,
+          child: Text(
+            'Built on this phone from what the cars shared. Nothing was '
+            'uploaded to make it.',
+            style: context.caption,
+          ),
+        ),
       ],
     );
   }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/supabase/supabase_providers.dart';
 import '../audio/convoy_audio_session.dart';
+import '../widgets/convoy_ui.dart';
 import '../widgets/member_names.dart';
 import 'games_controller.dart';
 import 'games_core.dart';
@@ -21,13 +23,11 @@ class ConvoyGamesScreen extends ConsumerWidget {
       appBar: AppBar(title: const Text('Games')),
       body: driving
           ? const Center(
-              key: Key('driver-gate'),
-              child: Padding(
-                padding: EdgeInsets.all(32),
-                child: Text(
-                  'Games are for passengers. Drivers hear the results.',
-                  textAlign: TextAlign.center,
-                ),
+              child: EmptyState(
+                key: Key('driver-gate'),
+                kicker: 'Games',
+                headline: 'Passengers only.',
+                body: 'Games are for passengers. Drivers hear the results.',
               ),
             )
           : _GamesBody(convoyId: convoyId),
@@ -41,6 +41,7 @@ class _GamesBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final s = ref.watch(gamesControllerProvider(convoyId));
     final c = ref.read(gamesControllerProvider(convoyId).notifier);
     final names =
@@ -53,28 +54,78 @@ class _GamesBody extends ConsumerWidget {
         children: [
           const TabBar(
             isScrollable: true,
+            tabAlignment: TabAlignment.start,
+            padding: EdgeInsets.symmetric(horizontal: Space.xs),
             tabs: [
               Tab(text: 'Plates'),
               Tab(text: 'Trivia'),
-              Tab(text: 'Spot the…'),
+              Tab(text: 'I spy'),
               Tab(text: 'Smoothest'),
             ],
           ),
-          if (s.lastResult != null)
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(s.lastResult!, key: const Key('last-result')),
-            ),
+          StateSwitcher(
+            child: s.lastResult == null
+                ? const SizedBox.shrink(key: ValueKey('no-result'))
+                : Padding(
+                    key: ValueKey(s.lastResult),
+                    padding: const EdgeInsets.fromLTRB(
+                      Space.gutter,
+                      Space.md,
+                      Space.gutter,
+                      0,
+                    ),
+                    child: Tile(
+                      tone: TileTone.primary,
+                      padding: const EdgeInsets.all(Space.lg),
+                      child: Text(
+                        s.lastResult!,
+                        key: const Key('last-result'),
+                        style: context.body.copyWith(
+                          color: scheme.onPrimaryContainer,
+                        ),
+                      ),
+                    ),
+                  ),
+          ),
           Expanded(
             child: TabBarView(
               children: [
                 _PlatesTab(nameOf: nameOf, controller: c),
                 _TriviaTab(nameOf: nameOf, controller: c, peers: s.peers),
-                _ScavengerTab(nameOf: nameOf, controller: c),
+                _SpyTab(nameOf: nameOf, controller: c),
                 _SmoothestTab(nameOf: nameOf, controller: c),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Standings extends StatelessWidget {
+  const _Standings({required this.rows});
+  final List<(String, int)> rows;
+
+  @override
+  Widget build(BuildContext context) {
+    if (rows.isEmpty) return const SizedBox.shrink();
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.md,
+        Space.gutter,
+        0,
+      ),
+      child: Wrap(
+        spacing: Space.sm,
+        runSpacing: Space.sm,
+        children: [
+          for (final (i, (name, n)) in rows.indexed)
+            Pill(
+              '$name: $n',
+              tone: i == 0 ? PillTone.primary : PillTone.neutral,
+            ),
         ],
       ),
     );
@@ -88,47 +139,42 @@ class _PlatesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final mine = controller.plates.mine;
     final standings = controller.plates.standings();
     return Column(
       children: [
-        if (standings.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Wrap(
-              spacing: 8,
-              children: [
-                for (final (id, n) in standings)
-                  Chip(label: Text('${nameOf(id)}: $n')),
-              ],
-            ),
-          ),
+        _Standings(rows: [for (final (id, n) in standings) (nameOf(id), n)]),
         Expanded(
           child: GridView.count(
             crossAxisCount: 6,
-            padding: const EdgeInsets.all(8),
+            mainAxisSpacing: Space.sm,
+            crossAxisSpacing: Space.sm,
+            padding: const EdgeInsets.fromLTRB(
+              Space.gutter,
+              Space.md,
+              Space.gutter,
+              Space.xxxl,
+            ),
             children: [
               for (final code in plateStates)
-                InkWell(
+                Tile(
                   key: Key('plate-$code'),
-                  onTap: () => controller.togglePlate(code),
-                  child: Container(
-                    margin: const EdgeInsets.all(3),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: mine.contains(code)
-                          ? Theme.of(context).colorScheme.primary
-                          : Theme.of(
-                              context,
-                            ).colorScheme.surfaceContainerHighest,
-                    ),
+                  tone: mine.contains(code)
+                      ? TileTone.primary
+                      : TileTone.resting,
+                  radius: Radii.tileRadius,
+                  padding: EdgeInsets.zero,
+                  onTap: () {
+                    Haptics.select();
+                    controller.togglePlate(code);
+                  },
+                  child: Center(
                     child: Text(
                       code,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      style: context.label.copyWith(
                         color: mine.contains(code)
-                            ? Theme.of(context).colorScheme.onPrimary
+                            ? scheme.onPrimaryContainer
                             : null,
                       ),
                     ),
@@ -154,108 +200,161 @@ class _TriviaTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final t = controller.trivia;
     final q = t.current;
-    final theme = Theme.of(context);
+    final answered = t.answers.containsKey(t.selfId);
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.gutter,
+        Space.xxxl,
+      ),
       children: [
         Text(
           controller.amTriviaHost
               ? 'You are asking the questions.'
               : 'Host: ${nameOf(Trivia.hostOf(peers, t.selfId))}',
-          style: theme.textTheme.bodySmall,
+          style: context.caption,
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: Space.md),
         if (q == null)
           Text(
             peers.isEmpty
-                ? 'Trivia needs at least one other car on the radio.'
+                ? 'Trivia needs another car on the radio.'
                 : 'No question yet.',
+            style: context.bodyMuted,
           )
         else ...[
-          Text(q.prompt, style: theme.textTheme.titleMedium),
-          const SizedBox(height: 8),
-          for (var i = 0; i < q.choices.length; i++)
-            ListTile(
-              key: Key('choice-$i'),
-              leading: Icon(
-                t.answers[t.selfId] == i
-                    ? Icons.radio_button_checked
-                    : Icons.radio_button_off,
+          Text(q.prompt, style: context.title),
+          const SizedBox(height: Space.md),
+          for (var i = 0; i < q.choices.length; i++) ...[
+            if (i > 0) const SizedBox(height: Space.sm),
+            Reveal(
+              delay: Reveal.stagger(i),
+              child: Tile(
+                key: Key('choice-$i'),
+                tone: t.answers[t.selfId] == i
+                    ? TileTone.primary
+                    : TileTone.resting,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Space.lg,
+                  vertical: Space.md,
+                ),
+                onTap: t.open && !answered
+                    ? () {
+                        Haptics.select();
+                        controller.answerTrivia(i);
+                      }
+                    : null,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(minHeight: Space.xxl),
+                  child: Row(
+                    children: [
+                      Icon(
+                        t.answers[t.selfId] == i
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_off,
+                        color: t.answers[t.selfId] == i
+                            ? scheme.onPrimaryContainer
+                            : scheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: Space.md),
+                      Expanded(
+                        child: Text(
+                          q.choices[i],
+                          style: context.body.copyWith(
+                            color: t.answers[t.selfId] == i
+                                ? scheme.onPrimaryContainer
+                                : null,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              title: Text(q.choices[i]),
-              enabled: t.open && !t.answers.containsKey(t.selfId),
-              onTap: () => controller.answerTrivia(i),
             ),
+          ],
+          const SizedBox(height: Space.md),
           Text(
             t.open ? '${t.answers.length} answered' : 'Closed',
-            style: theme.textTheme.bodySmall,
+            style: context.caption,
           ),
         ],
-        const SizedBox(height: 12),
-        if (controller.amTriviaHost)
-          Row(
-            children: [
-              FilledButton(
-                key: const Key('next-question'),
-                onPressed: controller.askNextQuestion,
-                child: const Text('Next question'),
-              ),
-              const SizedBox(width: 8),
-              if (q != null && t.open)
-                OutlinedButton(
-                  onPressed: controller.revealTrivia,
-                  child: const Text('Reveal now'),
-                ),
-            ],
+        const SizedBox(height: Space.lg),
+        if (controller.amTriviaHost) ...[
+          PrimaryButton(
+            key: const Key('next-question'),
+            label: 'Next question',
+            onPressed: controller.askNextQuestion,
           ),
+          if (q != null && t.open) ...[
+            const SizedBox(height: Space.sm),
+            SecondaryButton(
+              label: 'Reveal now',
+              onPressed: controller.revealTrivia,
+            ),
+          ],
+        ],
         if (t.scores.isNotEmpty) ...[
-          const Divider(),
-          Text('Scores', style: theme.textTheme.labelLarge),
+          const SizedBox(height: Space.section),
+          const Kicker('Scores'),
+          const SizedBox(height: Space.sm),
           for (final e in t.scores.entries)
-            Text('${nameOf(e.key)}: ${e.value}'),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Space.xs),
+              child: Text('${nameOf(e.key)}: ${e.value}', style: context.body),
+            ),
         ],
       ],
     );
   }
 }
 
-class _ScavengerTab extends StatelessWidget {
-  const _ScavengerTab({required this.nameOf, required this.controller});
+class _SpyTab extends StatelessWidget {
+  const _SpyTab({required this.nameOf, required this.controller});
   final GamesController controller;
   final String Function(String) nameOf;
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final s = controller.scavenger;
     final tally = s.tally();
     return ListView(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.only(bottom: Space.xxxl),
       children: [
-        if (tally.isNotEmpty)
-          Wrap(
-            spacing: 8,
-            children: [
-              for (final e in tally.entries)
-                Chip(label: Text('${nameOf(e.key)}: ${e.value}')),
-            ],
-          ),
+        _Standings(
+          rows: [for (final e in tally.entries) (nameOf(e.key), e.value)],
+        ),
+        const SizedBox(height: Space.sm),
         for (final item in s.items)
-          ListTile(
-            key: Key('spot-$item'),
-            leading: Icon(
-              s.claims.containsKey(item)
-                  ? Icons.check_circle
-                  : Icons.radio_button_unchecked,
+          Padding(
+            padding: Space.screen,
+            child: ConvoyRow(
+              key: Key('spot-$item'),
+              leading: Icon(
+                s.claims.containsKey(item)
+                    ? Icons.check_circle
+                    : Icons.radio_button_unchecked,
+                color: s.claims.containsKey(item)
+                    ? scheme.primary
+                    : scheme.onSurfaceVariant,
+              ),
+              title: item,
+              titleStyle: context.body,
+              caption: s.claims[item] == null
+                  ? null
+                  : _spottedBy(nameOf(s.claims[item]!.$1)),
+              onTap: s.claims.containsKey(item)
+                  ? null
+                  : () {
+                      Haptics.success();
+                      controller.claimItem(item);
+                    },
             ),
-            title: Text(item),
-            subtitle: s.claims[item] == null
-                ? null
-                : Text(_spottedBy(nameOf(s.claims[item]!.$1))),
-            onTap: s.claims.containsKey(item)
-                ? null
-                : () => controller.claimItem(item),
           ),
       ],
     );
@@ -269,27 +368,50 @@ class _SmoothestTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final rows = controller.smoothest.ranking();
     if (rows.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(32),
-          child: Text(
-            'Needs a few minutes of positions from the other cars. This ranks '
-            'steadiness, not speed.',
-            textAlign: TextAlign.center,
-          ),
-        ),
+      return const EmptyState(
+        kicker: 'Smoothest',
+        headline: 'Needs a few minutes of driving.',
+        body: 'Ranks the steadiest car, not the fastest.',
       );
     }
     return ListView(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.md,
+        Space.gutter,
+        Space.xxxl,
+      ),
       children: [
         for (var i = 0; i < rows.length; i++)
-          ListTile(
-            leading: CircleAvatar(child: Text('${i + 1}')),
-            title: Text(nameOf(rows[i].$1)),
-            trailing: Text(SmoothestLeg.label(rows[i].$2)),
+          Reveal(
+            delay: Reveal.stagger(i),
+            child: ConvoyRow(
+              leading: Container(
+                width: 40,
+                height: 40,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: i == 0
+                      ? scheme.primaryContainer
+                      : scheme.surfaceContainerHighest,
+                ),
+                child: Text(
+                  '${i + 1}',
+                  style: context.label.copyWith(
+                    color: i == 0 ? scheme.onPrimaryContainer : null,
+                  ),
+                ),
+              ),
+              title: nameOf(rows[i].$1),
+              trailing: Pill(
+                SmoothestLeg.label(rows[i].$2),
+                tone: i == 0 ? PillTone.positive : PillTone.neutral,
+              ),
+            ),
           ),
       ],
     );

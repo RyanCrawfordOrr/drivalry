@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/convoy_repo.dart';
 import '../../data/repos/convoy_sync.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import 'widgets/convoy_ui.dart';
 import 'widgets/destination_picker.dart';
 
 /// Name the convoy, optionally pick where it is going, create it. The invite
@@ -37,19 +40,20 @@ class _CreateConvoyScreenState extends ConsumerState<CreateConvoyScreen> {
           .read(convoyRepoProvider)
           .create(name, destination: _destination);
       if (!mounted) return;
+      Haptics.success();
       context.go(Routes.convoyDetail(id));
     } catch (e) {
       if (!mounted) return;
       setState(() => _busy = false);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Could not create: $e')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(friendlyError(e, doing: 'create the convoy'))),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final dest = _destination;
     return Scaffold(
       appBar: AppBar(title: const Text('New convoy')),
@@ -57,59 +61,75 @@ class _CreateConvoyScreenState extends ConsumerState<CreateConvoyScreen> {
         message: 'Sign in to start a convoy.',
         icon: Icons.route_outlined,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.lg,
+            Space.gutter,
+            Space.xxxl,
+          ),
           children: [
-            TextField(
-              key: const Key('convoy-name'),
-              controller: _name,
-              autofocus: true,
-              textCapitalization: TextCapitalization.sentences,
-              maxLength: 40,
-              decoration: const InputDecoration(
-                labelText: 'Trip name',
-                hintText: 'Coast run, Thanksgiving drive…',
-              ),
-              onSubmitted: (_) => _create(),
-            ),
-            const SizedBox(height: 8),
-            Card(
-              child: ListTile(
-                leading: const Icon(Icons.flag_outlined),
-                title: Text(dest?.name ?? 'Destination (optional)'),
-                subtitle: Text(
-                  dest == null
-                      ? 'Where everyone is heading. Needed for ETAs and stop '
-                            'suggestions; you can set it later.'
-                      : 'Tap to change',
+            Reveal(
+              child: TextField(
+                key: const Key('convoy-name'),
+                controller: _name,
+                autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                maxLength: 40,
+                decoration: const InputDecoration(
+                  labelText: 'Name your trip',
+                  hintText: 'Coast run, Thanksgiving drive…',
                 ),
-                trailing: dest == null
-                    ? const Icon(Icons.chevron_right)
-                    : IconButton(
-                        tooltip: 'Clear',
-                        onPressed: () => setState(() => _destination = null),
-                        icon: const Icon(Icons.close),
-                      ),
+                onSubmitted: (_) => _create(),
+              ),
+            ),
+            const SizedBox(height: Space.sm),
+            Reveal(
+              delay: Reveal.stagger(1),
+              child: Tile(
                 onTap: () async {
                   final picked = await showDestinationPicker(context);
                   if (picked != null && mounted) {
                     setState(() => _destination = picked);
                   }
                 },
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Space.gutter,
+                  vertical: Space.md,
+                ),
+                child: ConvoyRow(
+                  padding: EdgeInsets.zero,
+                  leading: Icon(
+                    Icons.flag_outlined,
+                    size: 28,
+                    color: scheme.primary,
+                  ),
+                  title: dest?.name ?? 'Destination',
+                  caption: dest == null
+                      ? 'Optional. Powers ETAs and stop ideas.'
+                      : 'Tap to pick a different place.',
+                  trailing: dest == null
+                      ? const Icon(Icons.chevron_right)
+                      : IconButton(
+                          tooltip: 'Clear',
+                          onPressed: () => setState(() => _destination = null),
+                          icon: const Icon(Icons.close),
+                        ),
+                ),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: Space.lg),
             Text(
-              'Up to six cars. You lead: you start and end the trip, accept '
-              'stops and can drop a regroup pin. Anyone can propose stops, '
-              'add expenses and photos.',
-              style: theme.textTheme.bodySmall,
+              'Up to six cars. You lead: start and end the trip, accept stops, '
+              'drop a regroup pin.',
+              style: context.caption,
             ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
               key: const Key('create-convoy'),
-              onPressed: _busy ? null : _create,
-              icon: const Icon(Icons.add_road_outlined),
-              label: const Text('Create convoy'),
+              label: 'Create convoy',
+              icon: Icons.add_road_outlined,
+              busy: _busy,
+              onPressed: _create,
             ),
           ],
         ),

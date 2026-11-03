@@ -14,11 +14,14 @@ import '../../../data/repos/convoy_repo.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../data/supabase/supabase_providers.dart';
 import '../../../tracking/providers.dart';
+import '../../../app/ui/ui.dart';
 import '../../../widgets/units.dart';
 import '../../drive/friends_map/marker_icons.dart';
 import '../live/convoy_live.dart';
 import '../positions/peer_positions.dart';
+import 'convoy_ui.dart';
 import 'destination_picker.dart';
+import 'member_avatar.dart';
 
 /// Icon for a stop category; tolerant of categories added later.
 IconData stopIcon(StopCategory c) => switch (c.wire) {
@@ -39,9 +42,13 @@ const staleAfter = Duration(minutes: 2);
 /// Long-press (leader only) drops a regroup pin or moves the destination.
 /// Without a Maps key the same data is shown as a list.
 class ConvoyMap extends ConsumerStatefulWidget {
-  const ConvoyMap({super.key, required this.convoyId});
+  const ConvoyMap({super.key, required this.convoyId, this.showNotices = true});
 
   final String convoyId;
+
+  /// Draw the lost-car and waiting notices over the map. The detail screen
+  /// turns this off because its sheet carries the same state as pills.
+  final bool showNotices;
 
   @override
   ConsumerState<ConvoyMap> createState() => _ConvoyMapState();
@@ -72,8 +79,8 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
     if (mapsReady.value != true) {
       return Center(
         child: Text(
-          mapsReady.isLoading ? 'Loading map…' : 'Map unavailable.',
-          style: Theme.of(context).textTheme.bodyMedium,
+          mapsReady.isLoading ? 'Loading map…' : 'The map could not load.',
+          style: context.bodyMuted,
         ),
       );
     }
@@ -134,8 +141,8 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
             snippet: [
               if (isLeader) 'Leader',
               if (eta != null) 'ETA ${eta.estimated ? '~' : ''}${eta.label}',
-              if (isLost) 'Lost sheep',
-              if (stale) 'Last seen a while ago',
+              if (isLost) 'Fallen behind',
+              if (stale) 'Position is a few minutes old',
             ].join(' · '),
           ),
         ),
@@ -251,7 +258,7 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
             ],
           ),
         ),
-        if (lost.isNotEmpty)
+        if (widget.showNotices && lost.isNotEmpty)
           Positioned(
             left: 12,
             right: 12,
@@ -280,7 +287,7 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
               ),
             ),
           ),
-        if (points.isEmpty)
+        if (widget.showNotices && points.isEmpty)
           Positioned(
             left: 12,
             right: 12,
@@ -314,10 +321,14 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
             ? 'You'
             : members.where((m) => m.userId == id).firstOrNull?.name ?? 'A car',
     ];
-    return names.length == 1
-        ? '${names.single} ${names.single == 'You' ? 'are' : 'is'} falling '
-              'behind.'
-        : '${names.join(', ')} are falling behind.';
+    if (names.length == 1) {
+      final who = names.single;
+      return who == 'You'
+          ? 'You are falling behind.'
+          : '$who is falling behind.';
+    }
+    final list = names.join(', ');
+    return '$list are falling behind.';
   }
 
   void _ensureIcon(
@@ -392,7 +403,7 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
             ListTile(
               leading: const Icon(Icons.group_work_outlined),
               title: const Text('Regroup here'),
-              subtitle: const Text('Everyone gets a pin and a nudge.'),
+              subtitle: const Text('Drops a pin every car can route to.'),
               enabled: live != null,
               onTap: () {
                 Navigator.of(ctx).pop();
@@ -448,7 +459,7 @@ class _PositionsList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final me = ref.watch(currentUserIdProvider);
     final members =
         ref.watch(convoyMembersProvider(convoyId)).value ?? const [];
     final positions =
@@ -460,25 +471,33 @@ class _PositionsList extends ConsumerWidget {
     );
     final lead = leader == null ? null : positions[leader];
     return ListView(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.gutter,
+        Space.xxxl,
+      ),
       children: [
         Text(
-          'No map in this build. Positions and ETAs still flow between the '
-          'cars:',
-          style: theme.textTheme.bodySmall,
+          'No map in this version. Here is where everyone is.',
+          style: context.bodyMuted,
         ),
+        const SizedBox(height: Space.sm),
         for (final m in members)
           if (m.isPresent)
-            ListTile(
-              dense: true,
-              leading: Icon(
-                m.userId == leader
-                    ? Icons.star_outline
-                    : Icons.directions_car_outlined,
+            ConvoyRow(
+              leading: MemberAvatar(
+                name: m.name,
+                avatarPath: m.avatarPath,
+                isMe: m.userId == me,
               ),
-              title: Text(m.name),
-              subtitle: Text(
-                _describe(positions[m.userId], lead, etas[m.userId], units),
+              title: m.userId == me ? 'You' : m.name,
+              caption: _describe(
+                positions[m.userId],
+                lead,
+                etas[m.userId],
+                units,
+                isLeader: m.userId == leader,
               ),
             ),
       ],
@@ -489,15 +508,20 @@ class _PositionsList extends ConsumerWidget {
     PeerPosition? p,
     PeerPosition? lead,
     EtaInfo? eta,
-    SpeedUnits units,
-  ) {
-    if (p == null) return 'No position yet';
+    SpeedUnits units, {
+    required bool isLeader,
+  }) {
+    if (p == null) {
+      return isLeader ? 'Leader · no position yet' : 'No position yet';
+    }
     final parts = <String>[];
-    if (lead != null && lead.userId != p.userId) {
+    if (isLeader) {
+      parts.add('Leading');
+    } else if (lead != null && lead.userId != p.userId) {
       final d = LatLon(lead.lat, lead.lon).distanceTo(LatLon(p.lat, p.lon));
-      parts.add('${formatDistance(d, units)} from the leader');
+      parts.add('${formatDistance(d, units)} back');
     }
     if (eta != null) parts.add('ETA ${eta.estimated ? '~' : ''}${eta.label}');
-    return parts.isEmpty ? 'Sharing position' : parts.join(' · ');
+    return parts.isEmpty ? 'On the map' : parts.join(' · ');
   }
 }
