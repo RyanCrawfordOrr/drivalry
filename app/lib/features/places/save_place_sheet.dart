@@ -6,6 +6,7 @@ import '../../data/db/database.dart';
 import '../../data/repos/places_repo.dart';
 import '../../tracking/providers.dart';
 import '../../widgets/units.dart';
+import '../friends/widgets/page_insets.dart';
 import 'radius_text.dart';
 
 /// Add a saved place at [lat], [lon], or edit [existing]. Places never leave
@@ -89,7 +90,7 @@ class _SavePlaceSheetState extends ConsumerState<_SavePlaceSheet> {
       ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
     );
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: sheetBottomInset(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -100,14 +101,11 @@ class _SavePlaceSheetState extends ConsumerState<_SavePlaceSheet> {
             style: context.caption,
           ),
           const SizedBox(height: Space.lg),
+          // Words only: with icons the four labels break mid-word at 360.
           SegmentedButton<PlaceKind>(
             segments: [
               for (final k in PlaceKind.values)
-                ButtonSegment(
-                  value: k,
-                  icon: Icon(k.icon),
-                  label: Text(k.label),
-                ),
+                ButtonSegment(value: k, label: Text(k.label)),
             ],
             selected: {_kind},
             showSelectedIcon: false,

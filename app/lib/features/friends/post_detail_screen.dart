@@ -9,6 +9,7 @@ import '../../widgets/relative_time.dart';
 import '../../widgets/signed_in_scope.dart';
 import 'feed_controller.dart';
 import 'feed_post_card.dart';
+import 'widgets/page_insets.dart';
 import 'widgets/quiet_error_tile.dart';
 import 'widgets/user_avatar.dart';
 
@@ -103,11 +104,13 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
               child: RefreshIndicator(
                 onRefresh: _load,
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(
+                  // The composer below carries the bottom inset when there
+                  // is a post to comment on.
+                  padding: EdgeInsets.fromLTRB(
                     Space.gutter,
-                    Space.sm,
+                    Space.lg,
                     Space.gutter,
-                    Space.xl,
+                    post == null ? pageBottomInset(context) : Space.xl,
                   ),
                   children: [
                     if (post == null)
@@ -173,7 +176,7 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                           controller: _composer,
                           maxLength: 280,
                           decoration: const InputDecoration(
-                            hintText: 'Say something about this drive',
+                            hintText: 'Say something',
                             counterText: '',
                           ),
                           textInputAction: TextInputAction.send,

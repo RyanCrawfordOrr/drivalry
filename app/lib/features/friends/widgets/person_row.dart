@@ -5,8 +5,9 @@ import 'user_avatar.dart';
 
 /// Avatar, name, one caption line and optional trailing widgets: the one row
 /// for a person in the friends list, requests, circle members and pickers.
-/// 56 tall, so it clears the 48 touch target on its own. With [heroTag] the
-/// avatar flies to the profile screen (docs/12 §5b, tag `avatar-<userId>`).
+/// 56 tall, so it clears the 48 touch target on its own; a long caption
+/// wraps once before it is cut. With [heroTag] the avatar flies to the
+/// profile screen (docs/12 §5b, tag `avatar-<userId>`).
 class PersonRow extends StatelessWidget {
   const PersonRow({
     super.key,
@@ -20,9 +21,14 @@ class PersonRow extends StatelessWidget {
     this.isMe = false,
     this.avatarSize = AvatarSize.md,
     this.heroTag,
+    this.avatarName,
   });
 
   final String name;
+
+  /// Name the initials come from when [name] carries a suffix such as
+  /// "(you)". Defaults to [name].
+  final String? avatarName;
   final String? avatarPath;
   final String? caption;
 
@@ -38,7 +44,7 @@ class PersonRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget avatar = UserAvatar(
-      name: name,
+      name: avatarName ?? name,
       avatarPath: avatarPath,
       size: avatarSize,
       highlighted: highlighted,
@@ -66,7 +72,7 @@ class PersonRow extends StatelessWidget {
                   Text(
                     caption!,
                     style: context.caption,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
               ],

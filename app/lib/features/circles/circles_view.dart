@@ -10,8 +10,8 @@ import '../../data/repos/circles_sync.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/repos/places_repo.dart';
 import '../../data/repos/presence_repo.dart';
-import '../friends/feed_view.dart' show fabClearance;
 import '../friends/widgets/live_badge.dart';
+import '../friends/widgets/page_insets.dart';
 import '../friends/widgets/tab_scroll_view.dart';
 import 'checkin_sheet.dart';
 import 'widgets/stacked_avatars.dart';
@@ -20,8 +20,8 @@ import 'widgets/stacked_avatars.dart';
 /// "I got home" hero when it applies, circles as tiles with stacked avatars
 /// and a breathing "driving now" badge, the door to Places, and Join with
 /// code as a text action. Creating a circle is the empty state's one button,
-/// or the tab's FAB once there are some. The root wraps this in pull to
-/// refresh.
+/// or the root's app-bar action once there are some. The root wraps this in
+/// pull to refresh.
 class CirclesView extends ConsumerWidget {
   const CirclesView({super.key});
 
@@ -50,7 +50,11 @@ class CirclesView extends ConsumerWidget {
     return TabScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.only(top: Space.lg, bottom: fabClearance),
+          // The empty state brings its own 48 on top.
+          padding: EdgeInsets.only(
+            top: !showCheckin && !skeletons && list.isEmpty ? 0 : Space.lg,
+            bottom: pageBottomInset(context),
+          ),
           sliver: SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -293,7 +297,7 @@ class _JoinCodeFormState extends State<_JoinCodeForm> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: sheetBottomInset(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

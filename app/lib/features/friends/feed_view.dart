@@ -5,16 +5,15 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/feed_repo.dart';
+import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
 import 'feed_controller.dart';
 import 'feed_post_card.dart';
 import 'post_actions_sheet.dart';
+import 'widgets/page_insets.dart';
 import 'widgets/person_row.dart';
 import 'widgets/quiet_error_tile.dart';
 import 'widgets/tab_scroll_view.dart';
-
-/// Room under a list for the extended FAB (docs/12 §2: tokens only).
-const double fabClearance = Space.xxxl * 2;
 
 const _cardPadding = EdgeInsets.fromLTRB(
   Space.gutter,
@@ -54,9 +53,15 @@ class FeedView extends ConsumerWidget {
         if (m.extentAfter < 600) controller.loadMore();
       },
       slivers: [
-        SliverToBoxAdapter(
-          child: _FilterBar(current: feed.filter, onPick: controller.setFilter),
-        ),
+        // No posts at all means nothing to filter. The bar is back once there
+        // are posts, or when a wall filter is what emptied the feed.
+        if (!empty || feed.filter != FeedFilter.all)
+          SliverToBoxAdapter(
+            child: _FilterBar(
+              current: feed.filter,
+              onPick: controller.setFilter,
+            ),
+          ),
         if (error != null)
           SliverToBoxAdapter(
             child: Padding(
@@ -94,7 +99,7 @@ class FeedView extends ConsumerWidget {
         ),
         if (mode == 'posts')
           SliverPadding(
-            padding: const EdgeInsets.only(bottom: fabClearance),
+            padding: EdgeInsets.only(bottom: pageBottomInset(context)),
             sliver: SliverList.builder(
               itemCount: feed.posts.length + (feed.hasMore ? 1 : 0),
               itemBuilder: (context, j) {
@@ -129,7 +134,7 @@ class FeedView extends ConsumerWidget {
             ),
           )
         else
-          const SliverToBoxAdapter(child: SizedBox(height: fabClearance)),
+          SliverToBoxAdapter(child: SizedBox(height: pageBottomInset(context))),
       ],
     );
   }
@@ -140,30 +145,39 @@ class _FilterBar extends ConsumerWidget {
   final FeedFilter current;
   final void Function(FeedFilter) onPick;
 
+  /// Short chip labels: the wall names are on the cards' kickers already,
+  /// and four chips share one row on a 448 phone this way.
+  static String _label(FeedFilter f) => switch (f.key) {
+    'fame' => 'Fame',
+    'shame' => 'Shame',
+    _ => f.label,
+  };
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final friendFilterActive = current.friendId != null;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
+    return Padding(
+      // The chips carry a 48 touch target around a 32 capsule, so 8 here
+      // puts the capsules 16 under the tabs and 20 above the first card.
       padding: const EdgeInsets.fromLTRB(
         Space.gutter,
         Space.sm,
         Space.gutter,
-        Space.xs,
+        Space.md,
       ),
-      child: Row(
+      // Wraps rather than scrolls, so no chip is ever cut off at the screen
+      // edge; at 360 the friend chip takes a second line (docs/12 §2).
+      child: Wrap(
+        spacing: Space.sm,
         children: [
           for (final f in [FeedFilter.all, FeedFilter.fame, FeedFilter.shame])
-            Padding(
-              padding: const EdgeInsets.only(right: Space.sm),
-              child: ChoiceChip(
-                label: Text(f.label),
-                selected: current == f,
-                onSelected: (_) {
-                  Haptics.select();
-                  onPick(f);
-                },
-              ),
+            ChoiceChip(
+              label: Text(_label(f)),
+              selected: current == f,
+              onSelected: (_) {
+                Haptics.select();
+                onPick(f);
+              },
             ),
           ChoiceChip(
             avatar: friendFilterActive
@@ -187,28 +201,37 @@ class _FilterBar extends ConsumerWidget {
       ).showSnackBar(const SnackBar(content: Text('Add a friend first.')));
       return;
     }
-    final picked = await showDrivalrySheet<FeedFilter>(
-      context,
-      title: 'Whose drives?',
-      builder: (ctx) => ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: MediaQuery.sizeOf(ctx).height * 0.6,
-        ),
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            for (final f in friends)
-              PersonRow(
-                name: f.name,
-                avatarPath: f.avatarPath,
-                caption: '@${f.handle}',
-                onTap: () =>
-                    Navigator.of(ctx).pop(FeedFilter.friend(f.id, f.name)),
-              ),
-          ],
-        ),
-      ),
-    );
+    final picked = await showFriendPickerSheet(context, friends);
     if (picked != null) onPick(picked);
   }
+}
+
+/// "Whose drives?": one row per friend; pops the filter for the one tapped.
+Future<FeedFilter?> showFriendPickerSheet(
+  BuildContext context,
+  List<FriendProfile> friends,
+) {
+  return showDrivalrySheet<FeedFilter>(
+    context,
+    title: 'Whose drives?',
+    builder: (ctx) => ConstrainedBox(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(ctx).height * 0.6,
+      ),
+      child: ListView(
+        shrinkWrap: true,
+        padding: sheetBottomInset(ctx),
+        children: [
+          for (final f in friends)
+            PersonRow(
+              name: f.name,
+              avatarPath: f.avatarPath,
+              caption: '@${f.handle}',
+              onTap: () =>
+                  Navigator.of(ctx).pop(FeedFilter.friend(f.id, f.name)),
+            ),
+        ],
+      ),
+    ),
+  );
 }

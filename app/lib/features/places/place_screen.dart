@@ -11,6 +11,7 @@ import '../../data/repos/presence_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../tracking/providers.dart';
 import '../../widgets/units.dart';
+import '../friends/widgets/page_insets.dart';
 import '../friends/widgets/user_avatar.dart';
 import 'radius_text.dart';
 import 'save_place_sheet.dart';
@@ -67,7 +68,10 @@ class PlaceScreen extends ConsumerWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           Padding(
             padding: Space.screen,

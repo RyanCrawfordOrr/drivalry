@@ -8,12 +8,13 @@ typedef AvatarPerson = ({String name, String? avatarPath});
 
 /// Up to [max] small avatars overlapping left to right, then a "+N" disc.
 /// Each avatar gets a thin ring in [ringColor] (the tile it sits on) so they
-/// read as separate heads.
+/// read as separate heads, and the step leaves two-letter initials in the
+/// clear.
 class StackedAvatars extends StatelessWidget {
   const StackedAvatars({
     super.key,
     required this.people,
-    this.max = 4,
+    this.max = 3,
     this.ringColor,
   });
 
@@ -23,7 +24,7 @@ class StackedAvatars extends StatelessWidget {
 
   static const double _d = 32;
   static const double _ring = 2;
-  static const double _step = Space.xl;
+  static const double _step = Space.xl + Space.xs;
 
   @override
   Widget build(BuildContext context) {

@@ -7,6 +7,7 @@ import '../../app/ui/ui.dart';
 import '../../data/repos/circles_sync.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../friends/widgets/page_insets.dart';
 
 /// Name a circle; the invite code arrives from the server a moment later.
 class CreateCircleScreen extends ConsumerStatefulWidget {
@@ -64,11 +65,11 @@ class _CreateCircleScreenState extends ConsumerState<CreateCircleScreen> {
         message: 'Sign in to create a circle.',
         icon: Icons.groups_outlined,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             Space.gutter,
             Space.lg,
             Space.gutter,
-            Space.xxxl,
+            pageBottomInset(context),
           ),
           children: [
             TextField(

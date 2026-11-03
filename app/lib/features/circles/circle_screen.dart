@@ -12,6 +12,7 @@ import '../../widgets/friendly_error.dart';
 import '../../widgets/relative_time.dart';
 import '../../widgets/signed_in_scope.dart';
 import '../friends/widgets/live_badge.dart';
+import '../friends/widgets/page_insets.dart';
 import '../friends/widgets/person_row.dart';
 import '../friends/widgets/quiet_error_tile.dart';
 import 'checkin_sheet.dart';
@@ -73,9 +74,9 @@ class CircleScreen extends ConsumerWidget {
                   await ref.read(myCirclesProvider.notifier).refresh();
                 },
                 child: ListView(
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                     top: Space.lg,
-                    bottom: Space.xxxl,
+                    bottom: pageBottomInset(context),
                   ),
                   children: [
                     Padding(
@@ -257,6 +258,7 @@ class _MemberRow extends StatelessWidget {
     }
     return PersonRow(
       name: isMe ? '${member.name} (you)' : member.name,
+      avatarName: member.name,
       avatarPath: member.avatarPath,
       caption: '@${member.handle} · $where',
       highlighted: driving,

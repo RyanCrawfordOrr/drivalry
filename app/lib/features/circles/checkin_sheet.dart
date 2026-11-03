@@ -8,6 +8,7 @@ import '../../data/alerts/auto_checkin.dart';
 import '../../data/db/database.dart';
 import '../../data/repos/circles_sync.dart';
 import '../../data/repos/places_repo.dart';
+import '../friends/widgets/page_insets.dart';
 
 /// "I got home": pick a saved place (or type one) and post a check-in that
 /// carries only the label. Also hosts the auto check-in switch.
@@ -66,7 +67,7 @@ class _CheckinSheetState extends ConsumerState<_CheckinSheet> {
         return ah.compareTo(bh);
       });
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: sheetBottomInset(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
