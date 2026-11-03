@@ -371,6 +371,19 @@ sealed class TrackingEvent {
           speed: (m['speed'] as num?)?.toDouble(),
           heading: (m['heading'] as num?)?.toDouble(),
         );
+      case 'crashCandidate':
+        final lat = m['lat'] as num?;
+        final lon = m['lon'] as num?;
+        if (tripId == null || lat == null || lon == null) return null;
+        return CrashCandidateEvent(
+          tripId: tripId,
+          t: t,
+          peakMps2: (m['peakMps2'] as num?)?.toDouble() ?? 0,
+          speedBeforeMps: (m['speedBeforeMps'] as num?)?.toDouble() ?? 0,
+          lat: lat.toDouble(),
+          lon: lon.toDouble(),
+          accuracy: (m['accuracy'] as num?)?.toDouble() ?? 50,
+        );
       case 'error':
         return TrackingError(
           t: t,
@@ -383,6 +396,42 @@ sealed class TrackingEvent {
   }
 
   Map<String, Object?> toMap();
+}
+
+/// The plugin saw a hard impact followed by a dead stop while recording
+/// (docs/08 §4 `crashCandidate`). At most one per trip. Dart owns what
+/// happens next: the 30 s countdown and, only if nobody answers, the alert.
+final class CrashCandidateEvent extends TrackingEvent {
+  const CrashCandidateEvent({
+    required String super.tripId,
+    required super.t,
+    required this.peakMps2,
+    required this.speedBeforeMps,
+    required this.lat,
+    required this.lon,
+    required this.accuracy,
+  });
+
+  /// Linear-acceleration magnitude at the impact, m/s².
+  final double peakMps2;
+
+  /// Highest GPS speed in the 3 s before the impact, m/s.
+  final double speedBeforeMps;
+  final double lat;
+  final double lon;
+  final double accuracy;
+
+  @override
+  Map<String, Object?> toMap() => {
+    'type': 'crashCandidate',
+    'tripId': tripId,
+    't': t,
+    'peakMps2': peakMps2,
+    'speedBeforeMps': speedBeforeMps,
+    'lat': lat,
+    'lon': lon,
+    'accuracy': accuracy,
+  };
 }
 
 /// A free position the OS handed the plugin while idle (docs/08 §4

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../features/convoy/convoy_routes.dart';
+import '../features/crash/crash_routes.dart';
 import '../features/drive/drive_routes.dart';
 import '../features/friends/friends_routes.dart';
 import '../features/garage/garage_routes.dart';
@@ -29,6 +30,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
       ...settingsRoutes(),
+      ...crashRoutes(),
       ...profileRoutes(),
       ...friendsTopLevelRoutes(),
       ...leaguesTopLevelRoutes(),

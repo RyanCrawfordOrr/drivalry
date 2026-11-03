@@ -12,6 +12,9 @@ Apply in order by pasting each file into the SQL editor (Dashboard → SQL Edito
 | --- | --- | --- |
 | `migrations/0000_heartbeat.sql` | One-row table the daily keep-alive reads | Applied 2026-11-02 |
 | `migrations/0001_init.sql` | The whole summaries-only schema: tables, RLS, `finalize_league_week`, the speed-limit override trigger, storage buckets, badge seed | Not yet applied; apply before the friends-and-leagues stage is installed on phones |
+| `migrations/0002_presence_friends_account.sql` | Presence visible to accepted friends, global `location_hidden`, `delete_own_account()`, friends in `can_view` (ADR-018) | Not yet applied; apply right after 0001 |
+| `migrations/0003_checkins.sql` | Feed post kind `checkin` | Not yet applied |
+| `migrations/0004_crash_contacts.sql` | `crash_alerts.notify_user_ids` for emergency contacts outside your circles | Not yet applied; then redeploy `functions/push` |
 
 `0001_init.sql` is written to run once on a fresh project. It creates enum types and policies without `if not exists`, so re-running it fails loudly rather than half-applying. Later changes go in new numbered files that only add or alter.
 

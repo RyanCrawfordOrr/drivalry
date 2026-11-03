@@ -75,6 +75,8 @@ dependencies {
     implementation("androidx.core:core-ktx:1.17.0")
     // Java 8+ library desugaring (java.time etc.) required by flutter_local_notifications.
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
+    // JVM unit tests for the pure tracking rules (CrashDetector).
+    testImplementation("junit:junit:4.13.2")
 }
 
 flutter {

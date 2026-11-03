@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
@@ -31,6 +32,11 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
       diagnostics: await port.getDiagnostics(),
       counts: await db.tableCounts(),
       packs: await db.installedPacks(),
+      crashLastCandidateAt: int.tryParse(
+        await db.getSetting(CrashKeys.lastCandidateAt) ?? '',
+      ),
+      crashFalsePositives: await db.settingInt(CrashKeys.falsePositives),
+      crashUnresolved: await db.getSetting(CrashKeys.unresolved) != null,
     );
   }
 
@@ -90,6 +96,9 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
               'Last trip ended',
               '${r.diagnostics.lastTripEndReason ?? '–'} ${_ms(r.diagnostics.lastTripEndedAt)}',
             ),
+            ('Crash: last candidate', _ms(r.crashLastCandidateAt)),
+            ('Crash: false alarms dismissed', '${r.crashFalsePositives}'),
+            ('Crash: unresolved alert', '${r.crashUnresolved}'),
             ('Booted (Dart)', '${ui.booted}'),
             ('Live trip', ui.live == null ? '–' : '${ui.live!.fixCount} fixes'),
             if (ui.error != null) ('Error', ui.error!),
@@ -130,6 +139,11 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                       for (final p in r.packs) '${p.region} ${p.osmTimestamp}',
                     ],
                     'dart': {'booted': ui.booted, 'error': ui.error},
+                    'crash': {
+                      'lastCandidateAt': r.crashLastCandidateAt,
+                      'falsePositives': r.crashFalsePositives,
+                      'unresolved': r.crashUnresolved,
+                    },
                     'pluginErrors': [
                       for (final e in ui.recentErrors)
                         '${e.t} ${e.code}: ${e.message}',
@@ -165,9 +179,15 @@ class _Report {
     required this.diagnostics,
     required this.counts,
     required this.packs,
+    required this.crashLastCandidateAt,
+    required this.crashFalsePositives,
+    required this.crashUnresolved,
   });
   final TrackingState state;
   final TrackingDiagnostics diagnostics;
   final Map<String, int> counts;
   final List<Pack> packs;
+  final int? crashLastCandidateAt;
+  final int crashFalsePositives;
+  final bool crashUnresolved;
 }

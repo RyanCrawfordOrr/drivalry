@@ -139,6 +139,14 @@ Passenger hints and vehicle identification. `name` is the Bluetooth device name 
 
 Emitted while `idle` whenever the OS wakes the plugin with a position for free: iOS significant-change callbacks and geofence exits, Android the passive-location receiver and geofence exits. The plugin requests nothing extra for this. Dart uses it to update the owner's presence while parked (ADR-018), so friends see a stale-but-honest position without the GPS radio ever turning on for it. Spooled like every other event.
 
+### `crashCandidate`
+
+```
+{ type: "crashCandidate", tripId, t, peakMps2, speedBeforeMps, lat, lon, accuracy }
+```
+
+Emitted at most once per trip while `active` when all three hold within a 5 s window: a linear-acceleration peak of at least 40 m/s² (about 4 g), GPS speed that was at least 8 m/s in the 3 s before the peak, and speed under 1 m/s for the 5 s after it. The plugin keeps recording; it does not end the trip. Dart starts the 30 s countdown (`docs/01` §4.5), marks the trip `crashCandidate`, and only escalates (push to circle members through `crash_alerts`, prefilled SMS to the on-phone emergency contacts) if the countdown is not cancelled. Never an automatic call. The thresholds are first guesses to be tuned against false positives on the test phones.
+
 ### `error`
 
 ```

@@ -18,6 +18,7 @@ Trip sampleTrip() => Trip(
   movingS: 1500,
   passengerHint: false,
   passengerAnswered: true,
+  crashCandidate: false,
   createdAt: 0,
 ).copyWith(isPassenger: const Value(false));
 

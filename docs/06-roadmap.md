@@ -56,10 +56,10 @@ Milestones:
 
 1. **M3.1 Presence.** _Pulled into Stage 2 by ADR-018 and built 2026-11-03 (30 s while driving, parkedFix while parked, app-open refresh)._ Upsert every 30 s driving, significant change parked, nothing while hiding. RLS honours `hiding`.
 2. **M3.2 Live circle map** on Google Maps: _Built 2026-11-03 as the friends map at the top of the Drive tab (friends + circle members); circles themselves still to build._ positions, driving-now, battery, last seen. Subscribed only while on screen.
-3. **M3.3 Places and alerts.** Saved places on the phone; arrive/leave alerts computed from presence on the viewer's phone; quiet hours. Check-ins. Driving status and OS driving-mode auto-reply where available.
-4. **M3.4 Crash detection.** Accelerometer spike plus stop plus no movement; 30 s countdown; push to emergency contacts who use Drivalry; pre-filled SMS for the rest; never an automatic call. Candidate crash trips excluded from scoring.
-5. **M3.5 Parking memory** with photo and walking route back.
-6. **M3.6 Garage.** Vehicles by Bluetooth name, per-vehicle stats, fuel log and true MPG, maintenance reminders, local encrypted documents.
+3. **M3.3 Places and alerts.** _Built 2026-11-03 (places on the phone, arrive/leave alerts with hysteresis, check-ins incl. auto check-in at Home; OS driving-mode auto-reply not done)._ Saved places on the phone; arrive/leave alerts computed from presence on the viewer's phone; quiet hours. Check-ins. Driving status and OS driving-mode auto-reply where available.
+4. **M3.4 Crash detection.** _Built 2026-11-03 (native detectors on both platforms, 30 s countdown, push via crash_alerts + prefilled SMS, emergency contacts; thresholds to tune on real phones)._ Accelerometer spike plus stop plus no movement; 30 s countdown; push to emergency contacts who use Drivalry; pre-filled SMS for the rest; never an automatic call. Candidate crash trips excluded from scoring.
+5. **M3.5 Parking memory** _Built 2026-11-03._ with photo and walking route back.
+6. **M3.6 Garage.** _Built 2026-11-03 (vehicles by Bluetooth name, never-track, per-vehicle stats, fuel log and MPG, maintenance reminders, encrypted documents)._ Vehicles by Bluetooth name, per-vehicle stats, fuel log and true MPG, maintenance reminders, local encrypted documents.
 
 ## Stage 4: Convoys ("Road trip mode")
 

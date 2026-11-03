@@ -61,6 +61,17 @@ class TripFinalizer {
     final trip = await _db.tripById(tripId);
     if (trip == null || trip.deletedAt != null) return null;
 
+    if (trip.crashCandidate) {
+      // A possible crash is never scored until the driver says they are OK
+      // (docs/01 §4.5). Once the trip has ended it parks as `unscored`;
+      // clearing the flag and calling finalize again scores it normally.
+      if (trip.endedAt != null &&
+          trip.phase == TripPhase.pendingPassenger.wire) {
+        await _db.setPhase(tripId, TripPhase.unscored);
+      }
+      return null;
+    }
+
     final rows = await _db.samplesFor(tripId);
     final samples = toGpsSamples(rows);
     final passenger = isPassenger ?? trip.isPassenger ?? trip.passengerHint;

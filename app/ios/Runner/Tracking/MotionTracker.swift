@@ -22,6 +22,10 @@ final class MotionTracker {
 
   weak var delegate: MotionTrackerDelegate?
 
+  /// docs/08 §4 `crashCandidate`. Fed the full user-acceleration magnitude of every 20 Hz sample
+  /// here and every fix's speed by the plugin; reset at each trip start.
+  let crash = CrashDetector()
+
   private let activityManager = CMMotionActivityManager()
   private let motionManager = CMMotionManager()
   private let motionQueue: OperationQueue
@@ -100,6 +104,7 @@ final class MotionTracker {
     currentSecond = nil
     currentPeak = 0
     lock.unlock()
+    crash.reset()
     motionManager.deviceMotionUpdateInterval = 1.0 / MotionTracker.sampleRateHz
     motionManager.startDeviceMotionUpdates(using: .xArbitraryZVertical, to: motionQueue) { [weak self] motion, _ in
       guard let self = self, let motion = motion else { return }
@@ -129,6 +134,11 @@ final class MotionTracker {
   private func process(_ motion: CMDeviceMotion) {
     let g = motion.gravity
     let a = motion.userAcceleration
+    let t = MotionTracker.wallClockMs(forUptime: motion.timestamp)
+    // Crash detection uses the full gravity-free vector: a head-on impact is mostly horizontal,
+    // but the phone's orientation is unknown and a 4 g hit is unambiguous in any axis.
+    let fullMps2 = (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot() * MotionTracker.standardGravity
+    crash.onAccel(t: t, magnitudeMps2: fullMps2)
     let gMagnitude = (g.x * g.x + g.y * g.y + g.z * g.z).squareRoot()
     guard gMagnitude > 0.0001 else { return }
     // Remove the component of user acceleration along gravity; what remains is horizontal.
@@ -137,7 +147,6 @@ final class MotionTracker {
     let hy = a.y - along * g.y / gMagnitude
     let hz = a.z - along * g.z / gMagnitude
     let horizontalMps2 = (hx * hx + hy * hy + hz * hz).squareRoot() * MotionTracker.standardGravity
-    let t = MotionTracker.wallClockMs(forUptime: motion.timestamp)
     let second = t / 1000
 
     lock.lock()

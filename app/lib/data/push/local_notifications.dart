@@ -126,6 +126,7 @@ class LocalNotifications {
     required String body,
     String? route,
     int? id,
+    bool fullScreen = false,
   }) async {
     if (!_ready) return;
     final crash = category == NotificationCategory.crash;
@@ -141,6 +142,11 @@ class LocalNotifications {
             importance: crash ? Importance.max : Importance.defaultImportance,
             priority: crash ? Priority.max : Priority.defaultPriority,
             category: crash ? AndroidNotificationCategory.alarm : null,
+            // Crash countdown: wake the screen and show over the lock screen.
+            // Needs USE_FULL_SCREEN_INTENT in the manifest; on Android 14+
+            // the OS may revoke it for apps it does not deem call/alarm-like,
+            // in which case this degrades to a heads-up notification.
+            fullScreenIntent: fullScreen,
           ),
           iOS: DarwinNotificationDetails(
             threadIdentifier: category.channelId,

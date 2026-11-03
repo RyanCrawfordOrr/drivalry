@@ -63,6 +63,24 @@ class TrackingEvents(private val spool: Spool) {
     fun hint(tripId: String, kind: String, name: String?, t: Long = System.currentTimeMillis()) =
         emit(linkedMapOf("type" to "hint", "tripId" to tripId, "t" to t, "kind" to kind, "name" to name))
 
+    /**
+     * §4 `crashCandidate`: a hard impact at speed followed by a dead stop, at most once per trip.
+     * The position is the newest fix the service has; Dart owns the countdown and the alert.
+     */
+    fun crashCandidate(tripId: String, candidate: CrashDetector.Candidate, location: Location?) =
+        emit(
+            LinkedHashMap<String, Any?>(9).apply {
+                put("type", "crashCandidate")
+                put("tripId", tripId)
+                put("t", candidate.t)
+                put("peakMps2", candidate.peakMps2)
+                put("speedBeforeMps", candidate.speedBeforeMps)
+                put("lat", location?.latitude ?: 0.0)
+                put("lon", location?.longitude ?: 0.0)
+                put("accuracy", if (location != null && location.hasAccuracy()) location.accuracy.toDouble() else 50.0)
+            },
+        )
+
     fun error(code: String, message: String, t: Long = System.currentTimeMillis()) =
         emit(
             linkedMapOf(

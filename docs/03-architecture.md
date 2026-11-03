@@ -233,7 +233,7 @@ The React Native library that implements this model needs a paid Android license
 | `badges`, `user_badges` | definitions and awards | account life |
 | `circles`, `circle_members` | membership and the `hiding` flag | account life |
 | `presence` | one row per user: lat, lon, speed, heading, battery, driving, updated_at | latest only, overwritten |
-| `crash_alerts` | lat, lon, time; insert triggers the push | 24 hours |
+| `crash_alerts` | lat, lon, time, extra recipient ids (emergency contacts who use Drivalry); insert triggers the push | 24 hours |
 | `convoys`, `convoy_members`, `convoy_stops`, `convoy_stop_votes`, `convoy_expenses`, `convoy_photos` | convoy state and recap inputs | 30 days after the convoy ends |
 | `speed_limit_flags`, `speed_limit_overrides` | the shared correction cache (§4.4) | indefinite |
 | `push_tokens` | APNs and FCM tokens per device | until sign-out |

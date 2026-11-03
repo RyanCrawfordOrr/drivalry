@@ -37,6 +37,14 @@ class Trips extends Table {
 
   /// Bluetooth / CarPlay / Android Auto name seen during the trip.
   TextColumn get vehicleLabel => text().nullable()();
+
+  /// Garage vehicle this trip was matched to (schema 3).
+  TextColumn get vehicleId => text().nullable()();
+
+  /// Set when the plugin flagged a possible crash; such trips are not scored
+  /// until the user clears the flag (schema 3).
+  BoolColumn get crashCandidate =>
+      boolean().withDefault(const Constant(false))();
   TextColumn get packRegion => text().nullable()();
   TextColumn get packVersion => text().nullable()();
   RealColumn get limitCoverage => real().nullable()();
@@ -218,4 +226,124 @@ class BadgeAwards extends Table {
 
   @override
   Set<Column> get primaryKey => {badgeId};
+}
+
+// --------------------------------------------------------------------------
+// Stage 3: circles, places, crash, parking, garage. Added in schema version 3.
+// Everything here stays on the phone (docs/01 §4.5, §4.7).
+// --------------------------------------------------------------------------
+
+/// Saved places (Home, Work, School). Never uploaded; alerts are computed on
+/// this phone from friends' presence.
+class Places extends Table {
+  TextColumn get id => text()();
+  TextColumn get label => text()();
+  TextColumn get kind => text().withDefault(const Constant('other'))();
+  RealColumn get lat => real()();
+  RealColumn get lon => real()();
+  RealColumn get radiusM => real().withDefault(const Constant(150))();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Per place, per member: tell me when they arrive or leave.
+class PlaceAlerts extends Table {
+  TextColumn get placeId => text()();
+  TextColumn get memberUserId => text()();
+  BoolColumn get onArrive => boolean().withDefault(const Constant(true))();
+  BoolColumn get onLeave => boolean().withDefault(const Constant(false))();
+  BoolColumn get inside => boolean().nullable()();
+  IntColumn get lastChangedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {placeId, memberUserId};
+}
+
+/// Where the car was left: the last fix of a trip, with an optional photo.
+class ParkingSpots extends Table {
+  TextColumn get tripId => text()();
+  RealColumn get lat => real()();
+  RealColumn get lon => real()();
+  RealColumn get accuracy => real()();
+  IntColumn get parkedAt => integer()();
+  TextColumn get photoPath => text().nullable()();
+  TextColumn get note => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {tripId};
+}
+
+/// Garage. `bluetoothNames` is a JSON list of car audio names seen for it.
+class Vehicles extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get make => text().nullable()();
+  TextColumn get model => text().nullable()();
+  IntColumn get year => integer().nullable()();
+  TextColumn get bluetoothNames => text().withDefault(const Constant('[]'))();
+  BoolColumn get neverTrack => boolean().withDefault(const Constant(false))();
+  RealColumn get tankLitres => real().nullable()();
+  IntColumn get createdAt => integer()();
+  IntColumn get archivedAt => integer().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Manual fill-ups; true MPG comes from consecutive full tanks.
+class FuelEntries extends Table {
+  TextColumn get id => text()();
+  TextColumn get vehicleId => text()();
+  IntColumn get at => integer()();
+  RealColumn get odometerKm => real().nullable()();
+  RealColumn get litres => real()();
+  IntColumn get costCents => integer().nullable()();
+  TextColumn get currency => text().withDefault(const Constant('USD'))();
+  BoolColumn get fullTank => boolean().withDefault(const Constant(true))();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Maintenance reminders by distance and/or time.
+class MaintenanceItems extends Table {
+  TextColumn get id => text()();
+  TextColumn get vehicleId => text()();
+  TextColumn get title => text()();
+  RealColumn get intervalKm => real().nullable()();
+  IntColumn get intervalDays => integer().nullable()();
+  RealColumn get lastDoneKm => real().nullable()();
+  IntColumn get lastDoneAt => integer().nullable()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Insurance card, registration: encrypted files on this phone only.
+class VehicleDocuments extends Table {
+  TextColumn get id => text()();
+  TextColumn get vehicleId => text()();
+  TextColumn get title => text()();
+  TextColumn get path => text()();
+  TextColumn get mimeType => text()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
+/// Who gets the crash SMS. `userId` is set when the contact is a Drivalry
+/// user (they also get a push through `crash_alerts`).
+class EmergencyContacts extends Table {
+  TextColumn get id => text()();
+  TextColumn get name => text()();
+  TextColumn get phone => text()();
+  TextColumn get userId => text().nullable()();
+  IntColumn get createdAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {id};
 }

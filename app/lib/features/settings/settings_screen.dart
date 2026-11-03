@@ -119,6 +119,23 @@ class SettingsScreen extends ConsumerWidget {
                 : null,
           ),
           const Divider(),
+          const _Header('Safety'),
+          ListTile(
+            leading: const Icon(Icons.car_crash_outlined),
+            title: const Text('Crash detection'),
+            subtitle: const Text(
+              'A 30-second check after a hard stop; help is requested only '
+              'if you do not answer',
+            ),
+            onTap: () => context.push(Routes.crashSettings),
+          ),
+          ListTile(
+            leading: const Icon(Icons.contact_phone_outlined),
+            title: const Text('Emergency contacts'),
+            subtitle: const Text('Who gets the text if you do not respond'),
+            onTap: () => context.push(Routes.emergencyContacts),
+          ),
+          const Divider(),
           const _Header('App'),
           ListTile(
             leading: const Icon(Icons.notifications_outlined),

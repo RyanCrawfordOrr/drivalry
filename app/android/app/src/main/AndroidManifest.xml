@@ -11,6 +11,10 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Crash countdown over the lock screen. Android 14+ grants this only to
+         apps whose core function needs it; the user may have to allow it in
+         Settings > Apps > Special app access if the OS revoked it. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- Pre-31 equivalent needed to receive ACL connect/disconnect broadcasts. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />

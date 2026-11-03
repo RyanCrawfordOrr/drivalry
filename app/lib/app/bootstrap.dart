@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/env.dart';
+import '../data/crash/crash_monitor.dart';
 import '../data/db/database.dart';
 import '../data/sync/sync_bootstrap.dart';
 import '../packs/pack_providers.dart';
@@ -35,6 +36,8 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   ref.watch(trackingControllerProvider);
   // Cloud sync: outbox handlers, uploader, push, periodic drains.
   ref.watch(syncBootstrapProvider);
+  // Crash countdown owner (docs/01 §4.5); fed by the recorder.
+  ref.watch(crashMonitorProvider);
   await ref.watch(mapsReadyProvider.future);
   try {
     final removed = await ref

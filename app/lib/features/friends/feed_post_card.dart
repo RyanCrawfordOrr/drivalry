@@ -103,6 +103,7 @@ class _KindChip extends StatelessWidget {
     final (label, color) = switch (post.kind) {
       'shame' => ('WALL OF SHAME', theme.colorScheme.error),
       'badge' => ('BADGE', theme.colorScheme.tertiary),
+      'checkin' => ('CHECK-IN', theme.colorScheme.tertiary),
       'league' => ('LEAGUE', theme.colorScheme.secondary),
       'convoy' => ('CONVOY', theme.colorScheme.secondary),
       _ when post.reckless => ('RECKLESS', theme.colorScheme.error),
@@ -146,6 +147,19 @@ class _Body extends StatelessWidget {
         return Text(
           body['title'] as String? ?? 'Convoy recap',
           style: theme.textTheme.bodyLarge,
+        );
+      case 'checkin':
+        return Row(
+          children: [
+            Icon(Icons.home_outlined, color: theme.colorScheme.tertiary),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Checked in at ${body['label'] ?? 'home'}',
+                style: theme.textTheme.bodyLarge,
+              ),
+            ),
+          ],
         );
       default:
         final score = post.score;

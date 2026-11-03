@@ -15,7 +15,13 @@ abstract final class Routes {
   static const packs = '/drive/packs';
   static const diagnostics = '/drive/diagnostics';
   static const friendsMap = '/drive/map';
+  static const parking = '/drive/parking';
   static String tripDetail(String id) => '/drive/trip/$id';
+
+  // Garage branch.
+  static const newVehicle = '/garage/vehicle/new';
+  static String vehicle(String id) => '/garage/vehicle/$id';
+  static String editVehicle(String id) => '/garage/vehicle/$id/edit';
 
   // Leagues branch.
   static const createLeague = '/leagues/new';
@@ -25,11 +31,21 @@ abstract final class Routes {
   static const addFriend = '/friends/add';
   static const friendRequests = '/friends/requests';
   static String post(String id) => '/friends/post/$id';
+  static const circles = '/friends/circles';
+  static const createCircle = '/friends/circles/new';
+  static String circle(String id) => '/friends/circles/$id';
+  static const places = '/friends/places';
+  static String place(String id) => '/friends/places/$id';
 
   // Top-level (pushed over the shell, no bottom bar).
   static const settings = '/settings';
   static const notificationsSettings = '/settings/notifications';
   static const attribution = '/settings/attribution';
+  static const crashSettings = '/settings/crash';
+  static const emergencyContacts = '/settings/contacts';
+
+  /// Full-screen crash countdown, pushed over everything (docs/01 §4.5).
+  static const crash = '/crash';
   static const signIn = '/sign-in';
   static const profile = '/profile';
   static String userProfile(String id) => '/profile/$id';

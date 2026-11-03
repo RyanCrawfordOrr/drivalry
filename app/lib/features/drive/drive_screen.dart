@@ -10,8 +10,16 @@ import '../../data/repos/friends_sync.dart';
 import '../../data/repos/presence_repo.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
+import '../../tracking/tracking_models.dart';
 import '../../widgets/units.dart';
+import '../../data/alerts/auto_checkin.dart';
+import '../../data/alerts/place_alerts.dart';
+import '../../data/garage/vehicle_matcher.dart';
+import '../crash/crash_status_card.dart';
+import '../garage/widgets/new_vehicle_prompt_card.dart';
 import 'friends_map/friends_map.dart';
+import 'parking/parking_card.dart';
+import 'parking/parking_memory.dart';
 import 'simulate_sheet.dart';
 import 'widgets/passenger_card.dart';
 import 'widgets/tracking_status_card.dart';
@@ -28,6 +36,10 @@ class DriveScreen extends ConsumerWidget {
     ref.watch(presencePublisherProvider);
     ref.watch(friendsSyncProvider);
     ref.watch(deepLinksProvider);
+    ref.watch(vehicleMatcherProvider);
+    ref.watch(parkingMemoryProvider);
+    ref.watch(placeAlertsProvider);
+    ref.watch(autoCheckinProvider);
 
     final tracking = ref.watch(trackingControllerProvider);
     final controller = ref.read(trackingControllerProvider.notifier);
@@ -38,6 +50,10 @@ class DriveScreen extends ConsumerWidget {
     final unitsSetting =
         ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto;
     final pendingRequests = ref.watch(pendingRequestCountProvider);
+    final parkingSpot = ref.watch(latestParkingSpotProvider).value;
+    final vehiclePrompt = ref.watch(vehiclePromptProvider).value;
+    final idle =
+        tracking.plugin.phase == TrackingPhase.idle && tracking.live == null;
     final latestRegion = trips.isEmpty ? null : trips.first.trip.packRegion;
     final units = resolveUnits(unitsSetting, packRegion: latestRegion);
     final theme = Theme.of(context);
@@ -89,6 +105,7 @@ class DriveScreen extends ConsumerWidget {
               child: const FriendsMap(),
             ),
           ),
+          const CrashStatusCard(),
           TrackingStatusCard(
             state: tracking,
             units: units,
@@ -101,6 +118,9 @@ class DriveScreen extends ConsumerWidget {
             onStartNow: controller.startNow,
             onEndNow: controller.endNow,
           ),
+          if (idle && parkingSpot != null) ParkingCard(spot: parkingSpot),
+          if (vehiclePrompt != null)
+            NewVehiclePromptCard(prompt: vehiclePrompt),
           for (final t in unanswered)
             PassengerCard(
               trip: t,

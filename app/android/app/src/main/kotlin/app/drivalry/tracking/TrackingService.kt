@@ -64,7 +64,15 @@ class TrackingService : Service(), TripStateMachine.Listener {
     private var locationStarted = false
     private var sensorsStarted = false
     private var sensorThread: HandlerThread? = null
-    private val motion = MotionAggregator()
+
+    /** docs/08 §4 `crashCandidate`: fed every accelerometer sample and every fix while active. */
+    private val crash = CrashDetector()
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val motion = MotionAggregator { t, magnitude ->
+        // A 4 g hit at speed opens a candidate; pull the batched fixes in now so the
+        // "did the car stop?" answer does not wait out the 15 s delivery delay.
+        if (crash.onAccel(t, magnitude)) mainHandler.post { flushLocationsNow() }
+    }
 
     private var phoneReceiverRegistered = false
     private var inCall = false
@@ -164,6 +172,7 @@ class TrackingService : Service(), TripStateMachine.Listener {
                 val startedAt = runtime.machine.startedAt ?: 0L
                 tentativeBuffer.filterTo(pendingFixes) { (it["t"] as Long) >= startedAt }
                 tentativeBuffer.clear()
+                crash.reset()
                 startActivePhaseInputs(initial = true)
             }
             TripStateMachine.Phase.IDLE -> shutdown()
@@ -227,6 +236,12 @@ class TrackingService : Service(), TripStateMachine.Listener {
                     TripStateMachine.Phase.ACTIVE -> if (wasActive) pendingFixes.add(fix)
                     TripStateMachine.Phase.TENTATIVE -> Unit
                     TripStateMachine.Phase.IDLE -> return // ended inside onFix; already flushed
+                }
+                if (machine.phase == TripStateMachine.Phase.ACTIVE) {
+                    val speed = if (loc.hasSpeed()) loc.speed.toDouble() else null
+                    crash.onSpeed(loc.time, speed)?.let { candidate ->
+                        machine.tripId?.let { id -> runtime.events.crashCandidate(id, candidate, loc) }
+                    }
                 }
             }
 
@@ -396,8 +411,20 @@ class TrackingService : Service(), TripStateMachine.Listener {
         unregisterPhoneReceiver()
         pendingFixes.clear()
         tentativeBuffer.clear()
+        crash.reset()
         inCall = false
         projecting = false
+    }
+
+    /** Asks fused location to deliver what it is holding. Harmless when nothing is pending. */
+    @SuppressLint("MissingPermission") // only called while a location request is active
+    private fun flushLocationsNow() {
+        if (!locationStarted) return
+        try {
+            fused.flushLocations()
+        } catch (e: SecurityException) {
+            Log.w(TAG, "flushLocations denied", e)
+        }
     }
 
     private fun shutdown() {
@@ -455,17 +482,22 @@ class TrackingService : Service(), TripStateMachine.Listener {
      * also count, which is why the scoring engine treats these peaks as corroboration for
      * GPS-derived events rather than as events in their own right.
      */
-    private class MotionAggregator : SensorEventListener {
+    private class MotionAggregator(
+        /** Every sample as (epoch ms, m/s²), for the crash detector. Runs on the sensor thread. */
+        private val onSample: (Long, Double) -> Unit,
+    ) : SensorEventListener {
         private val lock = Any()
         private val peaks = HashMap<Long, Float>()
 
         override fun onSensorChanged(event: SensorEvent) {
             val v = event.values
             val magnitude = sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-            if (magnitude <= PEAK_THRESHOLD_MPS2) return // seconds below the threshold never produce an entry
             // event.timestamp is nanoseconds since boot; convert to epoch milliseconds.
             val bootEpochMs = System.currentTimeMillis() - SystemClock.elapsedRealtime()
-            val second = (bootEpochMs + event.timestamp / 1_000_000L) / 1000L
+            val tMs = bootEpochMs + event.timestamp / 1_000_000L
+            onSample(tMs, magnitude.toDouble())
+            if (magnitude <= PEAK_THRESHOLD_MPS2) return // seconds below the threshold never produce an entry
+            val second = tMs / 1000L
             synchronized(lock) {
                 peaks[second] = max(peaks[second] ?: 0f, magnitude)
             }

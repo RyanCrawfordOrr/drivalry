@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:drivalry_scoring/drivalry_scoring.dart' show PhoneEventKind;
 import 'package:flutter/foundation.dart';
 
+import '../data/crash/crash_monitor.dart' show CrashKeys;
 import '../data/db/database.dart';
 import '../data/models/trip_phase.dart';
 import 'tracking_models.dart';
@@ -14,14 +15,22 @@ import 'tracking_models.dart';
 /// changes nothing the second time. Fix batches are keyed by `(tripId, t)`;
 /// the other tables use natural primary keys with insert-or-ignore.
 class TripRecorder {
-  TripRecorder(this._db, {required this.onTripEnded, int Function()? now})
-    : _now = now ?? (() => DateTime.now().millisecondsSinceEpoch);
+  TripRecorder(
+    this._db, {
+    required this.onTripEnded,
+    this.onCrashCandidate,
+    int Function()? now,
+  }) : _now = now ?? (() => DateTime.now().millisecondsSinceEpoch);
 
   final AppDatabase _db;
   final int Function() _now;
 
   /// Called once per `ended` phase event, after the row is updated.
   final FutureOr<void> Function(String tripId) onTripEnded;
+
+  /// Called for every `crashCandidate` event after the trip row is flagged
+  /// (the crash monitor starts its countdown from here).
+  final FutureOr<void> Function(CrashCandidateEvent event)? onCrashCandidate;
 
   /// Trips whose screen is currently projecting to CarPlay / Android Auto.
   /// Phone handling while projecting is not phone handling (docs/02 §3).
@@ -86,6 +95,15 @@ class TripRecorder {
       case ParkedFixEvent():
         // Presence only (lib/data/repos/presence_repo.dart); never a trip.
         break;
+      case CrashCandidateEvent():
+        // Detection switched off: the plugin still emits, we ignore entirely,
+        // so an off switch never parks a trip as a possible crash.
+        if (await _db.getSetting(CrashKeys.enabled) == 'false') break;
+        // Flag first, so the finalizer refuses to score the trip even if the
+        // process dies before the countdown is answered (docs/01 §4.5).
+        await _ensureTrip(event.tripId!, event.t, null);
+        await _db.setCrashCandidate(event.tripId!, true);
+        await onCrashCandidate?.call(event);
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+import '../data/crash/crash_monitor.dart';
 import '../data/db/database.dart';
 import '../widgets/units.dart';
 import 'tracking_channel.dart';
@@ -36,6 +37,8 @@ final tripRecorderProvider = Provider<TripRecorder>((ref) {
   return TripRecorder(
     ref.watch(databaseProvider),
     onTripEnded: (tripId) => finalizer.finalize(tripId),
+    onCrashCandidate: (e) =>
+        ref.read(crashMonitorProvider.notifier).onCandidate(e),
   );
 });
 

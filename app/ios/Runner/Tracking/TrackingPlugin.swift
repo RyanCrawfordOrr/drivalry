@@ -521,6 +521,20 @@ final class TrackingPlugin: NSObject, FlutterStreamHandler {
     ])
   }
 
+  /// docs/08 §4 `crashCandidate`: `{type, tripId, t, peakMps2, speedBeforeMps, lat, lon, accuracy}`.
+  private func crashCandidateEvent(tripId: String, candidate: CrashDetector.Candidate, at location: CLLocation) -> [String: Any] {
+    return [
+      "type": "crashCandidate",
+      "tripId": tripId,
+      "t": candidate.t,
+      "peakMps2": candidate.peakMps2,
+      "speedBeforeMps": candidate.speedBeforeMps,
+      "lat": location.coordinate.latitude,
+      "lon": location.coordinate.longitude,
+      "accuracy": location.horizontalAccuracy >= 0 ? location.horizontalAccuracy : 50.0,
+    ]
+  }
+
   /// docs/08 §4 `parkedFix`: `{type, tripId: null, t, lat, lon, accuracy, speed?, heading?}`.
   private func parkedFixEvent(_ fix: CLLocation) -> [String: Any] {
     var event: [String: Any] = ["type": "parkedFix", "tripId": NSNull()]
@@ -610,6 +624,11 @@ extension TrackingPlugin: LocationTrackerDelegate {
     lastFixAt = t
     let speed: Double? = location.speed >= 0 ? location.speed : nil
     stateMachine.fix(t: t, speed: speed)
+    // docs/08 §4 `crashCandidate`: the detector already has the accelerometer side.
+    if stateMachine.phase == .active, let tripId = currentTripId,
+      let candidate = motion.crash.onSpeed(t: t, speedMps: speed) {
+      emit(crashCandidateEvent(tripId: tripId, candidate: candidate, at: location))
+    }
   }
 
   func locationTracker(_ tracker: LocationTracker, didFlush fixes: [[String: Any]], lastFixAt batchT: Int64?) {

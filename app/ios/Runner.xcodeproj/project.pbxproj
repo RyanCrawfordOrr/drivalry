@@ -22,6 +22,7 @@
 		DA7B1B042F2A000100D81A01 /* MotionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A042F2A000100D81A01 /* MotionTracker.swift */; };
 		DA7B1B052F2A000100D81A01 /* PhoneEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A052F2A000100D81A01 /* PhoneEvents.swift */; };
 		DA7B1B062F2A000100D81A01 /* Spool.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A062F2A000100D81A01 /* Spool.swift */; };
+		DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A082F2A000100D81A01 /* CrashDetector.swift */; };
 		DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A072F2A000100D81A01 /* Diagnostics.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 		DA7B1A042F2A000100D81A01 /* MotionTracker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MotionTracker.swift; sourceTree = "<group>"; };
 		DA7B1A052F2A000100D81A01 /* PhoneEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhoneEvents.swift; sourceTree = "<group>"; };
 		DA7B1A062F2A000100D81A01 /* Spool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spool.swift; sourceTree = "<group>"; };
+		DA7B1A082F2A000100D81A01 /* CrashDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashDetector.swift; sourceTree = "<group>"; };
 		DA7B1A072F2A000100D81A01 /* Diagnostics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diagnostics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -152,6 +154,7 @@
 				DA7B1A042F2A000100D81A01 /* MotionTracker.swift */,
 				DA7B1A052F2A000100D81A01 /* PhoneEvents.swift */,
 				DA7B1A062F2A000100D81A01 /* Spool.swift */,
+				DA7B1A082F2A000100D81A01 /* CrashDetector.swift */,
 				DA7B1A072F2A000100D81A01 /* Diagnostics.swift */,
 			);
 			path = Tracking;
@@ -319,6 +322,7 @@
 				DA7B1B042F2A000100D81A01 /* MotionTracker.swift in Sources */,
 				DA7B1B052F2A000100D81A01 /* PhoneEvents.swift in Sources */,
 				DA7B1B062F2A000100D81A01 /* Spool.swift in Sources */,
+				DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */,
 				DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

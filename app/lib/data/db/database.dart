@@ -37,6 +37,14 @@ class TripWithScore {
     RemoteCache,
     UploadedTrips,
     BadgeAwards,
+    Places,
+    PlaceAlerts,
+    ParkingSpots,
+    Vehicles,
+    FuelEntries,
+    MaintenanceItems,
+    VehicleDocuments,
+    EmergencyContacts,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -49,7 +57,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -60,6 +68,18 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(remoteCache);
         await m.createTable(uploadedTrips);
         await m.createTable(badgeAwards);
+      }
+      if (from < 3) {
+        await m.addColumn(trips, trips.vehicleId);
+        await m.addColumn(trips, trips.crashCandidate);
+        await m.createTable(places);
+        await m.createTable(placeAlerts);
+        await m.createTable(parkingSpots);
+        await m.createTable(vehicles);
+        await m.createTable(fuelEntries);
+        await m.createTable(maintenanceItems);
+        await m.createTable(vehicleDocuments);
+        await m.createTable(emergencyContacts);
       }
     },
   );
@@ -133,6 +153,7 @@ class AppDatabase extends _$AppDatabase {
     await (delete(segments)..where((s) => s.tripId.equals(id))).go();
     await (delete(tripScores)..where((s) => s.tripId.equals(id))).go();
     await (delete(fixBatches)..where((b) => b.tripId.equals(id))).go();
+    await (delete(parkingSpots)..where((p) => p.tripId.equals(id))).go();
     await (delete(trips)..where((t) => t.id.equals(id))).go();
   });
 
@@ -568,6 +589,164 @@ class AppDatabase extends _$AppDatabase {
         const LimitFlagsCompanion(synced: Value(true)),
       );
 
+  // ------------------------------------------- stage 3 (garage, parking) --
+
+  Stream<List<Vehicle>> watchVehicles({bool includeArchived = false}) {
+    final q = select(vehicles)..orderBy([(v) => OrderingTerm.asc(v.createdAt)]);
+    if (!includeArchived) q.where((v) => v.archivedAt.isNull());
+    return q.watch();
+  }
+
+  Future<List<Vehicle>> activeVehicles() =>
+      (select(vehicles)..where((v) => v.archivedAt.isNull())).get();
+
+  Future<Vehicle?> vehicleById(String id) =>
+      (select(vehicles)..where((v) => v.id.equals(id))).getSingleOrNull();
+
+  Stream<Vehicle?> watchVehicle(String id) =>
+      (select(vehicles)..where((v) => v.id.equals(id))).watchSingleOrNull();
+
+  Future<void> upsertVehicle(VehiclesCompanion row) =>
+      into(vehicles).insertOnConflictUpdate(row);
+
+  /// Links a trip to a garage vehicle (from a Bluetooth hint or by hand).
+  Future<int> setTripVehicle(String tripId, String? vehicleId, String? label) =>
+      (update(trips)..where((t) => t.id.equals(tripId))).write(
+        TripsCompanion(vehicleId: Value(vehicleId), vehicleLabel: Value(label)),
+      );
+
+  Future<int> setPassengerHint(String tripId, bool hint) =>
+      (update(trips)..where((t) => t.id.equals(tripId))).write(
+        TripsCompanion(passengerHint: Value(hint)),
+      );
+
+  /// Scored, non-deleted driver trips of one vehicle with their scores,
+  /// newest first.
+  Future<List<TripWithScore>> tripsForVehicle(String vehicleId) async {
+    final rows =
+        await (select(trips).join([
+                leftOuterJoin(
+                  tripScores,
+                  tripScores.tripId.equalsExp(trips.id),
+                ),
+              ])
+              ..where(
+                trips.vehicleId.equals(vehicleId) &
+                    trips.deletedAt.isNull() &
+                    trips.phase.isNotValue(TripPhase.discarded.wire),
+              )
+              ..orderBy([OrderingTerm.desc(trips.startedAt)]))
+            .get();
+    return [
+      for (final r in rows)
+        TripWithScore(r.readTable(trips), r.readTableOrNull(tripScores)),
+    ];
+  }
+
+  Stream<List<FuelEntry>> watchFuelEntries(String vehicleId) =>
+      (select(fuelEntries)
+            ..where((f) => f.vehicleId.equals(vehicleId))
+            ..orderBy([(f) => OrderingTerm.asc(f.at)]))
+          .watch();
+
+  Future<List<FuelEntry>> fuelEntriesFor(String vehicleId) =>
+      (select(fuelEntries)
+            ..where((f) => f.vehicleId.equals(vehicleId))
+            ..orderBy([(f) => OrderingTerm.asc(f.at)]))
+          .get();
+
+  Future<void> upsertFuelEntry(FuelEntriesCompanion row) =>
+      into(fuelEntries).insertOnConflictUpdate(row);
+
+  Future<void> deleteFuelEntry(String id) =>
+      (delete(fuelEntries)..where((f) => f.id.equals(id))).go();
+
+  Stream<List<MaintenanceItem>> watchMaintenance(String vehicleId) =>
+      (select(maintenanceItems)
+            ..where((m) => m.vehicleId.equals(vehicleId))
+            ..orderBy([(m) => OrderingTerm.asc(m.createdAt)]))
+          .watch();
+
+  Future<List<MaintenanceItem>> allMaintenanceItems() =>
+      select(maintenanceItems).get();
+
+  Future<void> upsertMaintenance(MaintenanceItemsCompanion row) =>
+      into(maintenanceItems).insertOnConflictUpdate(row);
+
+  Future<void> deleteMaintenance(String id) =>
+      (delete(maintenanceItems)..where((m) => m.id.equals(id))).go();
+
+  Stream<List<VehicleDocument>> watchDocuments(String vehicleId) =>
+      (select(vehicleDocuments)
+            ..where((d) => d.vehicleId.equals(vehicleId))
+            ..orderBy([(d) => OrderingTerm.desc(d.createdAt)]))
+          .watch();
+
+  Future<void> insertDocument(VehicleDocumentsCompanion row) =>
+      into(vehicleDocuments).insert(row);
+
+  Future<VehicleDocument?> documentById(String id) => (select(
+    vehicleDocuments,
+  )..where((d) => d.id.equals(id))).getSingleOrNull();
+
+  Future<void> deleteDocument(String id) =>
+      (delete(vehicleDocuments)..where((d) => d.id.equals(id))).go();
+
+  /// Stores where a trip ended, once.
+  Future<void> insertParkingSpot(ParkingSpotsCompanion row) =>
+      into(parkingSpots).insert(row, mode: InsertMode.insertOrIgnore);
+
+  Future<ParkingSpot?> parkingSpotFor(String tripId) => (select(
+    parkingSpots,
+  )..where((p) => p.tripId.equals(tripId))).getSingleOrNull();
+
+  /// The most recent parking spot whose trip still exists and is not deleted.
+  Stream<ParkingSpot?> watchLatestParkingSpot() {
+    final q =
+        select(
+            parkingSpots,
+          ).join([innerJoin(trips, trips.id.equalsExp(parkingSpots.tripId))])
+          ..where(trips.deletedAt.isNull())
+          ..orderBy([OrderingTerm.desc(parkingSpots.parkedAt)])
+          ..limit(1);
+    return q.watch().map(
+      (rows) => rows.isEmpty ? null : rows.first.readTable(parkingSpots),
+    );
+  }
+
+  Future<void> updateParkingSpot(
+    String tripId,
+    ParkingSpotsCompanion changes,
+  ) => (update(
+    parkingSpots,
+  )..where((p) => p.tripId.equals(tripId))).write(changes);
+
+  Future<void> deleteParkingSpot(String tripId) =>
+      (delete(parkingSpots)..where((p) => p.tripId.equals(tripId))).go();
+
+  /// Newest ended trip (not deleted, not discarded) that has no parking spot
+  /// yet, for the boot-time catch-up when the app was dead at trip end.
+  Future<Trip?> latestEndedTripWithoutSpot() async {
+    final rows =
+        await (select(trips).join([
+                leftOuterJoin(
+                  parkingSpots,
+                  parkingSpots.tripId.equalsExp(trips.id),
+                ),
+              ])
+              ..where(
+                trips.endedAt.isNotNull() &
+                    trips.deletedAt.isNull() &
+                    trips.phase.isNotValue(TripPhase.discarded.wire) &
+                    trips.phase.isNotValue(TripPhase.recording.wire) &
+                    parkingSpots.tripId.isNull(),
+              )
+              ..orderBy([OrderingTerm.desc(trips.endedAt)])
+              ..limit(1))
+            .get();
+    return rows.isEmpty ? null : rows.first.readTable(trips);
+  }
+
   // ---------------------------------------------------------- diagnostics --
 
   Future<Map<String, int>> tableCounts() async {
@@ -620,6 +799,49 @@ class AppDatabase extends _$AppDatabase {
     for (final r in rows)
       TripWithScore(r.readTable(trips), r.readTable(tripScores)),
   ];
+
+  // ------------------------------------------------- stage 3 (crash) --
+
+  /// Marks or clears the "possible crash" flag (docs/08 §4 `crashCandidate`).
+  Future<void> setCrashCandidate(String tripId, bool flagged) =>
+      updateTrip(tripId, TripsCompanion(crashCandidate: Value(flagged)));
+
+  Future<List<Trip>> crashFlaggedTrips() => (select(
+    trips,
+  )..where((t) => t.crashCandidate.equals(true) & t.deletedAt.isNull())).get();
+
+  Stream<List<Trip>> watchCrashFlaggedTrips() =>
+      (select(trips)
+            ..where((t) => t.crashCandidate.equals(true) & t.deletedAt.isNull())
+            ..orderBy([(t) => OrderingTerm.desc(t.startedAt)]))
+          .watch();
+
+  Stream<List<EmergencyContact>> watchEmergencyContacts() => (select(
+    emergencyContacts,
+  )..orderBy([(c) => OrderingTerm.asc(c.createdAt)])).watch();
+
+  Future<List<EmergencyContact>> allEmergencyContacts() => (select(
+    emergencyContacts,
+  )..orderBy([(c) => OrderingTerm.asc(c.createdAt)])).get();
+
+  Future<void> upsertEmergencyContact(EmergencyContactsCompanion row) =>
+      into(emergencyContacts).insertOnConflictUpdate(row);
+
+  Future<void> deleteEmergencyContact(String id) =>
+      (delete(emergencyContacts)..where((c) => c.id.equals(id))).go();
+
+  /// Integer settings (counters) with a default.
+  Future<int> settingInt(String key, {int fallback = 0}) async =>
+      int.tryParse(await getSetting(key) ?? '') ?? fallback;
+
+  Future<int> incrementSetting(String key) async {
+    final next = await settingInt(key) + 1;
+    await setSetting(key, '$next');
+    return next;
+  }
+
+  Future<void> deleteSetting(String key) =>
+      (delete(settings)..where((s) => s.key.equals(key))).go();
 }
 
 /// The app's database. Overridden in tests with [AppDatabase.memory].

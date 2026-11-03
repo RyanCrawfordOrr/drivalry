@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../features/profile/profile_repo.dart';
 import '../badges/badges_sync.dart';
 import '../push/push_service.dart';
+import '../repos/circles_sync.dart';
 import '../repos/friends_sync.dart';
 import '../push/trip_scored_notifications.dart';
 import '../supabase/supabase_providers.dart';
@@ -120,6 +121,7 @@ final syncBootstrapProvider = Provider<SyncBootstrap>((ref) {
   // watching them here keeps them alive for the app's life.
   ref.watch(friendsSyncProvider);
   ref.watch(badgesSyncProvider);
+  ref.watch(circlesSyncProvider);
 
   ref.listen(authStateProvider, (prev, next) {
     final session = next.value?.session;

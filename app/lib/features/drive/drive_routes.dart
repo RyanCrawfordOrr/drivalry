@@ -5,6 +5,7 @@ import '../settings/diagnostics_screen.dart';
 import 'drive_screen.dart';
 import 'friends_map/friends_map_screen.dart';
 import 'packs_screen.dart';
+import 'parking/parking_screen.dart';
 import 'trip_detail_screen.dart';
 
 /// The Drive tab and everything pushed inside it.
@@ -20,6 +21,7 @@ List<RouteBase> driveBranchRoutes() => [
       ),
       GoRoute(path: 'packs', builder: (_, _) => const PacksScreen()),
       GoRoute(path: 'map', builder: (_, _) => const FriendsMapScreen()),
+      GoRoute(path: 'parking', builder: (_, _) => const ParkingScreen()),
       GoRoute(
         path: 'diagnostics',
         builder: (_, _) => const DiagnosticsScreen(),

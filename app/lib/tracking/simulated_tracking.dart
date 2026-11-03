@@ -5,6 +5,7 @@ import 'package:drivalry_packs/drivalry_packs.dart';
 import 'package:drivalry_scoring/drivalry_scoring.dart';
 import 'package:uuid/uuid.dart';
 
+import 'crash_detector.dart';
 import 'tracking_models.dart';
 import 'tracking_port.dart';
 
@@ -56,6 +57,10 @@ class SimulatedTracking implements TrackingPort {
   }) async {
     var samples = input.samples;
     var phone = phoneEvents ?? input.phoneEvents ?? const <PhoneEvent>[];
+    // A synthetic crash is a motion event with a 4 g peak; the same detector
+    // the plugins run decides whether it becomes a candidate.
+    var motion = input.motionEvents ?? const <MotionEvent>[];
+    final crash = CrashDetector();
     if (samples.isEmpty) throw ArgumentError('trip has no samples');
     if (rebaseToNow) {
       final shift = _now() - samples.last.t;
@@ -72,6 +77,10 @@ class SimulatedTracking implements TrackingPort {
           ),
       ];
       phone = [for (final p in phone) PhoneEvent(t: p.t + shift, kind: p.kind)];
+      motion = [
+        for (final m in motion)
+          MotionEvent(t: m.t + shift, kind: m.kind, peak: m.peak),
+      ];
     }
 
     final tripId = const Uuid().v4();
@@ -113,6 +122,7 @@ class SimulatedTracking implements TrackingPort {
     );
 
     var phoneIdx = 0;
+    var motionIdx = 0;
     for (var i = 0; i < samples.length; i += batchSize) {
       final end = math.min(i + batchSize, samples.length);
       final batch = samples.sublist(i, end);
@@ -122,6 +132,19 @@ class SimulatedTracking implements TrackingPort {
       while (phoneIdx < phone.length && phone[phoneIdx].t <= batchT) {
         final p = phone[phoneIdx++];
         _emit(PhoneEventRaw(tripId: tripId, t: p.t, kind: _signalFor(p.kind)));
+      }
+      CrashCandidate? candidate;
+      GpsSample? candidateAt;
+      for (final s in batch) {
+        while (motionIdx < motion.length && motion[motionIdx].t <= s.t) {
+          final m = motion[motionIdx++];
+          crash.onAccel(m.t, m.peak);
+        }
+        final c = crash.onSpeed(s.t, s.speed);
+        if (c != null) {
+          candidate = c;
+          candidateAt = s;
+        }
       }
       _emit(
         FixesEvent(
@@ -141,6 +164,19 @@ class SimulatedTracking implements TrackingPort {
           ],
         ),
       );
+      if (candidate != null && candidateAt != null) {
+        _emit(
+          CrashCandidateEvent(
+            tripId: tripId,
+            t: candidate.t,
+            peakMps2: candidate.peakMps2,
+            speedBeforeMps: candidate.speedBeforeMps,
+            lat: candidateAt.lat,
+            lon: candidateAt.lon,
+            accuracy: candidateAt.accuracy,
+          ),
+        );
+      }
     }
     final endT = samples.last.t + 1000;
     _state = const TrackingState(

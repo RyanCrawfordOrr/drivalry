@@ -143,13 +143,16 @@ async function buildNotification(p: WebhookPayload): Promise<Notification | null
         .select("circle_id")
         .eq("user_id", r.user_id as string);
       const circleIds = (members ?? []).map((m) => m.circle_id);
-      if (circleIds.length === 0) return null;
-      const { data: peers } = await admin
-        .from("circle_members")
-        .select("user_id")
-        .in("circle_id", circleIds)
-        .neq("user_id", r.user_id as string);
-      const recipients = [...new Set((peers ?? []).map((m) => m.user_id as string))];
+      const { data: peers } = circleIds.length === 0
+        ? { data: [] as { user_id: string }[] }
+        : await admin
+          .from("circle_members")
+          .select("user_id")
+          .in("circle_id", circleIds)
+          .neq("user_id", r.user_id as string);
+      const named = Array.isArray(r.notify_user_ids) ? (r.notify_user_ids as string[]) : [];
+      const recipients = [...new Set([...(peers ?? []).map((m) => m.user_id as string), ...named])]
+        .filter((id) => id !== r.user_id);
       return {
         recipients,
         title: "Possible crash",
