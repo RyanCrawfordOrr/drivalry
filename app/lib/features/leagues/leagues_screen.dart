@@ -3,58 +3,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
+import '../../data/badges/badges_providers.dart';
 import '../../data/repos/duels_repo.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../badges/badge_moments.dart';
 import '../seasons/season_card.dart';
+import 'duels/duel_moments.dart';
 import 'global_league_card.dart';
 import 'leagues_routes.dart';
-import 'widgets/tier_chip.dart';
+import 'promotion_moments.dart';
+import 'widgets/tier_pill.dart';
 
 /// Weekly leagues with friends. Score and consistency climb the table; speed
-/// never does.
-class LeaguesScreen extends StatelessWidget {
+/// never does. A large title that collapses, Duels and Badges as two tiles,
+/// the season as the hero, the global league one tile, friend leagues under
+/// a kicker. Everything arrives staggered (docs/12 §5b).
+class LeaguesScreen extends ConsumerWidget {
   const LeaguesScreen({super.key});
 
+  static const _signInMessage =
+      'Sign in to race your friends on how well you drive.';
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ready =
+        ref.watch(cloudConfiguredProvider) && ref.watch(isSignedInProvider);
+    final leagues = ready
+        ? ref.watch(myLeaguesProvider).value ?? const <League>[]
+        : const <League>[];
+    final hasFriendLeagues = leagues.any((l) => !l.isGlobal);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Leagues'),
-        actions: [
-          Consumer(
-            builder: (context, ref, _) {
-              ref.watch(leagueWeekBadgesProvider);
-              // Opening the tab pulls the duel list once; the badge below
-              // follows the cache.
-              ref.watch(refreshMyDuelsProvider);
-              final pending = ref.watch(pendingDuelCountProvider);
-              return IconButton(
-                tooltip: 'Duels',
-                icon: Badge.count(
-                  count: pending,
-                  isLabelVisible: pending > 0,
-                  child: const Icon(Icons.bolt_outlined),
-                ),
-                onPressed: () => context.push(duelsPath),
-              );
-            },
-          ),
-          IconButton(
-            tooltip: 'Badges',
-            icon: const Icon(Icons.military_tech_outlined),
-            onPressed: () => context.push(badgesPath),
-          ),
-        ],
-      ),
-      body: const SignedInScope(
-        message: 'Sign in to race your friends on how well you drive.',
-        icon: Icons.emoji_events_outlined,
-        child: _LeaguesBody(),
+      // The empty state carries the create/join button; the FAB floats once
+      // there is a list under it.
+      floatingActionButton: hasFriendLeagues
+          ? FloatingActionButton.extended(
+              onPressed: () => showAddLeagueSheet(context, ref),
+              icon: const Icon(Icons.add),
+              label: const Text('League'),
+            )
+          : null,
+      body: BadgeMoments(
+        child: ready
+            ? const DuelMoments(child: PromotionMoments(child: _LeaguesBody()))
+            : CustomScrollView(
+                slivers: [
+                  const _LargeTitle(),
+                  SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: SignedInScope(
+                      message: _signInMessage,
+                      icon: Icons.emoji_events_outlined,
+                      child: const SizedBox.shrink(),
+                    ),
+                  ),
+                ],
+              ),
       ),
     );
   }
+}
+
+/// "Leagues" as a large app bar title that collapses on scroll.
+class _LargeTitle extends StatelessWidget {
+  const _LargeTitle();
+
+  @override
+  Widget build(BuildContext context) =>
+      SliverAppBar.large(title: Text('Leagues', style: context.headline));
 }
 
 class _LeaguesBody extends ConsumerWidget {
@@ -62,127 +80,335 @@ class _LeaguesBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final refresh = ref.watch(refreshMyLeaguesProvider);
     final leagues = ref.watch(myLeaguesProvider).value ?? const <League>[];
-    // The global league has its own card; the tiles are friend leagues.
+    // The global league has its own tile; these are the friend leagues.
     final friendLeagues = [
       for (final l in leagues)
         if (!l.isGlobal) l,
     ];
-    final theme = Theme.of(context);
+    // Opening the tab runs the week-badge pass and pulls the duel list once;
+    // the tiles below follow the caches.
+    ref.watch(leagueWeekBadgesProvider);
+    ref.watch(refreshMyDuelsProvider);
 
-    return Scaffold(
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _showAddSheet(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('League'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => ref.refresh(refreshMyLeaguesProvider.future),
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 96),
-          children: [
-            if (refresh.hasError)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Showing the last known tables. Pull to retry.',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.error,
+    return RefreshIndicator(
+      edgeOffset: 120,
+      onRefresh: () => ref.refresh(refreshMyLeaguesProvider.future),
+      child: CustomScrollView(
+        slivers: [
+          const _LargeTitle(),
+          SliverPadding(
+            padding: const EdgeInsets.only(top: Space.sm, bottom: 96),
+            sliver: SliverList.list(
+              children: [
+                if (refresh.hasError)
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      Space.gutter,
+                      0,
+                      Space.gutter,
+                      Space.md,
+                    ),
+                    child: Text(
+                      'Showing the last tables we saw. Pull to retry.',
+                      style: context.caption.copyWith(color: scheme.error),
+                    ),
+                  ),
+                const Reveal(
+                  child: Padding(padding: Space.screen, child: _HubTiles()),
+                ),
+                const SizedBox(height: Space.xl),
+                Reveal(
+                  delay: Reveal.stagger(1),
+                  child: const Padding(
+                    padding: Space.screen,
+                    child: SeasonCard(),
                   ),
                 ),
-              ),
-            const SeasonCard(),
-            const SizedBox(height: 8),
-            const GlobalLeagueCard(),
-            const SizedBox(height: 16),
-            Text('Friend leagues', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
-            if (friendLeagues.isEmpty && !refresh.isLoading)
-              const _EmptyLeagues()
-            else if (friendLeagues.isEmpty)
-              const Padding(
-                padding: EdgeInsets.all(32),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else
-              for (final l in friendLeagues) _LeagueTile(league: l),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _showAddSheet(BuildContext context, WidgetRef ref) {
-    return showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.add_circle_outline),
-              title: const Text('Create a league'),
-              subtitle: const Text('Up to 30 friends, Monday to Sunday'),
-              onTap: () {
-                Navigator.pop(ctx);
-                context.push(Routes.createLeague);
-              },
+                const SizedBox(height: Space.md),
+                Reveal(
+                  delay: Reveal.stagger(2),
+                  child: const Padding(
+                    padding: Space.screen,
+                    child: GlobalLeagueCard(),
+                  ),
+                ),
+                const SizedBox(height: Space.section),
+                if (friendLeagues.isEmpty && !refresh.isLoading)
+                  Reveal(
+                    delay: Reveal.stagger(3),
+                    child: EmptyState(
+                      kicker: 'Friend leagues',
+                      headline: 'No friend leagues yet.',
+                      body: 'Race your friends on how well you drive.',
+                      actionLabel: 'Create or join',
+                      onAction: () => showAddLeagueSheet(context, ref),
+                    ),
+                  )
+                else
+                  EditorialSection(
+                    kicker: 'Friend leagues',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: friendLeagues.isEmpty
+                          ? const [
+                              SkeletonTile(height: 84),
+                              SizedBox(height: Space.md),
+                              SkeletonTile(height: 84),
+                            ]
+                          : [
+                              for (
+                                var i = 0;
+                                i < friendLeagues.length;
+                                i++
+                              ) ...[
+                                if (i > 0) const SizedBox(height: Space.md),
+                                Reveal(
+                                  delay: Reveal.stagger(3 + i),
+                                  child: _LeagueTile(league: friendLeagues[i]),
+                                ),
+                              ],
+                            ],
+                    ),
+                  ),
+              ],
             ),
-            ListTile(
-              leading: const Icon(Icons.key_outlined),
-              title: const Text('Join with a code'),
-              subtitle: const Text('Paste the 8-character invite code'),
-              onTap: () {
-                Navigator.pop(ctx);
-                _joinByCode(context, ref);
-              },
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> _joinByCode(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController();
-    final code = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Join a league'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          autocorrect: false,
-          textCapitalization: TextCapitalization.none,
-          decoration: const InputDecoration(labelText: 'Invite code'),
-          onSubmitted: (v) => Navigator.pop(ctx, v),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text),
-            child: const Text('Join'),
           ),
         ],
       ),
     );
-    if (code == null || code.trim().isEmpty || !context.mounted) return;
-    try {
-      final id = await ref.read(leaguesRepoProvider).joinByCode(code);
-      if (context.mounted) context.push(Routes.league(id));
-    } on LeagueJoinException catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.message)));
-      }
+  }
+}
+
+/// Create a league or join one with a code.
+Future<void> showAddLeagueSheet(BuildContext context, WidgetRef ref) {
+  return showDrivalrySheet<void>(
+    context,
+    title: 'New league',
+    builder: (ctx) => Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _SheetRow(
+          icon: Icons.add_circle_outline,
+          title: 'Create a league',
+          line: 'Up to 30 friends, Monday to Sunday',
+          onTap: () {
+            Navigator.pop(ctx);
+            context.push(Routes.createLeague);
+          },
+        ),
+        const SizedBox(height: Space.md),
+        _SheetRow(
+          icon: Icons.key_outlined,
+          title: 'Join with a code',
+          line: 'Paste the code a friend sent you',
+          onTap: () {
+            Navigator.pop(ctx);
+            _joinByCode(context, ref);
+          },
+        ),
+      ],
+    ),
+  );
+}
+
+Future<void> _joinByCode(BuildContext context, WidgetRef ref) async {
+  final code = await showDrivalrySheet<String>(
+    context,
+    title: 'Join a league',
+    builder: (_) => const _JoinCodeForm(),
+  );
+  if (code == null || code.trim().isEmpty || !context.mounted) return;
+  try {
+    final id = await ref.read(leaguesRepoProvider).joinByCode(code);
+    if (context.mounted) context.push(Routes.league(id));
+  } on LeagueJoinException catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message)));
     }
+  }
+}
+
+class _JoinCodeForm extends StatefulWidget {
+  const _JoinCodeForm();
+
+  @override
+  State<_JoinCodeForm> createState() => _JoinCodeFormState();
+}
+
+class _JoinCodeFormState extends State<_JoinCodeForm> {
+  final _controller = TextEditingController();
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          TextField(
+            controller: _controller,
+            autofocus: true,
+            autocorrect: false,
+            textCapitalization: TextCapitalization.characters,
+            decoration: const InputDecoration(labelText: 'Invite code'),
+            onSubmitted: (v) => Navigator.pop(context, v),
+          ),
+          const SizedBox(height: Space.lg),
+          PrimaryButton(
+            label: 'Join',
+            onPressed: () => Navigator.pop(context, _controller.text),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SheetRow extends StatelessWidget {
+  const _SheetRow({
+    required this.icon,
+    required this.title,
+    required this.line,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final String line;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) => Tile(
+    onTap: onTap,
+    padding: const EdgeInsets.all(Space.lg),
+    child: Row(
+      children: [
+        Icon(icon, color: Theme.of(context).colorScheme.primary),
+        const SizedBox(width: Space.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: context.title),
+              Text(line, style: context.caption),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Duels and Badges as two tiles: icon, title, one-line status, a count.
+class _HubTiles extends ConsumerWidget {
+  const _HubTiles();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final duels = ref.watch(myDuelsProvider).value ?? const <Duel>[];
+    final pending = ref.watch(pendingDuelCountProvider);
+    final running = duels.where((d) => d.isActive).length;
+    final badges = ref.watch(myBadgesProvider).value;
+    final regular = badges?.where((b) => !b.def.isShame).toList();
+    final earned = regular?.where((b) => b.earned).length ?? 0;
+    final duelLine = pending > 0
+        ? (pending == 1
+              ? 'One challenge to answer'
+              : '$pending challenges to answer')
+        : running > 0
+        ? (running == 1 ? 'One duel running' : '$running duels running')
+        : 'Challenge a friend';
+    final badgeLine = regular == null
+        ? 'Streaks, not speed'
+        : '$earned of ${regular.length} badges earned';
+    return Row(
+      children: [
+        Expanded(
+          child: _HubTile(
+            icon: Icons.bolt_outlined,
+            title: 'Duels',
+            line: duelLine,
+            count: pending,
+            live: running > 0,
+            onTap: () => context.push(duelsPath),
+          ),
+        ),
+        const SizedBox(width: Space.md),
+        Expanded(
+          child: _HubTile(
+            icon: Icons.military_tech_outlined,
+            title: 'Badges',
+            line: badgeLine,
+            onTap: () => context.push(badgesPath),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HubTile extends StatelessWidget {
+  const _HubTile({
+    required this.icon,
+    required this.title,
+    required this.line,
+    required this.onTap,
+    this.count = 0,
+    this.live = false,
+  });
+
+  final IconData icon;
+  final String title;
+  final String line;
+  final VoidCallback onTap;
+  final int count;
+
+  /// Something is running right now: the tile breathes.
+  final bool live;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return Tile(
+      onTap: onTap,
+      padding: const EdgeInsets.all(Space.lg),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 22, color: scheme.primary),
+              const Spacer(),
+              if (count > 0)
+                Pill('$count', tone: PillTone.primary, compact: true)
+              else if (live)
+                PulsingDot(color: scheme.primary, size: 8),
+            ],
+          ),
+          const SizedBox(height: Space.md),
+          Text(title, style: context.title),
+          const SizedBox(height: 2),
+          Text(
+            line,
+            style: context.caption,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -192,64 +418,81 @@ class _LeagueTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final week = ref.watch(leagueCurrentWeekProvider(league.id)).value;
     final me = ref.watch(currentUserIdProvider);
     final mine = me == null ? null : week?.rowFor(me);
-    final rankText = mine == null
-        ? null
-        : '#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP';
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: ListTile(
-        onTap: () => context.push(Routes.league(league.id)),
-        leading: CircleAvatar(
-          backgroundColor: theme.colorScheme.primaryContainer,
-          child: Text(
-            league.name.isEmpty ? '?' : league.name[0].toUpperCase(),
-            style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+    final faces = [
+      for (final r in (week?.rows ?? const <Standing>[]).take(3))
+        r.displayName.isNotEmpty ? r.displayName : r.handle,
+    ];
+    final line = [
+      '${league.memberCount} member${league.memberCount == 1 ? '' : 's'}',
+      league.myTier.label,
+      if (league.myHiding) 'hiding',
+    ].join(' · ');
+    return Tile(
+      onTap: () => context.push(Routes.league(league.id)),
+      child: Row(
+        children: [
+          _StackedAvatars(
+            names: faces.isEmpty ? [league.name] : faces,
+            color: tierColor(league.myTier, Theme.of(context).colorScheme),
           ),
-        ),
-        title: Text(league.name),
-        subtitle: Text(
-          [
-            '${league.memberCount} member${league.memberCount == 1 ? '' : 's'}',
-            ?rankText,
-            if (league.myHiding) 'hiding',
-          ].join(' · '),
-        ),
-        trailing: TierChip(tier: league.myTier, dense: true),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  league.name,
+                  style: context.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  line,
+                  style: context.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          if (mine != null) ...[
+            const SizedBox(width: Space.sm),
+            Pill('#${mine.rank}', tone: PillTone.primary, compact: true),
+          ],
+        ],
       ),
     );
   }
 }
 
-class _EmptyLeagues extends StatelessWidget {
-  const _EmptyLeagues();
+/// Up to three member avatars, overlapping, on the tile's own colour.
+class _StackedAvatars extends StatelessWidget {
+  const _StackedAvatars({required this.names, required this.color});
+  final List<String> names;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-      child: Column(
+    const step = 24.0;
+    final bg = Theme.of(context).colorScheme.surfaceContainerLow;
+    return SizedBox(
+      width: 44 + step * (names.length - 1),
+      height: 44,
+      child: Stack(
         children: [
-          Icon(
-            Icons.emoji_events_outlined,
-            size: 56,
-            color: theme.colorScheme.primary,
-          ),
-          const SizedBox(height: 16),
-          Text('No leagues yet', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 8),
-          Text(
-            'Create one and send the invite link to your friends, or paste a '
-            'code someone sent you. Weeks run Monday to Sunday. The top five '
-            'move up a tier, the bottom five move down, and skipping a week '
-            'moves you down too.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodyMedium,
-          ),
+          for (var i = 0; i < names.length; i++)
+            Positioned(
+              left: i * step,
+              child: Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+                child: Avatar(name: names[i], color: i == 0 ? color : null),
+              ),
+            ),
         ],
       ),
     );

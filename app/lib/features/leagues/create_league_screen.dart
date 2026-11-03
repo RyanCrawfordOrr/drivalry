@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../widgets/signed_in_scope.dart';
 
@@ -35,16 +36,17 @@ class _CreateLeagueScreenState extends ConsumerState<CreateLeagueScreen> {
           .read(leaguesRepoProvider)
           .createLeague(_name.text);
       ref.invalidate(refreshMyLeaguesProvider);
+      Haptics.success();
       if (mounted) context.go(Routes.league(league.id));
     } on ArgumentError catch (e) {
       setState(() => _error = e.message as String?);
     } catch (e) {
+      debugPrint('createLeague: $e');
       setState(
         () => _error =
-            'Could not create the league right now. '
-            'It will be retried when you are back online.',
+            'Could not create it right now. We will try again when you are '
+            'back online.',
       );
-      debugPrint('createLeague: $e');
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -52,12 +54,16 @@ class _CreateLeagueScreenState extends ConsumerState<CreateLeagueScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('New league')),
       body: SignedInScope(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.sm,
+            Space.gutter,
+            Space.gutter,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -67,30 +73,24 @@ class _CreateLeagueScreenState extends ConsumerState<CreateLeagueScreen> {
                 maxLength: 40,
                 textCapitalization: TextCapitalization.words,
                 decoration: InputDecoration(
-                  labelText: 'League name',
+                  labelText: 'Name your league',
                   hintText: 'The Boys, Carpool Crew, Family',
                   errorText: _error,
                 ),
                 onSubmitted: (_) => _busy ? null : _create(),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: Space.md),
               Text(
-                'Up to 30 members. Weeks run Monday to Sunday in your time '
-                'zone. XP comes from how well you drive, never how far or '
-                'how fast. Top five promote, bottom five demote, and a week '
-                'with no scored trips demotes too.',
-                style: theme.textTheme.bodySmall,
+                'Up to 30 friends, Monday to Sunday. XP comes from how well '
+                'you drive, never how far or how fast.',
+                style: context.caption,
               ),
-              const SizedBox(height: 24),
-              FilledButton.icon(
-                onPressed: _busy ? null : _create,
-                icon: _busy
-                    ? const SizedBox.square(
-                        dimension: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.emoji_events_outlined),
-                label: const Text('Create league'),
+              const SizedBox(height: Space.xl),
+              PrimaryButton(
+                label: 'Create league',
+                icon: Icons.emoji_events_outlined,
+                busy: _busy,
+                onPressed: _create,
               ),
             ],
           ),

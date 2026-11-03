@@ -1,6 +1,9 @@
+import 'package:drivalry/app/ui/ui.dart';
+import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/repos/challenges_repo.dart';
 import 'package:drivalry/data/repos/duels_repo.dart';
 import 'package:drivalry/data/repos/seasons_repo.dart';
+import 'package:drivalry/data/supabase/supabase_providers.dart';
 import 'package:drivalry/features/leagues/challenges/challenge_card.dart';
 import 'package:drivalry/features/leagues/duels/duel_card.dart';
 import 'package:drivalry/features/leagues/duels/duels_screen.dart';
@@ -9,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/sqlite_support.dart';
 import 'support/widget_support.dart';
 
 DuelParty party(String id) =>
@@ -41,6 +45,7 @@ Widget wrap(Widget child) => MaterialApp(
 
 void main() {
   final now = DateTime(2026, 11, 3, 12);
+  setUp(() => Haptics.enabled = false);
 
   group('DuelCard', () {
     testWidgets('pending: who is waiting on whom', (tester) async {
@@ -48,14 +53,17 @@ void main() {
         wrap(DuelCard(duel: duel(), me: 'sam', now: now)),
       );
       expect(find.text('Waiting for your answer'), findsOneWidget);
-      expect(find.text('You'), findsOneWidget);
-      expect(find.text('@me'), findsOneWidget);
+      expect(find.text('You vs @me'), findsOneWidget);
+      expect(find.text('XP'), findsOneWidget);
 
       await tester.pumpWidget(wrap(DuelCard(duel: duel(), me: 'me', now: now)));
       expect(find.text('Waiting for @sam to answer'), findsOneWidget);
+      expect(find.text('You vs @sam'), findsOneWidget);
     });
 
-    testWidgets('running: values, leader and time left', (tester) async {
+    testWidgets('running: values, leader, time left and the share bar', (
+      tester,
+    ) async {
       final d = duel(status: DuelStatus.active);
       await tester.pumpWidget(
         wrap(
@@ -70,10 +78,13 @@ void main() {
           ),
         ),
       );
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(find.text('180 XP'), findsOneWidget);
       expect(find.text('120 XP'), findsOneWidget);
       expect(find.textContaining('You lead'), findsOneWidget);
       expect(find.textContaining('5d 21h left'), findsOneWidget);
+      final bar = tester.widget<ThinBar>(find.byType(ThinBar));
+      expect(bar.fraction, closeTo(0.6, 0.001));
 
       await tester.pumpWidget(
         wrap(
@@ -88,6 +99,7 @@ void main() {
           ),
         ),
       );
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(find.textContaining('Level'), findsOneWidget);
     });
 
@@ -107,12 +119,13 @@ void main() {
           ),
         ),
       );
-      expect(find.text('2 of 3 trips'), findsOneWidget);
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(find.textContaining('needs 3 trips, has 2'), findsOneWidget);
       expect(find.text('88.5'), findsOneWidget);
       expect(find.textContaining('@sam leads'), findsOneWidget);
     });
 
-    testWidgets('finished: the loser sees their badge and its end date', (
+    testWidgets('finished: the loser sees their badge, the winner a pill', (
       tester,
     ) async {
       final d = duel(
@@ -122,15 +135,13 @@ void main() {
         loserBadgeId: 'sunday_driver',
       );
       await tester.pumpWidget(wrap(DuelCard(duel: d, me: 'me', now: now)));
-      expect(
-        find.text('You lost · you wear Sunday Driver until Nov 16'),
-        findsOneWidget,
-      );
+      expect(find.text('You wear Sunday Driver until Nov 16'), findsOneWidget);
+      expect(find.text('You lost'), findsOneWidget);
       await tester.pumpWidget(wrap(DuelCard(duel: d, me: 'sam', now: now)));
-      expect(
-        find.text('You won · they wear Sunday Driver until Nov 16'),
-        findsOneWidget,
-      );
+      expect(find.text('They wear Sunday Driver until Nov 16'), findsOneWidget);
+      expect(find.text('You won'), findsOneWidget);
+      final pill = tester.widget<Pill>(find.widgetWithText(Pill, 'You won'));
+      expect(pill.tone, PillTone.positive);
     });
 
     test('status lines for draws, declines and expiries', () {
@@ -144,7 +155,11 @@ void main() {
       );
       expect(
         duelStatusLine(duel(status: DuelStatus.expired), 'me', null, now),
-        'Expired unanswered',
+        'Never answered. It lapsed.',
+      );
+      expect(
+        duelWinLine(duel(status: DuelStatus.finished, winnerId: 'me'), 'me'),
+        'You beat @sam on XP',
       );
     });
   });
@@ -166,7 +181,9 @@ void main() {
       value: status == 'active' ? null : 3,
     );
 
-    testWidgets('shows title, count and the end date', (tester) async {
+    testWidgets('shows title, count, the end date and grows its bar', (
+      tester,
+    ) async {
       final c = challenge(ChallengeGoal.cleanTrips, 25);
       final p = computeChallengeProgress(
         c,
@@ -184,14 +201,15 @@ void main() {
       await tester.pumpWidget(
         wrap(ChallengeProgressView(challenge: c, progress: p, now: now)),
       );
+      // The bar starts empty and grows to its value.
+      expect(tester.widget<ThinBar>(find.byType(ThinBar)).fraction, 0);
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(find.text('Clean trips · 25 trips'), findsOneWidget);
       expect(find.text('17 of 25 trips'), findsOneWidget);
       expect(find.textContaining('Ends Mon, Nov 9'), findsOneWidget);
       expect(find.textContaining('5 days left'), findsOneWidget);
-      final bar = tester.widget<LinearProgressIndicator>(
-        find.byType(LinearProgressIndicator),
-      );
-      expect(bar.value, closeTo(0.68, 0.001));
+      final bar = tester.widget<ThinBar>(find.byType(ThinBar));
+      expect(bar.fraction, closeTo(0.68, 0.001));
     });
 
     testWidgets('everyone-drives wording and the cancel button', (
@@ -222,6 +240,7 @@ void main() {
           ),
         ),
       );
+      await pumpFor(tester, const Duration(seconds: 1));
       expect(find.text('1 of 3 members have 3 trips'), findsOneWidget);
       await tester.tap(find.byTooltip('Call off'));
       expect(cancelled, isTrue);
@@ -238,7 +257,7 @@ void main() {
         challengeResultLine(
           challenge(ChallengeGoal.cleanTrips, 25, status: 'failed'),
         ),
-        'Missed: 3 of 25 trips.',
+        'Not met. The league reached 3 of 25 trips.',
       );
       expect(
         challengeProgressLine(
@@ -258,7 +277,9 @@ void main() {
   });
 
   group('SeasonCardView', () {
-    testWidgets('days left, numbers and the Wrapped link', (tester) async {
+    testWidgets('days left count up, numbers and the Wrapped link', (
+      tester,
+    ) async {
       var wrapped = false;
       await tester.pumpWidget(
         wrap(
@@ -278,13 +299,16 @@ void main() {
           ),
         ),
       );
-      expect(find.text('Season 1'), findsOneWidget);
-      expect(find.text('59 days left'), findsOneWidget);
-      expect(find.text('12'), findsOneWidget);
-      expect(find.text('640'), findsOneWidget);
-      expect(find.text('87'), findsOneWidget);
-      expect(find.text('11'), findsOneWidget);
-      await tester.tap(find.text('Season Wrapped'));
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(find.text('SEASON 1'), findsOneWidget);
+      expect(find.text('59'), findsOneWidget);
+      expect(find.text('days left'), findsOneWidget);
+      expect(
+        find.text('12 trips · 640 XP · average 87 · 11 phone-free'),
+        findsOneWidget,
+      );
+      expect(find.byType(ThinBar), findsOneWidget);
+      await tester.tap(find.text('Wrapped'));
       expect(wrapped, isTrue);
     });
   });
@@ -300,4 +324,29 @@ void main() {
     expect(find.text('Offline build'), findsOneWidget);
     await unmountAndSettle(tester);
   });
+
+  testWidgets(
+    'DuelsScreen with no duels shows the empty state with its own button',
+    (tester) async {
+      final db = memoryDatabase();
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            databaseProvider.overrideWithValue(db),
+            currentUserIdProvider.overrideWithValue('me'),
+            cloudConfiguredProvider.overrideWithValue(true),
+            supabaseProvider.overrideWithValue(null),
+          ],
+          child: const MaterialApp(home: DuelsScreen()),
+        ),
+      );
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(find.text('No duels yet.'), findsOneWidget);
+      expect(find.text('Duel a friend'), findsOneWidget);
+      expect(find.byType(FloatingActionButton), findsNothing);
+      await unmountAndSettle(tester);
+      await db.close();
+    },
+    skip: skipWithoutSqlite() != null,
+  );
 }

@@ -29,8 +29,9 @@ class WrappedScene extends ArtScene {
   WrappedScene({this.card = 4});
 
   /// Index of the Wrapped card to show (0 cover, 1 distance, 2 score,
-  /// 3 habits, 4 states, 5 groundhog, 6 reality, 7 records, 8 social,
-  /// 9 outro).
+  /// 3 habits, 4 states, 5 repeat route, 6 reality, 7 records, 8 social,
+  /// 9 outro). Page 0 of the screen is the intro, so the card sits at
+  /// `card + 1`.
   final int card;
 
   AppDatabase? _db;
@@ -77,7 +78,7 @@ class WrappedScene extends ArtScene {
   @override
   Future<void> prepare(WidgetTester tester) async {
     final pageView = tester.widget<PageView>(find.byType(PageView));
-    pageView.controller!.jumpToPage(card);
+    pageView.controller!.jumpToPage(card + 1);
     await pumpFor(tester, const Duration(seconds: 1));
   }
 

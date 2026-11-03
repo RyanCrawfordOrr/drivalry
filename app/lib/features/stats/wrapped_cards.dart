@@ -2,9 +2,26 @@ import 'package:drivalry_scoring/drivalry_scoring.dart'
     show SpeedUnits, formatSaved;
 import 'package:flutter/material.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/stats/stats_engine.dart';
 import '../../widgets/units.dart';
 import 'fun_facts.dart';
+
+/// The ten card colours, in card order, plus the intro's. Hard-coded on
+/// purpose: these pages are also rendered off screen as share images, so
+/// they must not follow the phone's theme.
+const List<Color> wrappedPalette = [
+  Color(0xFF1D3557), // cover
+  Color(0xFF2A9D8F), // distance
+  Color(0xFF457B9D), // score
+  Color(0xFF3D405B), // habits
+  Color(0xFF6D597A), // states
+  Color(0xFFB56576), // repeat route
+  Color(0xFFE76F51), // reality
+  Color(0xFF264653), // records
+  Color(0xFF8338EC), // social
+  Color(0xFF101828), // outro
+];
 
 /// One Wrapped page: a big number, a line of words, an accent colour.
 class WrappedCardData {
@@ -52,14 +69,14 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       kicker: 'Your ${s.range.label}',
       value: '${t.trips}',
       caption: t.trips == 1 ? 'trip as the driver' : 'trips as the driver',
-      color: const Color(0xFF1D3557),
+      color: wrappedPalette[0],
     ),
     WrappedCardData(
       id: 'distance',
-      kicker: 'You covered',
+      kicker: 'Distance driven',
       value: dist(t.distanceM),
       caption: '${formatHours(t.movingS)} behind the wheel',
-      color: const Color(0xFF2A9D8F),
+      color: wrappedPalette[1],
     ),
     WrappedCardData(
       id: 'score',
@@ -68,46 +85,43 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       caption: t.bestScore == null
           ? 'No scored trips this season'
           : 'Best ${t.bestScore} · ${t.cleanTrips} clean trips',
-      color: const Color(0xFF457B9D),
+      color: wrappedPalette[2],
     ),
     WrappedCardData(
       id: 'habits',
       kicker: 'Night Owl',
       value: '${h.nightPercent} %',
-      caption:
-          'of your distance after dark · ${h.weekendPercent} % on weekends',
-      color: const Color(0xFF3D405B),
+      caption: 'driven after dark · ${h.weekendPercent} % at weekends',
+      color: wrappedPalette[3],
     ),
     WrappedCardData(
       id: 'states',
       kicker: 'States visited',
       value: '${g.stateCodes.length}',
       caption: g.stateCodes.isEmpty
-          ? 'Nothing matched to a pack yet'
+          ? 'None yet. Drive somewhere new.'
           : g.stateCodes.take(8).join(' · '),
-      color: const Color(0xFF6D597A),
+      color: wrappedPalette[4],
       states: g.stateCodes,
     ),
     WrappedCardData(
       id: 'groundhog',
-      kicker: 'Groundhog Route',
+      kicker: 'Your repeat route',
       value: groundhog == null ? '–' : '${groundhog.count}×',
       caption: groundhog == null
           ? 'No route repeated yet'
-          : '${groundhog.label}, again and again',
-      shareCaption: groundhog == null
-          ? null
-          : 'the same route, again and again',
-      color: const Color(0xFFB56576),
+          : 'Usually ${groundhog.label}',
+      shareCaption: groundhog == null ? null : 'The same route, over and over',
+      color: wrappedPalette[5],
     ),
     WrappedCardData(
       id: 'reality',
-      kicker: 'Over the limit for',
+      kicker: 'Time over the limit',
       value: RealityChecks.formatHoursOver(rc.secondsOverLimit),
       caption: rc.secondsOverLimit < 60
           ? 'Barely at all. Respect.'
           : 'It saved you ${formatSaved(rc.timeSavedS)}.',
-      color: const Color(0xFFE76F51),
+      color: wrappedPalette[6],
     ),
     WrappedCardData(
       id: 'records',
@@ -118,7 +132,7 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
           'Highest point ${formatAltitude(r.highestAltitudeM!, units)}',
         'Busiest day ${r.mostTripsInDay} trips',
       ].join(' · '),
-      color: const Color(0xFF264653),
+      color: wrappedPalette[7],
     ),
     WrappedCardData(
       id: 'social',
@@ -131,20 +145,118 @@ List<WrappedCardData> wrappedCards(DriverStats s, SpeedUnits units) {
       shareCaption: so.convoysJoined == 0
           ? null
           : '${dist(so.convoyDistanceM)} together',
-      color: const Color(0xFF8338EC),
+      color: wrappedPalette[8],
     ),
     WrappedCardData(
       id: 'outro',
       kicker: 'XP earned',
       value: '${t.xp}',
       caption: 'Drive well. See you next season.',
-      color: const Color(0xFF101828),
+      color: wrappedPalette[9],
     ),
   ];
 }
 
+/// The first page: the season's name arrives, then an invitation to swipe.
+/// The kicker and title fade and slide in over 200 ms (docs/12 §5).
+class WrappedIntroCard extends StatefulWidget {
+  const WrappedIntroCard({super.key, required this.rangeLabel});
+  final String rangeLabel;
+
+  @override
+  State<WrappedIntroCard> createState() => _WrappedIntroCardState();
+}
+
+class _WrappedIntroCardState extends State<WrappedIntroCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(
+    vsync: this,
+    duration: Motion.reveal,
+  )..forward();
+
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reduce = context.reduceMotion;
+    Widget enter(Widget child, double from) {
+      if (reduce) return child;
+      final a = CurvedAnimation(
+        parent: _c,
+        curve: Interval(from, 1, curve: Motion.enter),
+      );
+      return FadeTransition(
+        opacity: a,
+        child: SlideTransition(
+          position: Tween(
+            begin: const Offset(0, 0.2),
+            end: Offset.zero,
+          ).animate(a),
+          child: child,
+        ),
+      );
+    }
+
+    final color = wrappedPalette.last;
+    return _CardSurface(
+      color: color,
+      radius: 24,
+      child: Padding(
+        padding: const EdgeInsets.all(28),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const _Masthead(label: 'Season Wrapped', scale: 1),
+            const Spacer(),
+            enter(
+              Text(
+                'Your season',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 13,
+                  letterSpacing: 2,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              0,
+            ),
+            const SizedBox(height: 8),
+            enter(
+              Text(
+                widget.rangeLabel,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 44,
+                  fontWeight: FontWeight.w900,
+                  height: 1.05,
+                  letterSpacing: -1,
+                ),
+              ),
+              0.2,
+            ),
+            const SizedBox(height: 12),
+            enter(
+              const Text(
+                'Swipe through your season.',
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+              0.4,
+            ),
+            const Spacer(),
+            const Icon(Icons.swipe_left_outlined, color: Colors.white54),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// One Wrapped page as a widget. With [forShare] the caption drops anything
-/// that names a place or a person.
+/// that names a place or a person. On screen the big number scales in.
 class WrappedCard extends StatelessWidget {
   const WrappedCard({
     super.key,
@@ -162,48 +274,53 @@ class WrappedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scale = forShare ? 2.6 : 1.0;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [data.color, Color.lerp(data.color, Colors.black, 0.45)!],
+    final value = FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.centerLeft,
+      child: Text(
+        data.value,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 64 * scale,
+          fontWeight: FontWeight.w900,
+          height: 1,
+          fontFeatures: const [FontFeature.tabularFigures()],
         ),
-        borderRadius: forShare ? null : BorderRadius.circular(24),
       ),
+    );
+    return _CardSurface(
+      color: data.color,
+      radius: forShare ? null : 24,
       child: Padding(
         padding: EdgeInsets.all(28 * scale),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'DRIVALRY · ${rangeLabel.toUpperCase()}',
-              style: TextStyle(
-                color: Colors.white70,
-                fontSize: 13 * scale,
-                letterSpacing: 2,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+            _Masthead(label: 'Drivalry · $rangeLabel', scale: scale),
             const Spacer(),
             Text(
               data.kicker,
               style: TextStyle(color: Colors.white, fontSize: 22 * scale),
             ),
             SizedBox(height: 8 * scale),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Text(
-                data.value,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 64 * scale,
-                  fontWeight: FontWeight.w900,
-                  height: 1,
+            if (forShare || context.reduceMotion)
+              value
+            else
+              TweenAnimationBuilder<double>(
+                key: ValueKey(data.id),
+                tween: Tween(begin: 0.8, end: 1),
+                duration: Motion.screen,
+                curve: Motion.enter,
+                builder: (_, s, child) => Opacity(
+                  opacity: ((s - 0.8) / 0.2).clamp(0, 1).toDouble(),
+                  child: Transform.scale(
+                    scale: s,
+                    alignment: Alignment.centerLeft,
+                    child: child,
+                  ),
                 ),
+                child: value,
               ),
-            ),
             SizedBox(height: 12 * scale),
             Text(
               forShare ? data.captionForShare : data.caption,
@@ -224,4 +341,45 @@ class WrappedCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _Masthead extends StatelessWidget {
+  const _Masthead({required this.label, required this.scale});
+  final String label;
+  final double scale;
+
+  @override
+  Widget build(BuildContext context) => Text(
+    label.toUpperCase(),
+    style: TextStyle(
+      color: Colors.white70,
+      fontSize: 13 * scale,
+      letterSpacing: 2,
+      fontWeight: FontWeight.w700,
+    ),
+  );
+}
+
+class _CardSurface extends StatelessWidget {
+  const _CardSurface({
+    required this.color,
+    required this.child,
+    required this.radius,
+  });
+  final Color color;
+  final Widget child;
+  final double? radius;
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      gradient: LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [color, Color.lerp(color, Colors.black, 0.45)!],
+      ),
+      borderRadius: radius == null ? null : BorderRadius.circular(radius!),
+    ),
+    child: child,
+  );
 }

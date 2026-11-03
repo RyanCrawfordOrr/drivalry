@@ -865,99 +865,115 @@
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 21,
-  "text": "Could not load badges: $e",
-  "problem": "technical",
-  "problemConfidence": 0.7,
-  "problems": {
-   "fine": 0.01,
-   "technical": 0.76,
-   "too_long": 0,
-   "unclear": 0.21,
-   "tone": 0.02
-  },
-  "voice": 0.27,
-  "voiceConfidence": 0.74
- },
- {
-  "file": "features/badges/badges_screen.dart",
-  "line": 32,
-  "text": "$earnedCount of ${regular.length} earned",
+  "line": 82,
+  "text": "load your badges",
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.62,
   "problems": {
-   "fine": 0.05,
-   "technical": 0.13,
-   "too_long": 0.01,
-   "unclear": 0.78,
+   "fine": 0.23,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.7,
    "tone": 0.03
   },
-  "voice": 0.58,
-  "voiceConfidence": 0.49
+  "voice": 1.28,
+  "voiceConfidence": 0.57
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 47,
-  "text": "Handed out by duels and reckless trips. They wear off.",
+  "line": 113,
+  "text": "Clean streak",
   "problem": "unclear",
-  "problemConfidence": 0.68,
+  "problemConfidence": 0.65,
   "problems": {
-   "fine": 0.19,
+   "fine": 0.24,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.74,
-   "tone": 0.06
+   "unclear": 0.72,
+   "tone": 0.03
   },
-  "voice": 1.97,
+  "voice": 1.37,
+  "voiceConfidence": 0.55
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 123,
+  "text": "Streak XP",
+  "problem": "fine",
+  "problemConfidence": 0.27,
+  "problems": {
+   "fine": 0.42,
+   "technical": 0.16,
+   "too_long": 0,
+   "unclear": 0.41,
+   "tone": 0.01
+  },
+  "voice": 0.91,
+  "voiceConfidence": 0.75
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 132,
+  "text": "$earned of ${regular.length} badges earned",
+  "problem": "unclear",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.13,
+   "technical": 0.07,
+   "too_long": 0.1,
+   "unclear": 0.63,
+   "tone": 0.07
+  },
+  "voice": 0.88,
   "voiceConfidence": 0.65
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 85,
-  "text": "clean streak",
-  "problem": "fine",
-  "problemConfidence": 0.5,
+  "line": 153,
+  "text": "Lost duels and reckless trips. Worn for a week.",
+  "problem": "unclear",
+  "problemConfidence": 0.52,
   "problems": {
-   "fine": 0.6,
+   "fine": 0.1,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.62,
+   "tone": 0.27
+  },
+  "voice": 2.42,
+  "voiceConfidence": 0.43
+ },
+ {
+  "file": "features/badges/badge_moments.dart",
+  "line": 70,
+  "text": "Badge earned",
+  "problem": "fine",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.72,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.39,
-   "tone": 0.01
+   "unclear": 0.13,
+   "tone": 0.15
   },
-  "voice": 0.96,
-  "voiceConfidence": 0.83
+  "voice": 1.1,
+  "voiceConfidence": 0.87
  },
  {
-  "file": "features/badges/badges_screen.dart",
-  "line": 89,
-  "text": "phone-free streak",
+  "file": "features/badges/badge_moments.dart",
+  "line": 73,
+  "text": "${fresh.length} new badges",
   "problem": "fine",
-  "problemConfidence": 0.41,
+  "problemConfidence": 0.64,
   "problems": {
-   "fine": 0.53,
-   "technical": 0.02,
+   "fine": 0.71,
+   "technical": 0.04,
    "too_long": 0,
-   "unclear": 0.44,
-   "tone": 0.01
+   "unclear": 0.22,
+   "tone": 0.03
   },
-  "voice": 1.11,
-  "voiceConfidence": 0.7
- },
- {
-  "file": "features/badges/badges_screen.dart",
-  "line": 93,
-  "text": "streak XP",
-  "problem": "unclear",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.34,
-   "technical": 0.15,
-   "too_long": 0,
-   "unclear": 0.5,
-   "tone": 0.01
-  },
-  "voice": 0.97,
-  "voiceConfidence": 0.73
+  "voice": 1.15,
+  "voiceConfidence": 0.79
  },
  {
   "file": "features/circles/checkin_sheet.dart",
@@ -10417,55 +10433,39 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 63,
-  "text": "A group challenge gives the whole league one goal for a week or two: clean trips, phone-free trips, average score, or everyone showing up.",
+  "line": 57,
+  "text": "Challenge met",
   "problem": "fine",
-  "problemConfidence": 0.61,
+  "problemConfidence": 0.56,
   "problems": {
-   "fine": 0.69,
-   "technical": 0.01,
-   "too_long": 0.05,
-   "unclear": 0.22,
-   "tone": 0.03
+   "fine": 0.65,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.28,
+   "tone": 0.07
   },
-  "voice": 1.25,
-  "voiceConfidence": 0.74
+  "voice": 1.3,
+  "voiceConfidence": 0.68
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 83,
-  "text": "Start another challenge",
+  "line": 116,
+  "text": "Set one goal for the whole league.",
   "problem": "unclear",
-  "problemConfidence": 0.49,
+  "problemConfidence": 0.35,
   "problems": {
    "fine": 0.4,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.59,
-   "tone": 0.01
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.48,
+   "tone": 0.1
   },
-  "voice": 1.14,
-  "voiceConfidence": 0.84
+  "voice": 1.46,
+  "voiceConfidence": 0.53
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 84,
-  "text": "Start a group challenge",
-  "problem": "fine",
-  "problemConfidence": 0.81,
-  "problems": {
-   "fine": 0.85,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.14,
-   "tone": 0.01
-  },
-  "voice": 1.15,
-  "voiceConfidence": 0.82
- },
- {
-  "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 102,
+  "line": 142,
   "text": "Call off this challenge?",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -10481,7 +10481,7 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 104,
+  "line": 144,
   "text": "Nobody gets the badge; the league can start another.",
   "problem": "tone",
   "problemConfidence": 0.25,
@@ -10497,7 +10497,7 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 113,
+  "line": 153,
   "text": "Call off",
   "problem": "unclear",
   "problemConfidence": 0.44,
@@ -10513,7 +10513,7 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 195,
+  "line": 237,
   "text": "${p.value.round()} of ${p.needed} members have ${c.target} trip${c.target == 1 ? ",
   "problem": "unclear",
   "problemConfidence": 0.52,
@@ -10529,7 +10529,7 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 202,
+  "line": 244,
   "text": "Met! Everyone earned ${c.goal.badgeName}.",
   "problem": "fine",
   "problemConfidence": 0.77,
@@ -10545,23 +10545,23 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 211,
-  "text": "Missed: $shown of $needed.",
+  "line": 253,
+  "text": "Not met. The league reached $shown of $needed.",
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.29,
   "problems": {
-   "fine": 0.03,
+   "fine": 0.15,
    "technical": 0.03,
-   "too_long": 0,
-   "unclear": 0.78,
-   "tone": 0.16
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.38
   },
-  "voice": 0.63,
-  "voiceConfidence": 0.6
+  "voice": 0.94,
+  "voiceConfidence": 0.74
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 56,
+  "line": 14,
   "text": "Group challenge",
   "problem": "fine",
   "problemConfidence": 0.71,
@@ -10577,23 +10577,23 @@
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 59,
-  "text": "One goal for the whole league. Everyone who is a member when it ends earns the badge if the league makes it.",
-  "problem": "unclear",
-  "problemConfidence": 0.37,
+  "line": 50,
+  "text": "One goal for the whole league. Make it and everyone earns the badge.",
+  "problem": "fine",
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.4,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.5,
-   "tone": 0.08
+   "fine": 0.64,
+   "technical": 0,
+   "too_long": 0.07,
+   "unclear": 0.19,
+   "tone": 0.1
   },
-  "voice": 1.21,
-  "voiceConfidence": 0.8
+  "voice": 1.74,
+  "voiceConfidence": 0.68
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 98,
+  "line": 88,
   "text": "One week",
   "problem": "fine",
   "problemConfidence": 0.74,
@@ -10609,7 +10609,7 @@
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 99,
+  "line": 89,
   "text": "Two weeks",
   "problem": "fine",
   "problemConfidence": 0.84,
@@ -10625,39 +10625,39 @@
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 126,
-  "text": "Pick a whole-number target above zero.",
+  "line": 111,
+  "text": "Pick a whole number above zero.",
   "problem": "fine",
-  "problemConfidence": 0.35,
+  "problemConfidence": 0.34,
   "problems": {
-   "fine": 0.48,
+   "fine": 0.47,
    "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.14,
+   "too_long": 0,
+   "unclear": 0.16,
    "tone": 0.36
   },
-  "voice": 1.04,
-  "voiceConfidence": 0.84
+  "voice": 0.99,
+  "voiceConfidence": 0.88
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 44,
-  "text": "Could not create the league right now. It will be retried when you are back online.",
+  "line": 47,
+  "text": "Could not create it right now. We will try again when you are back online.",
   "problem": "fine",
   "problemConfidence": 0.27,
   "problems": {
    "fine": 0.42,
-   "technical": 0.07,
-   "too_long": 0.01,
-   "unclear": 0.33,
-   "tone": 0.17
+   "technical": 0.01,
+   "too_long": 0.05,
+   "unclear": 0.24,
+   "tone": 0.28
   },
-  "voice": 1,
-  "voiceConfidence": 0.85
+  "voice": 1.25,
+  "voiceConfidence": 0.69
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 57,
+  "line": 58,
   "text": "New league",
   "problem": "fine",
   "problemConfidence": 0.86,
@@ -10673,23 +10673,23 @@
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 70,
-  "text": "League name",
+  "line": 76,
+  "text": "Name your league",
   "problem": "fine",
-  "problemConfidence": 0.57,
+  "problemConfidence": 0.9,
   "problems": {
-   "fine": 0.66,
-   "technical": 0.01,
+   "fine": 0.92,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.27,
-   "tone": 0.06
+   "unclear": 0.04,
+   "tone": 0.04
   },
-  "voice": 0.35,
-  "voiceConfidence": 0.66
+  "voice": 1.41,
+  "voiceConfidence": 0.54
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 71,
+  "line": 77,
   "text": "The Boys, Carpool Crew, Family",
   "problem": "fine",
   "problemConfidence": 0.57,
@@ -10705,23 +10705,23 @@
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 78,
-  "text": "Up to 30 members. Weeks run Monday to Sunday in your time zone. XP comes from how well you drive, never how far or how fast. Top five promote, bottom five demote, and a week with no scored trips demotes too.",
-  "problem": "too_long",
-  "problemConfidence": 0.3,
+  "line": 84,
+  "text": "Up to 30 friends, Monday to Sunday. XP comes from how well you drive, never how far or how fast.",
+  "problem": "fine",
+  "problemConfidence": 0.27,
   "problems": {
-   "fine": 0.13,
-   "technical": 0.04,
-   "too_long": 0.44,
-   "unclear": 0.16,
-   "tone": 0.23
+   "fine": 0.42,
+   "technical": 0.18,
+   "too_long": 0.16,
+   "unclear": 0.15,
+   "tone": 0.09
   },
-  "voice": 1.35,
-  "voiceConfidence": 0.65
+  "voice": 1.51,
+  "voiceConfidence": 0.48
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 93,
+  "line": 90,
   "text": "Create league",
   "problem": "fine",
   "problemConfidence": 0.85,
@@ -10737,7 +10737,7 @@
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 19,
+  "line": 36,
   "text": "Sign in to duel your friends on how well you drive.",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -10753,7 +10753,7 @@
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 53,
+  "line": 49,
   "text": "Challenge sent to @${duel.opponent.handle}.",
   "problem": "fine",
   "problemConfidence": 0.39,
@@ -10769,151 +10769,135 @@
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 70,
-  "text": "Showing the last known duels. Pull to retry.",
-  "problem": "fine",
-  "problemConfidence": 0.36,
+  "line": 87,
+  "text": "Showing the last duels we saw. Pull to retry.",
+  "problem": "unclear",
+  "problemConfidence": 0.34,
   "problems": {
-   "fine": 0.49,
+   "fine": 0.22,
    "technical": 0.22,
    "too_long": 0.01,
-   "unclear": 0.19,
-   "tone": 0.09
+   "unclear": 0.47,
+   "tone": 0.08
   },
-  "voice": 1.1,
-  "voiceConfidence": 0.75
- },
- {
-  "file": "features/leagues/duels/duels_screen.dart",
-  "line": 84,
-  "text": "Waiting for you",
-  "problem": "unclear",
-  "problemConfidence": 0.71,
-  "problems": {
-   "fine": 0.21,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.77,
-   "tone": 0.02
-  },
-  "voice": 1.64,
+  "voice": 1.75,
   "voiceConfidence": 0.52
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 178,
-  "text": "Could not cancel. Try again online.",
-  "problem": "fine",
-  "problemConfidence": 0.21,
+  "line": 94,
+  "text": "No duels yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.37,
-   "technical": 0.03,
+   "fine": 0.35,
+   "technical": 0.09,
    "too_long": 0,
-   "unclear": 0.28,
-   "tone": 0.32
+   "unclear": 0.49,
+   "tone": 0.07
   },
-  "voice": 0.95,
-  "voiceConfidence": 0.86
+  "voice": 1.04,
+  "voiceConfidence": 0.89
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 217,
-  "text": "You won. Pick the badge @${widget.duel.other(widget.duel.winnerId!).handle} wears for a week:",
-  "problem": "technical",
-  "problemConfidence": 0.57,
+  "line": 95,
+  "text": "Pick a friend and a week. The loser wears a badge.",
+  "problem": "fine",
+  "problemConfidence": 0.45,
   "problems": {
-   "fine": 0.17,
-   "technical": 0.66,
+   "fine": 0.56,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.16,
+   "unclear": 0.31,
+   "tone": 0.13
+  },
+  "voice": 2.56,
+  "voiceConfidence": 0.56
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 96,
+  "text": "Duel a friend",
+  "problem": "fine",
+  "problemConfidence": 0.61,
+  "problems": {
+   "fine": 0.69,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.31,
+   "tone": 0
+  },
+  "voice": 1.4,
+  "voiceConfidence": 0.58
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 112,
+  "text": "Challenges for you",
+  "problem": "fine",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.61,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.38,
    "tone": 0.01
   },
-  "voice": 2.35,
-  "voiceConfidence": 0.5
+  "voice": 1.02,
+  "voiceConfidence": 0.89
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 275,
-  "text": "No duels yet",
+  "line": 225,
+  "text": "cancel the duel",
+  "problem": "fine",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.64,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.15,
+   "tone": 0.19
+  },
+  "voice": 1.19,
+  "voiceConfidence": 0.78
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 284,
+  "text": "Pick what @$loser wears for a week",
   "problem": "fine",
   "problemConfidence": 0.41,
   "problems": {
    "fine": 0.53,
-   "technical": 0,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.32,
+   "tone": 0.12
+  },
+  "voice": 2.35,
+  "voiceConfidence": 0.51
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 56,
+  "text": "You vs @${other.handle}",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0.24,
    "too_long": 0,
-   "unclear": 0.45,
+   "unclear": 0.12,
    "tone": 0.02
   },
-  "voice": 1,
-  "voiceConfidence": 0.91
- },
- {
-  "file": "features/leagues/duels/duels_screen.dart",
-  "line": 278,
-  "text": "Challenge a friend to a week on XP, average Drive Score or phone-free trips. The loser wears Sunday Driver, Lead Foot or Butterfingers for seven days. The winner picks.",
-  "problem": "fine",
-  "problemConfidence": 0.65,
-  "problems": {
-   "fine": 0.72,
-   "technical": 0.06,
-   "too_long": 0.08,
-   "unclear": 0.13,
-   "tone": 0.01
-  },
-  "voice": 2.69,
-  "voiceConfidence": 0.68
+  "voice": 1.37,
+  "voiceConfidence": 0.55
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 107,
-  "text": "Waiting for your answer",
-  "problem": "unclear",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.42,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.5,
-   "tone": 0.08
-  },
-  "voice": 0.98,
-  "voiceConfidence": 0.86
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 109,
-  "text": "Waiting for @${other.handle} to answer",
-  "problem": "fine",
-  "problemConfidence": 0.62,
-  "problems": {
-   "fine": 0.7,
-   "technical": 0.11,
-   "too_long": 0.01,
-   "unclear": 0.11,
-   "tone": 0.07
-  },
-  "voice": 1.2,
-  "voiceConfidence": 0.72
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 118,
-  "text": "You lead",
-  "problem": "fine",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.5,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.47,
-   "tone": 0.03
-  },
-  "voice": 1.19,
-  "voiceConfidence": 0.79
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 125,
+  "line": 73,
   "text": "You won",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -10929,7 +10913,7 @@
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 125,
+  "line": 79,
   "text": "You lost",
   "problem": "tone",
   "problemConfidence": 0.29,
@@ -10945,119 +10929,247 @@
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 132,
-  "text": " · they wear ${duelBadgeName(badge)} until $until",
-  "problem": "fine",
-  "problemConfidence": 0.21,
-  "problems": {
-   "fine": 0.37,
-   "technical": 0.1,
-   "too_long": 0.02,
-   "unclear": 0.37,
-   "tone": 0.14
-  },
-  "voice": 1.09,
-  "voiceConfidence": 0.68
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 133,
-  "text": " · you wear ${duelBadgeName(badge)} until $until",
+  "line": 150,
+  "text": "Waiting for your answer",
   "problem": "unclear",
-  "problemConfidence": 0.41,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.24,
-   "technical": 0.19,
-   "too_long": 0.02,
-   "unclear": 0.53,
-   "tone": 0.02
-  },
-  "voice": 1.63,
-  "voiceConfidence": 0.37
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 139,
-  "text": "Expired unanswered",
-  "problem": "unclear",
-  "problemConfidence": 0.82,
-  "problems": {
-   "fine": 0.01,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.86,
-   "tone": 0.12
-  },
-  "voice": 0.25,
-  "voiceConfidence": 0.73
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 206,
-  "text": "${v.trips} of $duelScoreAvgMinTrips trips",
-  "problem": "unclear",
-  "problemConfidence": 0.74,
-  "problems": {
-   "fine": 0.05,
-   "technical": 0.13,
-   "too_long": 0.01,
-   "unclear": 0.79,
-   "tone": 0.02
-  },
-  "voice": 0.62,
-  "voiceConfidence": 0.57
- },
- {
-  "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 49,
-  "text": "Duel a friend",
-  "problem": "fine",
-  "problemConfidence": 0.61,
-  "problems": {
-   "fine": 0.69,
+   "fine": 0.42,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.31,
-   "tone": 0
+   "unclear": 0.5,
+   "tone": 0.08
   },
-  "voice": 1.4,
+  "voice": 0.98,
+  "voiceConfidence": 0.86
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 152,
+  "text": "Waiting for @${other.handle} to answer",
+  "problem": "fine",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.7,
+   "technical": 0.11,
+   "too_long": 0.01,
+   "unclear": 0.11,
+   "tone": 0.07
+  },
+  "voice": 1.2,
+  "voiceConfidence": 0.72
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 161,
+  "text": "You lead",
+  "problem": "fine",
+  "problemConfidence": 0.37,
+  "problems": {
+   "fine": 0.5,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.47,
+   "tone": 0.03
+  },
+  "voice": 1.19,
+  "voiceConfidence": 0.79
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 170,
+  "text": "Pick a badge for @${other.handle}",
+  "problem": "fine",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.77,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.14,
+   "tone": 0.07
+  },
+  "voice": 1.74,
   "voiceConfidence": 0.58
  },
  {
-  "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 52,
-  "text": "Seven days from the moment they accept. The loser wears a badge the winner picks for a week. Never about speed.",
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 171,
+  "text": "Waiting for @${other.handle} to pick your badge",
   "problem": "fine",
-  "problemConfidence": 0.54,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.63,
-   "technical": 0.01,
-   "too_long": 0.04,
-   "unclear": 0.21,
+   "fine": 0.58,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.28,
    "tone": 0.11
   },
-  "voice": 1.5,
-  "voiceConfidence": 0.49
+  "voice": 1.29,
+  "voiceConfidence": 0.66
  },
  {
-  "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 62,
-  "text": "Add a friend first; duels are between friends.",
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 177,
+  "text": "They wear ${duelBadgeName(badge)} until $until",
   "problem": "fine",
-  "problemConfidence": 0.59,
+  "problemConfidence": 0.22,
   "problems": {
-   "fine": 0.67,
-   "technical": 0,
+   "fine": 0.38,
+   "technical": 0.13,
    "too_long": 0.01,
-   "unclear": 0.06,
-   "tone": 0.26
+   "unclear": 0.37,
+   "tone": 0.11
   },
-  "voice": 1.17,
+  "voice": 1.56,
+  "voiceConfidence": 0.4
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 178,
+  "text": "You wear ${duelBadgeName(badge)} until $until",
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.33,
+   "technical": 0.13,
+   "too_long": 0.01,
+   "unclear": 0.51,
+   "tone": 0.02
+  },
+  "voice": 1.58,
+  "voiceConfidence": 0.35
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 182,
+  "text": "Never answered. It lapsed.",
+  "problem": "unclear",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.02,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.64,
+   "tone": 0.33
+  },
+  "voice": 0.97,
+  "voiceConfidence": 0.51
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 188,
+  "text": "You beat @${duel.other(me).handle} on ${duelMetricPhrase(duel.metric)}",
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.36,
+   "technical": 0.07,
+   "too_long": 0.08,
+   "unclear": 0.48,
+   "tone": 0.01
+  },
+  "voice": 2.01,
+  "voiceConfidence": 0.46
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 192,
+  "text": "Drive Score",
+  "problem": "fine",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0.85,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.1,
+   "tone": 0.05
+  },
+  "voice": 0.8,
+  "voiceConfidence": 0.79
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 193,
+  "text": "phone-free trips",
+  "problem": "fine",
+  "problemConfidence": 0.5,
+  "problems": {
+   "fine": 0.6,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.37,
+   "tone": 0.02
+  },
+  "voice": 1.16,
   "voiceConfidence": 0.8
  },
  {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 273,
+  "text": "$name · needs $duelScoreAvgMinTrips trips, has ${value.trips}",
+  "problem": "technical",
+  "problemConfidence": 0.25,
+  "problems": {
+   "fine": 0.05,
+   "technical": 0.4,
+   "too_long": 0.08,
+   "unclear": 0.33,
+   "tone": 0.14
+  },
+  "voice": 0.52,
+  "voiceConfidence": 0.49
+ },
+ {
+  "file": "features/leagues/duels/duel_moments.dart",
+  "line": 75,
+  "text": "Duel won",
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.29,
+   "tone": 0.06
+  },
+  "voice": 1.18,
+  "voiceConfidence": 0.77
+ },
+ {
   "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 113,
+  "line": 42,
+  "text": "Seven days from when they accept. The loser wears a badge the winner picks.",
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
+   "technical": 0,
+   "too_long": 0.09,
+   "unclear": 0.17,
+   "tone": 0.18
+  },
+  "voice": 1.77,
+  "voiceConfidence": 0.56
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 53,
+  "text": "Add a friend first. Duels are between friends.",
+  "problem": "fine",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.7,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.07,
+   "tone": 0.22
+  },
+  "voice": 1.21,
+  "voiceConfidence": 0.76
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 102,
   "text": "Send challenge",
   "problem": "fine",
   "problemConfidence": 0.68,
@@ -11073,23 +11185,39 @@
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 47,
-  "text": "reshuffles Monday",
-  "problem": "unclear",
-  "problemConfidence": 0.81,
+  "line": 42,
+  "text": "Drivers this week: ${league.memberCount}",
+  "problem": "fine",
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.14,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.85,
-   "tone": 0.01
+   "fine": 0.66,
+   "technical": 0.09,
+   "too_long": 0.01,
+   "unclear": 0.1,
+   "tone": 0.14
   },
-  "voice": 1.08,
-  "voiceConfidence": 0.71
+  "voice": 1,
+  "voiceConfidence": 0.87
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 65,
+  "line": 43,
+  "text": "#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP",
+  "problem": "technical",
+  "problemConfidence": 0.3,
+  "problems": {
+   "fine": 0.18,
+   "technical": 0.44,
+   "too_long": 0.07,
+   "unclear": 0.28,
+   "tone": 0.03
+  },
+  "voice": 0.8,
+  "voiceConfidence": 0.63
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 88,
   "text": "Global league",
   "problem": "unclear",
   "problemConfidence": 0.37,
@@ -11105,39 +11233,23 @@
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 70,
-  "text": "Get matched every Monday with up to 29 drivers at your tier. Same rules as a friend league: XP ranks, Driver Rating breaks ties, top five move up, bottom five move down. Never by speed.",
+  "line": 93,
+  "text": "Up to 29 drivers at your tier, a new table every Monday.",
   "problem": "fine",
-  "problemConfidence": 0.25,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.4,
-   "technical": 0.05,
-   "too_long": 0.16,
-   "unclear": 0.34,
-   "tone": 0.05
+   "fine": 0.51,
+   "technical": 0.03,
+   "too_long": 0.04,
+   "unclear": 0.39,
+   "tone": 0.03
   },
-  "voice": 1.48,
-  "voiceConfidence": 0.52
- },
- {
-  "file": "features/leagues/global_league_card.dart",
-  "line": 85,
-  "text": "Join the global league",
-  "problem": "fine",
-  "problemConfidence": 0.52,
-  "problems": {
-   "fine": 0.62,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.34,
-   "tone": 0.04
-  },
-  "voice": 1.23,
-  "voiceConfidence": 0.76
+  "voice": 1.26,
+  "voiceConfidence": 0.73
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 32,
+  "line": 13,
   "text": "Invite to ${league.name}",
   "problem": "fine",
   "problemConfidence": 0.61,
@@ -11153,7 +11265,7 @@
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 51,
+  "line": 58,
   "text": "Friends enter this code in Leagues, or open the link.",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -11169,7 +11281,7 @@
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 78,
+  "line": 88,
   "text": "Join my Drivalry league \"${league.name}\": $link (code ${league.inviteCode.toUpperCase()})",
   "problem": "fine",
   "problemConfidence": 0.39,
@@ -11185,7 +11297,7 @@
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 80,
+  "line": 90,
   "text": "Drivalry league invite",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -11201,23 +11313,23 @@
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 34,
-  "text": "Could not join right now. Try again later.",
+  "line": 37,
+  "text": "join the league",
   "problem": "fine",
-  "problemConfidence": 0.31,
+  "problemConfidence": 0.68,
   "problems": {
-   "fine": 0.45,
+   "fine": 0.74,
    "technical": 0,
-   "too_long": 0.01,
-   "unclear": 0.18,
-   "tone": 0.36
+   "too_long": 0,
+   "unclear": 0.25,
+   "tone": 0.01
   },
-  "voice": 1,
-  "voiceConfidence": 0.92
+  "voice": 1.21,
+  "voiceConfidence": 0.77
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 47,
+  "line": 49,
   "text": "Join league",
   "problem": "fine",
   "problemConfidence": 0.59,
@@ -11233,7 +11345,7 @@
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 49,
+  "line": 51,
   "text": "Sign in to accept this league invite.",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -11249,23 +11361,39 @@
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 61,
-  "text": "Joining with code ${widget.code}…",
-  "problem": "technical",
-  "problemConfidence": 0.46,
+  "line": 64,
+  "text": "League invite",
+  "problem": "fine",
+  "problemConfidence": 0.66,
   "problems": {
-   "fine": 0.32,
-   "technical": 0.57,
+   "fine": 0.73,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.08,
-   "tone": 0.03
+   "unclear": 0.26,
+   "tone": 0.01
   },
-  "voice": 0.98,
+  "voice": 1,
   "voiceConfidence": 0.85
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 79,
+  "line": 72,
+  "text": "Could not join.",
+  "problem": "unclear",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.11,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.65,
+   "tone": 0.23
+  },
+  "voice": 0.74,
+  "voiceConfidence": 0.71
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 74,
   "text": "Back to leagues",
   "problem": "fine",
   "problemConfidence": 0.87,
@@ -11281,7 +11409,7 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 52,
+  "line": 28,
   "text": "Sign in to race your friends on how well you drive.",
   "problem": "fine",
   "problemConfidence": 0.4,
@@ -11297,23 +11425,23 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 89,
-  "text": "Showing the last known tables. Pull to retry.",
-  "problem": "technical",
-  "problemConfidence": 0.36,
+  "line": 115,
+  "text": "Showing the last tables we saw. Pull to retry.",
+  "problem": "fine",
+  "problemConfidence": 0.5,
   "problems": {
-   "fine": 0.25,
-   "technical": 0.49,
-   "too_long": 0,
-   "unclear": 0.16,
-   "tone": 0.1
+   "fine": 0.6,
+   "technical": 0.07,
+   "too_long": 0.03,
+   "unclear": 0.12,
+   "tone": 0.18
   },
-  "voice": 1,
-  "voiceConfidence": 0.81
+  "voice": 1.18,
+  "voiceConfidence": 0.75
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 99,
+  "line": 143,
   "text": "Friend leagues",
   "problem": "fine",
   "problemConfidence": 0.85,
@@ -11329,7 +11457,55 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 126,
+  "line": 144,
+  "text": "No friend leagues yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.11
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.88
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 145,
+  "text": "Race your friends on how well you drive.",
+  "problem": "fine",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.72,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.22,
+   "tone": 0.05
+  },
+  "voice": 2.24,
+  "voiceConfidence": 0.65
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 146,
+  "text": "Create or join",
+  "problem": "fine",
+  "problemConfidence": 0.4,
+  "problems": {
+   "fine": 0.52,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.46,
+   "tone": 0.02
+  },
+  "voice": 1.17,
+  "voiceConfidence": 0.8
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 195,
   "text": "Create a league",
   "problem": "fine",
   "problemConfidence": 0.9,
@@ -11345,7 +11521,7 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 127,
+  "line": 196,
   "text": "Up to 30 friends, Monday to Sunday",
   "problem": "fine",
   "problemConfidence": 0.64,
@@ -11361,7 +11537,7 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 135,
+  "line": 205,
   "text": "Join with a code",
   "problem": "fine",
   "problemConfidence": 0.65,
@@ -11377,23 +11553,23 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 136,
-  "text": "Paste the 8-character invite code",
+  "line": 206,
+  "text": "Paste the code a friend sent you",
   "problem": "fine",
-  "problemConfidence": 0.66,
+  "problemConfidence": 0.64,
   "problems": {
-   "fine": 0.73,
-   "technical": 0.02,
-   "too_long": 0.01,
-   "unclear": 0.13,
-   "tone": 0.11
+   "fine": 0.71,
+   "technical": 0,
+   "too_long": 0.02,
+   "unclear": 0.25,
+   "tone": 0.02
   },
-  "voice": 1.04,
-  "voiceConfidence": 0.9
+  "voice": 1.29,
+  "voiceConfidence": 0.68
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 154,
+  "line": 220,
   "text": "Join a league",
   "problem": "fine",
   "problemConfidence": 0.62,
@@ -11409,55 +11585,103 @@
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 201,
-  "text": "#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP",
-  "problem": "technical",
-  "problemConfidence": 0.3,
+  "line": 328,
+  "text": "One challenge to answer",
+  "problem": "unclear",
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.18,
-   "technical": 0.44,
-   "too_long": 0.07,
-   "unclear": 0.28,
+   "fine": 0.47,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.49,
    "tone": 0.03
   },
-  "voice": 0.8,
-  "voiceConfidence": 0.63
+  "voice": 1.04,
+  "voiceConfidence": 0.88
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 243,
-  "text": "No leagues yet",
-  "problem": "unclear",
-  "problemConfidence": 0.34,
+  "line": 329,
+  "text": "$pending challenges to answer",
+  "problem": "fine",
+  "problemConfidence": 0.35,
   "problems": {
-   "fine": 0.45,
+   "fine": 0.48,
+   "technical": 0.05,
+   "too_long": 0.02,
+   "unclear": 0.35,
+   "tone": 0.1
+  },
+  "voice": 0.76,
+  "voiceConfidence": 0.69
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 331,
+  "text": "One duel running",
+  "problem": "unclear",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.37,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.55,
+   "tone": 0.05
+  },
+  "voice": 0.9,
+  "voiceConfidence": 0.78
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 331,
+  "text": "$running duels running",
+  "problem": "unclear",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.61,
+   "tone": 0.04
+  },
+  "voice": 0.86,
+  "voiceConfidence": 0.66
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 332,
+  "text": "Challenge a friend",
+  "problem": "fine",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.77,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.47,
-   "tone": 0.08
+   "unclear": 0.2,
+   "tone": 0.03
   },
-  "voice": 1.04,
-  "voiceConfidence": 0.92
+  "voice": 1.69,
+  "voiceConfidence": 0.59
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 246,
-  "text": "Create one and send the invite link to your friends, or paste a code someone sent you. Weeks run Monday to Sunday. The top five move up a tier, the bottom five move down, and skipping a week moves you down too.",
-  "problem": "fine",
-  "problemConfidence": 0.27,
+  "line": 334,
+  "text": "Streaks, not speed",
+  "problem": "unclear",
+  "problemConfidence": 0.42,
   "problems": {
-   "fine": 0.42,
-   "technical": 0.01,
-   "too_long": 0.17,
-   "unclear": 0.27,
-   "tone": 0.13
+   "fine": 0.46,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.54,
+   "tone": 0
   },
-  "voice": 1.31,
-  "voiceConfidence": 0.67
+  "voice": 2.49,
+  "voiceConfidence": 0.5
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 70,
+  "line": 76,
   "text": "Show my trips here",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -11473,7 +11697,7 @@
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 71,
+  "line": 77,
   "text": "Hide my trips here",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -11489,7 +11713,7 @@
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 77,
+  "line": 83,
   "text": "Leave global league",
   "problem": "unclear",
   "problemConfidence": 0.39,
@@ -11505,7 +11729,7 @@
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 77,
+  "line": 83,
   "text": "Leave league",
   "problem": "unclear",
   "problemConfidence": 0.55,
@@ -11521,87 +11745,199 @@
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 99,
-  "text": "You are hiding in this league. Members can see that you are hiding; they cannot see your trips or roasts.",
-  "problem": "tone",
-  "problemConfidence": 0.36,
+  "line": 114,
+  "text": "You are hiding here. Others see that, not your trips.",
+  "problem": "unclear",
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.25,
-   "technical": 0.01,
-   "too_long": 0.02,
-   "unclear": 0.23,
-   "tone": 0.49
-  },
-  "voice": 1.76,
-  "voiceConfidence": 0.47
- },
- {
-  "file": "features/leagues/league_screen.dart",
-  "line": 106,
-  "text": "Matched by tier and Driver Rating. The table is rebuilt every Monday; your tier carries over.",
-  "problem": "technical",
-  "problemConfidence": 0.4,
-  "problems": {
-   "fine": 0.13,
-   "technical": 0.52,
+   "fine": 0.06,
+   "technical": 0,
    "too_long": 0.01,
-   "unclear": 0.16,
-   "tone": 0.18
+   "unclear": 0.51,
+   "tone": 0.42
   },
-  "voice": 0.96,
-  "voiceConfidence": 0.94
+  "voice": 2.21,
+  "voiceConfidence": 0.58
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 147,
-  "text": "You leave the global pool too. Rejoin any time from the Leagues tab; your tier is kept.",
-  "problem": "fine",
-  "problemConfidence": 0.25,
+  "line": 116,
+  "text": "Matched by tier and Driver Rating. New table every Monday.",
+  "problem": "unclear",
+  "problemConfidence": 0.35,
   "problems": {
-   "fine": 0.4,
+   "fine": 0.28,
+   "technical": 0.14,
+   "too_long": 0,
+   "unclear": 0.48,
+   "tone": 0.1
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 168,
+  "text": "You leave the global pool too. Rejoin any time; your tier is kept.",
+  "problem": "unclear",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0.11,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.13
+  },
+  "voice": 1.28,
+  "voiceConfidence": 0.71
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 170,
+  "text": "You can rejoin with the invite code any time.",
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
    "technical": 0.04,
    "too_long": 0.01,
-   "unclear": 0.38,
+   "unclear": 0.32,
+   "tone": 0.07
+  },
+  "voice": 1.13,
+  "voiceConfidence": 0.86
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 208,
+  "text": "load the members",
+  "problem": "unclear",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.07,
+   "technical": 0.29,
+   "too_long": 0,
+   "unclear": 0.61,
+   "tone": 0.03
+  },
+  "voice": 0.5,
+  "voiceConfidence": 0.51
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 253,
+  "text": "Loading this week",
+  "problem": "unclear",
+  "problemConfidence": 0.5,
+  "problems": {
+   "fine": 0.35,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.6,
+   "tone": 0.04
+  },
+  "voice": 0.88,
+  "voiceConfidence": 0.79
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 255,
+  "text": "Week of ${DateFormat.MMMd().format(w.weekStart)} · final",
+  "problem": "fine",
+  "problemConfidence": 0.14,
+  "problems": {
+   "fine": 0.31,
+   "technical": 0.18,
+   "too_long": 0.04,
+   "unclear": 0.3,
    "tone": 0.17
   },
-  "voice": 1.12,
+  "voice": 0.79,
+  "voiceConfidence": 0.73
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 261,
+  "text": "$left days",
+  "problem": "fine",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.48,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.05
+  },
+  "voice": 0.77,
+  "voiceConfidence": 0.64
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 262,
+  "text": "Closes Sunday night · $days left",
+  "problem": "fine",
+  "problemConfidence": 0.47,
+  "problems": {
+   "fine": 0.58,
+   "technical": 0,
+   "too_long": 0.06,
+   "unclear": 0.23,
+   "tone": 0.13
+  },
+  "voice": 1.4,
+  "voiceConfidence": 0.55
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 279,
+  "text": "Your rank",
+  "problem": "fine",
+  "problemConfidence": 0.79,
+  "problems": {
+   "fine": 0.83,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.04
+  },
+  "voice": 0.88,
   "voiceConfidence": 0.85
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 149,
-  "text": "Your past weeks stay in the table. You can rejoin with the code.",
+  "line": 286,
+  "text": "Your XP",
   "problem": "unclear",
-  "problemConfidence": 0.71,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.12,
-   "technical": 0.08,
+   "fine": 0.31,
+   "technical": 0.19,
    "too_long": 0,
-   "unclear": 0.77,
+   "unclear": 0.5,
+   "tone": 0
+  },
+  "voice": 0.73,
+  "voiceConfidence": 0.71
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 311,
+  "text": "Driver Rating ${m.rating!.toStringAsFixed(0)}",
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0.16,
+   "too_long": 0,
+   "unclear": 0.16,
    "tone": 0.03
   },
-  "voice": 1.07,
-  "voiceConfidence": 0.89
+  "voice": 0.75,
+  "voiceConfidence": 0.66
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 186,
-  "text": "Could not load members: $e",
-  "problem": "technical",
-  "problemConfidence": 0.59,
-  "problems": {
-   "fine": 0.02,
-   "technical": 0.67,
-   "too_long": 0,
-   "unclear": 0.26,
-   "tone": 0.05
-  },
-  "voice": 0.36,
-  "voiceConfidence": 0.65
- },
- {
-  "file": "features/leagues/league_screen.dart",
-  "line": 250,
+  "line": 380,
   "text": "This week",
   "problem": "fine",
   "problemConfidence": 0.39,
@@ -11617,7 +11953,7 @@
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 257,
+  "line": 387,
   "text": "Week of ${fmt.format(w.weekStart)}",
   "problem": "fine",
   "problemConfidence": 0.29,
@@ -11633,55 +11969,7 @@
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 29,
-  "text": "Ends ${DateFormat.MMMEd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} at midnight.",
-  "problem": "technical",
-  "problemConfidence": 0.21,
-  "problems": {
-   "fine": 0.15,
-   "technical": 0.37,
-   "too_long": 0.29,
-   "unclear": 0.13,
-   "tone": 0.06
-  },
-  "voice": 0.92,
-  "voiceConfidence": 0.79
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
-  "line": 34,
-  "text": "${DateFormat.MMMd().format(week.weekStart)} to ${DateFormat.MMMd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} · $ends",
-  "problem": "unclear",
-  "problemConfidence": 0.47,
-  "problems": {
-   "fine": 0.16,
-   "technical": 0.2,
-   "too_long": 0.04,
-   "unclear": 0.58,
-   "tone": 0.02
-  },
-  "voice": 0.6,
-  "voiceConfidence": 0.55
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
   "line": 42,
-  "text": "Nobody here yet. Invite a friend.",
-  "problem": "fine",
-  "problemConfidence": 0.66,
-  "problems": {
-   "fine": 0.73,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.11,
-   "tone": 0.15
-  },
-  "voice": 1.54,
-  "voiceConfidence": 0.53
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
-  "line": 45,
   "text": "Promotion zone",
   "problem": "unclear",
   "problemConfidence": 0.57,
@@ -11697,7 +11985,7 @@
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 47,
+  "line": 49,
   "text": "Relegation zone",
   "problem": "unclear",
   "problemConfidence": 0.27,
@@ -11713,51 +12001,99 @@
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 53,
-  "text": "Top five move up a tier on Sunday night, bottom five move down. A week with no scored trips moves down regardless.",
+  "line": 70,
+  "text": "$range · ends Sunday at midnight",
   "problem": "fine",
-  "problemConfidence": 0.32,
+  "problemConfidence": 0.34,
   "problems": {
-   "fine": 0.46,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.29,
-   "tone": 0.23
-  },
-  "voice": 1.08,
-  "voiceConfidence": 0.91
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
-  "line": 55,
-  "text": "With more than five members, the top five promote and the bottom five demote on Sunday night.",
-  "problem": "fine",
-  "problemConfidence": 0.29,
-  "problems": {
-   "fine": 0.43,
+   "fine": 0.47,
    "technical": 0.02,
-   "too_long": 0.02,
-   "unclear": 0.35,
-   "tone": 0.18
+   "too_long": 0.01,
+   "unclear": 0.47,
+   "tone": 0.03
   },
-  "voice": 1.03,
-  "voiceConfidence": 0.95
+  "voice": 1.06,
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 141,
-  "text": "Didn't drive? That's fine. The league didn't wait.",
-  "problem": "tone",
-  "problemConfidence": 0.49,
+  "line": 78,
+  "text": "Nobody here yet. Invite a friend.",
+  "problem": "fine",
+  "problemConfidence": 0.66,
   "problems": {
-   "fine": 0.2,
+   "fine": 0.73,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.11,
+   "tone": 0.15
+  },
+  "voice": 1.54,
+  "voiceConfidence": 0.53
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 86,
+  "text": "Top five move up on Sunday night, bottom five move down.",
+  "problem": "unclear",
+  "problemConfidence": 0.42,
+  "problems": {
+   "fine": 0.39,
    "technical": 0,
    "too_long": 0.01,
-   "unclear": 0.2,
-   "tone": 0.59
+   "unclear": 0.54,
+   "tone": 0.06
   },
-  "voice": 2.69,
-  "voiceConfidence": 0.68
+  "voice": 1.25,
+  "voiceConfidence": 0.74
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 87,
+  "text": "With six or more members, the top five move up on Sunday night.",
+  "problem": "unclear",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.34,
+   "technical": 0.01,
+   "too_long": 0.12,
+   "unclear": 0.45,
+   "tone": 0.08
+  },
+  "voice": 1.07,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 140,
+  "text": "Didn't drive. The league didn't wait.",
+  "problem": "tone",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.05,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.32,
+   "tone": 0.63
+  },
+  "voice": 2.24,
+  "voiceConfidence": 0.42
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 144,
+  "text": "Driver Rating ${row.rating!.toStringAsFixed(0)}",
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0.19,
+   "too_long": 0,
+   "unclear": 0.08,
+   "tone": 0.02
+  },
+  "voice": 0.52,
+  "voiceConfidence": 0.49
  },
  {
   "file": "features/places/places_screen.dart",
@@ -12417,22 +12753,6 @@
  },
  {
   "file": "features/profile/profile_screen.dart",
-  "line": 358,
-  "text": "Clean streak",
-  "problem": "unclear",
-  "problemConfidence": 0.65,
-  "problems": {
-   "fine": 0.24,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.72,
-   "tone": 0.03
-  },
-  "voice": 1.37,
-  "voiceConfidence": 0.55
- },
- {
-  "file": "features/profile/profile_screen.dart",
   "line": 360,
   "text": "Trips at 80+, none reckless",
   "problem": "unclear",
@@ -12625,39 +12945,39 @@
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 31,
-  "text": "A season is a quarter. When it ends, your phone writes one summary row (trips, XP, average score, badges) and Season Wrapped is built from your own trips, on the phone.",
-  "problem": "technical",
-  "problemConfidence": 0.54,
+  "line": 37,
+  "text": "A season is one quarter. Wrapped is built from your drives, on this phone.",
+  "problem": "unclear",
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.1,
-   "technical": 0.63,
-   "too_long": 0.06,
-   "unclear": 0.14,
-   "tone": 0.07
+   "fine": 0.03,
+   "technical": 0.38,
+   "too_long": 0.01,
+   "unclear": 0.55,
+   "tone": 0.03
   },
-  "voice": 1.26,
-  "voiceConfidence": 0.69
+  "voice": 1.32,
+  "voiceConfidence": 0.64
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 90,
-  "text": "Before you joined",
+  "line": 101,
+  "text": "Over before you started",
   "problem": "unclear",
-  "problemConfidence": 0.92,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.06,
+   "fine": 0.27,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.94,
-   "tone": 0
+   "unclear": 0.51,
+   "tone": 0.22
   },
-  "voice": 1.03,
-  "voiceConfidence": 0.84
+  "voice": 2.48,
+  "voiceConfidence": 0.48
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 95,
+  "line": 106,
   "text": "Best tier ${r.bestTier!.label}${r.duelsWon + r.duelsLost > 0 ? ",
   "problem": "technical",
   "problemConfidence": 0.59,
@@ -12673,87 +12993,55 @@
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 98,
-  "text": "Result uploads on the next sync",
-  "problem": "technical",
-  "problemConfidence": 0.34,
+  "line": 109,
+  "text": "Saved to your account when you are next online",
+  "problem": "fine",
+  "problemConfidence": 0.29,
   "problems": {
-   "fine": 0.21,
-   "technical": 0.47,
+   "fine": 0.43,
+   "technical": 0.08,
+   "too_long": 0.03,
+   "unclear": 0.35,
+   "tone": 0.11
+  },
+  "voice": 0.98,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 98,
+  "text": "day left",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.3,
-   "tone": 0.02
+   "unclear": 0.34,
+   "tone": 0.04
   },
   "voice": 0.79,
-  "voiceConfidence": 0.78
+  "voiceConfidence": 0.75
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 84,
-  "text": "$left day${left == 1 ? ",
-  "problem": "unclear",
-  "problemConfidence": 0.59,
-  "problems": {
-   "fine": 0.06,
-   "technical": 0.26,
-   "too_long": 0.01,
-   "unclear": 0.67,
-   "tone": 0
-  },
-  "voice": 0.77,
-  "voiceConfidence": 0.55
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 101,
-  "text": "Avg score",
+  "line": 98,
+  "text": "days left",
   "problem": "fine",
-  "problemConfidence": 0.87,
+  "problemConfidence": 0.75,
   "problems": {
-   "fine": 0.9,
-   "technical": 0.01,
+   "fine": 0.8,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.07,
+   "unclear": 0.18,
    "tone": 0.02
   },
-  "voice": 0.76,
-  "voiceConfidence": 0.76
+  "voice": 0.73,
+  "voiceConfidence": 0.69
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 115,
-  "text": "All seasons",
-  "problem": "fine",
-  "problemConfidence": 0.66,
-  "problems": {
-   "fine": 0.73,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.25,
-   "tone": 0.01
-  },
-  "voice": 0.97,
-  "voiceConfidence": 0.94
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 121,
-  "text": "Season Wrapped",
-  "problem": "fine",
-  "problemConfidence": 0.49,
-  "problems": {
-   "fine": 0.59,
-   "technical": 0.03,
-   "too_long": 0,
-   "unclear": 0.35,
-   "tone": 0.03
-  },
-  "voice": 1.47,
-  "voiceConfidence": 0.51
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 172,
+  "line": 137,
   "text": "Between seasons",
   "problem": "fine",
   "problemConfidence": 0.4,
@@ -12769,19 +13057,19 @@
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 176,
-  "text": "Trips still count; the next season picks them up.",
+  "line": 142,
+  "text": "Keep driving. The next season counts it all.",
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.34,
   "problems": {
-   "fine": 0.17,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.78,
-   "tone": 0.03
+   "fine": 0.39,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.47,
+   "tone": 0.12
   },
-  "voice": 1.36,
-  "voiceConfidence": 0.62
+  "voice": 2.11,
+  "voiceConfidence": 0.78
  },
  {
   "file": "features/settings/attribution_screen.dart",
@@ -14753,7 +15041,7 @@
  },
  {
   "file": "features/stats/profile_stats_card.dart",
-  "line": 53,
+  "line": 50,
   "text": "All stats",
   "problem": "fine",
   "problemConfidence": 0.61,
@@ -14766,6 +15054,22 @@
   },
   "voice": 0.94,
   "voiceConfidence": 0.91
+ },
+ {
+  "file": "features/stats/profile_stats_card.dart",
+  "line": 55,
+  "text": "Season Wrapped",
+  "problem": "fine",
+  "problemConfidence": 0.49,
+  "problems": {
+   "fine": 0.59,
+   "technical": 0.03,
+   "too_long": 0,
+   "unclear": 0.35,
+   "tone": 0.03
+  },
+  "voice": 1.47,
+  "voiceConfidence": 0.51
  },
  {
   "file": "features/stats/share_stats.dart",
@@ -14785,71 +15089,87 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 64,
-  "text": "Could not compute stats: $e",
-  "problem": "technical",
-  "problemConfidence": 0.31,
+  "line": 98,
+  "text": "work out your stats",
+  "problem": "unclear",
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.04,
-   "technical": 0.45,
-   "too_long": 0,
-   "unclear": 0.39,
-   "tone": 0.12
-  },
-  "voice": 0.34,
-  "voiceConfidence": 0.66
- },
- {
-  "file": "features/stats/stats_screen.dart",
-  "line": 91,
-  "text": "No scored trips yet",
-  "problem": "fine",
-  "problemConfidence": 0.32,
-  "problems": {
-   "fine": 0.46,
+   "fine": 0.34,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.41,
-   "tone": 0.12
+   "unclear": 0.49,
+   "tone": 0.16
   },
-  "voice": 1.05,
-  "voiceConfidence": 0.92
+  "voice": 1.58,
+  "voiceConfidence": 0.49
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 92,
-  "text": "No scored trips in ${window.label.toLowerCase()}",
-  "problem": "fine",
-  "problemConfidence": 0.25,
+  "line": 106,
+  "text": "No scored trips yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.4,
   "problems": {
-   "fine": 0.4,
-   "technical": 0.25,
-   "too_long": 0.01,
-   "unclear": 0.31,
-   "tone": 0.03
+   "fine": 0.35,
+   "technical": 0.06,
+   "too_long": 0,
+   "unclear": 0.52,
+   "tone": 0.07
   },
-  "voice": 0.87,
-  "voiceConfidence": 0.77
+  "voice": 1.03,
+  "voiceConfidence": 0.93
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 97,
-  "text": "Everything here is computed on this phone from your own drives. Finish a trip as the driver and the numbers appear.",
-  "problem": "fine",
-  "problemConfidence": 0.49,
+  "line": 107,
+  "text": "Nothing in ${_window.label.toLowerCase()}.",
+  "problem": "unclear",
+  "problemConfidence": 0.4,
   "problems": {
-   "fine": 0.59,
-   "technical": 0.08,
-   "too_long": 0.05,
-   "unclear": 0.23,
-   "tone": 0.05
+   "fine": 0.14,
+   "technical": 0.28,
+   "too_long": 0,
+   "unclear": 0.52,
+   "tone": 0.06
   },
-  "voice": 1.36,
+  "voice": 0.79,
+  "voiceConfidence": 0.72
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 108,
+  "text": "Finish a drive and the numbers appear.",
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.28,
+   "tone": 0.06
+  },
+  "voice": 1.26,
+  "voiceConfidence": 0.73
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 160,
+  "text": "${formatDistance(t.distanceM, units)} · ${formatHours(t.movingS)} behind the wheel",
+  "problem": "fine",
+  "problemConfidence": 0.24,
+  "problems": {
+   "fine": 0.39,
+   "technical": 0.19,
+   "too_long": 0.1,
+   "unclear": 0.24,
+   "tone": 0.08
+  },
+  "voice": 1.18,
   "voiceConfidence": 0.64
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 145,
+  "line": 170,
   "text": "Share headline",
   "problem": "fine",
   "problemConfidence": 0.57,
@@ -14865,39 +15185,39 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 181,
-  "text": "Fuel, cost and CO₂ are estimates from distance and economy. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it.",
-  "problem": "fine",
-  "problemConfidence": 0.5,
+  "line": 215,
+  "text": "Fuel, cost and CO₂ are estimates. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it.",
+  "problem": "too_long",
+  "problemConfidence": 0.15,
   "problems": {
-   "fine": 0.6,
-   "technical": 0.03,
-   "too_long": 0.16,
-   "unclear": 0.12,
-   "tone": 0.09
+   "fine": 0.27,
+   "technical": 0.08,
+   "too_long": 0.32,
+   "unclear": 0.09,
+   "tone": 0.24
   },
-  "voice": 1.28,
-  "voiceConfidence": 0.7
+  "voice": 1.48,
+  "voiceConfidence": 0.52
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 191,
-  "text": "Fuel estimate",
+  "line": 225,
+  "text": "Fuel used",
   "problem": "fine",
-  "problemConfidence": 0.71,
+  "problemConfidence": 0.8,
   "problems": {
-   "fine": 0.77,
+   "fine": 0.84,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.04
+   "unclear": 0.13,
+   "tone": 0.03
   },
-  "voice": 0.71,
-  "voiceConfidence": 0.69
+  "voice": 0.74,
+  "voiceConfidence": 0.72
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 191,
+  "line": 225,
   "text": "Hard accelerations",
   "problem": "fine",
   "problemConfidence": 0.62,
@@ -14913,7 +15233,7 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 205,
+  "line": 239,
   "text": "My ${stats.range.label} on Drivalry: ${stats.totals.trips} trips.",
   "problem": "unclear",
   "problemConfidence": 0.35,
@@ -14929,7 +15249,7 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 224,
+  "line": 257,
   "text": "Fuel assumptions",
   "problem": "unclear",
   "problemConfidence": 0.45,
@@ -14945,7 +15265,7 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 232,
+  "line": 268,
   "text": "Fuel price per litre",
   "problem": "fine",
   "problemConfidence": 0.76,
@@ -14961,35 +15281,35 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 239,
-  "text": "Default economy, L/100 km",
+  "line": 276,
+  "text": "Typical economy, L/100 km",
   "problem": "unclear",
-  "problemConfidence": 0.5,
+  "problemConfidence": 0.35,
   "problems": {
-   "fine": 0.3,
-   "technical": 0.08,
-   "too_long": 0,
-   "unclear": 0.6,
-   "tone": 0.02
+   "fine": 0.38,
+   "technical": 0.06,
+   "too_long": 0.01,
+   "unclear": 0.48,
+   "tone": 0.07
   },
-  "voice": 0.37,
-  "voiceConfidence": 0.65
+  "voice": 0.86,
+  "voiceConfidence": 0.84
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 240,
-  "text": "Used for cars without fill-ups",
+  "line": 277,
+  "text": "Used when a car has no fill-ups logged",
   "problem": "unclear",
-  "problemConfidence": 0.7,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.2,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.76,
-   "tone": 0.02
+   "fine": 0.14,
+   "technical": 0.13,
+   "too_long": 0.01,
+   "unclear": 0.58,
+   "tone": 0.14
   },
-  "voice": 0.75,
-  "voiceConfidence": 0.73
+  "voice": 0.77,
+  "voiceConfidence": 0.75
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -15025,35 +15345,51 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 60,
-  "text": "Tailpipe only",
+  "line": 39,
+  "text": "Driving, not parked",
   "problem": "unclear",
-  "problemConfidence": 0.56,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.15,
-   "technical": 0.17,
+   "fine": 0.3,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.65,
-   "tone": 0.03
+   "unclear": 0.51,
+   "tone": 0.18
   },
-  "voice": 1.09,
-  "voiceConfidence": 0.7
+  "voice": 0.88,
+  "voiceConfidence": 0.66
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 60,
+  "text": "Tailpipe estimate",
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.48,
+   "tone": 0.05
+  },
+  "voice": 1,
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/stats/stats_sections.dart",
   "line": 66,
-  "text": "Earned in this window",
+  "text": "In this period",
   "problem": "unclear",
-  "problemConfidence": 0.76,
+  "problemConfidence": 0.46,
   "problems": {
-   "fine": 0.17,
+   "fine": 0.41,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.81,
+   "unclear": 0.57,
    "tone": 0.01
   },
-  "voice": 0.94,
-  "voiceConfidence": 0.75
+  "voice": 0.86,
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -15250,18 +15586,18 @@
  {
   "file": "features/stats/stats_sections.dart",
   "line": 128,
-  "text": "From matched packs",
+  "text": "Based on where you drove",
   "problem": "unclear",
-  "problemConfidence": 0.84,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.08,
-   "technical": 0.05,
+   "fine": 0.48,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.87,
-   "tone": 0
+   "unclear": 0.5,
+   "tone": 0.02
   },
-  "voice": 1.13,
-  "voiceConfidence": 0.65
+  "voice": 1,
+  "voiceConfidence": 0.92
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -15281,23 +15617,23 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 134,
-  "text": "90 % of distance within",
+  "line": 135,
+  "text": "Most drives stay this close to home",
   "problem": "unclear",
-  "problemConfidence": 0.76,
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.16,
-   "technical": 0.01,
+   "fine": 0.42,
+   "technical": 0,
    "too_long": 0.01,
-   "unclear": 0.81,
-   "tone": 0.01
+   "unclear": 0.49,
+   "tone": 0.08
   },
-  "voice": 0.91,
-  "voiceConfidence": 0.66
+  "voice": 1.6,
+  "voiceConfidence": 0.48
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 134,
+  "line": 136,
   "text": "Save a Home place",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -15313,23 +15649,23 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 138,
-  "text": "Farthest from home",
-  "problem": "unclear",
-  "problemConfidence": 0.77,
+  "line": 140,
+  "text": "Farthest trip from home",
+  "problem": "fine",
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.16,
+   "fine": 0.66,
    "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.82,
-   "tone": 0.01
+   "too_long": 0.02,
+   "unclear": 0.29,
+   "tone": 0.02
   },
-  "voice": 1.08,
-  "voiceConfidence": 0.76
+  "voice": 1.18,
+  "voiceConfidence": 0.69
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 140,
+  "line": 142,
   "text": "As the crow flies",
   "problem": "unclear",
   "problemConfidence": 0.52,
@@ -15345,7 +15681,7 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 144,
+  "line": 146,
   "text": "Most driven road",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -15361,71 +15697,71 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 147,
-  "text": "Needs matched trips",
-  "problem": "unclear",
-  "problemConfidence": 0.77,
+  "line": 149,
+  "text": "Drive a few more trips",
+  "problem": "fine",
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.05,
-   "technical": 0.11,
+   "fine": 0.51,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.82,
-   "tone": 0.02
+   "unclear": 0.45,
+   "tone": 0.04
   },
-  "voice": 0.77,
+  "voice": 1.82,
   "voiceConfidence": 0.68
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 160,
-  "text": "Of distance after dark",
+  "line": 162,
+  "text": "Of your driving after dark",
   "problem": "unclear",
-  "problemConfidence": 0.84,
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.12,
+   "fine": 0.34,
    "technical": 0,
    "too_long": 0.01,
-   "unclear": 0.87,
-   "tone": 0
+   "unclear": 0.64,
+   "tone": 0.01
   },
-  "voice": 0.98,
-  "voiceConfidence": 0.6
+  "voice": 1.21,
+  "voiceConfidence": 0.61
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 170,
-  "text": "Average trip",
-  "problem": "unclear",
-  "problemConfidence": 0.7,
+  "line": 172,
+  "text": "Typical trip",
+  "problem": "fine",
+  "problemConfidence": 0.45,
   "problems": {
-   "fine": 0.23,
+   "fine": 0.56,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.76,
+   "unclear": 0.43,
    "tone": 0.01
   },
-  "voice": 0.95,
-  "voiceConfidence": 0.82
+  "voice": 1.02,
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 176,
-  "text": "Groundhog Route",
+  "line": 178,
+  "text": "Repeat route",
   "problem": "unclear",
-  "problemConfidence": 0.79,
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.15,
+   "fine": 0.32,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.83,
+   "unclear": 0.66,
    "tone": 0.01
   },
-  "voice": 2.69,
-  "voiceConfidence": 0.69
+  "voice": 1.19,
+  "voiceConfidence": 0.71
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 179,
+  "line": 181,
   "text": "No repeated route yet",
   "problem": "fine",
   "problemConfidence": 0.45,
@@ -15441,55 +15777,55 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 188,
-  "text": "Trips ending here",
+  "line": 190,
+  "text": "Times you parked here",
   "problem": "unclear",
-  "problemConfidence": 0.76,
+  "problemConfidence": 0.42,
   "problems": {
-   "fine": 0.16,
+   "fine": 0.42,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.81,
-   "tone": 0.02
+   "unclear": 0.54,
+   "tone": 0.03
   },
-  "voice": 0.92,
-  "voiceConfidence": 0.7
+  "voice": 0.87,
+  "voiceConfidence": 0.79
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 195,
-  "text": "Reality checks",
+  "line": 197,
+  "text": "Honest numbers",
   "problem": "unclear",
-  "problemConfidence": 0.62,
+  "problemConfidence": 0.24,
   "problems": {
-   "fine": 0.09,
+   "fine": 0.32,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.7,
-   "tone": 0.21
+   "unclear": 0.39,
+   "tone": 0.29
   },
-  "voice": 1.48,
-  "voiceConfidence": 0.37
+  "voice": 1.65,
+  "voiceConfidence": 0.27
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 201,
-  "text": "Barely any",
+  "line": 203,
+  "text": "Almost none. Nice.",
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.5,
   "problems": {
-   "fine": 0.21,
+   "fine": 0.34,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.78,
-   "tone": 0.01
+   "unclear": 0.6,
+   "tone": 0.06
   },
-  "voice": 2.18,
-  "voiceConfidence": 0.62
+  "voice": 2.57,
+  "voiceConfidence": 0.59
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 206,
+  "line": 208,
   "text": "Ticket-risk time",
   "problem": "unclear",
   "problemConfidence": 0.39,
@@ -15505,7 +15841,7 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 208,
+  "line": 210,
   "text": "10+ over, or worse",
   "problem": "unclear",
   "problemConfidence": 0.42,
@@ -15521,7 +15857,7 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 214,
+  "line": 216,
   "text": "About ${formatMoney(rc.moneyBurned)} of fuel",
   "problem": "unclear",
   "problemConfidence": 0.35,
@@ -15537,7 +15873,7 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 225,
+  "line": 227,
   "text": "${dist(so.convoyDistanceM)} in convoy",
   "problem": "unclear",
   "problemConfidence": 0.27,
@@ -15553,7 +15889,7 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 232,
+  "line": 234,
   "text": "Convoys together",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -15569,23 +15905,23 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 238,
-  "text": "DJ score",
-  "problem": "unclear",
-  "problemConfidence": 0.79,
+  "line": 240,
+  "text": "Songs you played",
+  "problem": "fine",
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.06,
-   "technical": 0.11,
+   "fine": 0.64,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.83,
-   "tone": 0
+   "unclear": 0.34,
+   "tone": 0.02
   },
-  "voice": 1.2,
-  "voiceConfidence": 0.49
+  "voice": 1.01,
+  "voiceConfidence": 0.84
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 240,
+  "line": 242,
   "text": "Tracks played for the convoy",
   "problem": "fine",
   "problemConfidence": 0.61,
@@ -15777,7 +16113,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 54,
+  "line": 71,
   "text": "trip as the driver",
   "problem": "unclear",
   "problemConfidence": 0.5,
@@ -15793,7 +16129,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 54,
+  "line": 71,
   "text": "trips as the driver",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -15809,23 +16145,23 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 59,
-  "text": "You covered",
-  "problem": "unclear",
-  "problemConfidence": 0.95,
+  "line": 76,
+  "text": "Distance driven",
+  "problem": "fine",
+  "problemConfidence": 0.74,
   "problems": {
-   "fine": 0.04,
+   "fine": 0.79,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.96,
-   "tone": 0
+   "unclear": 0.14,
+   "tone": 0.07
   },
-  "voice": 1.06,
-  "voiceConfidence": 0.54
+  "voice": 0.87,
+  "voiceConfidence": 0.82
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 61,
+  "line": 78,
   "text": "${formatHours(t.movingS)} behind the wheel",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -15841,7 +16177,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 66,
+  "line": 83,
   "text": "Average Drive Score",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -15857,7 +16193,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 69,
+  "line": 86,
   "text": "No scored trips this season",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -15873,7 +16209,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 70,
+  "line": 87,
   "text": "Best ${t.bestScore} · ${t.cleanTrips} clean trips",
   "problem": "fine",
   "problemConfidence": 0.54,
@@ -15889,39 +16225,55 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 78,
-  "text": "of your distance after dark · ${h.weekendPercent} % on weekends",
-  "problem": "unclear",
-  "problemConfidence": 0.71,
+  "line": 94,
+  "text": "driven after dark · ${h.weekendPercent} % at weekends",
+  "problem": "fine",
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.08,
-   "technical": 0.01,
-   "too_long": 0.13,
-   "unclear": 0.77,
-   "tone": 0.01
+   "fine": 0.58,
+   "technical": 0.06,
+   "too_long": 0.06,
+   "unclear": 0.27,
+   "tone": 0.03
   },
-  "voice": 0.86,
-  "voiceConfidence": 0.58
+  "voice": 1.42,
+  "voiceConfidence": 0.51
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 86,
-  "text": "Nothing matched to a pack yet",
-  "problem": "unclear",
-  "problemConfidence": 0.66,
+  "line": 102,
+  "text": "None yet. Drive somewhere new.",
+  "problem": "fine",
+  "problemConfidence": 0.64,
   "problems": {
-   "fine": 0.22,
-   "technical": 0.04,
+   "fine": 0.71,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.73,
-   "tone": 0.01
+   "unclear": 0.09,
+   "tone": 0.2
+  },
+  "voice": 1.91,
+  "voiceConfidence": 0.77
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 109,
+  "text": "Your repeat route",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.34,
+   "tone": 0.03
   },
   "voice": 1.17,
-  "voiceConfidence": 0.76
+  "voiceConfidence": 0.77
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 96,
+  "line": 112,
   "text": "No route repeated yet",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -15937,55 +16289,39 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 97,
-  "text": "${groundhog.label}, again and again",
-  "problem": "unclear",
-  "problemConfidence": 0.85,
-  "problems": {
-   "fine": 0.03,
-   "technical": 0.08,
-   "too_long": 0,
-   "unclear": 0.88,
-   "tone": 0.01
-  },
-  "voice": 2.51,
-  "voiceConfidence": 0.52
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 100,
-  "text": "the same route, again and again",
+  "line": 114,
+  "text": "The same route, over and over",
   "problem": "fine",
-  "problemConfidence": 0.44,
+  "problemConfidence": 0.49,
   "problems": {
-   "fine": 0.55,
+   "fine": 0.59,
    "technical": 0,
-   "too_long": 0.06,
-   "unclear": 0.26,
-   "tone": 0.13
+   "too_long": 0.01,
+   "unclear": 0.17,
+   "tone": 0.23
   },
-  "voice": 1.82,
-  "voiceConfidence": 0.45
+  "voice": 1.63,
+  "voiceConfidence": 0.36
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 105,
-  "text": "Over the limit for",
+  "line": 119,
+  "text": "Time over the limit",
   "problem": "unclear",
-  "problemConfidence": 0.79,
+  "problemConfidence": 0.51,
   "problems": {
-   "fine": 0.05,
-   "technical": 0,
+   "fine": 0.14,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.83,
-   "tone": 0.12
+   "unclear": 0.61,
+   "tone": 0.24
   },
-  "voice": 0.91,
-  "voiceConfidence": 0.6
+  "voice": 0.73,
+  "voiceConfidence": 0.66
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 108,
+  "line": 122,
   "text": "Barely at all. Respect.",
   "problem": "unclear",
   "problemConfidence": 0.41,
@@ -16001,7 +16337,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 109,
+  "line": 123,
   "text": "It saved you ${formatSaved(rc.timeSavedS)}.",
   "problem": "unclear",
   "problemConfidence": 0.34,
@@ -16017,7 +16353,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 118,
+  "line": 132,
   "text": "Highest point ${formatAltitude(r.highestAltitudeM!, units)}",
   "problem": "fine",
   "problemConfidence": 0.42,
@@ -16033,7 +16369,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 119,
+  "line": 133,
   "text": "Busiest day ${r.mostTripsInDay} trips",
   "problem": "fine",
   "problemConfidence": 0.65,
@@ -16049,7 +16385,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 128,
+  "line": 142,
   "text": "Start one from the Convoy tab",
   "problem": "fine",
   "problemConfidence": 0.41,
@@ -16065,7 +16401,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 138,
+  "line": 152,
   "text": "XP earned",
   "problem": "fine",
   "problemConfidence": 0.27,
@@ -16081,7 +16417,7 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 140,
+  "line": 154,
   "text": "Drive well. See you next season.",
   "problem": "unclear",
   "problemConfidence": 0.21,
@@ -16096,24 +16432,88 @@
   "voiceConfidence": 0.49
  },
  {
-  "file": "features/stats/wrapped_screen.dart",
-  "line": 37,
-  "text": "Could not build the Wrapped: $e",
-  "problem": "technical",
-  "problemConfidence": 0.8,
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 217,
+  "text": "Your season",
+  "problem": "unclear",
+  "problemConfidence": 0.56,
   "problems": {
-   "fine": 0,
-   "technical": 0.84,
+   "fine": 0.33,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.14,
+   "unclear": 0.65,
+   "tone": 0.01
+  },
+  "voice": 0.81,
+  "voiceConfidence": 0.7
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 244,
+  "text": "Swipe through your season.",
+  "problem": "fine",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.55,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.41,
    "tone": 0.02
   },
-  "voice": 0.3,
-  "voiceConfidence": 0.71
+  "voice": 1.85,
+  "voiceConfidence": 0.57
  },
  {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 86,
+  "line": 57,
+  "text": "build your Wrapped",
+  "problem": "unclear",
+  "problemConfidence": 0.74,
+  "problems": {
+   "fine": 0.15,
+   "technical": 0.05,
+   "too_long": 0,
+   "unclear": 0.79,
+   "tone": 0.01
+  },
+  "voice": 2.38,
+  "voiceConfidence": 0.38
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 65,
+  "text": "Nothing to wrap yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.37,
+  "problems": {
+   "fine": 0.38,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.5,
+   "tone": 0.08
+  },
+  "voice": 1.28,
+  "voiceConfidence": 0.66
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 66,
+  "text": "Drive this season and this fills in.",
+  "problem": "unclear",
+  "problemConfidence": 0.59,
+  "problems": {
+   "fine": 0.19,
+   "technical": 0.05,
+   "too_long": 0.01,
+   "unclear": 0.67,
+   "tone": 0.08
+  },
+  "voice": 1.46,
+  "voiceConfidence": 0.51
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 119,
   "text": "Share this card",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -16129,7 +16529,7 @@
  },
  {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 108,
+  "line": 145,
   "text": "${card.kicker}: ${card.value}. My ${s.range.label} on Drivalry.",
   "problem": "unclear",
   "problemConfidence": 0.57,
@@ -16144,36 +16544,308 @@
   "voiceConfidence": 0.52
  },
  {
-  "file": "features/stats/wrapped_screen.dart",
-  "line": 127,
-  "text": "Nothing to wrap yet",
-  "problem": "unclear",
-  "problemConfidence": 0.49,
+  "file": "widgets/friendly_error.dart",
+  "line": 16,
+  "text": "failed host lookup",
+  "problem": "technical",
+  "problemConfidence": 0.99,
   "problems": {
-   "fine": 0.35,
-   "technical": 0.04,
+   "fine": 0,
+   "technical": 0.99,
    "too_long": 0,
-   "unclear": 0.59,
-   "tone": 0.02
+   "unclear": 0.01,
+   "tone": 0
   },
-  "voice": 1.19,
-  "voiceConfidence": 0.78
+  "voice": 0,
+  "voiceConfidence": 1
  },
  {
-  "file": "features/stats/wrapped_screen.dart",
-  "line": 132,
-  "text": "No scored driver trips in ${range.label}. Drive, and this fills in.",
+  "file": "widgets/friendly_error.dart",
+  "line": 17,
+  "text": "network is unreachable",
+  "problem": "technical",
+  "problemConfidence": 0.41,
+  "problems": {
+   "fine": 0.1,
+   "technical": 0.53,
+   "too_long": 0,
+   "unclear": 0.32,
+   "tone": 0.05
+  },
+  "voice": 0.07,
+  "voiceConfidence": 0.93
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 18,
+  "text": "connection refused",
+  "problem": "technical",
+  "problemConfidence": 0.8,
+  "problems": {
+   "fine": 0,
+   "technical": 0.84,
+   "too_long": 0,
+   "unclear": 0.15,
+   "tone": 0.01
+  },
+  "voice": 0.02,
+  "voiceConfidence": 0.98
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 19,
+  "text": "connection reset",
+  "problem": "technical",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.78,
+   "too_long": 0,
+   "unclear": 0.2,
+   "tone": 0.01
+  },
+  "voice": 0.05,
+  "voiceConfidence": 0.96
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 20,
+  "text": "No connection right now. Try again when you are back online.",
+  "problem": "fine",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.63,
+   "technical": 0.01,
+   "too_long": 0.11,
+   "unclear": 0.01,
+   "tone": 0.24
+  },
+  "voice": 1.3,
+  "voiceConfidence": 0.71
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 22,
+  "text": "timed out",
   "problem": "unclear",
-  "problemConfidence": 0.16,
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.17,
+   "technical": 0.32,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.06
+  },
+  "voice": 0.69,
+  "voiceConfidence": 0.3
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 23,
+  "text": "That took too long. Try again.",
+  "problem": "fine",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.45,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.31,
+   "tone": 0.22
+  },
+  "voice": 1.47,
+  "voiceConfidence": 0.52
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "offline build",
+  "problem": "technical",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.77,
+   "too_long": 0,
+   "unclear": 0.21,
+   "tone": 0.01
+  },
+  "voice": 0.1,
+  "voiceConfidence": 0.91
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "not configured",
+  "problem": "unclear",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0,
+   "technical": 0.43,
+   "too_long": 0,
+   "unclear": 0.56,
+   "tone": 0.01
+  },
+  "voice": 0.05,
+  "voiceConfidence": 0.96
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 26,
+  "text": "Not available in this version yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.22,
+   "technical": 0.1,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.24
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.88
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 29,
+  "text": "not authenticated",
+  "problem": "technical",
+  "problemConfidence": 0.42,
+  "problems": {
+   "fine": 0.03,
+   "technical": 0.54,
+   "too_long": 0,
+   "unclear": 0.38,
+   "tone": 0.05
+  },
+  "voice": 0.07,
+  "voiceConfidence": 0.93
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 31,
+  "text": "invalid token",
+  "problem": "technical",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.72,
+   "too_long": 0,
+   "unclear": 0.26,
+   "tone": 0.01
+  },
+  "voice": 0.07,
+  "voiceConfidence": 0.93
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 32,
+  "text": "Your sign-in expired. Sign in again.",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0.07,
+   "too_long": 0.01,
+   "unclear": 0.02,
+   "tone": 0.28
+  },
+  "voice": 1.15,
+  "voiceConfidence": 0.85
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 34,
+  "text": "row-level security",
+  "problem": "technical",
+  "problemConfidence": 0.98,
+  "problems": {
+   "fine": 0,
+   "technical": 0.98,
+   "too_long": 0,
+   "unclear": 0.02,
+   "tone": 0
+  },
+  "voice": 0.03,
+  "voiceConfidence": 0.97
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 35,
+  "text": "You do not have access to that.",
+  "problem": "tone",
+  "problemConfidence": 0.57,
+  "problems": {
+   "fine": 0.08,
+   "technical": 0.03,
+   "too_long": 0,
+   "unclear": 0.23,
+   "tone": 0.66
+  },
+  "voice": 0.64,
+  "voiceConfidence": 0.63
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 37,
+  "text": "rate limit",
+  "problem": "technical",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0,
+   "technical": 0.85,
+   "too_long": 0,
+   "unclear": 0.14,
+   "tone": 0.01
+  },
+  "voice": 0.04,
+  "voiceConfidence": 0.97
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 38,
+  "text": "Slow down a little. Try again in a minute.",
+  "problem": "fine",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.55,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.07,
+   "tone": 0.36
+  },
+  "voice": 2.11,
+  "voiceConfidence": 0.69
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 40,
+  "text": "Could not $doing. Try again.",
+  "problem": "unclear",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.09,
+   "technical": 0.09,
+   "too_long": 0,
+   "unclear": 0.71,
+   "tone": 0.11
+  },
+  "voice": 0.71,
+  "voiceConfidence": 0.68
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 41,
+  "text": "Something went wrong. Try again.",
+  "problem": "tone",
+  "problemConfidence": 0.19,
   "problems": {
    "fine": 0.3,
-   "technical": 0.2,
-   "too_long": 0.03,
-   "unclear": 0.33,
-   "tone": 0.14
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.34,
+   "tone": 0.35
   },
-  "voice": 1.73,
-  "voiceConfidence": 0.64
+  "voice": 0.94,
+  "voiceConfidence": 0.92
  },
  {
   "file": "widgets/placeholder_screen.dart",

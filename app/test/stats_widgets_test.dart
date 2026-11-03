@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:drivalry/app/routes.dart';
+import 'package:drivalry/app/ui/ui.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/stats/stats_engine.dart';
 import 'package:drivalry/data/stats/stats_providers.dart';
@@ -63,6 +64,7 @@ void main() {
   late AppDatabase db;
   late ShareCapture share;
   setUp(() {
+    Haptics.enabled = false;
     db = memoryDatabase();
     share = ShareCapture();
   });
@@ -71,7 +73,8 @@ void main() {
   testWidgets('stats screen explains the empty state', (tester) async {
     await tester.pumpWidget(harness(db, share, const StatsScreen()));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.text('No scored trips yet'), findsOneWidget);
+    expect(find.text('No scored trips yet.'), findsOneWidget);
+    expect(find.text('Finish a drive and the numbers appear.'), findsOneWidget);
     expect(find.text('All time'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -82,16 +85,16 @@ void main() {
     await seedSeason(db);
     await tester.pumpWidget(harness(db, share, const StatsScreen()));
     await pumpFor(tester, const Duration(seconds: 2));
-    expect(find.text('Totals'), findsOneWidget);
-    expect(find.text('Trips'), findsWidgets);
+    expect(find.text('TOTALS'), findsOneWidget);
+    expect(find.text('TRIPS'), findsWidgets);
     expect(find.text('4'), findsWidgets);
     // The list builds lazily; scroll the lower sections into view.
     await tester.dragUntilVisible(
-      find.text('Geography'),
+      find.text('GEOGRAPHY'),
       find.byType(ListView),
       const Offset(0, -300),
     );
-    expect(find.text('Geography'), findsOneWidget);
+    expect(find.text('GEOGRAPHY'), findsOneWidget);
     await tester.dragUntilVisible(
       find.text('TN'),
       find.byType(ListView),
@@ -100,6 +103,8 @@ void main() {
     await tester.pump();
     expect(find.text('TN'), findsOneWidget);
     expect(find.text('KY'), findsOneWidget);
+    // Sections revealed by the scroll stagger in; let their timers finish.
+    await pumpFor(tester, const Duration(milliseconds: 500));
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -120,29 +125,45 @@ void main() {
     await unmountAndSettle(tester);
   }, skip: skip);
 
-  test('the Wrapped always has ten cards', () {
+  test('the Wrapped always has ten cards, one colour each', () {
     final empty = computeDriverStats(
       const StatsInput(trips: []),
       StatsRange.season(now),
     );
-    expect(wrappedCards(empty, SpeedUnits.mph), hasLength(10));
+    final cards = wrappedCards(empty, SpeedUnits.mph);
+    expect(cards, hasLength(10));
     expect(
       wrappedCards(empty, SpeedUnits.kmh).map((c) => c.id).toSet(),
       hasLength(10),
     );
+    expect(cards.map((c) => c.color).toList(), wrappedPalette);
   });
 
-  testWidgets('wrapped screen pages through the season and shares a card', (
+  testWidgets('wrapped screen explains the empty state', (tester) async {
+    await tester.pumpWidget(harness(db, share, const WrappedScreen()));
+    await pumpFor(tester, const Duration(seconds: 1));
+    expect(find.text('Nothing to wrap yet.'), findsOneWidget);
+    expect(find.text('Share this card'), findsNothing);
+    await unmountAndSettle(tester);
+  }, skip: skip);
+
+  testWidgets('wrapped screen opens on the intro, pages through and shares', (
     tester,
   ) async {
     await seedSeason(db);
     await tester.pumpWidget(harness(db, share, const WrappedScreen()));
     await pumpFor(tester, const Duration(seconds: 2));
     expect(find.text('Oct–Dec 2026'), findsWidgets);
+    expect(find.text('Swipe through your season.'), findsOneWidget);
+    // Nothing to share on the intro page.
+    final share0 = tester.widget<SecondaryButton>(find.byType(SecondaryButton));
+    expect(share0.onPressed, isNull);
+    await tester.drag(find.byType(PageView), const Offset(-400, 0));
+    await pumpFor(tester, const Duration(seconds: 1));
     expect(find.text('trips as the driver'), findsOneWidget);
     await tester.drag(find.byType(PageView), const Offset(-400, 0));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.text('You covered'), findsOneWidget);
+    expect(find.text('Distance driven'), findsOneWidget);
     await tester.runAsync(() async {
       await tester.tap(find.text('Share this card'));
       await Future<void>.delayed(const Duration(seconds: 2));
@@ -183,7 +204,7 @@ void main() {
       ),
     );
     await pumpFor(tester, const Duration(seconds: 2));
-    expect(find.text('Stats'), findsOneWidget);
+    expect(find.text('STATS'), findsOneWidget);
     expect(find.text('4'), findsOneWidget);
     expect(find.text('81'), findsOneWidget);
     expect(find.text('3'), findsOneWidget);

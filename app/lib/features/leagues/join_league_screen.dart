@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
 
 /// Landing screen for `drivalry://join/league/<code>`: joins and moves on.
@@ -26,12 +28,13 @@ class _JoinLeagueScreenState extends ConsumerState<JoinLeagueScreen> {
     _started = true;
     try {
       final id = await ref.read(leaguesRepoProvider).joinByCode(widget.code);
+      Haptics.success();
       if (mounted) context.go(Routes.league(id));
     } on LeagueJoinException catch (e) {
       if (mounted) setState(() => _error = e.message);
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Could not join right now. Try again later.');
+        setState(() => _error = friendlyError(e, doing: 'join the league'));
       }
     }
   }
@@ -42,46 +45,35 @@ class _JoinLeagueScreenState extends ConsumerState<JoinLeagueScreen> {
     if (ref.watch(isSignedInProvider)) {
       WidgetsBinding.instance.addPostFrameCallback((_) => _join());
     }
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('Join league')),
       body: SignedInScope(
         message: 'Sign in to accept this league invite.',
         icon: Icons.emoji_events_outlined,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32),
-            child: _error == null
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const CircularProgressIndicator(),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Joining with code ${widget.code}…',
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                    ],
-                  )
-                : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.error_outline,
-                        size: 48,
-                        color: theme.colorScheme.error,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(_error!, textAlign: TextAlign.center),
-                      const SizedBox(height: 20),
-                      FilledButton(
-                        onPressed: () => context.go(Routes.leagues),
-                        child: const Text('Back to leagues'),
-                      ),
-                    ],
-                  ),
-          ),
-        ),
+        child: _error == null
+            ? const Padding(
+                padding: EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.xxxl,
+                  Space.gutter,
+                  0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Kicker('League invite'),
+                    SizedBox(height: Space.md),
+                    SkeletonTile(height: 96),
+                  ],
+                ),
+              )
+            : EmptyState(
+                kicker: 'League invite',
+                headline: 'Could not join.',
+                body: _error,
+                actionLabel: 'Back to leagues',
+                onAction: () => context.go(Routes.leagues),
+              ),
       ),
     );
   }

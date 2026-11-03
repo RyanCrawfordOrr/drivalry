@@ -901,42 +901,42 @@
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 358,
+  "line": 380,
   "text": "That invite code is not valid."
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 359,
+  "line": 381,
   "text": "That league is full (30 members)."
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 360,
+  "line": 382,
   "text": "Sign in first."
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 361,
+  "line": 383,
   "text": "Could not reach Drivalry. Try again."
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 374,
+  "line": 396,
   "text": "invalid invite code"
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 643,
+  "line": 670,
   "text": "another account"
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 654,
+  "line": 681,
   "text": "another account"
  },
  {
   "file": "data/repos/leagues_repo.dart",
-  "line": 755,
+  "line": 792,
   "text": "League names are 1 to 40 characters."
  },
  {
@@ -1231,33 +1231,38 @@
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 21,
-  "text": "Could not load badges: $e"
+  "line": 82,
+  "text": "load your badges"
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 32,
-  "text": "$earnedCount of ${regular.length} earned"
+  "line": 113,
+  "text": "Clean streak"
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 47,
-  "text": "Handed out by duels and reckless trips. They wear off."
+  "line": 123,
+  "text": "Streak XP"
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 85,
-  "text": "clean streak"
+  "line": 132,
+  "text": "$earned of ${regular.length} badges earned"
  },
  {
   "file": "features/badges/badges_screen.dart",
-  "line": 89,
-  "text": "phone-free streak"
+  "line": 153,
+  "text": "Lost duels and reckless trips. Worn for a week."
  },
  {
-  "file": "features/badges/badges_screen.dart",
-  "line": 93,
-  "text": "streak XP"
+  "file": "features/badges/badge_moments.dart",
+  "line": 70,
+  "text": "Badge earned"
+ },
+ {
+  "file": "features/badges/badge_moments.dart",
+  "line": 73,
+  "text": "${fresh.length} new badges"
  },
  {
   "file": "features/circles/checkin_sheet.dart",
@@ -4461,448 +4466,573 @@
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 63,
-  "text": "A group challenge gives the whole league one goal for a week or two: clean trips, phone-free trips, average score, or everyone showing up."
+  "line": 57,
+  "text": "Challenge met"
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 83,
-  "text": "Start another challenge"
+  "line": 116,
+  "text": "Set one goal for the whole league."
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 84,
-  "text": "Start a group challenge"
- },
- {
-  "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 102,
+  "line": 142,
   "text": "Call off this challenge?"
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 104,
+  "line": 144,
   "text": "Nobody gets the badge; the league can start another."
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 109,
+  "line": 149,
   "text": "Keep going"
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 113,
+  "line": 153,
   "text": "Call off"
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 162,
+  "line": 203,
   "text": "Call off"
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 195,
+  "line": 237,
   "text": "${p.value.round()} of ${p.needed} members have ${c.target} trip${c.target == 1 ? "
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 202,
+  "line": 244,
   "text": "Met! Everyone earned ${c.goal.badgeName}."
  },
  {
   "file": "features/leagues/challenges/challenge_card.dart",
-  "line": 211,
-  "text": "Missed: $shown of $needed."
+  "line": 253,
+  "text": "Not met. The league reached $shown of $needed."
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 56,
+  "line": 14,
   "text": "Group challenge"
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 59,
-  "text": "One goal for the whole league. Everyone who is a member when it ends earns the badge if the league makes it."
+  "line": 50,
+  "text": "One goal for the whole league. Make it and everyone earns the badge."
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 98,
+  "line": 88,
   "text": "One week"
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 99,
+  "line": 89,
   "text": "Two weeks"
  },
  {
   "file": "features/leagues/challenges/new_challenge_sheet.dart",
-  "line": 126,
-  "text": "Pick a whole-number target above zero."
+  "line": 111,
+  "text": "Pick a whole number above zero."
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 44,
-  "text": "Could not create the league right now. It will be retried when you are back online."
+  "line": 47,
+  "text": "Could not create it right now. We will try again when you are back online."
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 57,
+  "line": 58,
   "text": "New league"
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 70,
-  "text": "League name"
+  "line": 76,
+  "text": "Name your league"
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 71,
+  "line": 77,
   "text": "The Boys, Carpool Crew, Family"
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 78,
-  "text": "Up to 30 members. Weeks run Monday to Sunday in your time zone. XP comes from how well you drive, never how far or how fast. Top five promote, bottom five demote, and a week with no scored trips demotes too."
+  "line": 84,
+  "text": "Up to 30 friends, Monday to Sunday. XP comes from how well you drive, never how far or how fast."
  },
  {
   "file": "features/leagues/create_league_screen.dart",
-  "line": 93,
+  "line": 90,
   "text": "Create league"
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 19,
+  "line": 36,
   "text": "Sign in to duel your friends on how well you drive."
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 53,
+  "line": 49,
   "text": "Challenge sent to @${duel.opponent.handle}."
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 70,
-  "text": "Showing the last known duels. Pull to retry."
+  "line": 87,
+  "text": "Showing the last duels we saw. Pull to retry."
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 84,
-  "text": "Waiting for you"
+  "line": 94,
+  "text": "No duels yet."
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 178,
-  "text": "Could not cancel. Try again online."
+  "line": 95,
+  "text": "Pick a friend and a week. The loser wears a badge."
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 217,
-  "text": "You won. Pick the badge @${widget.duel.other(widget.duel.winnerId!).handle} wears for a week:"
+  "line": 96,
+  "text": "Duel a friend"
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 275,
-  "text": "No duels yet"
+  "line": 112,
+  "text": "Challenges for you"
  },
  {
   "file": "features/leagues/duels/duels_screen.dart",
-  "line": 278,
-  "text": "Challenge a friend to a week on XP, average Drive Score or phone-free trips. The loser wears Sunday Driver, Lead Foot or Butterfingers for seven days. The winner picks."
+  "line": 225,
+  "text": "cancel the duel"
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 284,
+  "text": "Pick what @$loser wears for a week"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 107,
-  "text": "Waiting for your answer"
+  "line": 56,
+  "text": "You vs @${other.handle}"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 109,
-  "text": "Waiting for @${other.handle} to answer"
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 118,
-  "text": "You lead"
- },
- {
-  "file": "features/leagues/duels/duel_card.dart",
-  "line": 125,
+  "line": 73,
   "text": "You won"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 125,
+  "line": 79,
   "text": "You lost"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 132,
-  "text": " · they wear ${duelBadgeName(badge)} until $until"
+  "line": 150,
+  "text": "Waiting for your answer"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 133,
-  "text": " · you wear ${duelBadgeName(badge)} until $until"
+  "line": 152,
+  "text": "Waiting for @${other.handle} to answer"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 139,
-  "text": "Expired unanswered"
+  "line": 161,
+  "text": "You lead"
  },
  {
   "file": "features/leagues/duels/duel_card.dart",
-  "line": 206,
-  "text": "${v.trips} of $duelScoreAvgMinTrips trips"
+  "line": 170,
+  "text": "Pick a badge for @${other.handle}"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 171,
+  "text": "Waiting for @${other.handle} to pick your badge"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 177,
+  "text": "They wear ${duelBadgeName(badge)} until $until"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 178,
+  "text": "You wear ${duelBadgeName(badge)} until $until"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 182,
+  "text": "Never answered. It lapsed."
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 188,
+  "text": "You beat @${duel.other(me).handle} on ${duelMetricPhrase(duel.metric)}"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 192,
+  "text": "Drive Score"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 193,
+  "text": "phone-free trips"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 273,
+  "text": "$name · needs $duelScoreAvgMinTrips trips, has ${value.trips}"
+ },
+ {
+  "file": "features/leagues/duels/duel_moments.dart",
+  "line": 75,
+  "text": "Duel won"
  },
  {
   "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 49,
+  "line": 14,
   "text": "Duel a friend"
  },
  {
   "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 52,
-  "text": "Seven days from the moment they accept. The loser wears a badge the winner picks for a week. Never about speed."
+  "line": 42,
+  "text": "Seven days from when they accept. The loser wears a badge the winner picks."
  },
  {
   "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 62,
-  "text": "Add a friend first; duels are between friends."
+  "line": 53,
+  "text": "Add a friend first. Duels are between friends."
  },
  {
   "file": "features/leagues/duels/new_duel_sheet.dart",
-  "line": 113,
+  "line": 102,
   "text": "Send challenge"
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 47,
-  "text": "reshuffles Monday"
+  "line": 42,
+  "text": "Drivers this week: ${league.memberCount}"
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 65,
+  "line": 43,
+  "text": "#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP"
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 88,
   "text": "Global league"
  },
  {
   "file": "features/leagues/global_league_card.dart",
-  "line": 70,
-  "text": "Get matched every Monday with up to 29 drivers at your tier. Same rules as a friend league: XP ranks, Driver Rating breaks ties, top five move up, bottom five move down. Never by speed."
- },
- {
-  "file": "features/leagues/global_league_card.dart",
-  "line": 85,
-  "text": "Join the global league"
+  "line": 93,
+  "text": "Up to 29 drivers at your tier, a new table every Monday."
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 32,
+  "line": 13,
   "text": "Invite to ${league.name}"
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 51,
+  "line": 58,
   "text": "Friends enter this code in Leagues, or open the link."
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 64,
-  "text": "Link copied"
- },
- {
-  "file": "features/leagues/invite_sheet.dart",
-  "line": 69,
+  "line": 67,
   "text": "Copy link"
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 78,
+  "line": 74,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 88,
   "text": "Join my Drivalry league \"${league.name}\": $link (code ${league.inviteCode.toUpperCase()})"
  },
  {
   "file": "features/leagues/invite_sheet.dart",
-  "line": 80,
+  "line": 90,
   "text": "Drivalry league invite"
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 34,
-  "text": "Could not join right now. Try again later."
- },
- {
-  "file": "features/leagues/join_league_screen.dart",
-  "line": 47,
-  "text": "Join league"
+  "line": 37,
+  "text": "join the league"
  },
  {
   "file": "features/leagues/join_league_screen.dart",
   "line": 49,
+  "text": "Join league"
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 51,
   "text": "Sign in to accept this league invite."
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 61,
-  "text": "Joining with code ${widget.code}…"
+  "line": 64,
+  "text": "League invite"
  },
  {
   "file": "features/leagues/join_league_screen.dart",
-  "line": 79,
+  "line": 71,
+  "text": "League invite"
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 72,
+  "text": "Could not join."
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 74,
   "text": "Back to leagues"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 52,
+  "line": 28,
   "text": "Sign in to race your friends on how well you drive."
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 89,
-  "text": "Showing the last known tables. Pull to retry."
+  "line": 115,
+  "text": "Showing the last tables we saw. Pull to retry."
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 99,
+  "line": 143,
   "text": "Friend leagues"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 126,
+  "line": 144,
+  "text": "No friend leagues yet."
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 145,
+  "text": "Race your friends on how well you drive."
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 146,
+  "text": "Create or join"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 152,
+  "text": "Friend leagues"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 189,
+  "text": "New league"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 195,
   "text": "Create a league"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 127,
+  "line": 196,
   "text": "Up to 30 friends, Monday to Sunday"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 135,
+  "line": 205,
   "text": "Join with a code"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 136,
-  "text": "Paste the 8-character invite code"
+  "line": 206,
+  "text": "Paste the code a friend sent you"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 154,
+  "line": 220,
   "text": "Join a league"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 160,
+  "line": 265,
   "text": "Invite code"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 201,
-  "text": "#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP"
+  "line": 328,
+  "text": "One challenge to answer"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 243,
-  "text": "No leagues yet"
+  "line": 329,
+  "text": "$pending challenges to answer"
  },
  {
   "file": "features/leagues/leagues_screen.dart",
-  "line": 246,
-  "text": "Create one and send the invite link to your friends, or paste a code someone sent you. Weeks run Monday to Sunday. The top five move up a tier, the bottom five move down, and skipping a week moves you down too."
+  "line": 331,
+  "text": "One duel running"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 331,
+  "text": "$running duels running"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 332,
+  "text": "Challenge a friend"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 334,
+  "text": "Streaks, not speed"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 335,
+  "text": "$earned of ${regular.length} badges earned"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 70,
+  "line": 76,
   "text": "Show my trips here"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 71,
+  "line": 77,
   "text": "Hide my trips here"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 77,
+  "line": 83,
   "text": "Leave global league"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 77,
+  "line": 83,
   "text": "Leave league"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 99,
-  "text": "You are hiding in this league. Members can see that you are hiding; they cannot see your trips or roasts."
+  "line": 114,
+  "text": "You are hiding here. Others see that, not your trips."
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 106,
-  "text": "Matched by tier and Driver Rating. The table is rebuilt every Monday; your tier carries over."
+  "line": 116,
+  "text": "Matched by tier and Driver Rating. New table every Monday."
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 147,
-  "text": "You leave the global pool too. Rejoin any time from the Leagues tab; your tier is kept."
+  "line": 168,
+  "text": "You leave the global pool too. Rejoin any time; your tier is kept."
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 149,
-  "text": "Your past weeks stay in the table. You can rejoin with the code."
+  "line": 170,
+  "text": "You can rejoin with the invite code any time."
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 186,
-  "text": "Could not load members: $e"
+  "line": 208,
+  "text": "load the members"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 250,
+  "line": 253,
+  "text": "Loading this week"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 255,
+  "text": "Week of ${DateFormat.MMMd().format(w.weekStart)} · final"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 261,
+  "text": "$left days"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 262,
+  "text": "Closes Sunday night · $days left"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 279,
+  "text": "Your rank"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 286,
+  "text": "Your XP"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 311,
+  "text": "Driver Rating ${m.rating!.toStringAsFixed(0)}"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 380,
   "text": "This week"
  },
  {
   "file": "features/leagues/league_screen.dart",
-  "line": 257,
+  "line": 387,
   "text": "Week of ${fmt.format(w.weekStart)}"
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 29,
-  "text": "Ends ${DateFormat.MMMEd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} at midnight."
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
-  "line": 34,
-  "text": "${DateFormat.MMMd().format(week.weekStart)} to ${DateFormat.MMMd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} · $ends"
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
   "line": 42,
-  "text": "Nobody here yet. Invite a friend."
- },
- {
-  "file": "features/leagues/widgets/standings_table.dart",
-  "line": 45,
   "text": "Promotion zone"
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 47,
+  "line": 49,
   "text": "Relegation zone"
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 53,
-  "text": "Top five move up a tier on Sunday night, bottom five move down. A week with no scored trips moves down regardless."
+  "line": 70,
+  "text": "$range · ends Sunday at midnight"
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 55,
-  "text": "With more than five members, the top five promote and the bottom five demote on Sunday night."
+  "line": 78,
+  "text": "Nobody here yet. Invite a friend."
  },
  {
   "file": "features/leagues/widgets/standings_table.dart",
-  "line": 141,
-  "text": "Didn't drive? That's fine. The league didn't wait."
+  "line": 86,
+  "text": "Top five move up on Sunday night, bottom five move down."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 87,
+  "text": "With six or more members, the top five move up on Sunday night."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 140,
+  "text": "Didn't drive. The league didn't wait."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 144,
+  "text": "Driver Rating ${row.rating!.toStringAsFixed(0)}"
  },
  {
   "file": "features/places/places_screen.dart",
@@ -5206,53 +5336,43 @@
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 31,
-  "text": "A season is a quarter. When it ends, your phone writes one summary row (trips, XP, average score, badges) and Season Wrapped is built from your own trips, on the phone."
+  "line": 37,
+  "text": "A season is one quarter. Wrapped is built from your drives, on this phone."
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 90,
-  "text": "Before you joined"
+  "line": 101,
+  "text": "Over before you started"
  },
  {
   "file": "features/seasons/seasons_screen.dart",
-  "line": 95,
+  "line": 106,
   "text": "Best tier ${r.bestTier!.label}${r.duelsWon + r.duelsLost > 0 ? "
  },
  {
   "file": "features/seasons/seasons_screen.dart",
+  "line": 109,
+  "text": "Saved to your account when you are next online"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
   "line": 98,
-  "text": "Result uploads on the next sync"
+  "text": "day left"
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 84,
-  "text": "$left day${left == 1 ? "
+  "line": 98,
+  "text": "days left"
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 101,
-  "text": "Avg score"
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 115,
-  "text": "All seasons"
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 121,
-  "text": "Season Wrapped"
- },
- {
-  "file": "features/seasons/season_card.dart",
-  "line": 172,
+  "line": 137,
   "text": "Between seasons"
  },
  {
   "file": "features/seasons/season_card.dart",
-  "line": 176,
-  "text": "Trips still count; the next season picks them up."
+  "line": 142,
+  "text": "Keep driving. The next season counts it all."
  },
  {
   "file": "features/settings/attribution_screen.dart",
@@ -5931,22 +6051,22 @@
  },
  {
   "file": "features/stats/profile_stats_card.dart",
-  "line": 36,
+  "line": 38,
   "text": "Average score"
  },
  {
   "file": "features/stats/profile_stats_card.dart",
-  "line": 42,
+  "line": 41,
   "text": "Clean streak"
  },
  {
   "file": "features/stats/profile_stats_card.dart",
-  "line": 53,
+  "line": 50,
   "text": "All stats"
  },
  {
   "file": "features/stats/profile_stats_card.dart",
-  "line": 61,
+  "line": 55,
   "text": "Season Wrapped"
  },
  {
@@ -5956,73 +6076,83 @@
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 38,
+  "line": 43,
   "text": "Season Wrapped"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 64,
-  "text": "Could not compute stats: $e"
+  "line": 98,
+  "text": "work out your stats"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 91,
-  "text": "No scored trips yet"
+  "line": 106,
+  "text": "No scored trips yet."
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 92,
-  "text": "No scored trips in ${window.label.toLowerCase()}"
+  "line": 107,
+  "text": "Nothing in ${_window.label.toLowerCase()}."
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 97,
-  "text": "Everything here is computed on this phone from your own drives. Finish a trip as the driver and the numbers appear."
+  "line": 108,
+  "text": "Finish a drive and the numbers appear."
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 145,
+  "line": 152,
+  "text": "Average score"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 160,
+  "text": "${formatDistance(t.distanceM, units)} · ${formatHours(t.movingS)} behind the wheel"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 170,
   "text": "Share headline"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 181,
-  "text": "Fuel, cost and CO₂ are estimates from distance and economy. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it."
+  "line": 215,
+  "text": "Fuel, cost and CO₂ are estimates. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it."
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 191,
-  "text": "Fuel estimate"
+  "line": 225,
+  "text": "Fuel used"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 191,
+  "line": 225,
   "text": "Hard accelerations"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 205,
+  "line": 239,
   "text": "My ${stats.range.label} on Drivalry: ${stats.totals.trips} trips."
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 224,
+  "line": 257,
   "text": "Fuel assumptions"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 232,
+  "line": 268,
   "text": "Fuel price per litre"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 239,
-  "text": "Default economy, L/100 km"
+  "line": 276,
+  "text": "Typical economy, L/100 km"
  },
  {
   "file": "features/stats/stats_screen.dart",
-  "line": 240,
-  "text": "Used for cars without fill-ups"
+  "line": 277,
+  "text": "Used when a car has no fill-ups logged"
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -6037,7 +6167,7 @@
  {
   "file": "features/stats/stats_sections.dart",
   "line": 39,
-  "text": "Moving time"
+  "text": "Driving, not parked"
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -6052,17 +6182,17 @@
  {
   "file": "features/stats/stats_sections.dart",
   "line": 49,
-  "text": "Fuel estimate"
+  "text": "Fuel used"
  },
  {
   "file": "features/stats/stats_sections.dart",
   "line": 60,
-  "text": "Tailpipe only"
+  "text": "Tailpipe estimate"
  },
  {
   "file": "features/stats/stats_sections.dart",
   "line": 66,
-  "text": "Earned in this window"
+  "text": "In this period"
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -6132,7 +6262,7 @@
  {
   "file": "features/stats/stats_sections.dart",
   "line": 128,
-  "text": "From matched packs"
+  "text": "Based on where you drove"
  },
  {
   "file": "features/stats/stats_sections.dart",
@@ -6141,122 +6271,122 @@
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 134,
-  "text": "90 % of distance within"
+  "line": 135,
+  "text": "Most drives stay this close to home"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 134,
+  "line": 136,
   "text": "Save a Home place"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 138,
-  "text": "Farthest from home"
+  "line": 140,
+  "text": "Farthest trip from home"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 140,
+  "line": 142,
   "text": "As the crow flies"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 140,
+  "line": 142,
   "text": "Save a Home place"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 144,
+  "line": 146,
   "text": "Most driven road"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 147,
-  "text": "Needs matched trips"
- },
- {
-  "file": "features/stats/stats_sections.dart",
-  "line": 158,
-  "text": "Night Owl"
+  "line": 149,
+  "text": "Drive a few more trips"
  },
  {
   "file": "features/stats/stats_sections.dart",
   "line": 160,
-  "text": "Of distance after dark"
+  "text": "Night Owl"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 170,
-  "text": "Average trip"
+  "line": 162,
+  "text": "Of your driving after dark"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 176,
-  "text": "Groundhog Route"
+  "line": 172,
+  "text": "Typical trip"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 179,
+  "line": 178,
+  "text": "Repeat route"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 181,
   "text": "No repeated route yet"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 188,
-  "text": "Trips ending here"
+  "line": 190,
+  "text": "Times you parked here"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 195,
-  "text": "Reality checks"
+  "line": 197,
+  "text": "Honest numbers"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 198,
+  "line": 200,
   "text": "Over the limit"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 201,
-  "text": "Barely any"
- },
- {
-  "file": "features/stats/stats_sections.dart",
-  "line": 206,
-  "text": "Ticket-risk time"
+  "line": 203,
+  "text": "Almost none. Nice."
  },
  {
   "file": "features/stats/stats_sections.dart",
   "line": 208,
+  "text": "Ticket-risk time"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 210,
   "text": "10+ over, or worse"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 212,
+  "line": 214,
   "text": "Hard accelerations"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 214,
+  "line": 216,
   "text": "About ${formatMoney(rc.moneyBurned)} of fuel"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 225,
+  "line": 227,
   "text": "${dist(so.convoyDistanceM)} in convoy"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 232,
+  "line": 234,
   "text": "Convoys together"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 238,
-  "text": "DJ score"
+  "line": 240,
+  "text": "Songs you played"
  },
  {
   "file": "features/stats/stats_sections.dart",
-  "line": 240,
+  "line": 242,
   "text": "Tracks played for the convoy"
  },
  {
@@ -6321,153 +6451,163 @@
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 54,
+  "line": 71,
   "text": "trip as the driver"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 54,
+  "line": 71,
   "text": "trips as the driver"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 59,
-  "text": "You covered"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 61,
-  "text": "${formatHours(t.movingS)} behind the wheel"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 66,
-  "text": "Average Drive Score"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 69,
-  "text": "No scored trips this season"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 70,
-  "text": "Best ${t.bestScore} · ${t.cleanTrips} clean trips"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 75,
-  "text": "Night Owl"
+  "line": 76,
+  "text": "Distance driven"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 78,
-  "text": "of your distance after dark · ${h.weekendPercent} % on weekends"
+  "text": "${formatHours(t.movingS)} behind the wheel"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 83,
+  "text": "Average Drive Score"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 86,
+  "text": "No scored trips this season"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 87,
+  "text": "Best ${t.bestScore} · ${t.cleanTrips} clean trips"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 92,
+  "text": "Night Owl"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 94,
+  "text": "driven after dark · ${h.weekendPercent} % at weekends"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 99,
   "text": "States visited"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 86,
-  "text": "Nothing matched to a pack yet"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 93,
-  "text": "Groundhog Route"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 96,
-  "text": "No route repeated yet"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 97,
-  "text": "${groundhog.label}, again and again"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 100,
-  "text": "the same route, again and again"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 105,
-  "text": "Over the limit for"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 108,
-  "text": "Barely at all. Respect."
+  "line": 102,
+  "text": "None yet. Drive somewhere new."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 109,
-  "text": "It saved you ${formatSaved(rc.timeSavedS)}."
+  "text": "Your repeat route"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 112,
+  "text": "No route repeated yet"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 114,
-  "text": "Longest trip"
- },
- {
-  "file": "features/stats/wrapped_cards.dart",
-  "line": 118,
-  "text": "Highest point ${formatAltitude(r.highestAltitudeM!, units)}"
+  "text": "The same route, over and over"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 119,
-  "text": "Busiest day ${r.mostTripsInDay} trips"
+  "text": "Time over the limit"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 122,
+  "text": "Barely at all. Respect."
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 123,
+  "text": "It saved you ${formatSaved(rc.timeSavedS)}."
  },
  {
   "file": "features/stats/wrapped_cards.dart",
   "line": 128,
+  "text": "Longest trip"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 132,
+  "text": "Highest point ${formatAltitude(r.highestAltitudeM!, units)}"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 133,
+  "text": "Busiest day ${r.mostTripsInDay} trips"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 142,
   "text": "Start one from the Convoy tab"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 138,
+  "line": 152,
   "text": "XP earned"
  },
  {
   "file": "features/stats/wrapped_cards.dart",
-  "line": 140,
+  "line": 154,
   "text": "Drive well. See you next season."
  },
  {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 213,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 217,
+  "text": "Your season"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 244,
+  "text": "Swipe through your season."
+ },
+ {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 34,
+  "line": 38,
   "text": "Season Wrapped"
  },
  {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 37,
-  "text": "Could not build the Wrapped: $e"
+  "line": 57,
+  "text": "build your Wrapped"
  },
  {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 86,
+  "line": 65,
+  "text": "Nothing to wrap yet."
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 66,
+  "text": "Drive this season and this fills in."
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 119,
   "text": "Share this card"
  },
  {
   "file": "features/stats/wrapped_screen.dart",
-  "line": 108,
+  "line": 145,
   "text": "${card.kicker}: ${card.value}. My ${s.range.label} on Drivalry."
- },
- {
-  "file": "features/stats/wrapped_screen.dart",
-  "line": 127,
-  "text": "Nothing to wrap yet"
- },
- {
-  "file": "features/stats/wrapped_screen.dart",
-  "line": 132,
-  "text": "No scored driver trips in ${range.label}. Drive, and this fills in."
  },
  {
   "file": "packs/pack_manager.dart",
@@ -6513,6 +6653,101 @@
   "file": "tracking/tracking_controller.dart",
   "line": 284,
   "text": "tracking plugin missing"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 16,
+  "text": "failed host lookup"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 17,
+  "text": "network is unreachable"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 18,
+  "text": "connection refused"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 19,
+  "text": "connection reset"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 20,
+  "text": "No connection right now. Try again when you are back online."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 22,
+  "text": "timed out"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 23,
+  "text": "That took too long. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "offline build"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "not configured"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 26,
+  "text": "Not available in this version yet."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 29,
+  "text": "not authenticated"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 31,
+  "text": "invalid token"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 32,
+  "text": "Your sign-in expired. Sign in again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 34,
+  "text": "row-level security"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 35,
+  "text": "You do not have access to that."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 37,
+  "text": "rate limit"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 38,
+  "text": "Slow down a little. Try again in a minute."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 40,
+  "text": "Could not $doing. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 41,
+  "text": "Something went wrong. Try again."
  },
  {
   "file": "widgets/placeholder_screen.dart",

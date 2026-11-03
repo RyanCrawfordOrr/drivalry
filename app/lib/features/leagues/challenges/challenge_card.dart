@@ -2,20 +2,69 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/repos/challenges_repo.dart';
 import '../../../data/supabase/supabase_providers.dart';
+import '../../badges/moment_ledger.dart';
+import '../widgets/live_numbers.dart';
 import 'new_challenge_sheet.dart';
 
-/// The league's group challenge: progress while it runs, the result after,
-/// and a way to start one. Sits above the standings on the league screen.
-class ChallengeCard extends ConsumerWidget {
+/// The league's group challenge as one tile above the standings: progress
+/// while it runs, the result after, and a way to start one. A met challenge
+/// gets the celebration moment once (docs/12 §5).
+class ChallengeCard extends ConsumerStatefulWidget {
   const ChallengeCard({super.key, required this.leagueId});
   final String leagueId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ChallengeCard> createState() => _ChallengeCardState();
+}
+
+class _ChallengeCardState extends ConsumerState<ChallengeCard> {
+  ProviderSubscription<AsyncValue<List<GroupChallenge>>>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _sub = ref.listenManual(leagueChallengesProvider(widget.leagueId), (
+      _,
+      next,
+    ) {
+      final list = next.value;
+      if (list != null) _celebrateMet(list);
+    }, fireImmediately: true);
+  }
+
+  @override
+  void dispose() {
+    _sub?.close();
+    super.dispose();
+  }
+
+  Future<void> _celebrateMet(List<GroupChallenge> list) async {
+    final now = DateTime.now();
+    for (final c in list) {
+      if (!c.succeeded ||
+          !recentlyAt(c.finalizedAt, now, challengeMomentWindow)) {
+        continue;
+      }
+      if (!mounted) return;
+      await ref
+          .read(momentLedgerProvider)
+          .celebrateOnce(
+            context,
+            id: 'challenge:${c.id}',
+            title: 'Challenge met',
+            verdict: c.title,
+            badges: [c.goal.badgeName],
+          );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final me = ref.watch(currentUserIdProvider);
-    final list = ref.watch(leagueChallengesProvider(leagueId));
+    final list = ref.watch(leagueChallengesProvider(widget.leagueId));
     final challenges = list.value ?? const <GroupChallenge>[];
     GroupChallenge? active;
     for (final c in challenges) {
@@ -23,20 +72,14 @@ class ChallengeCard extends ConsumerWidget {
     }
     if (active != null) {
       final progress = ref
-          .watch(challengeProgressProvider((leagueId, active.id)))
+          .watch(challengeProgressProvider((widget.leagueId, active.id)))
           .value;
       final a = active;
-      return Card(
-        margin: const EdgeInsets.only(bottom: 12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: ChallengeProgressView(
-            challenge: a,
-            progress: progress,
-            onCancel: me != null && me == a.createdBy
-                ? () => _cancel(context, ref, a)
-                : null,
-          ),
+      return Tile(
+        child: ChallengeProgressView(
+          challenge: a,
+          progress: progress,
+          onCancel: me != null && me == a.createdBy ? () => _cancel(a) : null,
         ),
       );
     }
@@ -45,57 +88,54 @@ class ChallengeCard extends ConsumerWidget {
         latest != null &&
         latest.finalizedAt != null &&
         DateTime.now().difference(latest.finalizedAt!).inDays <= 14;
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (recent) ...[
-              Text(latest.title, style: Theme.of(context).textTheme.titleSmall),
-              Text(
-                challengeResultLine(latest),
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ] else
-              Text(
-                'A group challenge gives the whole league one goal for a '
-                'week or two: clean trips, phone-free trips, average score, '
-                'or everyone showing up.',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: () async {
-                  final created = await showNewChallengeSheet(
-                    context,
-                    leagueId,
-                  );
-                  if (created != null) {
-                    ref.invalidate(leagueChallengesProvider(leagueId));
-                  }
-                },
-                icon: const Icon(Icons.flag_outlined),
-                label: Text(
-                  recent
-                      ? 'Start another challenge'
-                      : 'Start a group challenge',
-                ),
-              ),
-            ),
-          ],
-        ),
+    return Tile(
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.md,
+        Space.sm,
+      ),
+      child: Row(
+        children: [
+          Icon(
+            Icons.flag_outlined,
+            size: 20,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: recent
+                ? Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(latest.title, style: context.body),
+                      Text(challengeResultLine(latest), style: context.caption),
+                    ],
+                  )
+                : Text(
+                    'Set one goal for the whole league.',
+                    style: context.body,
+                  ),
+          ),
+          const SizedBox(width: Space.sm),
+          TextButton(
+            onPressed: () async {
+              final created = await showNewChallengeSheet(
+                context,
+                widget.leagueId,
+              );
+              if (created != null) {
+                ref.invalidate(leagueChallengesProvider(widget.leagueId));
+              }
+            },
+            child: Text(recent ? 'Another' : 'Start'),
+          ),
+        ],
       ),
     );
   }
 
-  Future<void> _cancel(
-    BuildContext context,
-    WidgetRef ref,
-    GroupChallenge c,
-  ) async {
+  Future<void> _cancel(GroupChallenge c) async {
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -117,12 +157,15 @@ class ChallengeCard extends ConsumerWidget {
     );
     if (ok != true) return;
     await ref.read(challengesRepoProvider).cancel(c);
-    ref.invalidate(leagueChallengesProvider(leagueId));
+    ref.invalidate(leagueChallengesProvider(widget.leagueId));
   }
 }
 
-/// Title, bar, numbers and the end date. Pure, so it renders offline and in
-/// tests; [progress] null shows an empty bar.
+/// How long after a challenge is met it still earns the moment.
+const Duration challengeMomentWindow = Duration(days: 14);
+
+/// Title, thin bar, count and the end date. Pure, so it renders offline and
+/// in tests; [progress] null shows an empty bar.
 class ChallengeProgressView extends StatelessWidget {
   const ChallengeProgressView({
     super.key,
@@ -139,7 +182,7 @@ class ChallengeProgressView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final n = now ?? DateTime.now();
     final p = progress;
     final daysLeft = challenge.endsAt.difference(n).inDays;
@@ -152,32 +195,31 @@ class ChallengeProgressView extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(Icons.flag_outlined, color: theme.colorScheme.primary),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(challenge.title, style: theme.textTheme.titleSmall),
-            ),
+            Icon(Icons.flag_outlined, size: 20, color: scheme.primary),
+            const SizedBox(width: Space.md),
+            Expanded(child: Text(challenge.title, style: context.body)),
             if (onCancel != null)
               IconButton(
                 tooltip: 'Call off',
-                visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.close),
                 onPressed: onCancel,
               ),
           ],
         ),
-        const SizedBox(height: 8),
-        LinearProgressIndicator(
-          value: p?.fraction ?? 0,
-          minHeight: 8,
-          borderRadius: BorderRadius.circular(4),
+        const SizedBox(height: Space.md),
+        GrowBar(fraction: p?.fraction ?? 0),
+        const SizedBox(height: Space.sm),
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                p == null ? 'Counting…' : challengeProgressLine(challenge, p),
+                style: context.caption,
+              ),
+            ),
+            Text(ends, style: context.caption),
+          ],
         ),
-        const SizedBox(height: 6),
-        Text(
-          p == null ? 'Counting…' : challengeProgressLine(challenge, p),
-          style: theme.textTheme.bodyMedium,
-        ),
-        Text(ends, style: theme.textTheme.bodySmall),
       ],
     );
   }
@@ -208,7 +250,7 @@ String challengeResultLine(GroupChallenge c) {
     final needed = c.goal == ChallengeGoal.everyoneDrives
         ? '${c.perMember.length} members'
         : '${c.target} ${c.goal.unit}';
-    return 'Missed: $shown of $needed.';
+    return 'Not met. The league reached $shown of $needed.';
   }
   return 'Running';
 }

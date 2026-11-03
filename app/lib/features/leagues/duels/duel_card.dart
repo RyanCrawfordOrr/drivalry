@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/repos/duels_repo.dart';
-import '../widgets/standings_table.dart' show MemberAvatar;
+import '../widgets/live_numbers.dart';
 
-/// One duel: both sides, the metric, who leads or won, time left. Pure: the
-/// scoreboard comes in from outside so the card renders offline and in tests.
+/// One duel as a tile: both avatars, who against whom, the one-line state,
+/// the metric as a pill, the two values when there is a scoreboard. Pure:
+/// the scoreboard comes in from outside so the card renders offline and in
+/// tests.
 class DuelCard extends StatelessWidget {
   const DuelCard({
     super.key,
@@ -26,7 +29,6 @@ class DuelCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final n = now ?? DateTime.now();
     final meId = me;
     final mine = meId != null && !duel.isChallenger(meId)
@@ -34,63 +36,104 @@ class DuelCard extends StatelessWidget {
         : duel.challenger;
     final other = mine == duel.challenger ? duel.opponent : duel.challenger;
     final status = duelStatusLine(duel, meId, board, n);
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+    final outcome = duelOutcome(duel, meId);
+    final b = board;
+    return Tile(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _Pair(mine: mine, other: other, isMe: meId != null),
+              const SizedBox(width: Space.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      meId != null
+                          ? 'You vs @${other.handle}'
+                          : '@${mine.handle} vs @${other.handle}',
+                      style: context.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 2),
+                    Text(status, style: context.caption),
+                  ],
+                ),
+              ),
+              const SizedBox(width: Space.sm),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (outcome == DuelOutcome.won) ...[
+                    const Pill(
+                      'You won',
+                      tone: PillTone.positive,
+                      compact: true,
+                    ),
+                    const SizedBox(height: Space.xs),
+                  ] else if (outcome == DuelOutcome.lost) ...[
+                    const Pill('You lost', compact: true),
+                    const SizedBox(height: Space.xs),
+                  ],
+                  Pill(duel.metric.label, compact: true),
+                ],
+              ),
+            ],
+          ),
+          if (b != null) ...[
+            const SizedBox(height: Space.lg),
+            // How the week is split between the two of us; level is half.
+            GrowBar(fraction: _share(b, duel, mine.userId)),
+            const SizedBox(height: Space.md),
             Row(
               children: [
-                Chip(
-                  label: Text(duel.metric.label),
-                  visualDensity: VisualDensity.compact,
-                  padding: EdgeInsets.zero,
-                ),
-                const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    status,
-                    style: theme.textTheme.bodySmall,
-                    textAlign: TextAlign.end,
+                  child: _Score(
+                    name: meId != null ? 'You' : '@${mine.handle}',
+                    value: b.valueFor(duel, mine.userId),
+                    metric: duel.metric,
+                    leads: b.leaderId(duel) == mine.userId,
+                  ),
+                ),
+                const SizedBox(width: Space.lg),
+                Expanded(
+                  child: _Score(
+                    name: '@${other.handle}',
+                    value: b.valueFor(duel, other.userId),
+                    metric: duel.metric,
+                    leads: b.leaderId(duel) == other.userId,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                Expanded(
-                  child: _Side(
-                    party: mine,
-                    isMe: meId != null,
-                    value: board?.valueFor(duel, mine.userId),
-                    metric: duel.metric,
-                    winner: duel.winnerId == mine.userId,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: Text('vs', style: theme.textTheme.labelLarge),
-                ),
-                Expanded(
-                  child: _Side(
-                    party: other,
-                    isMe: false,
-                    value: board?.valueFor(duel, other.userId),
-                    metric: duel.metric,
-                    winner: duel.winnerId == other.userId,
-                  ),
-                ),
-              ],
-            ),
-            if (footer != null) ...[const SizedBox(height: 8), footer!],
           ],
-        ),
+          if (footer != null) ...[const SizedBox(height: Space.lg), footer!],
+        ],
       ),
     );
   }
+}
+
+/// [userId]'s share of the two values, 0.5 when both are zero.
+double _share(DuelScoreboard b, Duel duel, String userId) {
+  final mine = b.valueFor(duel, userId).value;
+  final other =
+      (duel.challenger.userId == userId ? b.opponent : b.challenger).value;
+  final total = mine + other;
+  return total <= 0 ? 0.5 : mine / total;
+}
+
+enum DuelOutcome { won, lost, draw }
+
+/// How a finished duel went for [me]; null while it runs or for a stranger.
+DuelOutcome? duelOutcome(Duel duel, String? me) {
+  if (!duel.isFinished || me == null) return null;
+  if (duel.isDraw) return DuelOutcome.draw;
+  return duel.winnerId == me ? DuelOutcome.won : DuelOutcome.lost;
 }
 
 /// The one-line state of a duel from [me]'s point of view.
@@ -119,26 +162,36 @@ String duelStatusLine(
       return [lead, left].where((s) => s.isNotEmpty).join(' · ');
     case DuelStatus.finished:
       if (duel.isDraw) return 'Draw';
+      if (me == null) return '@${_handle(duel, duel.winnerId!)} won';
       final won = duel.winnerId == me;
-      var line = me == null
-          ? '@${_handle(duel, duel.winnerId!)} won'
-          : (won ? 'You won' : 'You lost');
       final badge = duel.loserBadgeId;
-      if (badge != null && duel.finishedAt != null) {
-        final until = DateFormat.MMMd().format(
-          duel.finishedAt!.add(const Duration(days: 7)),
-        );
-        line += won
-            ? ' · they wear ${duelBadgeName(badge)} until $until'
-            : ' · you wear ${duelBadgeName(badge)} until $until';
+      if (badge == null || duel.finishedAt == null) {
+        return won
+            ? 'Pick a badge for @${other.handle}'
+            : 'Waiting for @${other.handle} to pick your badge';
       }
-      return line;
+      final until = DateFormat.MMMd().format(
+        duel.finishedAt!.add(const Duration(days: 7)),
+      );
+      return won
+          ? 'They wear ${duelBadgeName(badge)} until $until'
+          : 'You wear ${duelBadgeName(badge)} until $until';
     case DuelStatus.declined:
       return 'Declined';
     case DuelStatus.expired:
-      return 'Expired unanswered';
+      return 'Never answered. It lapsed.';
   }
 }
+
+/// "You beat @sam on phone-free trips", for the celebration.
+String duelWinLine(Duel duel, String me) =>
+    'You beat @${duel.other(me).handle} on ${duelMetricPhrase(duel.metric)}';
+
+String duelMetricPhrase(DuelMetric metric) => switch (metric) {
+  DuelMetric.xp => 'XP',
+  DuelMetric.scoreAvg => 'Drive Score',
+  DuelMetric.phoneFree => 'phone-free trips',
+};
 
 String _handle(Duel duel, String userId) => duel.challenger.userId == userId
     ? duel.challenger.handle
@@ -152,61 +205,77 @@ String _timeLeft(DateTime ends, DateTime now) {
   return '${d.inMinutes}m left';
 }
 
-class _Side extends StatelessWidget {
-  const _Side({
-    required this.party,
-    required this.isMe,
-    required this.value,
-    required this.metric,
-    required this.winner,
-  });
-
-  final DuelParty party;
+/// The two avatars, overlapping; mine first with the ring.
+class _Pair extends StatelessWidget {
+  const _Pair({required this.mine, required this.other, required this.isMe});
+  final DuelParty mine;
+  final DuelParty other;
   final bool isMe;
-  final DuelValue? value;
-  final DuelMetric metric;
-  final bool winner;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final v = value;
+    final bg = Theme.of(context).colorScheme.surfaceContainerLow;
+    Widget ring(Widget child) => Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
+      child: child,
+    );
+    String name(DuelParty p) =>
+        p.displayName.isNotEmpty ? p.displayName : p.handle;
+    return SizedBox(
+      width: 72,
+      height: 48,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 2,
+            child: ring(Avatar(name: name(mine), isMe: isMe)),
+          ),
+          Positioned(left: 24, top: 2, child: ring(Avatar(name: name(other)))),
+        ],
+      ),
+    );
+  }
+}
+
+class _Score extends StatelessWidget {
+  const _Score({
+    required this.name,
+    required this.value,
+    required this.metric,
+    required this.leads,
+  });
+
+  final String name;
+  final DuelValue value;
+  final DuelMetric metric;
+  final bool leads;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        MemberAvatar(handle: party.handle, url: party.avatarUrl, radius: 20),
-        const SizedBox(height: 4),
         Text(
-          isMe ? 'You' : '@${party.handle}',
-          style: theme.textTheme.labelMedium,
+          metric.formatValue(value.value),
+          style: context.title.copyWith(
+            fontWeight: FontWeight.w700,
+            fontFeatures: const [FontFeature.tabularFigures()],
+            color: leads ? scheme.primary : null,
+          ),
+          maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (winner)
-              Padding(
-                padding: const EdgeInsets.only(right: 4),
-                child: Icon(
-                  Icons.emoji_events,
-                  size: 16,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
-            Text(
-              v == null ? '–' : metric.formatValue(v.value),
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
+        Text(
+          metric == DuelMetric.scoreAvg && value.trips < duelScoreAvgMinTrips
+              ? '$name · needs $duelScoreAvgMinTrips trips, has ${value.trips}'
+              : name,
+          style: context.caption,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-        if (v != null && metric == DuelMetric.scoreAvg)
-          Text(
-            v.trips < duelScoreAvgMinTrips
-                ? '${v.trips} of $duelScoreAvgMinTrips trips'
-                : '${v.trips} trips',
-            style: theme.textTheme.labelSmall,
-          ),
       ],
     );
   }

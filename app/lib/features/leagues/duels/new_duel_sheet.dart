@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/repos/duels_repo.dart';
 import '../../../data/repos/friends_repo.dart';
 import '../../../data/repos/friends_sync.dart';
@@ -8,13 +9,11 @@ import '../../friends/widgets/user_avatar.dart';
 
 /// Pick a friend and a metric; the challenge goes out through the outbox.
 /// Resolves with the new duel, or null when dismissed.
-Future<Duel?> showNewDuelSheet(BuildContext context) =>
-    showModalBottomSheet<Duel>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (_) => const NewDuelSheet(),
-    );
+Future<Duel?> showNewDuelSheet(BuildContext context) => showDrivalrySheet<Duel>(
+  context,
+  title: 'Duel a friend',
+  builder: (_) => const NewDuelSheet(),
+);
 
 class NewDuelSheet extends ConsumerStatefulWidget {
   const NewDuelSheet({super.key});
@@ -30,90 +29,82 @@ class _NewDuelSheetState extends ConsumerState<NewDuelSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final friends =
         ref.watch(friendsSnapshotProvider).value?.friends ??
         const <FriendProfile>[];
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text('Duel a friend', style: theme.textTheme.titleLarge),
-            const SizedBox(height: 4),
-            Text(
-              'Seven days from the moment they accept. The loser wears a badge '
-              'the winner picks for a week. Never about speed.',
-              style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 12),
-            Text('Who', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
-            if (friends.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 12),
-                child: Text('Add a friend first; duels are between friends.'),
-              )
-            else
-              ConstrainedBox(
-                constraints: const BoxConstraints(maxHeight: 220),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final f in friends)
-                      ListTile(
-                        dense: true,
-                        leading: UserAvatar(
-                          name: f.name,
-                          avatarPath: f.avatarPath,
-                          radius: 16,
-                        ),
-                        title: Text('@${f.handle}'),
-                        subtitle: f.displayName.isEmpty
-                            ? null
-                            : Text(f.displayName),
-                        trailing: _friend?.id == f.id
-                            ? const Icon(Icons.check_circle)
-                            : null,
-                        selected: _friend?.id == f.id,
-                        onTap: () => setState(() => _friend = f),
-                      ),
-                  ],
-                ),
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Seven days from when they accept. The loser wears a badge the '
+            'winner picks.',
+            style: context.bodyMuted,
+          ),
+          const SizedBox(height: Space.lg),
+          const Kicker('Who'),
+          const SizedBox(height: Space.sm),
+          if (friends.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: Space.md),
+              child: Text(
+                'Add a friend first. Duels are between friends.',
+                style: context.bodyMuted,
               ),
-            const SizedBox(height: 12),
-            Text('On', style: theme.textTheme.titleSmall),
-            const SizedBox(height: 4),
-            SegmentedButton<DuelMetric>(
-              segments: [
-                for (final m in DuelMetric.values)
-                  ButtonSegment(value: m, label: Text(m.label)),
-              ],
-              selected: {_metric},
-              onSelectionChanged: (s) => setState(() => _metric = s.first),
+            )
+          else
+            ConstrainedBox(
+              constraints: const BoxConstraints(maxHeight: 220),
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  for (final f in friends)
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: UserAvatar(
+                        name: f.name,
+                        avatarPath: f.avatarPath,
+                        radius: 20,
+                      ),
+                      title: Text('@${f.handle}', style: context.body),
+                      subtitle: f.displayName.isEmpty
+                          ? null
+                          : Text(f.displayName, style: context.caption),
+                      trailing: _friend?.id == f.id
+                          ? const Icon(Icons.check_circle)
+                          : null,
+                      selected: _friend?.id == f.id,
+                      onTap: () {
+                        Haptics.select();
+                        setState(() => _friend = f);
+                      },
+                    ),
+                ],
+              ),
             ),
-            const SizedBox(height: 4),
-            Text(_metric.description, style: theme.textTheme.bodySmall),
-            const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _friend == null || _busy ? null : _send,
-              icon: _busy
-                  ? const SizedBox.square(
-                      dimension: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.bolt),
-              label: const Text('Send challenge'),
-            ),
-          ],
-        ),
+          const SizedBox(height: Space.lg),
+          const Kicker('On'),
+          const SizedBox(height: Space.sm),
+          SegmentedButton<DuelMetric>(
+            segments: [
+              for (final m in DuelMetric.values)
+                ButtonSegment(value: m, label: Text(m.label)),
+            ],
+            selected: {_metric},
+            onSelectionChanged: (s) => setState(() => _metric = s.first),
+          ),
+          const SizedBox(height: Space.sm),
+          Text(_metric.description, style: context.caption),
+          const SizedBox(height: Space.xl),
+          PrimaryButton(
+            label: 'Send challenge',
+            icon: Icons.bolt,
+            busy: _busy,
+            onPressed: _friend == null ? null : _send,
+          ),
+        ],
       ),
     );
   }

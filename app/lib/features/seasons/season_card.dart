@@ -4,13 +4,16 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/seasons_repo.dart';
+import '../leagues/widgets/live_numbers.dart';
 
 /// All seasons, under the Leagues tab.
 const String seasonsPath = '/leagues/seasons';
 
-/// The running season on the Leagues tab: days left, this phone's numbers,
-/// and the Season Wrapped link. Also kicks the end-of-season upload.
+/// The running season as the hero of the Leagues tab: name, days left
+/// counting up, a thin bar, this phone's numbers, and the Wrapped. Also
+/// kicks the end-of-season upload.
 class SeasonCard extends ConsumerWidget {
   const SeasonCard({super.key});
 
@@ -41,7 +44,7 @@ class SeasonCard extends ConsumerWidget {
   }
 }
 
-/// Pure card body, for tests and for the seasons list.
+/// Pure hero tile, for tests and for the seasons list.
 class SeasonCardView extends StatelessWidget {
   const SeasonCardView({
     super.key,
@@ -60,93 +63,51 @@ class SeasonCardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final left = season.daysLeft(now);
     final over = season.isOver(now);
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.calendar_month_outlined,
-                  color: theme.colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(season.name, style: theme.textTheme.titleMedium),
-                ),
-                Text(
-                  over ? 'Over' : '$left day${left == 1 ? '' : 's'} left',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: season.progress(now),
-              minHeight: 6,
-              borderRadius: BorderRadius.circular(3),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _Stat(label: 'Trips', value: '${stats.trips}'),
-                _Stat(label: 'XP', value: '${stats.xp}'),
-                _Stat(
-                  label: 'Avg score',
-                  value: stats.scoreAvg == null
-                      ? '–'
-                      : stats.scoreAvg!.toStringAsFixed(0),
-                ),
-                _Stat(label: 'Phone-free', value: '${stats.phoneFreeTrips}'),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                if (onAllSeasons != null)
-                  TextButton(
-                    onPressed: onAllSeasons,
-                    child: const Text('All seasons'),
-                  ),
-                if (onWrapped != null)
-                  TextButton.icon(
-                    onPressed: onWrapped,
-                    icon: const Icon(Icons.auto_awesome_outlined),
-                    label: const Text('Season Wrapped'),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _Stat extends StatelessWidget {
-  const _Stat({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Expanded(
+    final avg = stats.scoreAvg == null
+        ? '–'
+        : stats.scoreAvg!.toStringAsFixed(0);
+    return Tile(
+      onTap: onAllSeasons,
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(
-            value,
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+          Row(
+            children: [
+              Expanded(child: Kicker(season.name)),
+              if (onWrapped != null)
+                TextButton.icon(
+                  onPressed: onWrapped,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: Space.sm),
+                    minimumSize: const Size(0, 36),
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  icon: const Icon(Icons.auto_awesome_outlined, size: 18),
+                  label: const Text('Wrapped'),
+                ),
+            ],
           ),
-          Text(label, style: theme.textTheme.labelSmall),
+          const SizedBox(height: Space.sm),
+          if (over)
+            Text('Over', style: context.displaySmall)
+          else
+            CountingHero(
+              value: left,
+              unit: left == 1 ? 'day left' : 'days left',
+            ),
+          const SizedBox(height: Space.md),
+          GrowBar(fraction: season.progress(now)),
+          const SizedBox(height: Space.md),
+          Text(
+            '${stats.trips} trip${stats.trips == 1 ? '' : 's'} · '
+            '${stats.xp} XP · average $avg · '
+            '${stats.phoneFreeTrips} phone-free',
+            style: context.caption,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
         ],
       ),
     );
@@ -159,23 +120,32 @@ class _BetweenSeasons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final n = next;
-    return Card(
-      child: ListTile(
-        leading: Icon(
-          Icons.calendar_month_outlined,
-          color: theme.colorScheme.primary,
-        ),
-        title: Text(
-          n == null
-              ? 'Between seasons'
-              : '${n.name} starts ${DateFormat.MMMd().format(n.startsOn)}',
-        ),
-        subtitle: const Text(
-          'Trips still count; the next season picks them up.',
-        ),
-        onTap: () => context.push(seasonsPath),
+    return Tile(
+      onTap: () => context.push(seasonsPath),
+      child: Row(
+        children: [
+          Icon(Icons.calendar_month_outlined, color: scheme.primary),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  n == null
+                      ? 'Between seasons'
+                      : '${n.name} starts ${DateFormat.MMMd().format(n.startsOn)}',
+                  style: context.title,
+                ),
+                Text(
+                  'Keep driving. The next season counts it all.',
+                  style: context.caption,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
