@@ -439,7 +439,79 @@ Two things only you can supply: Android Auto screenshots from the Desktop Head U
 | Radio stops when the screen locks | Battery optimisation killed the service (some Android skins) | Phone Settings → Apps → Drivalry → Battery → **Unrestricted** |
 | *Relay available* missing from Diagnostics after Part 6a | `.env` edited but not rebuilt, or the domain is not `<name>.metered.live` | Check the two lines, rebuild (Part 4) |
 
-Convoy DJ (same song in every car) is separate: Part 6b for the Spotify key, then Convoy → **Music** → **Connect Spotify** on each Premium phone.
+Convoy DJ (same song in every car) is separate: Part 14.
+
+## Part 14: Convoy DJ (Spotify), step by step
+
+**What it is.** One person in the convoy is the DJ. They search Spotify, build a queue, and every car's own Spotify plays the same track at the same moment (the phones measure their clock offsets and start together, about a third of a second apart at worst). Each phone plays through its own Spotify account; nothing streams between phones.
+
+**What it needs.**
+
+| Need | Done by | Where |
+| --- | --- | --- |
+| A Spotify developer app and its Client ID | you, once | 14a |
+| Each rider's Spotify email on the app's allowlist | you, per friend | 14a step 6 |
+| `SPOTIFY_CLIENT_ID` in `.env` and a rebuild | you, once | 14b |
+| Spotify Premium | every phone that joins DJ | Spotify's rule: free accounts cannot be controlled |
+| The Spotify app installed and signed in | every phone | 14c |
+| A convoy open on the phones | the group | Part 12b |
+
+Spotify's rules since February 2026: the developer account (yours) must be Premium, you get one app in Development Mode, and at most **five** people can be on its allowlist. So DJ is for your closest car or two. Spotify Jam and Apple Music SharePlay (the buttons at the top of the Music screen) need none of this; they just open those apps.
+
+### 14a. Create the Spotify app (owner, 10 minutes)
+
+1. https://developer.spotify.com/dashboard → **Log in** with your Spotify account (it must be Premium). Accept the developer terms the first time.
+2. **Create app**.
+   - **App name** `Drivalry`
+   - **App description** `Convoy DJ for a driving app`
+   - **Website** leave blank or `https://github.com/RyanCrawfordOrr/drivalry`
+   - **Redirect URIs** type exactly `drivalry-auth://spotify-callback` and press **Add**. The scheme is deliberately not `drivalry://` so it never collides with invite links.
+   - **Which API/SDKs are you planning to use?** tick **Web API** only.
+   - Tick the terms → **Save**.
+3. The app page opens. Click **Settings** (top right). Under **Basic Information** copy the **Client ID** (32 characters). There is no secret to copy: the phone uses PKCE.
+4. Still in Settings, check the Redirect URI list shows `drivalry-auth://spotify-callback`. If you mistyped it, sign-in will fail with "Invalid redirect URI".
+5. **User Management** (tab at the top of the app page) → **Add new user** → the person's **full name** and the **email of their Spotify account** (the one they log in to Spotify with; a Facebook-linked account still has an email under Spotify → Account) → **Add user**. Add yourself first, then each friend, five at most.
+6. Each friend must also have **Spotify Premium** (individual, Duo, Family or Student all count).
+
+### 14b. Put the Client ID in the app (owner, 5 minutes)
+
+1. `notepad C:\Drivalry\.env` → set the line
+   ```
+   SPOTIFY_CLIENT_ID=paste-the-32-character-id-here
+   ```
+   No spaces, no quotes. Save.
+2. Rebuild and reinstall (Part 4). Until this rebuild the Music screen says Convoy DJ is not available in this version.
+
+### 14c. On each phone (2 minutes each)
+
+1. Install **Spotify** from the store and sign in with the Premium account that is on the allowlist.
+2. Open Spotify once and play anything for a second, then pause. That makes this phone Spotify's "active device"; the Web API can only control an active device.
+3. Open Drivalry → **Convoy** → the convoy → **Music** → **Convoy DJ** → **Connect Spotify**. The system browser opens Spotify's login; approve the three playback permissions. It returns to Drivalry on its own and the row now reads *Connected as <name>* with a **Disconnect** button. Tokens live in the phone's secure storage; this is a one-time step.
+
+### 14d. Drive the deck
+
+1. The person who wants to pick music taps **Be the DJ**. Everyone else sees who the DJ is.
+2. The DJ types in **Search tracks**, taps a result to add it to **Up next**, and taps the first track to start it. Each connected phone starts the same track within a fraction of a second, through its own Spotify.
+3. Anyone can **vote to skip**; a majority skips. The DJ can **Step down**; the next person taps Be the DJ.
+4. If a phone falls out of sync it corrects itself at the next 30-second check.
+
+### 14e. Check it worked
+
+- Two phones in the same convoy both show *Connected as …* and the DJ's track title appears on both Music screens.
+- Pressing play on the DJ phone makes both phones' Spotify apps show the same track within a second.
+
+### 14f. If it fails
+
+| You see | Cause | Fix |
+| --- | --- | --- |
+| *Convoy DJ isn't available in this version* | `SPOTIFY_CLIENT_ID` blank or not rebuilt | 14b, then Part 4 |
+| Browser says *Invalid redirect URI* | The URI in the Spotify app settings is not exactly `drivalry-auth://spotify-callback` | 14a step 4 |
+| Browser says *Invalid client* | Client ID mistyped in `.env` | 14b |
+| *Ask Ryan to add your Spotify account to the Drivalry allowlist* | That email is not under User Management, or it is a different email than the one they log in with | 14a step 5 |
+| *Convoy DJ needs Spotify Premium on this account* | Free account | Spotify Premium on that phone |
+| Connected, but nothing plays on one phone | Spotify is not the active device on that phone | 14c step 2: open Spotify, play and pause once, retry |
+| The browser never returns to Drivalry | Another app grabbed the `drivalry-auth` link | Close the browser tab and tap Connect again; on Android pick Drivalry if asked which app should open the link |
+| Tracks start a second apart | Clock offsets not measured yet | Wait for the next 30-second ping, or re-open the Music screen |
 
 ## Part 13: Things to switch on inside the app (every phone)
 
