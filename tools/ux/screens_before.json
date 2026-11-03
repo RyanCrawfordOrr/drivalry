@@ -1,0 +1,46 @@
+[
+  {
+    "id": "drive-idle",
+    "description": "Drive tab, signed in, parked, three past trips. Top: a standard app bar titled 'Drive' with three icon buttons (friend requests, settings, overflow menu with 'Simulate a drive', 'Speed-limit packs', 'Units', 'Diagnostics'). Below it a rounded card holding a map of friends, 40% of the screen height, with filter chips over it. Then a 'Watching for a drive' card: a small title, a 14 sp line 'Drives start on their own', a 'more' icon and an outlined 'Start now' button. Then a 'Last trip' label in 14 sp, a trip card with a 96 px score ring, the verdict in 16 sp and three stats; then a 'Recent' label and two more compact trip cards. Everything is inside filled rounded cards of the same grey, stacked in a scrolling list with 16 px gutters."
+  },
+  {
+    "id": "drive-recording",
+    "description": "Drive tab while a trip is being recorded. Same layout as idle: app bar with three icons, the friends map card taking 40% of the height, then the tracking card now headed 'Recording' with a small 'End now' text button at its top right (40 px tall), the speed '45' at 45 sp with 'mph' at 16 sp, distance '9.1 mi' at 16 sp and elapsed '14 min' at 14 sp, a 14 sp line 'Limit 45 mph · Harding Pike' with a 16 px icon, and a 12 sp footer 'Scored when you park. Nothing leaves the phone.' Below it the last trip and recent trip cards remain. Nothing in the layout changes when recording starts; the speed starts around 400 px down the screen."
+  },
+  {
+    "id": "trip-detail",
+    "description": "Trip detail screen. App bar 'Today, 5:42 PM' with share and overflow icons. A 260 px map of the route (or a grey box saying 'Map unavailable: build with --dart-define-from-file=../.env to show the route.'). Then a 112 px score ring '58' with '+32 XP' beside an italic verdict in 16 sp 'Two phone grabs and 48 in a 35. The roast writes itself.' and a bullet line. Then a 'Score breakdown' label in 14 sp and four thin bars labelled Speed discipline, Smoothness, Attention, Efficiency with values like −24.0 or 'clean'. Then 'Stats': a three-column grid of six small boxes (9.2 mi Distance, 23 min Moving time, 24 mph Average, 48 mph Top speed, 1 min 14 s Over the limit, 11 seconds Time saved). Then 'What happened': list rows with an icon, a title like '48 in a 35 for 1 min 14 s on Harding Pike', a 12 sp subtitle 'Speeding · Moderate · 5:51 PM' and a flag icon. A 12 sp footnote '82% of this drive was on roads with a known speed limit (pack us-tn, OSM Mar 2026).'"
+  },
+  {
+    "id": "friends-feed",
+    "description": "Friends tab, Feed sub-tab. App bar 'Friends' with a requests icon; a tab bar Feed / Friends / Circles; a row of filter chips All, Wall of Fame, Wall of Shame, A friend. Then post cards: each a filled grey card with a 40 px avatar, the name and '@handle · 2 h ago' in 12 sp, a small uppercase text label 'WALL OF FAME' in teal, a 56 px bordered circle with the score '94', the verdict in 16 sp, a row of small reaction chips with emoji and counts (🔥 6, 👏 3, 😂, 💀, 🤡), and a 'Comment' text button. Cards are separated by 8 px. Empty state when there are no posts: an icon, 'Nothing here yet' and a two-sentence explanation, no button."
+  },
+  {
+    "id": "league",
+    "description": "League detail screen. App bar 'Carpool Crew' with invite, members and overflow icons. A challenge card with a flag icon, 'Clean trips · 25 trips', a progress bar, '17 of 25 trips' and 'Ends Sun, Nov 15 · 12 days left'. Then two chips 'This week' and 'Week of Oct 26'. A 12 sp line 'Nov 2 to Nov 8 · Ends Sun, Nov 8 at midnight.' Then an 11 sp green label 'Promotion zone' and dense rows inside cards: rank number, a 14 px avatar letter, '@priya', '5 trips' in 12 sp, '412 XP' in 16 sp bold, a small outlined tier chip 'Gold' and a small green arrow. Your row is tinted. Below rank five an 11 sp red label 'Relegation zone' and the last row. Everything sits in filled grey cards with 16 px gutters."
+  },
+  {
+    "id": "convoy-detail",
+    "description": "Convoy detail screen. App bar with the convoy name and an overflow menu (Rename, Leave convoy). The top 55% is the map of cars. Under it a panel: a small status chip 'Active' and a 12 sp line '3 of 6 cars · to Pinecrest Lake', buttons 'Start trip' / 'End trip' and for the leader 'Regroup here' and 'Set destination'. Then dense member rows each with a name and a 12 sp subtitle '62 mph · 1.2 mi from the leader · ETA ~14 min', a warning icon with a tooltip for a lost car. Then eight equal small action chips in a wrap: Radio, Stops, Chat, Music, Games, Expenses, Album, Recap. The radio, the thing you use while driving, is one of the eight chips."
+  },
+  {
+    "id": "convoy-radio",
+    "description": "Convoy radio screen. App bar 'Radio'. A banner 'Someone is talking' in 16 sp. A 200 px round push-to-talk button with an 88 px microphone icon, the words 'Hold to talk' under it in 14 sp. A 'Mute everyone' switch row with a 12 sp subtitle 'You can still transmit'. A divider and a 'Cars' label, then rows per car: an icon, the name, and a 12 sp subtitle 'Direct · data on · ↑412 KB ↓388 KB' or 'Relayed'. A 12 sp footer 'Relay available for phones that cannot connect directly. Relayed so far: 599 KB.' and a 'Stop radio' button at the bottom. Reaching this screen takes Convoy tab → the convoy → the Radio chip, then 'Start radio'."
+  },
+  {
+    "id": "badges",
+    "description": "Badges screen. App bar 'Badges'. Three filled cards in a row with a 20 px icon, a 24 sp number and a 12 sp label: '12 clean streak', '23 phone-free streak', '+5 streak XP'. A 14 sp line '4 of 20 earned'. Then a flat list: each earned badge is a row with a 40 px round icon, the name in 16 sp, a 14 sp description and the date in 12 sp on the right; locked badges are the same rows greyed with a lock icon. Then a 'Dishonourable' label and more rows. No imagery, no progress toward locked badges, no celebration anywhere."
+  },
+  {
+    "id": "settings",
+    "description": "Settings screen. App bar 'Settings'. A long scrolling list with small coloured section labels in 14 sp: Account, Units, Location, Safety, During a drive, App. Under each, list rows with a 16 sp title and a 14 sp subtitle, for example '@handle · Profile', a segmented control 'Auto / mph / km/h', 'Hide my location', 'Crash detection', 'Spoken cues', 'Export my data · Every trip on this phone, as JSON', 'Attribution · OpenStreetMap, Google, Open-Meteo, Nominatim', 'Delete account'. Rows have no cards; dividers separate sections. Some actions jump to other tabs and lose the back stack."
+  },
+  {
+    "id": "sign-in",
+    "description": "Sign-in screen. App bar 'Sign in'. A generic 64 px car icon in the accent colour, 'Drivalry' in 28 sp, a 14 sp line 'Sign in to join leagues, see friends and get roasted in public.' Then a black 'Continue with Apple' button and a 'Continue with Google' button whose logo is the letter G in text. At the bottom a 12 sp privacy note 'Adding a friend shares your live location with them. You can hide it any time in Settings.' There is no way to skip. Error messages read 'Google sign-in is not configured for this build.'"
+  },
+  {
+    "id": "first-run",
+    "description": "First launch, signed out, no trips, Drive tab. The top 40% is a grey box 'Sign in to see your friends on the map.' with a small tonal 'Sign in' button. Then a card 'Let Drivalry detect your drives' with three bullet paragraphs of 20 to 30 words each explaining location 'all the time', precise location and motion access, then buttons 'Allow', 'Open settings' and 'Record a drive now'. Tapping Allow fires every system permission dialog back to back. Below, 'No trips yet' with 'Your first drive will show up here, scored on this phone. Or simulate one from the menu.' There is no welcome or onboarding before this."
+  }
+]

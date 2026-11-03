@@ -1,0 +1,6562 @@
+[
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 146,
+  "text": "Clean so far"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 161,
+  "text": "$speed, $over over"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 177,
+  "text": "Mark passenger"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 196,
+  "text": "No active convoy"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 198,
+  "text": "Waiting for positions"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 203,
+  "text": "Regroup here"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 204,
+  "text": "Propose stop"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 211,
+  "text": "$talking talking"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 221,
+  "text": "Hold to talk"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 226,
+  "text": "Join a convoy to talk"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 246,
+  "text": "No stops yet"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 246,
+  "text": "No active convoy"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 275,
+  "text": "$gap min behind"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 281,
+  "text": "$seconds s ago"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 283,
+  "text": "1 min ago"
+ },
+ {
+  "file": "car/carplay_stub.dart",
+  "line": 283,
+  "text": "$m min ago"
+ },
+ {
+  "file": "car/car_actions.dart",
+  "line": 202,
+  "text": "${category.label} near here"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 151,
+  "text": "Not recording"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 152,
+  "text": "Looks like a drive"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 153,
+  "text": "Passenger · not scored"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 155,
+  "text": "${_elapsedLabel(speedingS)} over so far"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 156,
+  "text": "No limit data here"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 157,
+  "text": "Clean so far"
+ },
+ {
+  "file": "car/car_snapshot.dart",
+  "line": 735,
+  "text": "$seconds s"
+ },
+ {
+  "file": "car/ongoing_notification.dart",
+  "line": 68,
+  "text": "Looks like a drive · confirming"
+ },
+ {
+  "file": "car/ongoing_notification.dart",
+  "line": 75,
+  "text": "Passenger · not scored"
+ },
+ {
+  "file": "data/alerts/place_alerts.dart",
+  "line": 205,
+  "text": "Just now, from their live location."
+ },
+ {
+  "file": "data/alerts/place_alerts.dart",
+  "line": 205,
+  "text": "Just now."
+ },
+ {
+  "file": "data/badges/badges_sync.dart",
+  "line": 96,
+  "text": "signed out"
+ },
+ {
+  "file": "data/badges/badges_sync.dart",
+  "line": 98,
+  "text": "another account"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 39,
+  "text": "First Trip"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 40,
+  "text": "Your first scored drive."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 45,
+  "text": "Five Clean"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 46,
+  "text": "Five scored trips in a row at 80 or better, none reckless."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 51,
+  "text": "Twenty Clean"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 52,
+  "text": "Twenty clean trips in a row."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 57,
+  "text": "Hands Off"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 58,
+  "text": "Ten trips in a row without touching the phone."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 64,
+  "text": "A trip scored 100."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 69,
+  "text": "Night Owl"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 70,
+  "text": "Ten night trips scored 85 or better."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 75,
+  "text": "Rain or Shine"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 76,
+  "text": "Five rainy trips scored 85 or better."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 81,
+  "text": "Border Hopper"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 82,
+  "text": "Drove in three states or provinces."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 87,
+  "text": "Road Scholar"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 88,
+  "text": "Drove in ten states or provinces."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 93,
+  "text": "Thin Air"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 94,
+  "text": "A trip above 2,500 m."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 99,
+  "text": "Plus One"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 100,
+  "text": "Added a friend."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 106,
+  "text": "Finished a league week."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 111,
+  "text": "Moving Up"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 112,
+  "text": "Promoted at a Sunday rollover."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 117,
+  "text": "Wagon Train"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 118,
+  "text": "Finished a convoy."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 125,
+  "text": "Ten speed-limit fixes you flagged were confirmed by other drivers."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 130,
+  "text": "Sunday Driver"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 131,
+  "text": "Lost a duel. Seven days."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 136,
+  "text": "Lead Foot"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 137,
+  "text": "Lost a duel. Seven days."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 143,
+  "text": "Lost a duel. Seven days."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 148,
+  "text": "Wall of Shame"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 149,
+  "text": "A reckless trip, posted to your groups."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 154,
+  "text": "Season One"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 155,
+  "text": "Drove through the first season."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 161,
+  "text": "Clean Sweep"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 162,
+  "text": "Your league hit its clean-trips challenge."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 167,
+  "text": "Hands Off, Together"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 168,
+  "text": "Your league hit its phone-free challenge."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 173,
+  "text": "Class Act"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 174,
+  "text": "Your league averaged its target Drive Score."
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 179,
+  "text": "Full House"
+ },
+ {
+  "file": "data/badges/badge_defs.dart",
+  "line": 180,
+  "text": "Everyone in your league showed up for the challenge."
+ },
+ {
+  "file": "data/badges/streaks.dart",
+  "line": 32,
+  "text": "$clean clean"
+ },
+ {
+  "file": "data/badges/streaks.dart",
+  "line": 33,
+  "text": "$phoneFree phone-free"
+ },
+ {
+  "file": "data/badges/streaks.dart",
+  "line": 34,
+  "text": " · +$bonusXp XP"
+ },
+ {
+  "file": "data/convoy/positions_link.dart",
+  "line": 110,
+  "text": "pos broadcast"
+ },
+ {
+  "file": "data/convoy/positions_link.dart",
+  "line": 164,
+  "text": "eta broadcast"
+ },
+ {
+  "file": "data/convoy/recap_builder.dart",
+  "line": 234,
+  "text": "Average Drive Score ${scored.first.averageScore!.round()}"
+ },
+ {
+  "file": "data/convoy/recap_builder.dart",
+  "line": 244,
+  "text": "Lead Foot"
+ },
+ {
+  "file": "data/convoy/recap_builder.dart",
+  "line": 247,
+  "text": "${speeders.first.speedingMinutes.toStringAsFixed(0)} min over the limit"
+ },
+ {
+  "file": "data/convoy/recap_builder.dart",
+  "line": 258,
+  "text": "Most Stops Proposed"
+ },
+ {
+  "file": "data/convoy/recap_builder.dart",
+  "line": 282,
+  "text": "Led the convoy"
+ },
+ {
+  "file": "data/crash/crash_countdown.dart",
+  "line": 47,
+  "text": "Possible crash detected. Tap I'm OK."
+ },
+ {
+  "file": "data/crash/crash_escalator.dart",
+  "line": 119,
+  "text": "signed out"
+ },
+ {
+  "file": "data/crash/crash_escalator.dart",
+  "line": 137,
+  "text": "signed out"
+ },
+ {
+  "file": "data/crash/crash_monitor.dart",
+  "line": 73,
+  "text": "A Drivalry user"
+ },
+ {
+  "file": "data/crash/crash_monitor.dart",
+  "line": 254,
+  "text": "Possible crash detected"
+ },
+ {
+  "file": "data/crash/crash_monitor.dart",
+  "line": 256,
+  "text": "Tap I'm OK if you are fine. Help is requested in ${_config.countdown.inSeconds} seconds otherwise."
+ },
+ {
+  "file": "data/crash/crash_sms.dart",
+  "line": 10,
+  "text": "Drivalry: $name's phone detected a possible crash at $link. They have not responded."
+ },
+ {
+  "file": "data/db/database.dart",
+  "line": 801,
+  "text": "SELECT COUNT(*) AS c FROM ${table.actualTableName}"
+ },
+ {
+  "file": "data/db/database.dart",
+  "line": 1091,
+  "text": "SELECT MAX(t) AS t FROM samples WHERE trip_id = ? AND speed >= ?"
+ },
+ {
+  "file": "data/garage/documents.dart",
+  "line": 91,
+  "text": "document blob too short"
+ },
+ {
+  "file": "data/garage/documents.dart",
+  "line": 100,
+  "text": "document tag mismatch"
+ },
+ {
+  "file": "data/garage/maintenance.dart",
+  "line": 32,
+  "text": "No odometer yet"
+ },
+ {
+  "file": "data/garage/maintenance.dart",
+  "line": 33,
+  "text": "Due now"
+ },
+ {
+  "file": "data/garage/maintenance.dart",
+  "line": 42,
+  "text": "$daysRemaining days"
+ },
+ {
+  "file": "data/garage/maintenance.dart",
+  "line": 115,
+  "text": "${v.name}: ${item.title} is due"
+ },
+ {
+  "file": "data/garage/maintenance.dart",
+  "line": 116,
+  "text": "Open the Garage to log it or snooze it."
+ },
+ {
+  "file": "data/garage/vehicle_matcher.dart",
+  "line": 159,
+  "text": "Not tracking $name"
+ },
+ {
+  "file": "data/garage/vehicle_matcher.dart",
+  "line": 160,
+  "text": "This vehicle is marked \"never track\" in your Garage."
+ },
+ {
+  "file": "data/google/places_client.dart",
+  "line": 17,
+  "text": "Photo stop"
+ },
+ {
+  "file": "data/push/local_notifications.dart",
+  "line": 9,
+  "text": "Reactions and comments"
+ },
+ {
+  "file": "data/push/local_notifications.dart",
+  "line": 10,
+  "text": "Friend requests"
+ },
+ {
+  "file": "data/push/local_notifications.dart",
+  "line": 11,
+  "text": "Crash alerts"
+ },
+ {
+  "file": "data/push/local_notifications.dart",
+  "line": 12,
+  "text": "Trip scored"
+ },
+ {
+  "file": "data/push/local_notifications.dart",
+  "line": 13,
+  "text": "Convoy alerts"
+ },
+ {
+  "file": "data/push/push_service.dart",
+  "line": 103,
+  "text": "Push is not configured in this build."
+ },
+ {
+  "file": "data/push/push_service.dart",
+  "line": 110,
+  "text": "signed out"
+ },
+ {
+  "file": "data/push/push_service.dart",
+  "line": 161,
+  "text": "Push could not start: $e"
+ },
+ {
+  "file": "data/push/trip_scored_notifications.dart",
+  "line": 57,
+  "text": "Trip scored ${score.score}. RECKLESS."
+ },
+ {
+  "file": "data/push/trip_scored_notifications.dart",
+  "line": 58,
+  "text": "Trip scored ${score.score}"
+ },
+ {
+  "file": "data/push/trip_scored_notifications.dart",
+  "line": 62,
+  "text": "Open the trip for the breakdown."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 25,
+  "text": "Clean trips"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 26,
+  "text": "Trips scored 80 or better and not reckless, league total."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 32,
+  "text": "Phone-free trips"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 33,
+  "text": "Trips without touching the phone, league total."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 39,
+  "text": "Average score"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 40,
+  "text": "Average Drive Score across every member trip."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 46,
+  "text": "Everyone drives"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 47,
+  "text": "Every member logs at least this many scored trips."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 49,
+  "text": "trips each"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 72,
+  "text": "Clean Sweep"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 73,
+  "text": "Hands Off, Together"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 74,
+  "text": "Class Act"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 75,
+  "text": "Full House"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 428,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 452,
+  "text": "Sign in first."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 528,
+  "text": "Pick a target above zero."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 531,
+  "text": "A Drive Score target is at most 100."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 534,
+  "text": "Challenges run one or two weeks."
+ },
+ {
+  "file": "data/repos/challenges_repo.dart",
+  "line": 539,
+  "text": "This league already has a challenge running."
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 159,
+  "text": "That invite code is not valid."
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 160,
+  "text": "Sign in first."
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 161,
+  "text": "Could not reach Drivalry. Try again."
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 172,
+  "text": "invalid invite code"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 374,
+  "text": "not signed in"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 453,
+  "text": "sign in and give the circle a name"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 563,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 573,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 583,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/circles_repo.dart",
+  "line": 592,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/convoy_models.dart",
+  "line": 445,
+  "text": "That invite code is not valid."
+ },
+ {
+  "file": "data/repos/convoy_models.dart",
+  "line": 446,
+  "text": "That convoy is full (six cars)."
+ },
+ {
+  "file": "data/repos/convoy_models.dart",
+  "line": 447,
+  "text": "Sign in first."
+ },
+ {
+  "file": "data/repos/convoy_models.dart",
+  "line": 448,
+  "text": "Could not reach Drivalry. Try again."
+ },
+ {
+  "file": "data/repos/convoy_models.dart",
+  "line": 461,
+  "text": "invalid invite code"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 74,
+  "text": "not signed in"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 284,
+  "text": "sign in and give the convoy a name"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 411,
+  "text": "sign in first"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 511,
+  "text": "sign in first"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 512,
+  "text": "amount must be positive"
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 564,
+  "text": "Sign in and get online to add photos."
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 568,
+  "text": "That photo is ${(jpeg.length / 1024).round()} KB; the limit is 200 KB."
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 573,
+  "text": "This album is full (50 photos)."
+ },
+ {
+  "file": "data/repos/convoy_repo.dart",
+  "line": 616,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 19,
+  "text": "Most XP from scored trips wins."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 22,
+  "text": "Drive Score"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 23,
+  "text": "Highest average Drive Score wins. Fewer than three trips forfeits."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 27,
+  "text": "Phone-free trips"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 28,
+  "text": "Most scored trips without touching the phone wins."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 324,
+  "text": "Sunday Driver"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 325,
+  "text": "Lead Foot"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 519,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 531,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 548,
+  "text": "Sign in first."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 626,
+  "text": "You cannot duel yourself."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 637,
+  "text": "You already have a duel going with @${opponent.handle}."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 704,
+  "text": "Could not reach Drivalry."
+ },
+ {
+  "file": "data/repos/duels_repo.dart",
+  "line": 706,
+  "text": "Not one of the duel badges."
+ },
+ {
+  "file": "data/repos/feed_repo.dart",
+  "line": 17,
+  "text": "Wall of Fame"
+ },
+ {
+  "file": "data/repos/feed_repo.dart",
+  "line": 20,
+  "text": "Wall of Shame"
+ },
+ {
+  "file": "data/repos/feed_repo.dart",
+  "line": 314,
+  "text": "not signed in"
+ },
+ {
+  "file": "data/repos/feed_repo.dart",
+  "line": 427,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/feed_repo.dart",
+  "line": 448,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/friends_repo.dart",
+  "line": 252,
+  "text": "not signed in"
+ },
+ {
+  "file": "data/repos/friends_repo.dart",
+  "line": 427,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/friends_repo.dart",
+  "line": 443,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/friends_repo.dart",
+  "line": 459,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 358,
+  "text": "That invite code is not valid."
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 359,
+  "text": "That league is full (30 members)."
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 360,
+  "text": "Sign in first."
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 361,
+  "text": "Could not reach Drivalry. Try again."
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 374,
+  "text": "invalid invite code"
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 643,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 654,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/leagues_repo.dart",
+  "line": 755,
+  "text": "League names are 1 to 40 characters."
+ },
+ {
+  "file": "data/repos/seasons_repo.dart",
+  "line": 336,
+  "text": "another account"
+ },
+ {
+  "file": "data/repos/seasons_repo.dart",
+  "line": 474,
+  "text": "${season.name}: the car stayed parked."
+ },
+ {
+  "file": "data/repos/seasons_repo.dart",
+  "line": 477,
+  "text": "${season.name}: ${s.trips} trips, averaging ${avg.toStringAsFixed(0)}. Chauffeur material."
+ },
+ {
+  "file": "data/repos/seasons_repo.dart",
+  "line": 480,
+  "text": "${season.name}: ${s.trips} trips and the phone stayed down every time."
+ },
+ {
+  "file": "data/repos/seasons_repo.dart",
+  "line": 482,
+  "text": "${season.name}: ${s.trips} trips, ${s.cleanTrips} of them clean."
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 117,
+  "text": "user-read-playback-state user-modify-playback-state user-read-currently-playing"
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 129,
+  "text": "not configured"
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 150,
+  "text": "state mismatch"
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 155,
+  "text": "no code in callback"
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 198,
+  "text": "session expired, sign in again"
+ },
+ {
+  "file": "data/spotify/spotify_auth.dart",
+  "line": 200,
+  "text": "token endpoint ${res.statusCode}"
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 9,
+  "text": "Connect Spotify first."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 10,
+  "text": "Convoy DJ needs Spotify Premium on this account."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 12,
+  "text": "Ask Ryan to add your Spotify account to the Drivalry allowlist."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 14,
+  "text": "Open Spotify and start playing anything, then try again."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 15,
+  "text": "Spotify is asking us to slow down. Try again in a minute."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 16,
+  "text": "Could not reach Spotify."
+ },
+ {
+  "file": "data/spotify/spotify_client.dart",
+  "line": 17,
+  "text": "Spotify returned an error."
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 48,
+  "text": "This month"
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 49,
+  "text": "This season"
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 50,
+  "text": "All time"
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 64,
+  "text": "All time"
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 298,
+  "text": "your usual route"
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 357,
+  "text": "You drove over the limit for ${formatHoursOver(secondsOverLimit)}. It saved you ${formatSaved(timeSavedS)}."
+ },
+ {
+  "file": "data/stats/stats_engine.dart",
+  "line": 857,
+  "text": "Unknown car"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 82,
+  "text": "Google did not return an identity token."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 122,
+  "text": "Apple did not return an identity token."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 171,
+  "text": "This build has no Drivalry cloud project configured."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 180,
+  "text": "Google sign-in is not configured for this build."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 308,
+  "text": "Drivalry export"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 352,
+  "text": "Sign-in cancelled."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 354,
+  "text": "Google sign-in was interrupted. Try again."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 357,
+  "text": "Google sign-in is not configured for this build."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 359,
+  "text": "Google sign-in is not available right now."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 361,
+  "text": "Google returned a different account than expected."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 367,
+  "text": "Google sign-in is not configured for this build."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 369,
+  "text": "Google sign-in failed: ${d.isEmpty ? e.code.name : d}"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 373,
+  "text": "No connection. Check your network and try again."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 375,
+  "text": "Google sign-in failed."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 383,
+  "text": "Sign-in cancelled."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 386,
+  "text": "Apple sign-in could not start. Try again."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 390,
+  "text": "Apple sign-in failed: ${e.message}"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 394,
+  "text": "Apple sign-in failed: ${e.message}"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 398,
+  "text": "Sign in with Apple needs iOS 13 or newer."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 400,
+  "text": "Apple sign-in failed."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 406,
+  "text": "unsupported provider"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 407,
+  "text": "provider is not enabled"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 408,
+  "text": "This sign-in method is not enabled yet. Ask the app owner to finish docs/09-auth-setup.md."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 412,
+  "text": "The sign-in token was issued for a different client id. Check the Supabase authorized client ids."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 416,
+  "text": "Sign-in token nonce mismatch. Try again."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 418,
+  "text": "signups not allowed"
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 419,
+  "text": "New accounts are closed right now."
+ },
+ {
+  "file": "data/supabase/auth_service.dart",
+  "line": 421,
+  "text": "Sign-in failed: ${e.message}"
+ },
+ {
+  "file": "data/sync/limit_flags_sync.dart",
+  "line": 162,
+  "text": "signed out"
+ },
+ {
+  "file": "data/sync/outbox.dart",
+  "line": 22,
+  "text": "retry later"
+ },
+ {
+  "file": "data/sync/outbox.dart",
+  "line": 155,
+  "text": "outbox: dropping ${row.kind} ${row.id} after $attempts attempts: $e"
+ },
+ {
+  "file": "data/sync/trip_upload.dart",
+  "line": 254,
+  "text": "signed out"
+ },
+ {
+  "file": "data/sync/trip_upload.dart",
+  "line": 315,
+  "text": "signed out"
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 21,
+  "text": "Could not load badges: $e"
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 32,
+  "text": "$earnedCount of ${regular.length} earned"
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 47,
+  "text": "Handed out by duels and reckless trips. They wear off."
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 85,
+  "text": "clean streak"
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 89,
+  "text": "phone-free streak"
+ },
+ {
+  "file": "features/badges/badges_screen.dart",
+  "line": 93,
+  "text": "streak XP"
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 49,
+  "text": "Sign in to check in."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 50,
+  "text": "Checked in at $label. Your circles and friends can see it."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 79,
+  "text": "Check in"
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 82,
+  "text": "Posts \"Checked in at …\" to your circles and friends. Only the label is shared, never where that is."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 90,
+  "text": "Save Home first"
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 91,
+  "text": "Places live only on this phone."
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 106,
+  "text": "Somewhere else"
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 119,
+  "text": "Auto check-in when I get Home"
+ },
+ {
+  "file": "features/circles/checkin_sheet.dart",
+  "line": 121,
+  "text": "Posts once when a drive ends inside a Home place."
+ },
+ {
+  "file": "features/circles/circles_list_screen.dart",
+  "line": 18,
+  "text": "Sign in to share your location with a circle."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 43,
+  "text": "I got home"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 66,
+  "text": "No circles yet"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 69,
+  "text": "A circle is a group that always sees each other on the map: family, roommates, the crew. Everyone is precise; anyone can hide, and the circle sees that they are."
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 100,
+  "text": "New circle"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 107,
+  "text": "Join with code"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 127,
+  "text": "$count member${count == 1 ? "
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 128,
+  "text": "$driving driving now"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 129,
+  "text": "you are hiding"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 139,
+  "text": "Join a circle"
+ },
+ {
+  "file": "features/circles/circles_view.dart",
+  "line": 144,
+  "text": "Invite code"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 38,
+  "text": "Invite to ${live.name}"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 41,
+  "text": "The invite code is still syncing. Check your connection and try again in a moment."
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 62,
+  "text": "Invite to ${live.name}"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 65,
+  "text": "Everyone in a circle sees everyone's live location, unless they hide."
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 88,
+  "text": "Friends enter this code under Circles, or open the link."
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 101,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 106,
+  "text": "Copy link"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 115,
+  "text": "Join my Drivalry circle \"${live.name}\": $link (code ${code.toUpperCase()})"
+ },
+ {
+  "file": "features/circles/circle_invite_sheet.dart",
+  "line": 117,
+  "text": "Drivalry circle invite"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 50,
+  "text": "Leave circle"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 56,
+  "text": "Sign in to see this circle."
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 59,
+  "text": "This circle is not in your list."
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 75,
+  "text": "Hide from this circle"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 77,
+  "text": "Everyone in this circle can see that you are hiding."
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 90,
+  "text": "I got home"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 115,
+  "text": "Could not load members: ${members.error}"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 132,
+  "text": "You stop seeing the circle and they stop seeing you. A member can invite you back."
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 177,
+  "text": "No location yet"
+ },
+ {
+  "file": "features/circles/circle_screen.dart",
+  "line": 179,
+  "text": "Driving now"
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 31,
+  "text": "Give the circle a name."
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 35,
+  "text": "Keep it under 40 characters."
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 50,
+  "text": "Could not create the circle: $e"
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 60,
+  "text": "New circle"
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 62,
+  "text": "Sign in to create a circle."
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 74,
+  "text": "Family, Roommates, The Boys"
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 81,
+  "text": "Everyone you invite sees everyone else's live location, precise, and the trips and roasts you all earn. Anyone can hide at any time; the circle can see that they are hiding."
+ },
+ {
+  "file": "features/circles/create_circle_screen.dart",
+  "line": 96,
+  "text": "Create circle"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 47,
+  "text": "Album full"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 47,
+  "text": "Add photo"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 56,
+  "text": "No photos yet. Small ones only: the album is for the recap, not a backup. Passengers, this is your job."
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 91,
+  "text": "Take a photo"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 96,
+  "text": "Choose from the library"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 117,
+  "text": "Added to the album."
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 129,
+  "text": "Could not add: $e"
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 113,
+  "text": "voice-${const Uuid().v4()}.m4a"
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 267,
+  "text": "Could not send: $e"
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 290,
+  "text": "Message from $who: $text"
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 325,
+  "text": "Microphone permission is needed for voice notes."
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 367,
+  "text": "That note is too long to send."
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 37,
+  "text": "Convoy chat"
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 40,
+  "text": "Read aloud: on"
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 40,
+  "text": "Read aloud: off"
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 56,
+  "text": "Nothing yet. Voice notes play in every car; text is read aloud to drivers."
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 89,
+  "text": "Passengers type; drivers listen."
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 131,
+  "text": "Message the convoy"
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 158,
+  "text": "Record a voice note"
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 227,
+  "text": "Voice note · ${(message.voice!.durationMs / 1000).toStringAsFixed(0)} s"
+ },
+ {
+  "file": "features/convoy/chat/voice_notes.dart",
+  "line": 46,
+  "text": "voice note too large: ${bytes.length} bytes"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 49,
+  "text": "Sign in to see the convoy."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 58,
+  "text": "This convoy is not in your list. Pull to refresh the Convoy tab, or ask for a new invite."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 124,
+  "text": "${present.length} of ${convoy.maxCars} cars · no destination yet"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 138,
+  "text": "Start trip"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 143,
+  "text": "End trip"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 156,
+  "text": "Regroup here"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 171,
+  "text": "Set destination"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 232,
+  "text": "End the trip?"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 234,
+  "text": "Positions stop flowing and everyone gets the recap. Stops, expenses and photos stay."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 240,
+  "text": "Keep going"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 244,
+  "text": "End trip"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 271,
+  "text": "No position yet. Long-press the map instead."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 283,
+  "text": "Regroup pin sent."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 284,
+  "text": "Pin set here; it could not be sent. Check your connection."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 300,
+  "text": "On the road"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 341,
+  "text": "No position yet"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 345,
+  "text": "Last seen ${(age / 60000).round()} min ago"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 354,
+  "text": "${formatDistance(d, units)} from the leader"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 384,
+  "text": "Lost sheep"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 424,
+  "text": "Leave convoy"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 437,
+  "text": "Rename convoy"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 464,
+  "text": "Leave this convoy?"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 466,
+  "text": "You drop off the shared map and the radio. Rejoin with the invite code any time."
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 24,
+  "text": "Sign in to drive with friends in a convoy."
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 56,
+  "text": "Two to six cars, one trip. Everyone sees everyone, and the radio is one button away."
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 68,
+  "text": "New convoy"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 76,
+  "text": "Join with code"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 91,
+  "text": "No convoys yet"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 94,
+  "text": "Start one before a road trip and share the code. While the trip is on, every car sees the others, hears the radio, votes on stops and splits the costs. Positions stay between the cars and never leave your phones in detail."
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 108,
+  "text": "Past trips"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 122,
+  "text": "Join a convoy"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 128,
+  "text": "Invite code"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 161,
+  "text": "On the road"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 46,
+  "text": "Could not create: $e"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 55,
+  "text": "New convoy"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 57,
+  "text": "Sign in to start a convoy."
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 69,
+  "text": "Trip name"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 70,
+  "text": "Coast run, Thanksgiving drive…"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 81,
+  "text": "Where everyone is heading. Needed for ETAs and stop suggestions; you can set it later."
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 83,
+  "text": "Tap to change"
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 102,
+  "text": "Up to six cars. You lead: you start and end the trip, accept stops and can drop a regroup pin. Anyone can propose stops, add expenses and photos."
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 112,
+  "text": "Create convoy"
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 80,
+  "text": "Split among the cars in the convoy."
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 87,
+  "text": "Settle up"
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 101,
+  "text": "All square."
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 112,
+  "text": "Nothing added yet. Gas, tolls, snacks, the motel: add it and the split works itself out."
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 185,
+  "text": "Could not add: $e"
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 236,
+  "text": "Add an expense"
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 28,
+  "text": "Games are for passengers. Drivers hear the results."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 59,
+  "text": "Spot the…"
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 165,
+  "text": "You are asking the questions."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 173,
+  "text": "Trivia needs at least one other car on the radio."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 174,
+  "text": "No question yet."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 203,
+  "text": "Next question"
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 209,
+  "text": "Reveal now"
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 278,
+  "text": "Needs a few minutes of positions from the other cars. This ranks steadiness, not speed."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 300,
+  "text": "Spotted by you"
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 300,
+  "text": "Spotted by $who"
+ },
+ {
+  "file": "features/convoy/games/games_controller.dart",
+  "line": 162,
+  "text": "You spotted $item"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 236,
+  "text": "Nobody got it. The answer was $answer."
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 237,
+  "text": ")} got it: $answer."
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 252,
+  "text": "Red barn"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 253,
+  "text": "Water tower"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 254,
+  "text": "Police car"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 255,
+  "text": "Out-of-state plate"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 258,
+  "text": "Billboard with a lawyer"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 259,
+  "text": "Yellow car"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 260,
+  "text": "Wind turbine"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 262,
+  "text": "Food truck"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 263,
+  "text": "Convertible with the top down"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 264,
+  "text": "Dog in a window"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 266,
+  "text": "Bridge over water"
+ },
+ {
+  "file": "features/convoy/games/games_core.dart",
+  "line": 267,
+  "text": "Someone waving"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 12,
+  "text": "Which US interstate runs coast to coast from Boston to Seattle?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 16,
+  "text": "What does a diamond-shaped yellow road sign mean?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 22,
+  "text": "Which state has the most miles of public road?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 29,
+  "text": "The world's first traffic light was installed in which city?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 30,
+  "text": "New York"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 33,
+  "text": "What colour are US interstate shields?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 34,
+  "text": "Green and white"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 35,
+  "text": "Red, white and blue"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 36,
+  "text": "Yellow and black"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 37,
+  "text": "Brown and white"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 39,
+  "text": "Which direction do even-numbered interstates run?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 43,
+  "text": "Loops only"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 45,
+  "text": "Route 66 originally connected Chicago with which city?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 46,
+  "text": "Los Angeles"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 47,
+  "text": "San Francisco"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 48,
+  "text": "Santa Monica"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 49,
+  "text": "San Diego"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 51,
+  "text": "What is the longest US interstate?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 57,
+  "text": "A green sign with a white number over a shield marks what?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 58,
+  "text": "Speed limit"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 59,
+  "text": "Exit number"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 60,
+  "text": "Mile marker"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 61,
+  "text": "Toll ahead"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 63,
+  "text": "Which country drives on the left?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 69,
+  "text": "The Autobahn is in which country?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 75,
+  "text": "What is the US speed limit sign shape?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 78,
+  "text": "Vertical rectangle"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 81,
+  "text": "A stop sign has how many sides?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 82,
+  "text": "Which gas has the highest octane at a typical US pump?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 88,
+  "text": "What does the \"P\" in a PRNDL shifter stand for?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 94,
+  "text": "Which pedal is on the left in a manual car?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 100,
+  "text": "Cruise control was invented by a man who was…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 106,
+  "text": "What does ABS stand for?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 107,
+  "text": "Automatic Brake System"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 108,
+  "text": "Anti-lock Braking System"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 109,
+  "text": "Advanced Balance System"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 110,
+  "text": "Axle Bearing Sensor"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 112,
+  "text": "The Golden Gate Bridge is painted which colour?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 114,
+  "text": "International Orange"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 118,
+  "text": "Which US state has no speed-limit stretch in its history?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 124,
+  "text": "What is a \"clover-leaf\"?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 125,
+  "text": "A tyre tread"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 126,
+  "text": "An interchange"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 127,
+  "text": "A road sign"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 128,
+  "text": "A fuel type"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 130,
+  "text": "How many wheels does a standard semi-trailer truck have?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 136,
+  "text": "Which car brand has a prancing horse logo?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 142,
+  "text": "Which car brand uses four interlocking rings?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 148,
+  "text": "Which planet shares its name with a Ford model?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 154,
+  "text": "What is the national speed limit on UK motorways in mph?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 160,
+  "text": "What does a flashing yellow traffic light mean?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 162,
+  "text": "Proceed with caution"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 163,
+  "text": "Speed up"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 164,
+  "text": "Turn only"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 166,
+  "text": "Which body part do you check for a blind spot?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 172,
+  "text": "What fluid does the windshield washer use?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 175,
+  "text": "Washer fluid"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 176,
+  "text": "Brake fluid"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 178,
+  "text": "What is the \"two-second rule\"?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 179,
+  "text": "Parking time"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 180,
+  "text": "Following distance"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 181,
+  "text": "Indicator time"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 182,
+  "text": "Horn length"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 184,
+  "text": "Which US city is famous for its cable cars?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 186,
+  "text": "San Francisco"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 190,
+  "text": "The Pacific Coast Highway is also called…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 196,
+  "text": "Which animal appears on Lamborghini's badge?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 202,
+  "text": "What is measured in PSI?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 204,
+  "text": "Tyre pressure"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 205,
+  "text": "Oil level"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 208,
+  "text": "A roundabout gives priority to traffic…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 210,
+  "text": "Already circulating"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 211,
+  "text": "On the right"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 212,
+  "text": "Going straight"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 214,
+  "text": "Which is NOT a tyre brand?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 220,
+  "text": "The world's longest road tunnel is in…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 226,
+  "text": "What does the \"H\" on a motorway sign in the US mean?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 232,
+  "text": "What is a dashboard \"check engine\" light colour?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 238,
+  "text": "Which gear helps on a steep downhill?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 240,
+  "text": "A low gear"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 242,
+  "text": "Top gear"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 244,
+  "text": "The first mass-produced car was the…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 245,
+  "text": "Ford Model T"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 246,
+  "text": "Benz Patent-Motorwagen"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 247,
+  "text": "VW Beetle"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 250,
+  "text": "Which US highway is called \"The Loneliest Road\"?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 256,
+  "text": "Hydroplaning happens because of…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 262,
+  "text": "Which direction do odd-numbered interstates run?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 268,
+  "text": "What does MPG measure?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 270,
+  "text": "Fuel economy"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 274,
+  "text": "How often should you check tyre pressure, roughly?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 280,
+  "text": "Which US state is nicknamed the Motor City's home?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 286,
+  "text": "A \"rest area\" sign is what colour in the US?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 292,
+  "text": "Brown road signs point to…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 294,
+  "text": "Recreation and culture"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 298,
+  "text": "Orange road signs mean…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 302,
+  "text": "Scenic route"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 304,
+  "text": "Which is the safest lane for cruising on a 3-lane highway?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 310,
+  "text": "What is the \"Big Dig\"?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 311,
+  "text": "A Boston tunnel project"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 316,
+  "text": "Which fuel is dyed red in the US?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 317,
+  "text": "Diesel for off-road use"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 318,
+  "text": "Premium gas"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 322,
+  "text": "What year did US interstates begin construction?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 328,
+  "text": "The Eisenhower Interstate System is named after a…"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 334,
+  "text": "Which is bigger: a mile or a kilometre?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 340,
+  "text": "How many kilometres is 60 miles, about?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 346,
+  "text": "What is the Drivalry rule about speed?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 347,
+  "text": "Faster scores higher"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 348,
+  "text": "Speed never scores"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 349,
+  "text": "Only on highways"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 350,
+  "text": "Bonus at night"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 352,
+  "text": "Which score is a perfect Drive Score?"
+ },
+ {
+  "file": "features/convoy/games/trivia_questions.dart",
+  "line": 358,
+  "text": "A convoy in Drivalry holds up to how many cars?"
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 45,
+  "text": "Could not join: $e"
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 55,
+  "text": "Convoy invite"
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 57,
+  "text": "Sign in to join the convoy."
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 71,
+  "text": "Join this convoy?"
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 74,
+  "text": "Code ${widget.code.toUpperCase()}. Everyone in the convoy sees your car on the shared map and hears you on the radio while the trip is on. Positions stay between the cars."
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 100,
+  "text": "Join convoy"
+ },
+ {
+  "file": "features/convoy/join_convoy_screen.dart",
+  "line": 104,
+  "text": "Not now"
+ },
+ {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 134,
+  "text": "The leader set a regroup point."
+ },
+ {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 135,
+  "text": "Regroup at ${pin.name}."
+ },
+ {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 216,
+  "text": "stopped sharing their position"
+ },
+ {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 217,
+  "text": "fell more than five minutes behind"
+ },
+ {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 218,
+  "text": "Lost sheep"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 50,
+  "text": "Everyone on one playlist"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 55,
+  "text": "Spotify Jam lets the whole convoy add to one queue. Start a Jam in Spotify and share the invite in chat."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 69,
+  "text": "Open Spotify"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 78,
+  "text": "Apple Music SharePlay"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 125,
+  "text": "Convoy DJ"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 127,
+  "text": "Not available in this build: no Spotify client id is configured (docs/09-auth-setup.md §8)."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 147,
+  "text": "Convoy DJ"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 159,
+  "text": "Connect Spotify"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 165,
+  "text": "One phone is the DJ; every car plays the same track in lockstep. Needs Spotify Premium and a spot on the Drivalry allowlist."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 180,
+  "text": "No other cars connected yet. DJ starts once the radio mesh is up."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 188,
+  "text": "No DJ yet"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 190,
+  "text": "You are the DJ"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 198,
+  "text": "Step down"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 204,
+  "text": "Be the DJ"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 218,
+  "text": "Vote to skip"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 228,
+  "text": "Search tracks"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 265,
+  "text": "Up next"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 283,
+  "text": "Start the queue"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 283,
+  "text": "Next track"
+ },
+ {
+  "file": "features/convoy/music/dj_controller.dart",
+  "line": 134,
+  "text": "Spotify sign-in failed: $e"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 25,
+  "text": "Sign in to talk to your convoy."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 52,
+  "text": "Radio is off"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 55,
+  "text": "Start the radio to talk car to car. Audio goes straight between phones; nothing is recorded."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 61,
+  "text": "Start radio"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 69,
+  "text": "Microphone needed"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 71,
+  "text": "The microphone is blocked for Drivalry. Allow it in the system settings to use the radio."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 73,
+  "text": "The radio needs the microphone to transmit when you hold the button. Nothing is sent otherwise."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 80,
+  "text": "Open settings"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 85,
+  "text": "Try again"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 113,
+  "text": "Hold to talk"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 120,
+  "text": "Mute everyone"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 121,
+  "text": "You can still transmit"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 131,
+  "text": "No one else is on the radio yet. Members join as they open this screen or start the radio."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 145,
+  "text": "Relay available for phones that cannot connect directly. Relayed so far: ${_bytes(relayed)}."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 147,
+  "text": "No relay configured: cars that cannot connect directly will show as failed."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 156,
+  "text": "Stop radio"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 174,
+  "text": "You are talking"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 220,
+  "text": "Push to talk"
+ },
+ {
+  "file": "features/convoy/radio/ice_servers.dart",
+  "line": 55,
+  "text": "empty ice list"
+ },
+ {
+  "file": "features/convoy/radio/radio_controller.dart",
+  "line": 175,
+  "text": "Sign in to use the convoy radio."
+ },
+ {
+  "file": "features/convoy/radio/webrtc_peer_link.dart",
+  "line": 72,
+  "text": "no microphone track"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 147,
+  "text": "Nothing to recap yet: this convoy is not in your list."
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 157,
+  "text": "Recap failed: $error"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 166,
+  "text": "Built from the positions this phone received and the Drive Scores members chose to upload. Nothing was sent to make it."
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 195,
+  "text": "${d.recap.name}: our convoy recap on Drivalry."
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 196,
+  "text": "Convoy recap"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 203,
+  "text": "Could not share: $e"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 265,
+  "text": "No positions were received during this trip."
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 338,
+  "text": "avg score ${m.averageScore!.round()}"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 339,
+  "text": "${m.stopsProposed} stops proposed"
+ },
+ {
+  "file": "features/convoy/recap/recap_card.dart",
+  "line": 90,
+  "text": "Drivalry convoy"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 64,
+  "text": "Suggest a stop"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 67,
+  "text": "Places along the remaining route, a few lookups a day. Or propose wherever you are."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 94,
+  "text": "No stops proposed yet."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 96,
+  "text": "Next up"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 177,
+  "text": "Set a destination (or get a fix) first."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 215,
+  "text": "${category.label} along the way"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 223,
+  "text": "Place suggestions are not available right now (offline, or today's free lookups are used up)."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 231,
+  "text": "Nothing of that kind near the route."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 242,
+  "text": "${formatDistance(s.detourM, units)} off route"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 245,
+  "text": "Open now"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 272,
+  "text": "${category.label} stop where I am"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 273,
+  "text": "Pin my current position"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 280,
+  "text": "No position fix yet."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 391,
+  "text": "Mark done"
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 396,
+  "text": "Back to proposed"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 36,
+  "text": "Invite to ${live.name}"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 39,
+  "text": "The invite code is on its way from the server. Pull to refresh the convoy list in a moment."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 46,
+  "text": "Check again"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 60,
+  "text": "Invite to ${live.name}"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 92,
+  "text": "Code copied."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 97,
+  "text": "Copy code"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 104,
+  "text": "Join my convoy \"${live.name}\" on Drivalry: $link (code ${code.toUpperCase()})"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 106,
+  "text": "Convoy invite"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 75,
+  "text": "Loading map…"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 75,
+  "text": "Map unavailable."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 137,
+  "text": "Lost sheep"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 138,
+  "text": "Last seen a while ago"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 185,
+  "text": "Regroup here"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 186,
+  "text": "Set by the leader"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 236,
+  "text": "Show everyone"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 242,
+  "text": "Centre on me"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 293,
+  "text": "Waiting for the first positions. They arrive once cars start moving."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 295,
+  "text": "Positions appear here once the leader starts the trip."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 318,
+  "text": "} falling behind."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 320,
+  "text": ")} are falling behind."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 394,
+  "text": "Regroup here"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 395,
+  "text": "Everyone gets a pin and a nudge."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 405,
+  "text": "Clear regroup pin"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 413,
+  "text": "Set destination here"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 420,
+  "text": "Pinned destination"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 430,
+  "text": "Search a destination"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 466,
+  "text": "No map in this build. Positions and ETAs still flow between the cars:"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 494,
+  "text": "No position yet"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 498,
+  "text": "${formatDistance(d, units)} from the leader"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 501,
+  "text": "Sharing position"
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 84,
+  "text": "No location fix yet."
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 90,
+  "text": "Where I am"
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 100,
+  "text": "Location unavailable: $e"
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 128,
+  "text": "Search a place or town"
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 147,
+  "text": "Place search is not available right now (offline, or today's free lookups are used up). You can still set the destination to where you are."
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 156,
+  "text": "Nothing found. Try another spelling."
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 183,
+  "text": "Use where I am now"
+ },
+ {
+  "file": "features/convoy/widgets/destination_picker.dart",
+  "line": 184,
+  "text": "No lookup needed"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 28,
+  "text": "Help was requested"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 36,
+  "text": "At $when your phone reported a possible crash."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 57,
+  "text": "I'm OK now"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 64,
+  "text": "Tell your friends you are fine; this also lets the trip be scored."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 74,
+  "text": "Crash detection"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 83,
+  "text": "No crash detected."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 107,
+  "text": "Friends and circle members who use Drivalry were notified."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 108,
+  "text": "The alert to friends is queued and goes out as soon as the phone is online."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 111,
+  "text": "A text with your location was prepared for $texted emergency ${texted == 1 ? "
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 113,
+  "text": "No calls were made."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 120,
+  "text": "Test finished. Nothing was sent."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 121,
+  "text": "Last check: you answered in time. Nothing was sent."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 155,
+  "text": "TEST: nothing will be sent"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 161,
+  "text": "Possible crash detected"
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 170,
+  "text": "If you are OK, tap the button. Otherwise your emergency contacts and friends are alerted when the timer ends."
+ },
+ {
+  "file": "features/crash/crash_countdown_screen.dart",
+  "line": 223,
+  "text": "Send help now"
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 31,
+  "text": "Help was requested"
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 32,
+  "text": "Possible crash reported $when. Are you OK?"
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 49,
+  "text": "Possible crash: countdown running"
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 51,
+  "text": "Your contacts are alerted when it ends unless you tap I'm OK."
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 84,
+  "text": "Possible crash recorded"
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 86,
+  "text": "On the trip of $when. It stays unscored until you confirm you were fine."
+ },
+ {
+  "file": "features/crash/crash_status_card.dart",
+  "line": 92,
+  "text": "I was fine"
+ },
+ {
+  "file": "features/cues/spoken_cues.dart",
+  "line": 122,
+  "text": "Over by ${_display(over, s.unitLabel)}"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 74,
+  "text": "Friend requests"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 90,
+  "text": "Simulate a drive"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 91,
+  "text": "Speed-limit packs"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 145,
+  "text": "No trips yet"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 148,
+  "text": "Your first drive will show up here, scored on this phone. Or simulate one from the menu."
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 159,
+  "text": "Last trip"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 228,
+  "text": "Automatic (follow the pack / locale)"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 229,
+  "text": "Miles per hour"
+ },
+ {
+  "file": "features/drive/drive_screen.dart",
+  "line": 230,
+  "text": "Kilometres per hour"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 15,
+  "text": "the highway"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 16,
+  "text": "a residential street"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 17,
+  "text": "that road"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 23,
+  "text": "${formatSpeed(max, units, withUnit: false)} in a ${formatSpeed(limit, units, withUnit: false)} for ${formatDuration(e.durationS)} on $road"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 27,
+  "text": "Hard brake, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 29,
+  "text": "Hard acceleration, ${_g(e.peak)} from ${formatSpeed(_speedAtStart(e), units)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 31,
+  "text": "Hard corner, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 34,
+  "text": "Phone handled ${n == 1 ? "
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 34,
+  "text": "} over ${formatDuration(e.durationS)} at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 37,
+  "text": "Idled for ${formatDuration(e.durationS)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 39,
+  "text": "Cruised at ${formatSpeed(e.maxSpeedMps ?? 0, units)} for ${formatDuration(e.durationS)}"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 51,
+  "text": "Harsh brake"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 52,
+  "text": "Harsh acceleration"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 53,
+  "text": "Hard corner"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 54,
+  "text": "Phone handling"
+ },
+ {
+  "file": "features/drive/event_text.dart",
+  "line": 56,
+  "text": "High-speed cruise"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 66,
+  "text": "Offline build: the friends map needs the Drivalry cloud project."
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 72,
+  "text": "Sign in to see your friends on the map."
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 75,
+  "text": "Sign in"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 84,
+  "text": "Loading map…"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 85,
+  "text": "Map unavailable: build with --dart-define-from-file=../.env to show friends."
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 176,
+  "text": "Expand map"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 181,
+  "text": "Show everyone"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 200,
+  "text": "No friends sharing yet"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 207,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 370,
+  "text": "Open in Google Maps"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map.dart",
+  "line": 381,
+  "text": "View profile"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map_screen.dart",
+  "line": 15,
+  "text": "Friends map"
+ },
+ {
+  "file": "features/drive/friends_map/friends_map_screen.dart",
+  "line": 18,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/drive/friends_map/friend_marker.dart",
+  "line": 27,
+  "text": "Driving now"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 46,
+  "text": "Could not load the catalogue."
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 77,
+  "text": "No location known yet. Record or simulate a trip first."
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 89,
+  "text": "No pack covers that location yet."
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 99,
+  "text": "Import a pack by URL"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 136,
+  "text": "Speed-limit packs"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 141,
+  "text": "Packs are built from OpenStreetMap every month and hold the road network and posted limits for one region. Matching and scoring use them on this phone; nothing is looked up online during a drive."
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 154,
+  "text": "Install for my location"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 164,
+  "text": "Import URL"
+ },
+ {
+  "file": "features/drive/packs_screen.dart",
+  "line": 182,
+  "text": "None yet. Trips are still recorded and scored for smoothness, attention and efficiency; speeding stays silent until a pack covers your area."
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 101,
+  "text": "Walk back"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 106,
+  "text": "Add photo"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 130,
+  "text": "Take a photo"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 135,
+  "text": "Choose from library"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 161,
+  "text": "Could not save photo: $e"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 171,
+  "text": "Parking note"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 176,
+  "text": "Level 3, near the lift"
+ },
+ {
+  "file": "features/drive/parking/parking_card.dart",
+  "line": 227,
+  "text": "No maps app available."
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 23,
+  "text": "Where I parked"
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 29,
+  "text": "No parking spot remembered. The end of your next drive will appear here."
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 62,
+  "text": "${spot.lat.toStringAsFixed(5)}, ${spot.lon.toStringAsFixed(5)}\\n(map needs a Google Maps key)"
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 88,
+  "text": "Accuracy about ${spot.accuracy.round()} m"
+ },
+ {
+  "file": "features/drive/parking/parking_screen.dart",
+  "line": 110,
+  "text": "Parking spots stay on this phone. Nobody else sees them."
+ },
+ {
+  "file": "features/drive/share_card.dart",
+  "line": 89,
+  "text": "DRIVE SCORE"
+ },
+ {
+  "file": "features/drive/share_card.dart",
+  "line": 340,
+  "text": "PNG encoding failed"
+ },
+ {
+  "file": "features/drive/share_card.dart",
+  "line": 392,
+  "text": "Drive Score ${score.score}. Reckless. I know."
+ },
+ {
+  "file": "features/drive/share_card.dart",
+  "line": 393,
+  "text": "Drive Score ${score.score} on Drivalry."
+ },
+ {
+  "file": "features/drive/share_card.dart",
+  "line": 394,
+  "text": "My Drive Score"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 46,
+  "text": "No road within 300 m of that point in the pack."
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 59,
+  "text": "Simulation failed: $e"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 134,
+  "text": "Simulate a drive"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 137,
+  "text": "Replays a trip through the recorder, matcher and scorer exactly as the native plugin would deliver it."
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 154,
+  "text": "Clean commute"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 155,
+  "text": "Synthetic, 20 minutes, nothing to roast"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 163,
+  "text": "Messy commute"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 164,
+  "text": "Synthetic, speeding, a slam and phone use"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 171,
+  "text": "From an installed pack"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 175,
+  "text": "Install a speed-limit pack first (menu › Speed-limit packs)."
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 203,
+  "text": "Start latitude"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 216,
+  "text": "Start longitude"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 234,
+  "text": "${(_speeding * 100).round()}% of roads"
+ },
+ {
+  "file": "features/drive/simulate_sheet.dart",
+  "line": 258,
+  "text": "Drive from here"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 48,
+  "text": "This trip is gone."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 90,
+  "text": "Delete this trip?"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 92,
+  "text": "It disappears from your history. Nothing was uploaded."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 117,
+  "text": "I was the driver"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 118,
+  "text": "Mark as passenger"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 122,
+  "text": "Delete trip"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 191,
+  "text": "Score breakdown"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 196,
+  "text": "Speed discipline"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 211,
+  "text": "What happened"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 236,
+  "text": "${(t.limitCoverage! * 100).round()}% of this drive was on roads with a known speed limit (pack ${t.packRegion}, OSM ${_short(t.packVersion)})."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 239,
+  "text": "No speed-limit pack covers this area yet, so speeding was not scored."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 240,
+  "text": "No road with a known limit was matched on this drive."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 274,
+  "text": "No road from the pack is attached to this event."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 300,
+  "text": "Limit is wrong here"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 305,
+  "text": "}. What does the sign say? Your flag silences this road for you now; two agreeing flags fix it for everyone."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 315,
+  "text": "Posted limit (${unitLabel(units)})"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 346,
+  "text": "Thanks. This road is silent for you until the fix is confirmed."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 384,
+  "text": "Could not share: $e"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 459,
+  "text": "Moving time"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 461,
+  "text": "Top speed"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 463,
+  "text": "Over the limit"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 465,
+  "text": "Time saved"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 537,
+  "text": "Observation only: limit not confident · $at"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 543,
+  "text": "Limit is wrong here"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 574,
+  "text": "No route recorded."
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 576,
+  "text": "Loading map…"
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
+  "line": 579,
+  "text": "Map unavailable: build with --dart-define-from-file=../.env to show the route."
+ },
+ {
+  "file": "features/drive/widgets/passenger_card.dart",
+  "line": 38,
+  "text": "Were you the passenger?"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 52,
+  "text": "Simulating a drive…"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 53,
+  "text": "Replaying a trip through the recorder and scorer."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 63,
+  "text": "Automatic tracking is not available here"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 65,
+  "text": "This build has no native tracking plugin. Use \"Simulate a drive\" from the menu to exercise scoring."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 83,
+  "text": "End now"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 126,
+  "text": "Scored when you park. Nothing leaves the phone."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 134,
+  "text": "Tracking is off"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 135,
+  "text": "Drives are not detected or recorded."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 142,
+  "text": "Paused until ${DateFormat.jm().format(until)}"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 143,
+  "text": "Automatic detection resumes on its own."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 149,
+  "text": "Looks like you are driving…"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 150,
+  "text": "Confirming before recording starts."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 156,
+  "text": "Location: allow it, then pick \"Allow all the time\" (Android) or \"Always\" (iOS) so drives are noticed with the app closed."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 159,
+  "text": "Location is \"while using the app\". Automatic trips need \"Allow all the time\" (Android) or \"Always\" (iOS)."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 163,
+  "text": "Precise location is off. Approximate fixes cannot be matched to a road."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 165,
+  "text": "Physical activity (Android) or Motion & Fitness (iOS), to notice when you start driving."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 173,
+  "text": "Let Drivalry detect your drives"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 175,
+  "text": "Trips start and stop on their own once these are set. Raw GPS never leaves this phone."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 196,
+  "text": "Open settings"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 202,
+  "text": "Record a drive now"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 214,
+  "text": "Watching for a drive"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 216,
+  "text": "Starts on its own when you drive. Nothing is recorded until then."
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 233,
+  "text": "Pause for 1 hour"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 234,
+  "text": "Pause for 4 hours"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 237,
+  "text": "Pause until tomorrow"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 239,
+  "text": "Turn tracking off"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 249,
+  "text": "Start now"
+ },
+ {
+  "file": "features/drive/widgets/tracking_status_card.dart",
+  "line": 345,
+  "text": "$overDisplay over"
+ },
+ {
+  "file": "features/drive/widgets/trip_card.dart",
+  "line": 16,
+  "text": "Passenger trip"
+ },
+ {
+  "file": "features/drive/widgets/trip_card.dart",
+  "line": 18,
+  "text": "Too short to judge"
+ },
+ {
+  "file": "features/drive/widgets/trip_card.dart",
+  "line": 67,
+  "text": "${(trip.limitCoverage! * 100).round()}% limit coverage"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 61,
+  "text": "No one with that handle."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 64,
+  "text": "Search failed: $e"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 79,
+  "text": "That link points at no one."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 82,
+  "text": "Could not load that profile: $e"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 92,
+  "text": "That is not a Drivalry link."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 110,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 112,
+  "text": "Sign in to add friends."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 117,
+  "text": "Friends see each other on the map, in the feed and in leagues. Adding someone shares your location with them until you hide it."
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 122,
+  "text": "By handle"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 167,
+  "text": "Request sent to ${result.name}"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 181,
+  "text": "Your invite"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 185,
+  "text": "Paste a link"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 237,
+  "text": "That is you"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 239,
+  "text": "Already friends"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 241,
+  "text": "Request sent"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 248,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 291,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 302,
+  "text": "Add me on Drivalry: $link"
+ },
+ {
+  "file": "features/friends/add_friend_screen.dart",
+  "line": 303,
+  "text": "Drivalry invite"
+ },
+ {
+  "file": "features/friends/feed_controller.dart",
+  "line": 78,
+  "text": "Could not refresh: $e"
+ },
+ {
+  "file": "features/friends/feed_controller.dart",
+  "line": 111,
+  "text": "Could not load more: $e"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 104,
+  "text": "WALL OF SHAME"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 110,
+  "text": "WALL OF FAME"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 142,
+  "text": "League week finished"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 143,
+  "text": "Finished #$rank in ${body["
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 148,
+  "text": "Convoy recap"
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 158,
+  "text": "Checked in at ${body["
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 199,
+  "text": "A reckless trip."
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 199,
+  "text": "A scored trip."
+ },
+ {
+  "file": "features/friends/feed_post_card.dart",
+  "line": 213,
+  "text": "${_componentLabel(e.key)} −${(e.value as num).toStringAsFixed(0)}"
+ },
+ {
+  "file": "features/friends/feed_view.dart",
+  "line": 80,
+  "text": "Nothing here yet"
+ },
+ {
+  "file": "features/friends/feed_view.dart",
+  "line": 85,
+  "text": "Trips your friends finish show up here with the score and the roast. Add a friend to get started."
+ },
+ {
+  "file": "features/friends/feed_view.dart",
+  "line": 168,
+  "text": "Add a friend first."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 43,
+  "text": "@${r.other.handle} wants to be friends"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 73,
+  "text": "No friends yet"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 76,
+  "text": "Friends see each other on the map, in the feed and in leagues. Add one with their handle or your invite link."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 101,
+  "text": "Waiting for @${r.other.handle}"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 123,
+  "text": "You will stop seeing each other on the map and in the feed."
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 163,
+  "text": "Not sharing location"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 165,
+  "text": "Driving now"
+ },
+ {
+  "file": "features/friends/friends_list_view.dart",
+  "line": 185,
+  "text": "Remove friend"
+ },
+ {
+  "file": "features/friends/friends_screen.dart",
+  "line": 38,
+  "text": "Friend requests"
+ },
+ {
+  "file": "features/friends/friends_screen.dart",
+  "line": 59,
+  "text": "Sign in to see friends, their drives and the roasts they earned."
+ },
+ {
+  "file": "features/friends/friends_screen.dart",
+  "line": 68,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 23,
+  "text": "Friend requests"
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 26,
+  "text": "Add friend"
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 33,
+  "text": "Sign in to see friend requests."
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 43,
+  "text": "No requests right now."
+ },
+ {
+  "file": "features/friends/friend_requests_screen.dart",
+  "line": 97,
+  "text": "Waiting for @${r.other.handle}"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 45,
+  "text": "Could not join: $e"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 55,
+  "text": "Circle invite"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 57,
+  "text": "Sign in to join the circle."
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 71,
+  "text": "Join this circle?"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 74,
+  "text": "Code ${widget.code.toUpperCase()}. Everyone in the circle will see your live location, and you theirs. You can hide at any time; they can see that you are hiding."
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 100,
+  "text": "Join circle"
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 104,
+  "text": "Not now"
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 59,
+  "text": "Could not load: $e"
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 94,
+  "text": "Sign in to see posts."
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 109,
+  "text": "Post not found."
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 134,
+  "text": "No comments yet"
+ },
+ {
+  "file": "features/friends/post_detail_screen.dart",
+  "line": 168,
+  "text": "Say something about this drive"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 34,
+  "text": "Add vehicle"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 38,
+  "text": "Could not load vehicles: $e"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 53,
+  "text": "No vehicles yet"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 56,
+  "text": "Add your car so trips are credited to it, or wait for the app to notice its Bluetooth and ask."
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 68,
+  "text": "Ignored car audio"
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 71,
+  "text": "Rides in these are treated as passenger trips."
+ },
+ {
+  "file": "features/garage/garage_screen.dart",
+  "line": 119,
+  "text": "Never tracked"
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 33,
+  "text": "Stored encrypted on this phone only. Never uploaded, never shared."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 42,
+  "text": "No documents yet. Add a photo of your insurance card or registration."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 71,
+  "text": "Add document"
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 125,
+  "text": "Could not decrypt this document."
+ },
+ {
+  "file": "features/garage/tabs/documents_tab.dart",
+  "line": 159,
+  "text": "The encrypted file is wiped from this phone."
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 52,
+  "text": "Fuel logged"
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 72,
+  "text": "Economy appears after two full tanks with odometer readings. Partial fill-ups count toward the next full one."
+ },
+ {
+  "file": "features/garage/tabs/fuel_tab.dart",
+  "line": 154,
+  "text": "Full tank"
+ },
+ {
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 41,
+  "text": "No reminders yet. Add oil changes, tyre rotations, registration or inspection by distance, time or both."
+ },
+ {
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 80,
+  "text": "Maintenance reminder"
+ },
+ {
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 107,
+  "text": "Last done at (${imperial ? "
+ },
+ {
+  "file": "features/garage/tabs/maintenance_tab.dart",
+  "line": 187,
+  "text": "Mark done today"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 35,
+  "text": "scored and unscored"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 37,
+  "text": "Average score"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 37,
+  "text": "scored driver trips"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 40,
+  "text": "Fuel economy"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 42,
+  "text": "needs two full tanks with odometer"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 51,
+  "text": "add a fill-up with the odometer"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 63,
+  "text": "Never tracked"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 65,
+  "text": "Drives in this vehicle are ended and deleted as soon as the phone connects to it."
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 105,
+  "text": "Last trip ${relativeTime(DateTime.fromMillisecondsSinceEpoch(stats!.lastTripAt!), DateTime.now())}"
+ },
+ {
+  "file": "features/garage/tabs/stats_tab.dart",
+  "line": 111,
+  "text": "Car audio: ${vehicle.bluetoothNameList.join("
+ },
+ {
+  "file": "features/garage/vehicle_detail_screen.dart",
+  "line": 43,
+  "text": "This vehicle is gone."
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 74,
+  "text": "Add vehicle"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 74,
+  "text": "Edit vehicle"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 93,
+  "text": "Give it a name"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 125,
+  "text": "Not a year"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 146,
+  "text": "Car audio names"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 151,
+  "text": "The Bluetooth or CarPlay name the phone sees in this car. Trips are credited to the vehicle automatically."
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 172,
+  "text": "e.g. \"Mazda CX-5\""
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 184,
+  "text": "Never track this vehicle"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 186,
+  "text": "Rental, work truck: drives in it are ended and deleted the moment the phone connects to it."
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 256,
+  "text": "Archive this vehicle?"
+ },
+ {
+  "file": "features/garage/vehicle_edit_screen.dart",
+  "line": 258,
+  "text": "It disappears from the Garage. Its trips, fuel log and documents stay on the phone."
+ },
+ {
+  "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
+  "line": 33,
+  "text": "New car audio '${prompt.name}'. Add it to the Garage?"
+ },
+ {
+  "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
+  "line": 41,
+  "text": "Trips in cars you own are scored for you. Unknown cars are treated as a passenger ride until you say otherwise."
+ },
+ {
+  "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
+  "line": 61,
+  "text": "It is one of mine"
+ },
+ {
+  "file": "features/garage/widgets/new_vehicle_prompt_card.dart",
+  "line": 65,
+  "text": "It's not mine"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 63,
+  "text": "A group challenge gives the whole league one goal for a week or two: clean trips, phone-free trips, average score, or everyone showing up."
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 83,
+  "text": "Start another challenge"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 84,
+  "text": "Start a group challenge"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 102,
+  "text": "Call off this challenge?"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 104,
+  "text": "Nobody gets the badge; the league can start another."
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 109,
+  "text": "Keep going"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 113,
+  "text": "Call off"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 162,
+  "text": "Call off"
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 195,
+  "text": "${p.value.round()} of ${p.needed} members have ${c.target} trip${c.target == 1 ? "
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 202,
+  "text": "Met! Everyone earned ${c.goal.badgeName}."
+ },
+ {
+  "file": "features/leagues/challenges/challenge_card.dart",
+  "line": 211,
+  "text": "Missed: $shown of $needed."
+ },
+ {
+  "file": "features/leagues/challenges/new_challenge_sheet.dart",
+  "line": 56,
+  "text": "Group challenge"
+ },
+ {
+  "file": "features/leagues/challenges/new_challenge_sheet.dart",
+  "line": 59,
+  "text": "One goal for the whole league. Everyone who is a member when it ends earns the badge if the league makes it."
+ },
+ {
+  "file": "features/leagues/challenges/new_challenge_sheet.dart",
+  "line": 98,
+  "text": "One week"
+ },
+ {
+  "file": "features/leagues/challenges/new_challenge_sheet.dart",
+  "line": 99,
+  "text": "Two weeks"
+ },
+ {
+  "file": "features/leagues/challenges/new_challenge_sheet.dart",
+  "line": 126,
+  "text": "Pick a whole-number target above zero."
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 44,
+  "text": "Could not create the league right now. It will be retried when you are back online."
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 57,
+  "text": "New league"
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 70,
+  "text": "League name"
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 71,
+  "text": "The Boys, Carpool Crew, Family"
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 78,
+  "text": "Up to 30 members. Weeks run Monday to Sunday in your time zone. XP comes from how well you drive, never how far or how fast. Top five promote, bottom five demote, and a week with no scored trips demotes too."
+ },
+ {
+  "file": "features/leagues/create_league_screen.dart",
+  "line": 93,
+  "text": "Create league"
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 19,
+  "text": "Sign in to duel your friends on how well you drive."
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 53,
+  "text": "Challenge sent to @${duel.opponent.handle}."
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 70,
+  "text": "Showing the last known duels. Pull to retry."
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 84,
+  "text": "Waiting for you"
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 178,
+  "text": "Could not cancel. Try again online."
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 217,
+  "text": "You won. Pick the badge @${widget.duel.other(widget.duel.winnerId!).handle} wears for a week:"
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 275,
+  "text": "No duels yet"
+ },
+ {
+  "file": "features/leagues/duels/duels_screen.dart",
+  "line": 278,
+  "text": "Challenge a friend to a week on XP, average Drive Score or phone-free trips. The loser wears Sunday Driver, Lead Foot or Butterfingers for seven days. The winner picks."
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 107,
+  "text": "Waiting for your answer"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 109,
+  "text": "Waiting for @${other.handle} to answer"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 118,
+  "text": "You lead"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 125,
+  "text": "You won"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 125,
+  "text": "You lost"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 132,
+  "text": " · they wear ${duelBadgeName(badge)} until $until"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 133,
+  "text": " · you wear ${duelBadgeName(badge)} until $until"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 139,
+  "text": "Expired unanswered"
+ },
+ {
+  "file": "features/leagues/duels/duel_card.dart",
+  "line": 206,
+  "text": "${v.trips} of $duelScoreAvgMinTrips trips"
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 49,
+  "text": "Duel a friend"
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 52,
+  "text": "Seven days from the moment they accept. The loser wears a badge the winner picks for a week. Never about speed."
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 62,
+  "text": "Add a friend first; duels are between friends."
+ },
+ {
+  "file": "features/leagues/duels/new_duel_sheet.dart",
+  "line": 113,
+  "text": "Send challenge"
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 47,
+  "text": "reshuffles Monday"
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 65,
+  "text": "Global league"
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 70,
+  "text": "Get matched every Monday with up to 29 drivers at your tier. Same rules as a friend league: XP ranks, Driver Rating breaks ties, top five move up, bottom five move down. Never by speed."
+ },
+ {
+  "file": "features/leagues/global_league_card.dart",
+  "line": 85,
+  "text": "Join the global league"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 32,
+  "text": "Invite to ${league.name}"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 51,
+  "text": "Friends enter this code in Leagues, or open the link."
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 64,
+  "text": "Link copied"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 69,
+  "text": "Copy link"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 78,
+  "text": "Join my Drivalry league \"${league.name}\": $link (code ${league.inviteCode.toUpperCase()})"
+ },
+ {
+  "file": "features/leagues/invite_sheet.dart",
+  "line": 80,
+  "text": "Drivalry league invite"
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 34,
+  "text": "Could not join right now. Try again later."
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 47,
+  "text": "Join league"
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 49,
+  "text": "Sign in to accept this league invite."
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 61,
+  "text": "Joining with code ${widget.code}…"
+ },
+ {
+  "file": "features/leagues/join_league_screen.dart",
+  "line": 79,
+  "text": "Back to leagues"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 52,
+  "text": "Sign in to race your friends on how well you drive."
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 89,
+  "text": "Showing the last known tables. Pull to retry."
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 99,
+  "text": "Friend leagues"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 126,
+  "text": "Create a league"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 127,
+  "text": "Up to 30 friends, Monday to Sunday"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 135,
+  "text": "Join with a code"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 136,
+  "text": "Paste the 8-character invite code"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 154,
+  "text": "Join a league"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 160,
+  "text": "Invite code"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 201,
+  "text": "#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 243,
+  "text": "No leagues yet"
+ },
+ {
+  "file": "features/leagues/leagues_screen.dart",
+  "line": 246,
+  "text": "Create one and send the invite link to your friends, or paste a code someone sent you. Weeks run Monday to Sunday. The top five move up a tier, the bottom five move down, and skipping a week moves you down too."
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 70,
+  "text": "Show my trips here"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 71,
+  "text": "Hide my trips here"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 77,
+  "text": "Leave global league"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 77,
+  "text": "Leave league"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 99,
+  "text": "You are hiding in this league. Members can see that you are hiding; they cannot see your trips or roasts."
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 106,
+  "text": "Matched by tier and Driver Rating. The table is rebuilt every Monday; your tier carries over."
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 147,
+  "text": "You leave the global pool too. Rejoin any time from the Leagues tab; your tier is kept."
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 149,
+  "text": "Your past weeks stay in the table. You can rejoin with the code."
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 186,
+  "text": "Could not load members: $e"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 250,
+  "text": "This week"
+ },
+ {
+  "file": "features/leagues/league_screen.dart",
+  "line": 257,
+  "text": "Week of ${fmt.format(w.weekStart)}"
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 29,
+  "text": "Ends ${DateFormat.MMMEd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} at midnight."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 34,
+  "text": "${DateFormat.MMMd().format(week.weekStart)} to ${DateFormat.MMMd().format(nextWeekStart(week.weekStart).subtract(const Duration(days: 1)))} · $ends"
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 42,
+  "text": "Nobody here yet. Invite a friend."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 45,
+  "text": "Promotion zone"
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 47,
+  "text": "Relegation zone"
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 53,
+  "text": "Top five move up a tier on Sunday night, bottom five move down. A week with no scored trips moves down regardless."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 55,
+  "text": "With more than five members, the top five promote and the bottom five demote on Sunday night."
+ },
+ {
+  "file": "features/leagues/widgets/standings_table.dart",
+  "line": 141,
+  "text": "Didn't drive? That's fine. The league didn't wait."
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 29,
+  "text": "Places stay on this phone. Long-press the friends map to save one there, or add where you are now."
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 37,
+  "text": "No places yet"
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 38,
+  "text": "Start with Home: it powers auto check-ins."
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 57,
+  "text": "Add where I am"
+ },
+ {
+  "file": "features/places/places_screen.dart",
+  "line": 69,
+  "text": "No location yet. Allow location in Drive, or long-press the map."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 31,
+  "text": "This place was removed."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 58,
+  "text": "Its alerts go with it."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 94,
+  "text": "Tell me when…"
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 102,
+  "text": "No friends sharing yet"
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 104,
+  "text": "Alerts need a friend or circle member who shares their location."
+ },
+ {
+  "file": "features/places/place_screen.dart",
+  "line": 122,
+  "text": "Worked out on this phone from their live position; nothing about this place is uploaded. Honours quiet hours."
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 62,
+  "text": "Give the place a name."
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 97,
+  "text": "Save a place"
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 97,
+  "text": "Edit place"
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 102,
+  "text": "Stays on this phone. Friends' arrivals and departures are worked out here from their live position."
+ },
+ {
+  "file": "features/places/save_place_sheet.dart",
+  "line": 163,
+  "text": "Save place"
+ },
+ {
+  "file": "features/profile/profile_model.dart",
+  "line": 75,
+  "text": "At least 3 characters."
+ },
+ {
+  "file": "features/profile/profile_model.dart",
+  "line": 76,
+  "text": "At most 20 characters."
+ },
+ {
+  "file": "features/profile/profile_model.dart",
+  "line": 78,
+  "text": "Lowercase letters, digits and underscores only."
+ },
+ {
+  "file": "features/profile/profile_model.dart",
+  "line": 85,
+  "text": "Enter a name."
+ },
+ {
+  "file": "features/profile/profile_model.dart",
+  "line": 86,
+  "text": "At most 40 characters."
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 44,
+  "text": "signed out"
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 46,
+  "text": "another account"
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 113,
+  "text": "Offline build."
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 117,
+  "text": "That handle is taken."
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 154,
+  "text": "That image is ${(jpeg.length / 1024).round()} KB; the limit is 100 KB."
+ },
+ {
+  "file": "features/profile/profile_repo.dart",
+  "line": 158,
+  "text": "Offline build."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 40,
+  "text": "Sign in to have a profile your friends can see."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 61,
+  "text": "Could not load profile: $e"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 64,
+  "text": "No profile yet. Pull to refresh."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 94,
+  "text": "Driver Rating"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 99,
+  "text": "Needs 5 scored trips"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 100,
+  "text": "30-day average"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 106,
+  "text": "Passenger trips"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 108,
+  "text": "Marked by them, honour system"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 124,
+  "text": "Display name"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 137,
+  "text": "Hidden from everyone"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 138,
+  "text": "Visible to friends and circles"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 140,
+  "text": "Change in Settings › Location"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 152,
+  "text": "Hiding their location"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 153,
+  "text": "Shares location with friends"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 187,
+  "text": "Could not change handle: $e"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 198,
+  "text": "Display name"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 200,
+  "text": "What friends see"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 311,
+  "text": "Avatar updated."
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 315,
+  "text": "Could not upload: $e"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 358,
+  "text": "Clean streak"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 360,
+  "text": "Trips at 80+, none reckless"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 366,
+  "text": "Phone-free streak"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 368,
+  "text": "Trips without touching it"
+ },
+ {
+  "file": "features/profile/profile_screen.dart",
+  "line": 399,
+  "text": "None yet. Drive well."
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 20,
+  "text": "Adding a friend shares your live location with them. You can hide it any time in Settings."
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 49,
+  "text": "Sign-in failed: $e"
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 62,
+  "text": "Sign in"
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 81,
+  "text": "Sign in to join leagues, see friends and get roasted in public."
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 88,
+  "text": "This build has no Drivalry cloud project configured, so sign-in is unavailable."
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 92,
+  "text": "You are signed in."
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 99,
+  "text": "Continue with Apple"
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 115,
+  "text": "Continue with Google"
+ },
+ {
+  "file": "features/profile/sign_in_screen.dart",
+  "line": 124,
+  "text": "Google sign-in is not configured for this build."
+ },
+ {
+  "file": "features/seasons/seasons_screen.dart",
+  "line": 31,
+  "text": "A season is a quarter. When it ends, your phone writes one summary row (trips, XP, average score, badges) and Season Wrapped is built from your own trips, on the phone."
+ },
+ {
+  "file": "features/seasons/seasons_screen.dart",
+  "line": 90,
+  "text": "Before you joined"
+ },
+ {
+  "file": "features/seasons/seasons_screen.dart",
+  "line": 95,
+  "text": "Best tier ${r.bestTier!.label}${r.duelsWon + r.duelsLost > 0 ? "
+ },
+ {
+  "file": "features/seasons/seasons_screen.dart",
+  "line": 98,
+  "text": "Result uploads on the next sync"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 84,
+  "text": "$left day${left == 1 ? "
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 101,
+  "text": "Avg score"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 115,
+  "text": "All seasons"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 121,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 172,
+  "text": "Between seasons"
+ },
+ {
+  "file": "features/seasons/season_card.dart",
+  "line": 176,
+  "text": "Trips still count; the next season picks them up."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 11,
+  "text": "Speed limits and road geometry come from OpenStreetMap data, © OpenStreetMap contributors, available under the Open Database Licence (ODbL)."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 17,
+  "text": "Google Maps Platform"
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 18,
+  "text": "Maps are rendered by the Google Maps SDK. Place suggestions and route estimates in convoys use the Places and Routes APIs."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 24,
+  "text": "Weather at the start of each trip comes from the Open-Meteo API (CC BY 4.0, non-commercial)."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 30,
+  "text": "Place names for saved places use the OpenStreetMap Nominatim geocoder, sparingly and cached."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 36,
+  "text": "Regional OpenStreetMap extracts used to build the speed-limit packs."
+ },
+ {
+  "file": "features/settings/attribution_screen.dart",
+  "line": 66,
+  "text": "Drivalry is free, open source (MIT) and runs on free tiers. Raw GPS never leaves your phone."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 15,
+  "text": "Open Settings and tap Focus."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 16,
+  "text": "Tap + and choose Driving."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 17,
+  "text": "Turn on Auto-Reply and pick who gets it (Favourites or Recents)."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 18,
+  "text": "Set it to turn on automatically when driving or when connected to CarPlay or your car's Bluetooth."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 23,
+  "text": "Open Do Not Disturb settings (button below)."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 24,
+  "text": "Add or edit the Driving schedule (on Pixel: Settings › Connected devices › Connection preferences › Driving mode)."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 26,
+  "text": "Choose what gets through and whether to reply with a text."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 37,
+  "text": "Auto-reply to texts"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 42,
+  "text": "Your phone can answer texts for you while you drive. That feature lives in the operating system, not in Drivalry: it is private, works in every messaging app, and does not need this app to read your messages. Drivalry never sends replies."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 50,
+  "text": "Set up a Driving Focus"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 50,
+  "text": "Set up Android's driving mode"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 73,
+  "text": "Steps copied"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 76,
+  "text": "Copy the steps"
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 89,
+  "text": "Could not open it here. Look under Settings › Sound › Do Not Disturb."
+ },
+ {
+  "file": "features/settings/auto_reply_settings_screen.dart",
+  "line": 95,
+  "text": "Open Do Not Disturb settings"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 22,
+  "text": "Crash detection"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 28,
+  "text": "Detect crashes"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 30,
+  "text": "A hard impact followed by a dead stop starts a 30-second check on this phone."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 39,
+  "text": "If you tap \"I'm OK\" nothing happens. If nobody answers, friends and circle members who use Drivalry get a push, and a text with your location is prepared for your emergency contacts. Drivalry never places a call. Low-speed bumps and a dropped phone are ignored: the car has to have been moving."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 52,
+  "text": "Help was requested"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 53,
+  "text": "Tap to confirm you are OK."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 60,
+  "text": "Emergency contacts"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 63,
+  "text": "None yet. Add at least one so the text has somewhere to go."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 70,
+  "text": "Test the countdown"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 72,
+  "text": "Runs the full-screen check with sound. Nothing is sent."
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 82,
+  "text": "False alarms you dismissed"
+ },
+ {
+  "file": "features/settings/crash_settings_screen.dart",
+  "line": 87,
+  "text": "Last detection"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 20,
+  "text": "Spoken cues"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 26,
+  "text": "Spoken cues"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 28,
+  "text": "Short spoken cues through the car speakers during a drive. Off by default. The roast always waits until the trip ends."
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 37,
+  "text": "Limit changes"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 38,
+  "text": "\"Limit's 35\" when the posted limit changes"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 44,
+  "text": "Over the limit"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 46,
+  "text": "\"Over by 8\" after eight seconds at least 5 mph over, at most once a minute"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 54,
+  "text": "Smooth driving"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 55,
+  "text": "\"Smooth\" after five clean minutes"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 61,
+  "text": "Voice speed"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 83,
+  "text": "Say a sample"
+ },
+ {
+  "file": "features/settings/cues_settings_screen.dart",
+  "line": 89,
+  "text": "Cues use the speed-limit pack on this phone and never the network. Nothing is said on roads without a known limit, and phone handling is never a cue."
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 73,
+  "text": "Plugin available"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 77,
+  "text": "Paused until"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 88,
+  "text": "Spooled events"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 89,
+  "text": "Service running"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 97,
+  "text": "Last trigger"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 100,
+  "text": "Tentative starts"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 101,
+  "text": "Confirmed trips"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 102,
+  "text": "Discarded tentatives"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 104,
+  "text": "Last trip ended"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 109,
+  "text": "Radio: relayed bytes (TURN)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 110,
+  "text": "Crash: last candidate"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 111,
+  "text": "Crash: false alarms dismissed"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 112,
+  "text": "Crash: unresolved alert"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 114,
+  "text": "Live trip"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 178,
+  "text": "Copy debug info"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 204,
+  "text": "Battery: per hour driving (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 206,
+  "text": "not enough data yet (${b.drivingPairs} trips, ${b.drivingHours.toStringAsFixed(1)} h)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 212,
+  "text": "Battery: per day parked (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 214,
+  "text": "not enough data yet (${b.parkedDays.toStringAsFixed(1)} days)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 215,
+  "text": "${b.parkedPctPerDay!.toStringAsFixed(1)}%/day over ${b.parkedDays.toStringAsFixed(1)} days"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 223,
+  "text": "Trips recorded (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 224,
+  "text": "Missed starts"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 224,
+  "text": "n/a: a missed start leaves nothing to count"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 225,
+  "text": "Trips started by hand (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 225,
+  "text": "${d.manualStarts} (proxy for missed)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 227,
+  "text": "False starts"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 228,
+  "text": "${d.discardedTentativesSinceInstall} dropped by the plugin since install; ${d.deletedTrips} deleted by you (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 232,
+  "text": "Late starts (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 234,
+  "text": "n/a: no trips with a stored trigger time yet"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 235,
+  "text": "${d.lateStarts} of ${d.lateStartsCountable} confirmed over 2 min after the trigger"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 239,
+  "text": "Late ends (14 d)"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 241,
+  "text": "n/a: no stationary-ended trips with samples"
+ },
+ {
+  "file": "features/settings/diagnostics_screen.dart",
+  "line": 242,
+  "text": "${d.lateEnds} of ${d.lateEndsCountable} ended over a minute after the 3-min rule"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 21,
+  "text": "Emergency contacts"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 40,
+  "text": "${c.phone}  ·  also gets the push"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 53,
+  "text": "Numbers stay on this phone. The text is prepared in your messaging app; you (or whoever has your phone) still press send."
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 65,
+  "text": "Add contact"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 88,
+  "text": "No emergency contacts"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 93,
+  "text": "Add the people who should get a text with your location if a crash check goes unanswered."
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 130,
+  "text": "Add emergency contact"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 140,
+  "text": "Name is required"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 147,
+  "text": "Phone number"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 152,
+  "text": "Enter a phone number"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 161,
+  "text": "Also a Drivalry friend? (optional)"
+ },
+ {
+  "file": "features/settings/emergency_contacts_screen.dart",
+  "line": 163,
+  "text": "Only accepted friends can be linked. They get the push alert as well as the text."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 32,
+  "text": "Push from friends"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 34,
+  "text": "Registered on this device."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 36,
+  "text": "Permission denied. Allow notifications in the system settings."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 38,
+  "text": "Not registered yet."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 53,
+  "text": "Quiet hours"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 56,
+  "text": "${QuietHours.formatMinutes(quiet.startMinutes)} to ${QuietHours.formatMinutes(quiet.endMinutes)}. Crash alerts still come through."
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 104,
+  "text": "Crash alerts"
+ },
+ {
+  "file": "features/settings/notifications_settings_screen.dart",
+  "line": 105,
+  "text": "Always on. Ignores quiet hours."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 37,
+  "text": "Offline build"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 39,
+  "text": "No Drivalry cloud project is configured. Tracking and scoring work; friends and leagues do not."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 46,
+  "text": "Sign in"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 47,
+  "text": "Apple or Google. No passwords."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 54,
+  "text": "Your profile"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 61,
+  "text": "Export my data"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 62,
+  "text": "Every trip on this phone, as JSON"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 67,
+  "text": "Sign out"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 76,
+  "text": "Delete account"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 80,
+  "text": "Removes you from every league, circle and feed. Trips on this phone stay."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 107,
+  "text": "Hide my location from everyone"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 110,
+  "text": "Friends and circles stop seeing where you are. They can see that you are hiding."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 112,
+  "text": "Sign in to share or hide your location."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 125,
+  "text": "Crash detection"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 127,
+  "text": "A 30-second check after a hard stop; help is requested only if you do not answer"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 134,
+  "text": "Emergency contacts"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 135,
+  "text": "Who gets the text if you do not respond"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 139,
+  "text": "During a drive"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 142,
+  "text": "Spoken cues"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 144,
+  "text": "Short limit and smoothness cues through the car speakers. Off by default."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 152,
+  "text": "Auto-reply to texts"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 154,
+  "text": "Your phone's driving mode does this. Drivalry shows you where."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 163,
+  "text": "Quiet hours, what to be told about"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 168,
+  "text": "Speed-limit packs"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 186,
+  "text": "Open source"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 187,
+  "text": "MIT licence, built in public"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 209,
+  "text": "Export failed: $e"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 216,
+  "text": "Signed out."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 218,
+  "text": "Sign-out failed: $e"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 226,
+  "text": "Delete your account?"
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 228,
+  "text": "Your profile, friendships, league memberships, uploaded trip summaries and posts are deleted for good. The trips stored on this phone are kept. This cannot be undone."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 252,
+  "text": "Account deleted."
+ },
+ {
+  "file": "features/settings/settings_screen.dart",
+  "line": 254,
+  "text": "Delete failed: $e"
+ },
+ {
+  "file": "features/stats/fun_facts.dart",
+  "line": 58,
+  "text": "default economy"
+ },
+ {
+  "file": "features/stats/fun_facts.dart",
+  "line": 80,
+  "text": "Average score"
+ },
+ {
+  "file": "features/stats/fun_facts.dart",
+  "line": 82,
+  "text": "No scored trips"
+ },
+ {
+  "file": "features/stats/profile_stats_card.dart",
+  "line": 36,
+  "text": "Average score"
+ },
+ {
+  "file": "features/stats/profile_stats_card.dart",
+  "line": 42,
+  "text": "Clean streak"
+ },
+ {
+  "file": "features/stats/profile_stats_card.dart",
+  "line": 53,
+  "text": "All stats"
+ },
+ {
+  "file": "features/stats/profile_stats_card.dart",
+  "line": 61,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/stats/share_stats.dart",
+  "line": 35,
+  "text": "My Drivalry stats"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 38,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 64,
+  "text": "Could not compute stats: $e"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 91,
+  "text": "No scored trips yet"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 92,
+  "text": "No scored trips in ${window.label.toLowerCase()}"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 97,
+  "text": "Everything here is computed on this phone from your own drives. Finish a trip as the driver and the numbers appear."
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 145,
+  "text": "Share headline"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 181,
+  "text": "Fuel, cost and CO₂ are estimates from distance and economy. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it."
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 191,
+  "text": "Fuel estimate"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 191,
+  "text": "Hard accelerations"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 205,
+  "text": "My ${stats.range.label} on Drivalry: ${stats.totals.trips} trips."
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 224,
+  "text": "Fuel assumptions"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 232,
+  "text": "Fuel price per litre"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 239,
+  "text": "Default economy, L/100 km"
+ },
+ {
+  "file": "features/stats/stats_screen.dart",
+  "line": 240,
+  "text": "Used for cars without fill-ups"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 33,
+  "text": "Driver trips only"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 37,
+  "text": "Behind the wheel"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 39,
+  "text": "Moving time"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 43,
+  "text": "Average score"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 45,
+  "text": "No scored trips"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 49,
+  "text": "Fuel estimate"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 60,
+  "text": "Tailpipe only"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 66,
+  "text": "Earned in this window"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 75,
+  "text": "Longest trip"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 85,
+  "text": "Highest point"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 90,
+  "text": "Needs GPS altitude"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 91,
+  "text": "Above sea level"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 95,
+  "text": "Earliest start"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 97,
+  "text": "Before 3 am counts as late"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 101,
+  "text": "Latest start"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 103,
+  "text": "Night owl material"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 107,
+  "text": "Busiest day"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 113,
+  "text": "Longest clean streak"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 115,
+  "text": "Trips at 80+, none reckless"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 124,
+  "text": "States visited"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 127,
+  "text": "+${g.regions.length - g.stateCodes.length} other regions"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 128,
+  "text": "From matched packs"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 132,
+  "text": "Home radius"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 134,
+  "text": "90 % of distance within"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 134,
+  "text": "Save a Home place"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 138,
+  "text": "Farthest from home"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 140,
+  "text": "As the crow flies"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 140,
+  "text": "Save a Home place"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 144,
+  "text": "Most driven road"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 147,
+  "text": "Needs matched trips"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 158,
+  "text": "Night Owl"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 160,
+  "text": "Of distance after dark"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 170,
+  "text": "Average trip"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 176,
+  "text": "Groundhog Route"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 179,
+  "text": "No repeated route yet"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 188,
+  "text": "Trips ending here"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 195,
+  "text": "Reality checks"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 198,
+  "text": "Over the limit"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 201,
+  "text": "Barely any"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 206,
+  "text": "Ticket-risk time"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 208,
+  "text": "10+ over, or worse"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 212,
+  "text": "Hard accelerations"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 214,
+  "text": "About ${formatMoney(rc.moneyBurned)} of fuel"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 225,
+  "text": "${dist(so.convoyDistanceM)} in convoy"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 232,
+  "text": "Convoys together"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 238,
+  "text": "DJ score"
+ },
+ {
+  "file": "features/stats/stats_sections.dart",
+  "line": 240,
+  "text": "Tracks played for the convoy"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 66,
+  "text": "District of Columbia"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 86,
+  "text": "North Carolina"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 87,
+  "text": "North Dakota"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 89,
+  "text": "New Hampshire"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 90,
+  "text": "New Jersey"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 91,
+  "text": "New Mexico"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 93,
+  "text": "New York"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 98,
+  "text": "Puerto Rico"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 99,
+  "text": "Rhode Island"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 100,
+  "text": "South Carolina"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 101,
+  "text": "South Dakota"
+ },
+ {
+  "file": "features/stats/us_states.dart",
+  "line": 109,
+  "text": "West Virginia"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 54,
+  "text": "trip as the driver"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 54,
+  "text": "trips as the driver"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 59,
+  "text": "You covered"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 61,
+  "text": "${formatHours(t.movingS)} behind the wheel"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 66,
+  "text": "Average Drive Score"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 69,
+  "text": "No scored trips this season"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 70,
+  "text": "Best ${t.bestScore} · ${t.cleanTrips} clean trips"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 75,
+  "text": "Night Owl"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 78,
+  "text": "of your distance after dark · ${h.weekendPercent} % on weekends"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 83,
+  "text": "States visited"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 86,
+  "text": "Nothing matched to a pack yet"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 93,
+  "text": "Groundhog Route"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 96,
+  "text": "No route repeated yet"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 97,
+  "text": "${groundhog.label}, again and again"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 100,
+  "text": "the same route, again and again"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 105,
+  "text": "Over the limit for"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 108,
+  "text": "Barely at all. Respect."
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 109,
+  "text": "It saved you ${formatSaved(rc.timeSavedS)}."
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 114,
+  "text": "Longest trip"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 118,
+  "text": "Highest point ${formatAltitude(r.highestAltitudeM!, units)}"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 119,
+  "text": "Busiest day ${r.mostTripsInDay} trips"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 128,
+  "text": "Start one from the Convoy tab"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 138,
+  "text": "XP earned"
+ },
+ {
+  "file": "features/stats/wrapped_cards.dart",
+  "line": 140,
+  "text": "Drive well. See you next season."
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 34,
+  "text": "Season Wrapped"
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 37,
+  "text": "Could not build the Wrapped: $e"
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 86,
+  "text": "Share this card"
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 108,
+  "text": "${card.kicker}: ${card.value}. My ${s.range.label} on Drivalry."
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 127,
+  "text": "Nothing to wrap yet"
+ },
+ {
+  "file": "features/stats/wrapped_screen.dart",
+  "line": 132,
+  "text": "No scored driver trips in ${range.label}. Drive, and this fills in."
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 166,
+  "text": "${entry.region}: checksum mismatch"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 183,
+  "text": "no file at $path"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 261,
+  "text": "not a pack file: $e"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 266,
+  "text": "pack has no region in meta"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 370,
+  "text": "download failed: HTTP ${res.statusCode} for $uri"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 422,
+  "text": "SELECT geohash FROM tiles"
+ },
+ {
+  "file": "packs/pack_manager.dart",
+  "line": 430,
+  "text": "pack has no tiles"
+ },
+ {
+  "file": "tracking/simulated_tracking.dart",
+  "line": 64,
+  "text": "trip has no samples"
+ },
+ {
+  "file": "tracking/tracking_controller.dart",
+  "line": 284,
+  "text": "tracking plugin missing"
+ },
+ {
+  "file": "widgets/placeholder_screen.dart",
+  "line": 33,
+  "text": "Coming in this tab"
+ },
+ {
+  "file": "widgets/relative_time.dart",
+  "line": 4,
+  "text": "just now"
+ },
+ {
+  "file": "widgets/relative_time.dart",
+  "line": 5,
+  "text": "${d.inMinutes} min ago"
+ },
+ {
+  "file": "widgets/relative_time.dart",
+  "line": 8,
+  "text": "${d.inDays} days ago"
+ },
+ {
+  "file": "widgets/signed_in_scope.dart",
+  "line": 15,
+  "text": "Sign in to use this with friends."
+ },
+ {
+  "file": "widgets/signed_in_scope.dart",
+  "line": 28,
+  "text": "Offline build"
+ },
+ {
+  "file": "widgets/signed_in_scope.dart",
+  "line": 30,
+  "text": "This build has no Drivalry cloud project configured, so friends, leagues and the feed are unavailable. Tracking and scoring still work."
+ },
+ {
+  "file": "widgets/signed_in_scope.dart",
+  "line": 38,
+  "text": "Not signed in"
+ },
+ {
+  "file": "widgets/signed_in_scope.dart",
+  "line": 43,
+  "text": "Sign in"
+ }
+]
