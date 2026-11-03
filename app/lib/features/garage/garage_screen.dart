@@ -41,7 +41,7 @@ class GarageScreen extends ConsumerWidget {
           : null,
       body: CustomScrollView(
         slivers: [
-          const SliverAppBar.large(title: Text('Garage')),
+          const LargeTitleBar(title: 'Garage'),
           SliverPadding(
             padding: const EdgeInsets.only(
               top: Space.sm,

@@ -38,3 +38,6 @@ app/ios/Runner/GoogleService-Info.plist
 
 # Claude Code agent worktrees
 .claude/worktrees/
+
+# layout audit renders
+app/test/layout/out/

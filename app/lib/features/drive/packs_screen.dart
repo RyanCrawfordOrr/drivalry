@@ -1,5 +1,7 @@
 import 'package:drivalry_packs/drivalry_packs.dart';
 import 'package:flutter/material.dart';
+
+import '../../app/ui/ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -90,30 +92,30 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
   });
 
   Future<void> _importFromUrl() async {
-    final controller = TextEditingController();
     final url = await showDialog<String>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Paste a pack link'),
-        content: TextField(
-          controller: controller,
-          decoration: const InputDecoration(hintText: 'https://…/us-dc.pack'),
-          keyboardType: TextInputType.url,
-          autofocus: true,
+      builder: (_) => TextControllers(
+        builder: (ctx, c) => AlertDialog(
+          title: const Text('Paste a pack link'),
+          content: TextField(
+            controller: c.first,
+            decoration: const InputDecoration(hintText: 'https://…/us-dc.pack'),
+            keyboardType: TextInputType.url,
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, c.first.text.trim()),
+              child: const Text('Download'),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text.trim()),
-            child: const Text('Download'),
-          ),
-        ],
       ),
     );
-    controller.dispose();
     if (url == null || url.isEmpty) return;
     await _run(() async {
       final pack = await _manager.importFromUrl(

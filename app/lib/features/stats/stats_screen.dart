@@ -244,53 +244,56 @@ class _StatsBody extends ConsumerWidget {
 /// Price per litre and default economy are plain settings rows.
 Future<void> _editFuelAssumptions(BuildContext context, WidgetRef ref) async {
   final db = ref.read(databaseProvider);
-  final price = TextEditingController(
-    text: (ref.read(fuelPriceProvider).value ?? defaultFuelPricePerLitre)
-        .toStringAsFixed(2),
-  );
-  final economy = TextEditingController(
-    text: (ref.read(fuelEconomyProvider).value ?? defaultLitresPer100km)
-        .toStringAsFixed(1),
-  );
-  final ok = await showDrivalrySheet<bool>(
+  final priceText =
+      (ref.read(fuelPriceProvider).value ?? defaultFuelPricePerLitre)
+          .toStringAsFixed(2);
+  final economyText =
+      (ref.read(fuelEconomyProvider).value ?? defaultLitresPer100km)
+          .toStringAsFixed(1);
+  final result = await showDrivalrySheet<(String, String)>(
     context,
     title: 'Fuel assumptions',
-    builder: (ctx) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: price,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Fuel price per litre',
+    builder: (_) => TextControllers(
+      initial: [priceText, economyText],
+      builder: (ctx, c) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: c[0],
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: const InputDecoration(
+                labelText: 'Fuel price per litre',
+              ),
             ),
-          ),
-          const SizedBox(height: Space.md),
-          TextField(
-            controller: economy,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(
-              labelText: 'Typical economy, L/100 km',
-              helperText: 'Used when a car has no fill-ups logged',
+            const SizedBox(height: Space.md),
+            TextField(
+              controller: c[1],
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
+              decoration: const InputDecoration(
+                labelText: 'Typical economy, L/100 km',
+                helperText: 'Used when a car has no fill-ups logged',
+              ),
             ),
-          ),
-          const SizedBox(height: Space.xl),
-          PrimaryButton(
-            label: 'Save',
-            onPressed: () => Navigator.pop(ctx, true),
-          ),
-        ],
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Save',
+              onPressed: () => Navigator.pop(ctx, (c[0].text, c[1].text)),
+            ),
+          ],
+        ),
       ),
     ),
   );
-  final p = double.tryParse(price.text.trim());
-  final e = double.tryParse(economy.text.trim());
-  price.dispose();
-  economy.dispose();
-  if (ok != true) return;
+  if (result == null) return;
+  final p = double.tryParse(result.$1.trim());
+  final e = double.tryParse(result.$2.trim());
   if (p != null && p > 0) {
     await db.setSetting(fuelPriceSettingKey, p.toString());
   }

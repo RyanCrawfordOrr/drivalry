@@ -12,7 +12,6 @@ import '../../data/stats/stats_providers.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
-import '../friends/widgets/large_title.dart';
 import '../friends/widgets/user_avatar.dart';
 import '../leagues/leagues_routes.dart' show badgesPath;
 import 'profile_model.dart';
@@ -65,8 +64,8 @@ class _ProfileBody extends ConsumerWidget {
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
-            SliverAppBar.large(
-              title: LargeTitle(own ? 'Profile' : 'Driver'),
+            LargeTitleBar(
+              title: own ? 'Profile' : 'Driver',
               actions: [
                 if (own)
                   IconButton(

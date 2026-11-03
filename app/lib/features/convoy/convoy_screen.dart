@@ -125,35 +125,35 @@ class ConvoyHubBody extends ConsumerWidget {
 
 /// Asks for an invite code in a sheet and opens the join screen.
 Future<void> showJoinCodeSheet(BuildContext context) async {
-  final controller = TextEditingController();
   final code = await showDrivalrySheet<String>(
     context,
     title: 'Join a convoy',
-    builder: (ctx) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            key: const Key('join-code'),
-            controller: controller,
-            autofocus: true,
-            autocorrect: false,
-            textCapitalization: TextCapitalization.characters,
-            decoration: const InputDecoration(labelText: 'Invite code'),
-            onSubmitted: (v) => Navigator.of(ctx).pop(v),
-          ),
-          const SizedBox(height: Space.lg),
-          PrimaryButton(
-            label: 'Join',
-            onPressed: () => Navigator.of(ctx).pop(controller.text),
-          ),
-        ],
+    builder: (_) => TextControllers(
+      builder: (ctx, c) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              key: const Key('join-code'),
+              controller: c.first,
+              autofocus: true,
+              autocorrect: false,
+              textCapitalization: TextCapitalization.characters,
+              decoration: const InputDecoration(labelText: 'Invite code'),
+              onSubmitted: (v) => Navigator.of(ctx).pop(v),
+            ),
+            const SizedBox(height: Space.lg),
+            PrimaryButton(
+              label: 'Join',
+              onPressed: () => Navigator.of(ctx).pop(c.first.text),
+            ),
+          ],
+        ),
       ),
     ),
   );
-  controller.dispose();
   if (code == null || code.trim().isEmpty || !context.mounted) return;
   context.push(Routes.joinConvoy(code.trim().toLowerCase()));
 }

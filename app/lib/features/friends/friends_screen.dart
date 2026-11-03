@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../app/ui/ui.dart';
 import '../../app/deep_links.dart';
 import '../../app/routes.dart';
 import '../../data/alerts/auto_checkin.dart';
@@ -14,7 +15,6 @@ import '../circles/circles_view.dart';
 import 'feed_controller.dart';
 import 'feed_view.dart';
 import 'friends_list_view.dart';
-import 'widgets/large_title.dart';
 
 /// Friends tab: the feed, the friends list and circles (docs/01 §4.5, §4.9;
 /// docs/12 §7). A large title that collapses as the list scrolls, with the
@@ -68,8 +68,8 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
           headerSliverBuilder: (context, _) => [
             SliverOverlapAbsorber(
               handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverAppBar.large(
-                title: const LargeTitle('Friends'),
+              sliver: LargeTitleBar(
+                title: 'Friends',
                 actions: [
                   IconButton(
                     tooltip: 'Friend requests',

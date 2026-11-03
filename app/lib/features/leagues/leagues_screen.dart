@@ -71,8 +71,7 @@ class _LargeTitle extends StatelessWidget {
   const _LargeTitle();
 
   @override
-  Widget build(BuildContext context) =>
-      SliverAppBar.large(title: Text('Leagues', style: context.headline));
+  Widget build(BuildContext context) => const LargeTitleBar(title: 'Leagues');
 }
 
 class _LeaguesBody extends ConsumerWidget {

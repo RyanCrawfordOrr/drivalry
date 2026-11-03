@@ -477,35 +477,36 @@ class _Menu extends ConsumerWidget {
     final repo = ref.read(convoyRepoProvider);
     switch (v) {
       case 'rename':
-        final controller = TextEditingController(text: convoy.name);
         final name = await showDrivalrySheet<String>(
           context,
           title: 'Rename convoy',
-          builder: (ctx) => Padding(
-            padding: EdgeInsets.only(
-              bottom: MediaQuery.viewInsetsOf(ctx).bottom,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextField(
-                  controller: controller,
-                  autofocus: true,
-                  maxLength: 40,
-                  textCapitalization: TextCapitalization.sentences,
-                  onSubmitted: (s) => Navigator.of(ctx).pop(s),
-                ),
-                const SizedBox(height: Space.lg),
-                PrimaryButton(
-                  label: 'Save',
-                  onPressed: () => Navigator.of(ctx).pop(controller.text),
-                ),
-              ],
+          builder: (_) => TextControllers(
+            initial: [convoy.name],
+            builder: (ctx, c) => Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.viewInsetsOf(ctx).bottom,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextField(
+                    controller: c.first,
+                    autofocus: true,
+                    maxLength: 40,
+                    textCapitalization: TextCapitalization.sentences,
+                    onSubmitted: (s) => Navigator.of(ctx).pop(s),
+                  ),
+                  const SizedBox(height: Space.lg),
+                  PrimaryButton(
+                    label: 'Save',
+                    onPressed: () => Navigator.of(ctx).pop(c.first.text),
+                  ),
+                ],
+              ),
             ),
           ),
         );
-        controller.dispose();
         if (name != null && name.trim().isNotEmpty) {
           await repo.rename(convoy.id, name);
         }

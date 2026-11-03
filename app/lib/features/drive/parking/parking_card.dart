@@ -180,34 +180,35 @@ class ParkingActions extends ConsumerWidget {
   }
 
   Future<void> _editNote(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController(text: spot.note ?? '');
     final value = await showDrivalrySheet<String>(
       context,
       title: 'Parking note',
-      builder: (ctx) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              controller: controller,
-              autofocus: true,
-              maxLength: 80,
-              decoration: const InputDecoration(
-                hintText: 'Level 3, near the lift',
+      builder: (_) => TextControllers(
+        initial: [spot.note ?? ''],
+        builder: (ctx, c) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: c.first,
+                autofocus: true,
+                maxLength: 80,
+                decoration: const InputDecoration(
+                  hintText: 'Level 3, near the lift',
+                ),
               ),
-            ),
-            const SizedBox(height: Space.lg),
-            PrimaryButton(
-              label: 'Save',
-              onPressed: () => Navigator.of(ctx).pop(controller.text),
-            ),
-          ],
+              const SizedBox(height: Space.lg),
+              PrimaryButton(
+                label: 'Save',
+                onPressed: () => Navigator.of(ctx).pop(c.first.text),
+              ),
+            ],
+          ),
         ),
       ),
     );
-    controller.dispose();
     if (value == null) return;
     await ref.read(parkingMemoryProvider).setNote(spot.tripId, value.trim());
   }
