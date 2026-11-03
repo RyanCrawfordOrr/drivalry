@@ -1665,7 +1665,7 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 47,
+  "line": 53,
   "text": "Album full",
   "problem": "unclear",
   "problemConfidence": 0.59,
@@ -1681,7 +1681,7 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 47,
+  "line": 53,
   "text": "Add photo",
   "problem": "fine",
   "problemConfidence": 0.74,
@@ -1697,23 +1697,55 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 56,
-  "text": "No photos yet. Small ones only: the album is for the recap, not a backup. Passengers, this is your job.",
+  "line": 75,
+  "text": "No photos yet.",
   "problem": "unclear",
-  "problemConfidence": 0.3,
+  "problemConfidence": 0.4,
   "problems": {
-   "fine": 0.3,
+   "fine": 0.4,
    "technical": 0,
-   "too_long": 0.03,
-   "unclear": 0.44,
-   "tone": 0.23
+   "too_long": 0,
+   "unclear": 0.52,
+   "tone": 0.08
   },
-  "voice": 2.7,
-  "voiceConfidence": 0.7
+  "voice": 1.06,
+  "voiceConfidence": 0.86
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 91,
+  "line": 76,
+  "text": "Small ones, for the recap. Passengers, this is your job.",
+  "problem": "fine",
+  "problemConfidence": 0.25,
+  "problems": {
+   "fine": 0.4,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.24,
+   "tone": 0.36
+  },
+  "voice": 2.72,
+  "voiceConfidence": 0.73
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 109,
+  "text": "Add a photo",
+  "problem": "fine",
+  "problemConfidence": 0.76,
+  "problems": {
+   "fine": 0.81,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.15,
+   "tone": 0.04
+  },
+  "voice": 1.17,
+  "voiceConfidence": 0.79
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 115,
   "text": "Take a photo",
   "problem": "fine",
   "problemConfidence": 0.86,
@@ -1729,7 +1761,7 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 96,
+  "line": 120,
   "text": "Choose from the library",
   "problem": "fine",
   "problemConfidence": 0.91,
@@ -1745,7 +1777,7 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 117,
+  "line": 141,
   "text": "Added to the album.",
   "problem": "unclear",
   "problemConfidence": 0.42,
@@ -1761,55 +1793,39 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 129,
-  "text": "Could not add: $e",
+  "line": 152,
+  "text": "add that photo",
   "problem": "unclear",
-  "problemConfidence": 0.4,
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.05,
-   "technical": 0.36,
+   "fine": 0.32,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.52,
+   "unclear": 0.64,
+   "tone": 0.04
+  },
+  "voice": 1.72,
+  "voiceConfidence": 0.55
+ },
+ {
+  "file": "features/convoy/chat/chat_controller.dart",
+  "line": 270,
+  "text": "send the message",
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.27,
    "tone": 0.07
   },
-  "voice": 0.62,
-  "voiceConfidence": 0.59
+  "voice": 1.02,
+  "voiceConfidence": 0.92
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 113,
-  "text": "voice-${const Uuid().v4()}.m4a",
-  "problem": "technical",
-  "problemConfidence": 0.95,
-  "problems": {
-   "fine": 0.02,
-   "technical": 0.96,
-   "too_long": 0,
-   "unclear": 0.02,
-   "tone": 0
-  },
-  "voice": 0.03,
-  "voiceConfidence": 0.97
- },
- {
-  "file": "features/convoy/chat/chat_controller.dart",
-  "line": 267,
-  "text": "Could not send: $e",
-  "problem": "unclear",
-  "problemConfidence": 0.26,
-  "problems": {
-   "fine": 0.17,
-   "technical": 0.27,
-   "too_long": 0,
-   "unclear": 0.41,
-   "tone": 0.15
-  },
-  "voice": 0.68,
-  "voiceConfidence": 0.66
- },
- {
-  "file": "features/convoy/chat/chat_controller.dart",
-  "line": 290,
+  "line": 294,
   "text": "Message from $who: $text",
   "problem": "fine",
   "problemConfidence": 0.77,
@@ -1825,7 +1841,7 @@
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 325,
+  "line": 329,
   "text": "Microphone permission is needed for voice notes.",
   "problem": "fine",
   "problemConfidence": 0.31,
@@ -1841,7 +1857,7 @@
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 367,
+  "line": 371,
   "text": "That note is too long to send.",
   "problem": "fine",
   "problemConfidence": 0.42,
@@ -1857,71 +1873,71 @@
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 37,
-  "text": "Convoy chat",
+  "line": 43,
+  "text": "Mute read-aloud",
   "problem": "fine",
-  "problemConfidence": 0.71,
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.77,
+   "fine": 0.55,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.22,
-   "tone": 0
+   "unclear": 0.35,
+   "tone": 0.09
+  },
+  "voice": 1.02,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "features/convoy/chat/convoy_chat_screen.dart",
+  "line": 44,
+  "text": "Read messages aloud",
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.19,
+   "tone": 0.09
   },
   "voice": 1.07,
-  "voiceConfidence": 0.92
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 40,
-  "text": "Read aloud: on",
+  "line": 62,
+  "text": "No messages yet.",
   "problem": "fine",
-  "problemConfidence": 0.6,
+  "problemConfidence": 0.46,
   "problems": {
-   "fine": 0.68,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.29,
-   "tone": 0.02
-  },
-  "voice": 0.67,
-  "voiceConfidence": 0.65
- },
- {
-  "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 40,
-  "text": "Read aloud: off",
-  "problem": "fine",
-  "problemConfidence": 0.82,
-  "problems": {
-   "fine": 0.86,
+   "fine": 0.57,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.11,
-   "tone": 0.03
+   "unclear": 0.29,
+   "tone": 0.14
   },
-  "voice": 0.85,
-  "voiceConfidence": 0.83
+  "voice": 1.02,
+  "voiceConfidence": 0.95
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 56,
-  "text": "Nothing yet. Voice notes play in every car; text is read aloud to drivers.",
+  "line": 64,
+  "text": "Voice notes play in every car. Drivers hear text read aloud.",
   "problem": "unclear",
   "problemConfidence": 0.35,
   "problems": {
-   "fine": 0.37,
+   "fine": 0.25,
    "technical": 0.01,
-   "too_long": 0.02,
+   "too_long": 0.01,
    "unclear": 0.48,
-   "tone": 0.12
+   "tone": 0.25
   },
-  "voice": 1.65,
-  "voiceConfidence": 0.31
+  "voice": 1.06,
+  "voiceConfidence": 0.88
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 89,
+  "line": 105,
   "text": "Passengers type; drivers listen.",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -1937,7 +1953,7 @@
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 131,
+  "line": 197,
   "text": "Message the convoy",
   "problem": "fine",
   "problemConfidence": 0.82,
@@ -1953,7 +1969,7 @@
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 158,
+  "line": 210,
   "text": "Record a voice note",
   "problem": "fine",
   "problemConfidence": 0.95,
@@ -1969,7 +1985,7 @@
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 227,
+  "line": 301,
   "text": "Voice note · ${(message.voice!.durationMs / 1000).toStringAsFixed(0)} s",
   "problem": "fine",
   "problemConfidence": 0.52,
@@ -2001,7 +2017,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 49,
+  "line": 54,
   "text": "Sign in to see the convoy.",
   "problem": "unclear",
   "problemConfidence": 0.3,
@@ -2017,71 +2033,71 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 58,
-  "text": "This convoy is not in your list. Pull to refresh the Convoy tab, or ask for a new invite.",
+  "line": 75,
+  "text": "Convoy not found.",
   "problem": "unclear",
-  "problemConfidence": 0.15,
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.29,
-   "technical": 0.11,
-   "too_long": 0.05,
-   "unclear": 0.32,
-   "tone": 0.23
+   "fine": 0.22,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.66,
+   "tone": 0.11
   },
-  "voice": 1.14,
-  "voiceConfidence": 0.79
+  "voice": 0.81,
+  "voiceConfidence": 0.76
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 124,
-  "text": "${present.length} of ${convoy.maxCars} cars · no destination yet",
+  "line": 77,
+  "text": "Pull to refresh the Convoy tab, or ask for a new invite.",
   "problem": "fine",
-  "problemConfidence": 0.42,
+  "problemConfidence": 0.46,
   "problems": {
-   "fine": 0.54,
-   "technical": 0.07,
-   "too_long": 0.05,
-   "unclear": 0.28,
-   "tone": 0.06
+   "fine": 0.57,
+   "technical": 0.06,
+   "too_long": 0.06,
+   "unclear": 0.15,
+   "tone": 0.16
   },
-  "voice": 0.96,
-  "voiceConfidence": 0.79
+  "voice": 1.09,
+  "voiceConfidence": 0.87
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 138,
-  "text": "Start trip",
+  "line": 79,
+  "text": "Back to convoys",
   "problem": "fine",
-  "problemConfidence": 0.81,
+  "problemConfidence": 0.84,
   "problems": {
-   "fine": 0.85,
+   "fine": 0.87,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.11,
-   "tone": 0.04
+   "unclear": 0.12,
+   "tone": 0.01
   },
-  "voice": 1.03,
-  "voiceConfidence": 0.95
+  "voice": 1.35,
+  "voiceConfidence": 0.64
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 143,
-  "text": "End trip",
-  "problem": "fine",
-  "problemConfidence": 0.8,
+  "line": 129,
+  "text": "$present of ${convoy.maxCars} cars",
+  "problem": "unclear",
+  "problemConfidence": 0.59,
   "problems": {
-   "fine": 0.84,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.08,
-   "tone": 0.08
+   "fine": 0.19,
+   "technical": 0.09,
+   "too_long": 0.02,
+   "unclear": 0.67,
+   "tone": 0.03
   },
-  "voice": 1.01,
-  "voiceConfidence": 0.95
+  "voice": 1,
+  "voiceConfidence": 0.63
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 156,
+  "line": 206,
   "text": "Regroup here",
   "problem": "fine",
   "problemConfidence": 0.54,
@@ -2097,7 +2113,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 171,
+  "line": 215,
   "text": "Set destination",
   "problem": "fine",
   "problemConfidence": 0.85,
@@ -2113,55 +2129,103 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 232,
-  "text": "End the trip?",
-  "problem": "fine",
-  "problemConfidence": 0.61,
+  "line": 216,
+  "text": "Move destination",
+  "problem": "unclear",
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.69,
+   "fine": 0.39,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.23,
-   "tone": 0.08
+   "unclear": 0.58,
+   "tone": 0.03
   },
-  "voice": 1.33,
-  "voiceConfidence": 0.66
+  "voice": 0.99,
+  "voiceConfidence": 0.9
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 234,
-  "text": "Positions stop flowing and everyone gets the recap. Stops, expenses and photos stay.",
+  "line": 239,
+  "text": "No cars yet. Share the invite.",
   "problem": "unclear",
-  "problemConfidence": 0.39,
+  "problemConfidence": 0.42,
   "problems": {
-   "fine": 0.25,
+   "fine": 0.41,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.54,
+   "tone": 0.05
+  },
+  "voice": 1.27,
+  "voiceConfidence": 0.7
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 275,
+  "text": "Start trip",
+  "problem": "fine",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0.85,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.11,
+   "tone": 0.04
+  },
+  "voice": 1.03,
+  "voiceConfidence": 0.95
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 286,
+  "text": "Waiting for the leader to start.",
+  "problem": "fine",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.64,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.29,
+   "tone": 0.07
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 287,
+  "text": "Waiting for $leaderName to start.",
+  "problem": "fine",
+  "problemConfidence": 0.8,
+  "problems": {
+   "fine": 0.84,
    "technical": 0.01,
    "too_long": 0.01,
-   "unclear": 0.51,
-   "tone": 0.22
-  },
-  "voice": 1.12,
-  "voiceConfidence": 0.82
- },
- {
-  "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 240,
-  "text": "Keep going",
-  "problem": "fine",
-  "problemConfidence": 0.87,
-  "problems": {
-   "fine": 0.9,
-   "technical": 0,
-   "too_long": 0,
    "unclear": 0.09,
-   "tone": 0.01
+   "tone": 0.05
   },
-  "voice": 1.23,
-  "voiceConfidence": 0.76
+  "voice": 1.2,
+  "voiceConfidence": 0.79
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 271,
+  "line": 294,
+  "text": "See the recap",
+  "problem": "fine",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.78,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.17,
+   "tone": 0.04
+  },
+  "voice": 1.21,
+  "voiceConfidence": 0.78
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 326,
   "text": "No position yet. Long-press the map instead.",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -2177,7 +2241,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 283,
+  "line": 339,
   "text": "Regroup pin sent.",
   "problem": "fine",
   "problemConfidence": 0.39,
@@ -2193,39 +2257,23 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 284,
-  "text": "Pin set here; it could not be sent. Check your connection.",
-  "problem": "fine",
-  "problemConfidence": 0.25,
+  "line": 340,
+  "text": "Pin set here. It goes out when you are back online.",
+  "problem": "unclear",
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.4,
-   "technical": 0.02,
-   "too_long": 0.07,
-   "unclear": 0.15,
-   "tone": 0.36
+   "fine": 0.26,
+   "technical": 0.06,
+   "too_long": 0.01,
+   "unclear": 0.58,
+   "tone": 0.09
   },
-  "voice": 0.99,
-  "voiceConfidence": 0.89
+  "voice": 1.14,
+  "voiceConfidence": 0.75
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 300,
-  "text": "On the road",
-  "problem": "fine",
-  "problemConfidence": 0.81,
-  "problems": {
-   "fine": 0.85,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.11,
-   "tone": 0.04
-  },
-  "voice": 1.2,
-  "voiceConfidence": 0.77
- },
- {
-  "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 341,
+  "line": 378,
   "text": "No position yet",
   "problem": "fine",
   "problemConfidence": 0.41,
@@ -2241,7 +2289,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 345,
+  "line": 383,
   "text": "Last seen ${(age / 60000).round()} min ago",
   "problem": "fine",
   "problemConfidence": 0.46,
@@ -2257,39 +2305,71 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 354,
-  "text": "${formatDistance(d, units)} from the leader",
-  "problem": "fine",
-  "problemConfidence": 0.62,
-  "problems": {
-   "fine": 0.7,
-   "technical": 0.08,
-   "too_long": 0.01,
-   "unclear": 0.13,
-   "tone": 0.08
-  },
-  "voice": 1,
-  "voiceConfidence": 0.92
- },
- {
-  "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 384,
-  "text": "Lost sheep",
+  "line": 410,
+  "text": " mi back",
   "problem": "unclear",
-  "problemConfidence": 0.77,
+  "problemConfidence": 0.91,
   "problems": {
-   "fine": 0.15,
-   "technical": 0.01,
+   "fine": 0.05,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.82,
+   "unclear": 0.93,
    "tone": 0.02
   },
-  "voice": 2.51,
-  "voiceConfidence": 0.5
+  "voice": 1.37,
+  "voiceConfidence": 0.1
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 424,
+  "line": 410,
+  "text": " km back",
+  "problem": "unclear",
+  "problemConfidence": 0.57,
+  "problems": {
+   "fine": 0.3,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.66,
+   "tone": 0.03
+  },
+  "voice": 0.8,
+  "voiceConfidence": 0.69
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 418,
+  "text": "Fallen behind",
+  "problem": "unclear",
+  "problemConfidence": 0.2,
+  "problems": {
+   "fine": 0.36,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.36,
+   "tone": 0.28
+  },
+  "voice": 1.13,
+  "voiceConfidence": 0.81
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 469,
+  "text": "End trip",
+  "problem": "fine",
+  "problemConfidence": 0.8,
+  "problems": {
+   "fine": 0.84,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.08,
+   "tone": 0.08
+  },
+  "voice": 1.01,
+  "voiceConfidence": 0.95
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 471,
   "text": "Leave convoy",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -2305,7 +2385,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 437,
+  "line": 483,
   "text": "Rename convoy",
   "problem": "fine",
   "problemConfidence": 0.89,
@@ -2321,7 +2401,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 464,
+  "line": 520,
   "text": "Leave this convoy?",
   "problem": "fine",
   "problemConfidence": 0.62,
@@ -2337,7 +2417,7 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 466,
+  "line": 522,
   "text": "You drop off the shared map and the radio. Rejoin with the invite code any time.",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -2352,8 +2432,88 @@
   "voiceConfidence": 0.49
  },
  {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 548,
+  "text": "End the trip?",
+  "problem": "fine",
+  "problemConfidence": 0.61,
+  "problems": {
+   "fine": 0.69,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.23,
+   "tone": 0.08
+  },
+  "voice": 1.33,
+  "voiceConfidence": 0.66
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 550,
+  "text": "Positions stop flowing and everyone gets the recap. Stops, expenses and photos stay.",
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.25,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.51,
+   "tone": 0.22
+  },
+  "voice": 1.12,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 556,
+  "text": "Keep going",
+  "problem": "fine",
+  "problemConfidence": 0.87,
+  "problems": {
+   "fine": 0.9,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.09,
+   "tone": 0.01
+  },
+  "voice": 1.23,
+  "voiceConfidence": 0.76
+ },
+ {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 24,
+  "line": 35,
+  "text": "Join with a code",
+  "problem": "fine",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.72,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.27,
+   "tone": 0.01
+  },
+  "voice": 1.07,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 41,
+  "text": "Start a convoy",
+  "problem": "fine",
+  "problemConfidence": 0.96,
+  "problems": {
+   "fine": 0.97,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.03,
+   "tone": 0
+  },
+  "voice": 1.12,
+  "voiceConfidence": 0.85
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 48,
   "text": "Sign in to drive with friends in a convoy.",
   "problem": "fine",
   "problemConfidence": 0.54,
@@ -2369,71 +2529,55 @@
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 56,
-  "text": "Two to six cars, one trip. Everyone sees everyone, and the radio is one button away.",
+  "line": 94,
+  "text": "Road trips, together.",
   "problem": "fine",
-  "problemConfidence": 0.71,
+  "problemConfidence": 0.85,
   "problems": {
-   "fine": 0.77,
-   "technical": 0,
-   "too_long": 0.02,
-   "unclear": 0.2,
-   "tone": 0.01
-  },
-  "voice": 1.62,
-  "voiceConfidence": 0.58
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
-  "line": 68,
-  "text": "New convoy",
-  "problem": "fine",
-  "problemConfidence": 0.84,
-  "problems": {
-   "fine": 0.87,
+   "fine": 0.88,
    "technical": 0,
    "too_long": 0,
    "unclear": 0.12,
-   "tone": 0.01
+   "tone": 0
   },
-  "voice": 1.12,
-  "voiceConfidence": 0.85
+  "voice": 2.39,
+  "voiceConfidence": 0.55
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 91,
-  "text": "No convoys yet",
+  "line": 95,
+  "text": "One map, a vote on stops and a radio between the cars.",
   "problem": "fine",
-  "problemConfidence": 0.45,
+  "problemConfidence": 0.75,
   "problems": {
-   "fine": 0.56,
+   "fine": 0.8,
+   "technical": 0,
+   "too_long": 0.1,
+   "unclear": 0.09,
+   "tone": 0.01
+  },
+  "voice": 1.43,
+  "voiceConfidence": 0.56
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 104,
+  "text": "Other convoys",
+  "problem": "unclear",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.44,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.42,
-   "tone": 0.02
-  },
-  "voice": 1.06,
-  "voiceConfidence": 0.89
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
-  "line": 94,
-  "text": "Start one before a road trip and share the code. While the trip is on, every car sees the others, hears the radio, votes on stops and splits the costs. Positions stay between the cars and never leave your phones in detail.",
-  "problem": "too_long",
-  "problemConfidence": 0.65,
-  "problems": {
-   "fine": 0.13,
-   "technical": 0.03,
-   "too_long": 0.72,
-   "unclear": 0.11,
+   "unclear": 0.55,
    "tone": 0.01
   },
-  "voice": 1.67,
-  "voiceConfidence": 0.61
+  "voice": 0.95,
+  "voiceConfidence": 0.9
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 108,
+  "line": 113,
   "text": "Past trips",
   "problem": "fine",
   "problemConfidence": 0.51,
@@ -2449,7 +2593,7 @@
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 122,
+  "line": 131,
   "text": "Join a convoy",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -2464,24 +2608,184 @@
   "voiceConfidence": 0.72
  },
  {
-  "file": "features/convoy/create_convoy_screen.dart",
-  "line": 46,
-  "text": "Could not create: $e",
-  "problem": "unclear",
-  "problemConfidence": 0.45,
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 180,
+  "text": "Nothing proposed yet",
+  "problem": "fine",
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.01,
-   "technical": 0.36,
+   "fine": 0.66,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.56,
-   "tone": 0.07
+   "unclear": 0.25,
+   "tone": 0.09
   },
-  "voice": 0.13,
+  "voice": 1.08,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 209,
+  "text": "Invite cars",
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.27,
+   "tone": 0.01
+  },
+  "voice": 1.14,
+  "voiceConfidence": 0.83
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 240,
+  "text": "Voice notes and text",
+  "problem": "fine",
+  "problemConfidence": 0.68,
+  "problems": {
+   "fine": 0.74,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.24,
+   "tone": 0.02
+  },
+  "voice": 1.07,
   "voiceConfidence": 0.88
  },
  {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 246,
+  "text": "Same song in every car",
+  "problem": "fine",
+  "problemConfidence": 0.42,
+  "problems": {
+   "fine": 0.54,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.44,
+   "tone": 0.02
+  },
+  "voice": 1.34,
+  "voiceConfidence": 0.62
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 252,
+  "text": "Passenger games",
+  "problem": "fine",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.7,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.3,
+   "tone": 0
+  },
+  "voice": 1.27,
+  "voiceConfidence": 0.69
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 268,
+  "text": "Photos for the recap",
+  "problem": "fine",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.68,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.31,
+   "tone": 0.01
+  },
+  "voice": 1.14,
+  "voiceConfidence": 0.81
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 275,
+  "text": "Gas, tolls and food, split",
+  "problem": "fine",
+  "problemConfidence": 0.69,
+  "problems": {
+   "fine": 0.75,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.16,
+   "tone": 0.09
+  },
+  "voice": 1.09,
+  "voiceConfidence": 0.8
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 282,
+  "text": "The trip so far",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.37,
+   "tone": 0.01
+  },
+  "voice": 1.2,
+  "voiceConfidence": 0.75
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 311,
+  "text": "No destination yet",
+  "problem": "fine",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.77,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.1
+  },
+  "voice": 0.97,
+  "voiceConfidence": 0.86
+ },
+ {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 57,
+  "line": 49,
+  "text": "create the convoy",
+  "problem": "fine",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.78,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.2,
+   "tone": 0.01
+  },
+  "voice": 1.61,
+  "voiceConfidence": 0.55
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 59,
+  "text": "New convoy",
+  "problem": "fine",
+  "problemConfidence": 0.84,
+  "problems": {
+   "fine": 0.87,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.12,
+   "tone": 0.01
+  },
+  "voice": 1.12,
+  "voiceConfidence": 0.85
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 61,
   "text": "Sign in to start a convoy.",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -2497,23 +2801,23 @@
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 69,
-  "text": "Trip name",
+  "line": 79,
+  "text": "Name your trip",
   "problem": "fine",
-  "problemConfidence": 0.85,
+  "problemConfidence": 0.74,
   "problems": {
-   "fine": 0.88,
+   "fine": 0.79,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.1,
-   "tone": 0.02
+   "unclear": 0.14,
+   "tone": 0.07
   },
-  "voice": 0.49,
-  "voiceConfidence": 0.52
+  "voice": 1.27,
+  "voiceConfidence": 0.67
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 70,
+  "line": 80,
   "text": "Coast run, Thanksgiving drive…",
   "problem": "fine",
   "problemConfidence": 0.57,
@@ -2529,55 +2833,55 @@
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 81,
-  "text": "Where everyone is heading. Needed for ETAs and stop suggestions; you can set it later.",
+  "line": 108,
+  "text": "Optional. Powers ETAs and stop ideas.",
   "problem": "fine",
-  "problemConfidence": 0.49,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.59,
-   "technical": 0.06,
-   "too_long": 0.02,
-   "unclear": 0.17,
-   "tone": 0.16
+   "fine": 0.5,
+   "technical": 0.07,
+   "too_long": 0.01,
+   "unclear": 0.39,
+   "tone": 0.03
   },
-  "voice": 1.08,
-  "voiceConfidence": 0.81
+  "voice": 1.26,
+  "voiceConfidence": 0.7
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 83,
-  "text": "Tap to change",
-  "problem": "unclear",
-  "problemConfidence": 0.71,
+  "line": 109,
+  "text": "Tap to pick a different place.",
+  "problem": "fine",
+  "problemConfidence": 0.65,
   "problems": {
-   "fine": 0.23,
+   "fine": 0.72,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.77,
-   "tone": 0
-  },
-  "voice": 1,
-  "voiceConfidence": 0.93
- },
- {
-  "file": "features/convoy/create_convoy_screen.dart",
-  "line": 102,
-  "text": "Up to six cars. You lead: you start and end the trip, accept stops and can drop a regroup pin. Anyone can propose stops, add expenses and photos.",
-  "problem": "unclear",
-  "problemConfidence": 0.19,
-  "problems": {
-   "fine": 0.33,
-   "technical": 0.03,
-   "too_long": 0.23,
-   "unclear": 0.35,
-   "tone": 0.06
+   "unclear": 0.25,
+   "tone": 0.03
   },
   "voice": 1.16,
   "voiceConfidence": 0.83
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 112,
+  "line": 122,
+  "text": "Up to six cars. You lead: start and end the trip, accept stops, drop a regroup pin.",
+  "problem": "fine",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.48,
+   "technical": 0.03,
+   "too_long": 0.17,
+   "unclear": 0.28,
+   "tone": 0.04
+  },
+  "voice": 1.24,
+  "voiceConfidence": 0.73
+ },
+ {
+  "file": "features/convoy/create_convoy_screen.dart",
+  "line": 129,
   "text": "Create convoy",
   "problem": "fine",
   "problemConfidence": 0.8,
@@ -2593,7 +2897,7 @@
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 80,
+  "line": 51,
   "text": "Split among the cars in the convoy.",
   "problem": "unclear",
   "problemConfidence": 0.57,
@@ -2610,6 +2914,22 @@
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
   "line": 87,
+  "text": "Add an expense",
+  "problem": "fine",
+  "problemConfidence": 0.92,
+  "problems": {
+   "fine": 0.94,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.04,
+   "tone": 0.02
+  },
+  "voice": 0.96,
+  "voiceConfidence": 0.91
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 98,
   "text": "Settle up",
   "problem": "fine",
   "problemConfidence": 0.42,
@@ -2625,7 +2945,7 @@
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 101,
+  "line": 120,
   "text": "All square.",
   "problem": "fine",
   "problemConfidence": 0.65,
@@ -2641,39 +2961,71 @@
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 112,
-  "text": "Nothing added yet. Gas, tolls, snacks, the motel: add it and the split works itself out.",
+  "line": 135,
+  "text": "No expenses yet.",
   "problem": "fine",
-  "problemConfidence": 0.68,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.74,
-   "technical": 0.01,
-   "too_long": 0.02,
-   "unclear": 0.21,
-   "tone": 0.02
+   "fine": 0.5,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.43,
+   "tone": 0.07
   },
-  "voice": 2.13,
-  "voiceConfidence": 0.67
+  "voice": 0.98,
+  "voiceConfidence": 0.9
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 236,
-  "text": "Add an expense",
+  "line": 137,
+  "text": "Gas, tolls, snacks, the motel: add it and the split works itself out.",
   "problem": "fine",
-  "problemConfidence": 0.92,
+  "problemConfidence": 0.7,
   "problems": {
-   "fine": 0.94,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.04,
+   "fine": 0.76,
+   "technical": 0.01,
+   "too_long": 0.03,
+   "unclear": 0.18,
    "tone": 0.02
   },
-  "voice": 0.96,
-  "voiceConfidence": 0.91
+  "voice": 2.4,
+  "voiceConfidence": 0.56
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 194,
+  "text": "add that expense",
+  "problem": "unclear",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.49,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.49,
+   "tone": 0.02
+  },
+  "voice": 1.65,
+  "voiceConfidence": 0.53
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 28,
+  "line": 29,
+  "text": "Passengers only.",
+  "problem": "unclear",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.22,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.62,
+   "tone": 0.16
+  },
+  "voice": 0.91,
+  "voiceConfidence": 0.65
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 30,
   "text": "Games are for passengers. Drivers hear the results.",
   "problem": "tone",
   "problemConfidence": 0.41,
@@ -2689,23 +3041,7 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 59,
-  "text": "Spot the…",
-  "problem": "unclear",
-  "problemConfidence": 0.84,
-  "problems": {
-   "fine": 0.13,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.87,
-   "tone": 0
-  },
-  "voice": 2,
-  "voiceConfidence": 0.59
- },
- {
-  "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 165,
+  "line": 217,
   "text": "You are asking the questions.",
   "problem": "unclear",
   "problemConfidence": 0.5,
@@ -2721,23 +3057,23 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 173,
-  "text": "Trivia needs at least one other car on the radio.",
+  "line": 225,
+  "text": "Trivia needs another car on the radio.",
   "problem": "unclear",
-  "problemConfidence": 0.45,
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.3,
-   "technical": 0.07,
+   "fine": 0.45,
+   "technical": 0.04,
    "too_long": 0,
-   "unclear": 0.56,
-   "tone": 0.07
+   "unclear": 0.49,
+   "tone": 0.02
   },
-  "voice": 1.33,
-  "voiceConfidence": 0.63
+  "voice": 1.87,
+  "voiceConfidence": 0.65
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 174,
+  "line": 226,
   "text": "No question yet.",
   "problem": "unclear",
   "problemConfidence": 0.5,
@@ -2753,7 +3089,7 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 203,
+  "line": 290,
   "text": "Next question",
   "problem": "fine",
   "problemConfidence": 0.89,
@@ -2769,7 +3105,7 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 209,
+  "line": 296,
   "text": "Reveal now",
   "problem": "unclear",
   "problemConfidence": 0.36,
@@ -2785,23 +3121,39 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 278,
-  "text": "Needs a few minutes of positions from the other cars. This ranks steadiness, not speed.",
+  "line": 376,
+  "text": "Needs a few minutes of driving.",
   "problem": "unclear",
-  "problemConfidence": 0.74,
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.13,
-   "technical": 0.07,
+   "fine": 0.43,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.79,
-   "tone": 0.01
+   "unclear": 0.55,
+   "tone": 0.02
   },
-  "voice": 1.37,
-  "voiceConfidence": 0.62
+  "voice": 1.32,
+  "voiceConfidence": 0.65
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 300,
+  "line": 377,
+  "text": "Ranks the steadiest car, not the fastest.",
+  "problem": "fine",
+  "problemConfidence": 0.61,
+  "problems": {
+   "fine": 0.69,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.27,
+   "tone": 0.04
+  },
+  "voice": 1.52,
+  "voiceConfidence": 0.48
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 422,
   "text": "Spotted by you",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -2817,7 +3169,7 @@
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 300,
+  "line": 422,
   "text": "Spotted by $who",
   "problem": "fine",
   "problemConfidence": 0.69,
@@ -4018,18 +4370,18 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 179,
-  "text": "Parking time",
+  "text": "Time to park",
   "problem": "fine",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.54,
   "problems": {
-   "fine": 0.78,
+   "fine": 0.63,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.21,
-   "tone": 0.01
+   "unclear": 0.23,
+   "tone": 0.14
   },
-  "voice": 0.72,
-  "voiceConfidence": 0.71
+  "voice": 1.43,
+  "voiceConfidence": 0.56
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -4050,18 +4402,18 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 181,
-  "text": "Indicator time",
-  "problem": "fine",
-  "problemConfidence": 0.5,
+  "text": "Blinker time",
+  "problem": "unclear",
+  "problemConfidence": 0.62,
   "problems": {
-   "fine": 0.6,
+   "fine": 0.28,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.38,
+   "unclear": 0.7,
    "tone": 0.01
   },
-  "voice": 0.71,
-  "voiceConfidence": 0.69
+  "voice": 1.25,
+  "voiceConfidence": 0.58
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -4722,18 +5074,18 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 328,
-  "text": "The Eisenhower Interstate System is named after a…",
+  "text": "The Interstate System is named after Eisenhower, a US…",
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.56,
   "problems": {
-   "fine": 0.1,
+   "fine": 0.03,
    "technical": 0.01,
-   "too_long": 0.07,
-   "unclear": 0.78,
-   "tone": 0.04
+   "too_long": 0.2,
+   "unclear": 0.65,
+   "tone": 0.11
   },
-  "voice": 1.18,
-  "voiceConfidence": 0.77
+  "voice": 1.07,
+  "voiceConfidence": 0.89
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -4818,34 +5170,34 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 349,
-  "text": "Only on highways",
+  "text": "Speed only counts on highways",
   "problem": "unclear",
-  "problemConfidence": 0.8,
+  "problemConfidence": 0.51,
   "problems": {
-   "fine": 0.15,
+   "fine": 0.29,
    "technical": 0,
-   "too_long": 0,
-   "unclear": 0.84,
-   "tone": 0.01
+   "too_long": 0.01,
+   "unclear": 0.61,
+   "tone": 0.09
   },
-  "voice": 0.96,
-  "voiceConfidence": 0.89
+  "voice": 2.37,
+  "voiceConfidence": 0.38
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 350,
-  "text": "Bonus at night",
-  "problem": "unclear",
-  "problemConfidence": 0.6,
+  "text": "Night drives score extra",
+  "problem": "fine",
+  "problemConfidence": 0.56,
   "problems": {
-   "fine": 0.31,
+   "fine": 0.65,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.68,
+   "unclear": 0.34,
    "tone": 0.01
   },
-  "voice": 1.09,
-  "voiceConfidence": 0.83
+  "voice": 1.58,
+  "voiceConfidence": 0.42
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -4881,23 +5233,23 @@
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 45,
-  "text": "Could not join: $e",
+  "line": 49,
+  "text": "join the convoy",
   "problem": "unclear",
-  "problemConfidence": 0.46,
+  "problemConfidence": 0.56,
   "problems": {
-   "fine": 0.05,
-   "technical": 0.25,
+   "fine": 0.34,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.57,
-   "tone": 0.13
+   "unclear": 0.65,
+   "tone": 0
   },
-  "voice": 0.32,
-  "voiceConfidence": 0.68
+  "voice": 1.84,
+  "voiceConfidence": 0.72
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 55,
+  "line": 59,
   "text": "Convoy invite",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -4913,7 +5265,7 @@
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 57,
+  "line": 61,
   "text": "Sign in to join the convoy.",
   "problem": "fine",
   "problemConfidence": 0.4,
@@ -4929,7 +5281,7 @@
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 71,
+  "line": 68,
   "text": "Join this convoy?",
   "problem": "fine",
   "problemConfidence": 0.84,
@@ -4945,39 +5297,23 @@
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 74,
-  "text": "Code ${widget.code.toUpperCase()}. Everyone in the convoy sees your car on the shared map and hears you on the radio while the trip is on. Positions stay between the cars.",
+  "line": 70,
+  "text": "Everyone sees your car on the map and hears you on the radio while the trip is on.",
   "problem": "fine",
-  "problemConfidence": 0.35,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.48,
-   "technical": 0.24,
-   "too_long": 0.09,
-   "unclear": 0.16,
-   "tone": 0.03
-  },
-  "voice": 1.3,
-  "voiceConfidence": 0.65
- },
- {
-  "file": "features/convoy/join_convoy_screen.dart",
-  "line": 100,
-  "text": "Join convoy",
-  "problem": "fine",
-  "problemConfidence": 0.79,
-  "problems": {
-   "fine": 0.83,
+   "fine": 0.58,
    "technical": 0,
-   "too_long": 0,
-   "unclear": 0.17,
-   "tone": 0
+   "too_long": 0.26,
+   "unclear": 0.04,
+   "tone": 0.12
   },
-  "voice": 1.13,
-  "voiceConfidence": 0.86
+  "voice": 1.12,
+  "voiceConfidence": 0.88
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 104,
+  "line": 93,
   "text": "Not now",
   "problem": "fine",
   "problemConfidence": 0.56,
@@ -5056,8 +5392,40 @@
   "voiceConfidence": 0.8
  },
  {
+  "file": "features/convoy/live/convoy_live.dart",
+  "line": 218,
+  "text": "Falling behind",
+  "problem": "unclear",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.29,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.56,
+   "tone": 0.15
+  },
+  "voice": 1.29,
+  "voiceConfidence": 0.61
+ },
+ {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 50,
+  "line": 32,
+  "text": "Convoy DJ",
+  "problem": "fine",
+  "problemConfidence": 0.68,
+  "problems": {
+   "fine": 0.74,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.24,
+   "tone": 0
+  },
+  "voice": 1.61,
+  "voiceConfidence": 0.45
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 52,
   "text": "Everyone on one playlist",
   "problem": "unclear",
   "problemConfidence": 0.39,
@@ -5074,22 +5442,22 @@
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
   "line": 55,
-  "text": "Spotify Jam lets the whole convoy add to one queue. Start a Jam in Spotify and share the invite in chat.",
+  "text": "Start a Jam in Spotify and share the invite in chat.",
   "problem": "fine",
-  "problemConfidence": 0.62,
+  "problemConfidence": 0.5,
   "problems": {
-   "fine": 0.7,
-   "technical": 0.06,
-   "too_long": 0.01,
-   "unclear": 0.23,
-   "tone": 0
+   "fine": 0.6,
+   "technical": 0.04,
+   "too_long": 0.05,
+   "unclear": 0.3,
+   "tone": 0.01
   },
-  "voice": 1.59,
-  "voiceConfidence": 0.54
+  "voice": 1.82,
+  "voiceConfidence": 0.63
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 69,
+  "line": 61,
   "text": "Open Spotify",
   "problem": "fine",
   "problemConfidence": 0.77,
@@ -5105,103 +5473,39 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 78,
-  "text": "Apple Music SharePlay",
+  "line": 71,
+  "text": "Open Apple Music",
+  "problem": "fine",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.49,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.42,
+   "tone": 0.08
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.95
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 132,
+  "text": "Convoy DJ isn't available in this version yet.",
   "problem": "unclear",
-  "problemConfidence": 0.65,
+  "problemConfidence": 0.25,
   "problems": {
-   "fine": 0.17,
-   "technical": 0.1,
-   "too_long": 0,
-   "unclear": 0.72,
-   "tone": 0.01
-  },
-  "voice": 0.62,
-  "voiceConfidence": 0.59
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 125,
-  "text": "Convoy DJ",
-  "problem": "fine",
-  "problemConfidence": 0.68,
-  "problems": {
-   "fine": 0.74,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.24,
-   "tone": 0
-  },
-  "voice": 1.61,
-  "voiceConfidence": 0.45
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 127,
-  "text": "Not available in this build: no Spotify client id is configured (docs/09-auth-setup.md §8).",
-  "problem": "technical",
-  "problemConfidence": 0.99,
-  "problems": {
-   "fine": 0,
-   "technical": 0.99,
-   "too_long": 0,
-   "unclear": 0.01,
-   "tone": 0
-  },
-  "voice": 0.21,
-  "voiceConfidence": 0.79
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 159,
-  "text": "Connect Spotify",
-  "problem": "fine",
-  "problemConfidence": 0.66,
-  "problems": {
-   "fine": 0.73,
-   "technical": 0.08,
-   "too_long": 0,
-   "unclear": 0.18,
-   "tone": 0.01
+   "fine": 0.28,
+   "technical": 0.17,
+   "too_long": 0.01,
+   "unclear": 0.4,
+   "tone": 0.14
   },
   "voice": 1.05,
-  "voiceConfidence": 0.81
+  "voiceConfidence": 0.85
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 165,
-  "text": "One phone is the DJ; every car plays the same track in lockstep. Needs Spotify Premium and a spot on the Drivalry allowlist.",
-  "problem": "unclear",
-  "problemConfidence": 0.24,
-  "problems": {
-   "fine": 0.17,
-   "technical": 0.34,
-   "too_long": 0.03,
-   "unclear": 0.39,
-   "tone": 0.07
-  },
-  "voice": 1.99,
-  "voiceConfidence": 0.55
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 180,
-  "text": "No other cars connected yet. DJ starts once the radio mesh is up.",
-  "problem": "technical",
-  "problemConfidence": 0.49,
-  "problems": {
-   "fine": 0.07,
-   "technical": 0.59,
-   "too_long": 0,
-   "unclear": 0.34,
-   "tone": 0
-  },
-  "voice": 1.24,
-  "voiceConfidence": 0.7
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 188,
+  "line": 149,
   "text": "No DJ yet",
   "problem": "fine",
   "problemConfidence": 0.36,
@@ -5217,7 +5521,7 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 190,
+  "line": 151,
   "text": "You are the DJ",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -5233,7 +5537,71 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 166,
+  "text": "One phone picks, every car plays in step",
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.38,
+   "tone": 0.04
+  },
+  "voice": 1.08,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 176,
+  "text": "Needs Spotify Premium and an invite from Ryan.",
+  "problem": "unclear",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.25,
+   "technical": 0.09,
+   "too_long": 0.01,
+   "unclear": 0.55,
+   "tone": 0.1
+  },
+  "voice": 1.05,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 190,
+  "text": "Waiting for another car on the radio.",
+  "problem": "unclear",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.3,
+   "technical": 0.01,
+   "too_long": 0.02,
+   "unclear": 0.63,
+   "tone": 0.04
+  },
+  "voice": 1.4,
+  "voiceConfidence": 0.54
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
   "line": 198,
+  "text": "Connect Spotify",
+  "problem": "fine",
+  "problemConfidence": 0.66,
+  "problems": {
+   "fine": 0.73,
+   "technical": 0.08,
+   "too_long": 0,
+   "unclear": 0.18,
+   "tone": 0.01
+  },
+  "voice": 1.05,
+  "voiceConfidence": 0.81
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 207,
   "text": "Step down",
   "problem": "fine",
   "problemConfidence": 0.52,
@@ -5249,7 +5617,7 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 204,
+  "line": 223,
   "text": "Be the DJ",
   "problem": "fine",
   "problemConfidence": 0.73,
@@ -5265,7 +5633,23 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 218,
+  "line": 230,
+  "text": "Disconnect Spotify",
+  "problem": "fine",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.63,
+   "technical": 0.08,
+   "too_long": 0,
+   "unclear": 0.18,
+   "tone": 0.11
+  },
+  "voice": 1.02,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 274,
   "text": "Vote to skip",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -5281,7 +5665,7 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 228,
+  "line": 287,
   "text": "Search tracks",
   "problem": "fine",
   "problemConfidence": 0.92,
@@ -5297,7 +5681,23 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 265,
+  "line": 317,
+  "text": "Add to the queue",
+  "problem": "fine",
+  "problemConfidence": 0.37,
+  "problems": {
+   "fine": 0.5,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.48,
+   "tone": 0.01
+  },
+  "voice": 1.05,
+  "voiceConfidence": 0.94
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 327,
   "text": "Up next",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -5313,7 +5713,7 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 283,
+  "line": 344,
   "text": "Start the queue",
   "problem": "unclear",
   "problemConfidence": 0.41,
@@ -5329,7 +5729,7 @@
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 283,
+  "line": 344,
   "text": "Next track",
   "problem": "fine",
   "problemConfidence": 0.37,
@@ -5345,23 +5745,23 @@
  },
  {
   "file": "features/convoy/music/dj_controller.dart",
-  "line": 134,
-  "text": "Spotify sign-in failed: $e",
-  "problem": "unclear",
-  "problemConfidence": 0.41,
+  "line": 135,
+  "text": "connect Spotify",
+  "problem": "fine",
+  "problemConfidence": 0.5,
   "problems": {
-   "fine": 0.04,
-   "technical": 0.4,
+   "fine": 0.6,
+   "technical": 0.08,
    "too_long": 0,
-   "unclear": 0.53,
-   "tone": 0.03
+   "unclear": 0.24,
+   "tone": 0.08
   },
-  "voice": 0.34,
-  "voiceConfidence": 0.67
+  "voice": 0.97,
+  "voiceConfidence": 0.86
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 25,
+  "line": 39,
   "text": "Sign in to talk to your convoy.",
   "problem": "unclear",
   "problemConfidence": 0.35,
@@ -5377,39 +5777,39 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 52,
-  "text": "Radio is off",
+  "line": 87,
+  "text": "Radio is off.",
   "problem": "unclear",
-  "problemConfidence": 0.47,
+  "problemConfidence": 0.37,
   "problems": {
    "fine": 0.38,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.04
+   "unclear": 0.5,
+   "tone": 0.12
   },
-  "voice": 0.99,
+  "voice": 0.86,
   "voiceConfidence": 0.84
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 55,
-  "text": "Start the radio to talk car to car. Audio goes straight between phones; nothing is recorded.",
+  "line": 88,
+  "text": "Hold to talk, car to car. Nothing is recorded.",
   "problem": "fine",
-  "problemConfidence": 0.68,
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.74,
-   "technical": 0.07,
-   "too_long": 0.01,
-   "unclear": 0.13,
-   "tone": 0.05
+   "fine": 0.64,
+   "technical": 0.01,
+   "too_long": 0.04,
+   "unclear": 0.22,
+   "tone": 0.09
   },
-  "voice": 1.89,
-  "voiceConfidence": 0.62
+  "voice": 1.51,
+  "voiceConfidence": 0.49
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 61,
+  "line": 91,
   "text": "Start radio",
   "problem": "fine",
   "problemConfidence": 0.85,
@@ -5425,55 +5825,71 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 69,
-  "text": "Microphone needed",
-  "problem": "unclear",
-  "problemConfidence": 0.71,
+  "line": 100,
+  "text": "Finding the other cars.",
+  "problem": "fine",
+  "problemConfidence": 0.59,
   "problems": {
-   "fine": 0.18,
+   "fine": 0.67,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.32,
+   "tone": 0.01
+  },
+  "voice": 1.13,
+  "voiceConfidence": 0.83
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 112,
+  "text": "Allow the microphone.",
+  "problem": "fine",
+  "problemConfidence": 0.5,
+  "problems": {
+   "fine": 0.6,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.77,
-   "tone": 0.04
+   "unclear": 0.3,
+   "tone": 0.09
   },
-  "voice": 0.23,
-  "voiceConfidence": 0.78
+  "voice": 0.92,
+  "voiceConfidence": 0.81
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 71,
-  "text": "The microphone is blocked for Drivalry. Allow it in the system settings to use the radio.",
+  "line": 114,
+  "text": "Drivalry cannot use the mic. Turn it on in Settings.",
   "problem": "tone",
-  "problemConfidence": 0.32,
+  "problemConfidence": 0.49,
   "problems": {
-   "fine": 0.42,
-   "technical": 0.04,
-   "too_long": 0.01,
-   "unclear": 0.07,
-   "tone": 0.46
-  },
-  "voice": 1,
-  "voiceConfidence": 0.84
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 73,
-  "text": "The radio needs the microphone to transmit when you hold the button. Nothing is sent otherwise.",
-  "problem": "fine",
-  "problemConfidence": 0.52,
-  "problems": {
-   "fine": 0.62,
+   "fine": 0.34,
    "technical": 0.02,
    "too_long": 0.01,
-   "unclear": 0.21,
-   "tone": 0.14
+   "unclear": 0.04,
+   "tone": 0.59
   },
-  "voice": 1.19,
-  "voiceConfidence": 0.8
+  "voice": 1.04,
+  "voiceConfidence": 0.82
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 80,
+  "line": 115,
+  "text": "Talking needs the mic. It only sends while you hold the button.",
+  "problem": "fine",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.68,
+   "technical": 0.01,
+   "too_long": 0.02,
+   "unclear": 0.14,
+   "tone": 0.15
+  },
+  "voice": 1.31,
+  "voiceConfidence": 0.7
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 120,
   "text": "Open settings",
   "problem": "fine",
   "problemConfidence": 0.61,
@@ -5489,7 +5905,7 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 85,
+  "line": 126,
   "text": "Try again",
   "problem": "unclear",
   "problemConfidence": 0.56,
@@ -5505,7 +5921,7 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 113,
+  "line": 167,
   "text": "Hold to talk",
   "problem": "fine",
   "problemConfidence": 0.76,
@@ -5521,87 +5937,39 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 120,
-  "text": "Mute everyone",
+  "line": 183,
+  "text": "No one else is on the radio yet.",
   "problem": "fine",
-  "problemConfidence": 0.45,
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.56,
+   "fine": 0.55,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.34,
-   "tone": 0.1
-  },
-  "voice": 0.99,
-  "voiceConfidence": 0.91
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 121,
-  "text": "You can still transmit",
-  "problem": "unclear",
-  "problemConfidence": 0.47,
-  "problems": {
-   "fine": 0.39,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.02
-  },
-  "voice": 1.18,
-  "voiceConfidence": 0.82
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 131,
-  "text": "No one else is on the radio yet. Members join as they open this screen or start the radio.",
-  "problem": "fine",
-  "problemConfidence": 0.45,
-  "problems": {
-   "fine": 0.56,
-   "technical": 0.02,
-   "too_long": 0.03,
-   "unclear": 0.32,
+   "unclear": 0.38,
    "tone": 0.07
   },
-  "voice": 1.36,
-  "voiceConfidence": 0.63
+  "voice": 1.09,
+  "voiceConfidence": 0.87
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 145,
-  "text": "Relay available for phones that cannot connect directly. Relayed so far: ${_bytes(relayed)}.",
-  "problem": "technical",
-  "problemConfidence": 0.76,
+  "line": 199,
+  "text": "Works across networks.",
+  "problem": "unclear",
+  "problemConfidence": 0.46,
   "problems": {
-   "fine": 0.01,
-   "technical": 0.81,
+   "fine": 0.28,
+   "technical": 0.14,
    "too_long": 0,
-   "unclear": 0.17,
+   "unclear": 0.57,
    "tone": 0.01
   },
-  "voice": 0.4,
-  "voiceConfidence": 0.6
+  "voice": 0.98,
+  "voiceConfidence": 0.94
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 147,
-  "text": "No relay configured: cars that cannot connect directly will show as failed.",
-  "problem": "unclear",
-  "problemConfidence": 0.47,
-  "problems": {
-   "fine": 0.07,
-   "technical": 0.29,
-   "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.06
-  },
-  "voice": 0.94,
-  "voiceConfidence": 0.85
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 156,
+  "line": 204,
   "text": "Stop radio",
   "problem": "fine",
   "problemConfidence": 0.4,
@@ -5617,23 +5985,119 @@
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 174,
-  "text": "You are talking",
+  "line": 236,
+  "text": "On air",
   "problem": "unclear",
-  "problemConfidence": 0.56,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.23,
-   "technical": 0,
+   "fine": 0.4,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.65,
-   "tone": 0.12
+   "unclear": 0.58,
+   "tone": 0.01
   },
-  "voice": 1.2,
-  "voiceConfidence": 0.71
+  "voice": 0.9,
+  "voiceConfidence": 0.65
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 220,
+  "line": 237,
+  "text": "Everyone hears you.",
+  "problem": "fine",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.57,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.25,
+   "tone": 0.18
+  },
+  "voice": 1.09,
+  "voiceConfidence": 0.88
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 242,
+  "text": "${nameOf(talking.single)} is talking.",
+  "problem": "fine",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.48,
+   "technical": 0.31,
+   "too_long": 0.01,
+   "unclear": 0.16,
+   "tone": 0.04
+  },
+  "voice": 1.13,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 243,
+  "text": "${talking.length} people are talking.",
+  "problem": "fine",
+  "problemConfidence": 0.34,
+  "problems": {
+   "fine": 0.47,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.07
+  },
+  "voice": 1.05,
+  "voiceConfidence": 0.86
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 248,
+  "text": "Waiting for the other cars.",
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.51,
+   "tone": 0.05
+  },
+  "voice": 1.16,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 249,
+  "text": "1 car connected.",
+  "problem": "fine",
+  "problemConfidence": 0.42,
+  "problems": {
+   "fine": 0.54,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.25,
+   "tone": 0.19
+  },
+  "voice": 0.72,
+  "voiceConfidence": 0.7
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 250,
+  "text": "$connected cars connected.",
+  "problem": "fine",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.64,
+   "technical": 0.07,
+   "too_long": 0.01,
+   "unclear": 0.23,
+   "tone": 0.05
+  },
+  "voice": 0.69,
+  "voiceConfidence": 0.62
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 294,
   "text": "Push to talk",
   "problem": "fine",
   "problemConfidence": 0.81,
@@ -5648,24 +6112,40 @@
   "voiceConfidence": 0.92
  },
  {
-  "file": "features/convoy/radio/ice_servers.dart",
-  "line": 55,
-  "text": "empty ice list",
-  "problem": "unclear",
-  "problemConfidence": 0.68,
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 367,
+  "text": "Mute everyone",
+  "problem": "fine",
+  "problemConfidence": 0.45,
   "problems": {
-   "fine": 0.06,
-   "technical": 0.16,
+   "fine": 0.56,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.74,
-   "tone": 0.04
+   "unclear": 0.34,
+   "tone": 0.1
   },
-  "voice": 0.43,
-  "voiceConfidence": 0.56
+  "voice": 0.99,
+  "voiceConfidence": 0.91
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 368,
+  "text": "Your mic still works",
+  "problem": "unclear",
+  "problemConfidence": 0.32,
+  "problems": {
+   "fine": 0.39,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.46,
+   "tone": 0.14
+  },
+  "voice": 1.73,
+  "voiceConfidence": 0.5
  },
  {
   "file": "features/convoy/radio/radio_controller.dart",
-  "line": 175,
+  "line": 176,
   "text": "Sign in to use the convoy radio.",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -5678,6 +6158,22 @@
   },
   "voice": 1,
   "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/convoy/radio/radio_controller.dart",
+  "line": 267,
+  "text": "start the radio",
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.48,
+   "tone": 0.08
+  },
+  "voice": 1.22,
+  "voiceConfidence": 0.74
  },
  {
   "file": "features/convoy/radio/webrtc_peer_link.dart",
@@ -5697,55 +6193,71 @@
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 147,
-  "text": "Nothing to recap yet: this convoy is not in your list.",
-  "problem": "unclear",
-  "problemConfidence": 0.55,
+  "line": 148,
+  "text": "Nothing to recap yet.",
+  "problem": "fine",
+  "problemConfidence": 0.4,
   "problems": {
-   "fine": 0.27,
+   "fine": 0.52,
    "technical": 0.01,
    "too_long": 0.03,
-   "unclear": 0.64,
-   "tone": 0.05
-  },
-  "voice": 1.15,
-  "voiceConfidence": 0.73
- },
- {
-  "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 157,
-  "text": "Recap failed: $error",
-  "problem": "unclear",
-  "problemConfidence": 0.32,
-  "problems": {
-   "fine": 0.16,
-   "technical": 0.26,
-   "too_long": 0,
-   "unclear": 0.46,
-   "tone": 0.12
-  },
-  "voice": 0.38,
-  "voiceConfidence": 0.62
- },
- {
-  "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 166,
-  "text": "Built from the positions this phone received and the Drive Scores members chose to upload. Nothing was sent to make it.",
-  "problem": "technical",
-  "problemConfidence": 0.39,
-  "problems": {
-   "fine": 0.05,
-   "technical": 0.51,
-   "too_long": 0.02,
    "unclear": 0.3,
-   "tone": 0.12
+   "tone": 0.14
   },
-  "voice": 0.95,
+  "voice": 1.22,
   "voiceConfidence": 0.76
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 195,
+  "line": 149,
+  "text": "Open it from the Convoy tab first.",
+  "problem": "fine",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.57,
+   "technical": 0.02,
+   "too_long": 0.02,
+   "unclear": 0.35,
+   "tone": 0.04
+  },
+  "voice": 1.29,
+  "voiceConfidence": 0.7
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 158,
+  "text": "No recap yet.",
+  "problem": "fine",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.41,
+   "tone": 0.15
+  },
+  "voice": 1.05,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 159,
+  "text": "build the recap",
+  "problem": "fine",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.49,
+   "technical": 0.13,
+   "too_long": 0,
+   "unclear": 0.33,
+   "tone": 0.05
+  },
+  "voice": 1.06,
+  "voiceConfidence": 0.78
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 197,
   "text": "${d.recap.name}: our convoy recap on Drivalry.",
   "problem": "fine",
   "problemConfidence": 0.34,
@@ -5761,7 +6273,7 @@
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 196,
+  "line": 198,
   "text": "Convoy recap",
   "problem": "fine",
   "problemConfidence": 0.85,
@@ -5777,67 +6289,67 @@
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 203,
-  "text": "Could not share: $e",
-  "problem": "unclear",
-  "problemConfidence": 0.56,
+  "line": 204,
+  "text": "share the recap",
+  "problem": "fine",
+  "problemConfidence": 0.7,
   "problems": {
-   "fine": 0.07,
-   "technical": 0.2,
+   "fine": 0.76,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.65,
-   "tone": 0.08
+   "unclear": 0.22,
+   "tone": 0.01
   },
-  "voice": 0.84,
-  "voiceConfidence": 0.78
+  "voice": 1.06,
+  "voiceConfidence": 0.86
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 265,
-  "text": "No positions were received during this trip.",
+  "line": 264,
+  "text": "No car shared its position this trip.",
   "problem": "unclear",
-  "problemConfidence": 0.35,
+  "problemConfidence": 0.54,
   "problems": {
    "fine": 0.22,
-   "technical": 0.04,
-   "too_long": 0,
-   "unclear": 0.48,
-   "tone": 0.26
-  },
-  "voice": 0.82,
-  "voiceConfidence": 0.8
- },
- {
-  "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 338,
-  "text": "avg score ${m.averageScore!.round()}",
-  "problem": "technical",
-  "problemConfidence": 0.34,
-  "problems": {
-   "fine": 0.41,
-   "technical": 0.47,
-   "too_long": 0,
-   "unclear": 0.09,
-   "tone": 0.03
-  },
-  "voice": 0.77,
-  "voiceConfidence": 0.67
- },
- {
-  "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 339,
-  "text": "${m.stopsProposed} stops proposed",
-  "problem": "fine",
-  "problemConfidence": 0.6,
-  "problems": {
-   "fine": 0.68,
    "technical": 0.02,
    "too_long": 0.01,
-   "unclear": 0.21,
+   "unclear": 0.63,
+   "tone": 0.12
+  },
+  "voice": 1,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 334,
+  "text": "On the road",
+  "problem": "fine",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0.85,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.11,
+   "tone": 0.04
+  },
+  "voice": 1.2,
+  "voiceConfidence": 0.77
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 415,
+  "text": "Built on this phone from what the cars shared. Nothing was uploaded to make it.",
+  "problem": "technical",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.04,
+   "technical": 0.45,
+   "too_long": 0.03,
+   "unclear": 0.4,
    "tone": 0.08
   },
-  "voice": 0.98,
-  "voiceConfidence": 0.9
+  "voice": 1.12,
+  "voiceConfidence": 0.71
  },
  {
   "file": "features/convoy/recap/recap_card.dart",
@@ -5857,55 +6369,71 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 64,
-  "text": "Suggest a stop",
+  "line": 126,
+  "text": "Propose a stop",
   "problem": "fine",
-  "problemConfidence": 0.89,
+  "problemConfidence": 0.82,
   "problems": {
-   "fine": 0.91,
+   "fine": 0.86,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.07,
-   "tone": 0.02
+   "unclear": 0.1,
+   "tone": 0.04
   },
-  "voice": 1.28,
-  "voiceConfidence": 0.73
+  "voice": 1.32,
+  "voiceConfidence": 0.66
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 67,
-  "text": "Places along the remaining route, a few lookups a day. Or propose wherever you are.",
-  "problem": "unclear",
-  "problemConfidence": 0.54,
+  "line": 136,
+  "text": "Along the route, or right where you are.",
+  "problem": "fine",
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.11,
-   "technical": 0.23,
+   "fine": 0.58,
+   "technical": 0,
    "too_long": 0.01,
-   "unclear": 0.63,
-   "tone": 0.02
+   "unclear": 0.4,
+   "tone": 0.01
   },
-  "voice": 1.59,
-  "voiceConfidence": 0.5
+  "voice": 1.19,
+  "voiceConfidence": 0.78
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 94,
-  "text": "No stops proposed yet.",
+  "line": 155,
+  "text": "No stops yet.",
   "problem": "fine",
-  "problemConfidence": 0.62,
+  "problemConfidence": 0.37,
   "problems": {
-   "fine": 0.7,
+   "fine": 0.5,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.11
+   "unclear": 0.42,
+   "tone": 0.08
   },
-  "voice": 0.97,
-  "voiceConfidence": 0.93
+  "voice": 0.99,
+  "voiceConfidence": 0.91
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 96,
+  "line": 156,
+  "text": "Propose gas, food or a photo stop and the convoy votes.",
+  "problem": "fine",
+  "problemConfidence": 0.84,
+  "problems": {
+   "fine": 0.87,
+   "technical": 0.01,
+   "too_long": 0.04,
+   "unclear": 0.06,
+   "tone": 0.02
+  },
+  "voice": 1.48,
+  "voiceConfidence": 0.52
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 158,
   "text": "Next up",
   "problem": "fine",
   "problemConfidence": 0.44,
@@ -5921,23 +6449,23 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 177,
-  "text": "Set a destination (or get a fix) first.",
+  "line": 225,
+  "text": "Needs a destination or a position first.",
   "problem": "unclear",
-  "problemConfidence": 0.47,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.28,
-   "technical": 0.07,
+   "fine": 0.32,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.07
+   "unclear": 0.51,
+   "tone": 0.16
   },
-  "voice": 1.2,
-  "voiceConfidence": 0.72
+  "voice": 0.88,
+  "voiceConfidence": 0.8
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 215,
+  "line": 253,
   "text": "${category.label} along the way",
   "problem": "unclear",
   "problemConfidence": 0.36,
@@ -5953,23 +6481,23 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 223,
-  "text": "Place suggestions are not available right now (offline, or today's free lookups are used up).",
-  "problem": "unclear",
-  "problemConfidence": 0.37,
+  "line": 261,
+  "text": "Suggestions are resting until tomorrow. Propose a stop by hand.",
+  "problem": "tone",
+  "problemConfidence": 0.29,
   "problems": {
-   "fine": 0.27,
-   "technical": 0.13,
-   "too_long": 0.03,
-   "unclear": 0.5,
-   "tone": 0.07
+   "fine": 0.16,
+   "technical": 0.1,
+   "too_long": 0.01,
+   "unclear": 0.3,
+   "tone": 0.43
   },
-  "voice": 1,
-  "voiceConfidence": 0.82
+  "voice": 1.89,
+  "voiceConfidence": 0.54
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 231,
+  "line": 266,
   "text": "Nothing of that kind near the route.",
   "problem": "unclear",
   "problemConfidence": 0.34,
@@ -5985,7 +6513,7 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 242,
+  "line": 272,
   "text": "${formatDistance(s.detourM, units)} off route",
   "problem": "fine",
   "problemConfidence": 0.39,
@@ -6001,7 +6529,7 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 245,
+  "line": 275,
   "text": "Open now",
   "problem": "fine",
   "problemConfidence": 0.76,
@@ -6017,7 +6545,7 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 272,
+  "line": 301,
   "text": "${category.label} stop where I am",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -6033,87 +6561,103 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 273,
-  "text": "Pin my current position",
+  "line": 302,
+  "text": "Pins your position",
   "problem": "fine",
-  "problemConfidence": 0.7,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.76,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.03
-  },
-  "voice": 1.27,
-  "voiceConfidence": 0.7
- },
- {
-  "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 280,
-  "text": "No position fix yet.",
-  "problem": "fine",
-  "problemConfidence": 0.35,
-  "problems": {
-   "fine": 0.48,
-   "technical": 0.08,
-   "too_long": 0,
-   "unclear": 0.37,
-   "tone": 0.07
-  },
-  "voice": 0.91,
-  "voiceConfidence": 0.87
- },
- {
-  "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 391,
-  "text": "Mark done",
-  "problem": "unclear",
-  "problemConfidence": 0.36,
-  "problems": {
-   "fine": 0.46,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.49,
-   "tone": 0.05
-  },
-  "voice": 0.96,
-  "voiceConfidence": 0.87
- },
- {
-  "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 396,
-  "text": "Back to proposed",
-  "problem": "unclear",
-  "problemConfidence": 0.7,
-  "problems": {
-   "fine": 0.19,
+   "fine": 0.58,
    "technical": 0.04,
    "too_long": 0,
-   "unclear": 0.76,
+   "unclear": 0.29,
+   "tone": 0.09
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.86
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 310,
+  "text": "No position yet. Try again in a moment.",
+  "problem": "fine",
+  "problemConfidence": 0.47,
+  "problems": {
+   "fine": 0.58,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.24,
+   "tone": 0.17
+  },
+  "voice": 1.29,
+  "voiceConfidence": 0.68
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 452,
+  "text": "by you",
+  "problem": "unclear",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.34,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.65,
    "tone": 0.01
   },
-  "voice": 0.9,
-  "voiceConfidence": 0.81
+  "voice": 1.08,
+  "voiceConfidence": 0.69
  },
  {
-  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 39,
-  "text": "The invite code is on its way from the server. Pull to refresh the convoy list in a moment.",
-  "problem": "fine",
-  "problemConfidence": 0.34,
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 562,
+  "text": "Reopen vote",
+  "problem": "unclear",
+  "problemConfidence": 0.54,
   "problems": {
-   "fine": 0.47,
-   "technical": 0.26,
-   "too_long": 0.02,
-   "unclear": 0.22,
-   "tone": 0.03
+   "fine": 0.18,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.63,
+   "tone": 0.17
   },
-  "voice": 1.44,
-  "voiceConfidence": 0.54
+  "voice": 0.85,
+  "voiceConfidence": 0.77
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 46,
+  "line": 15,
+  "text": "Invite to ${convoy.name}",
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0.03,
+   "too_long": 0,
+   "unclear": 0.25,
+   "tone": 0.01
+  },
+  "voice": 1.15,
+  "voiceConfidence": 0.82
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 35,
+  "text": "The invite code is on its way. Check again in a moment.",
+  "problem": "unclear",
+  "problemConfidence": 0.41,
+  "problems": {
+   "fine": 0.37,
+   "technical": 0,
+   "too_long": 0.04,
+   "unclear": 0.53,
+   "tone": 0.06
+  },
+  "voice": 1.52,
+  "voiceConfidence": 0.49
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 40,
   "text": "Check again",
   "problem": "fine",
   "problemConfidence": 0.31,
@@ -6129,7 +6673,39 @@
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 92,
+  "line": 93,
+  "text": "Share invite",
+  "problem": "fine",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.57,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.43,
+   "tone": 0
+  },
+  "voice": 1,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 98,
+  "text": "Join my convoy \"${live.name}\" on Drivalry: $link (code ${code.toUpperCase()})",
+  "problem": "fine",
+  "problemConfidence": 0.32,
+  "problems": {
+   "fine": 0.46,
+   "technical": 0.3,
+   "too_long": 0.07,
+   "unclear": 0.15,
+   "tone": 0.02
+  },
+  "voice": 1.27,
+  "voiceConfidence": 0.62
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 112,
   "text": "Code copied.",
   "problem": "fine",
   "problemConfidence": 0.7,
@@ -6145,7 +6721,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 97,
+  "line": 116,
   "text": "Copy code",
   "problem": "fine",
   "problemConfidence": 0.69,
@@ -6160,24 +6736,8 @@
   "voiceConfidence": 0.95
  },
  {
-  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 104,
-  "text": "Join my convoy \"${live.name}\" on Drivalry: $link (code ${code.toUpperCase()})",
-  "problem": "fine",
-  "problemConfidence": 0.32,
-  "problems": {
-   "fine": 0.46,
-   "technical": 0.3,
-   "too_long": 0.07,
-   "unclear": 0.15,
-   "tone": 0.02
-  },
-  "voice": 1.27,
-  "voiceConfidence": 0.62
- },
- {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 75,
+  "line": 82,
   "text": "Loading map…",
   "problem": "fine",
   "problemConfidence": 0.82,
@@ -6193,39 +6753,39 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 75,
-  "text": "Map unavailable.",
+  "line": 82,
+  "text": "The map could not load.",
   "problem": "unclear",
-  "problemConfidence": 0.6,
+  "problemConfidence": 0.4,
   "problems": {
-   "fine": 0.21,
-   "technical": 0,
+   "fine": 0.27,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.68,
-   "tone": 0.11
+   "unclear": 0.52,
+   "tone": 0.2
   },
-  "voice": 0.8,
-  "voiceConfidence": 0.8
+  "voice": 0.82,
+  "voiceConfidence": 0.81
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 138,
-  "text": "Last seen a while ago",
+  "line": 145,
+  "text": "Position is a few minutes old",
   "problem": "unclear",
-  "problemConfidence": 0.61,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.2,
-   "technical": 0,
+   "fine": 0.44,
+   "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.69,
-   "tone": 0.11
+   "unclear": 0.51,
+   "tone": 0.04
   },
   "voice": 1.11,
   "voiceConfidence": 0.84
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 186,
+  "line": 193,
   "text": "Set by the leader",
   "problem": "fine",
   "problemConfidence": 0.29,
@@ -6241,7 +6801,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 236,
+  "line": 243,
   "text": "Show everyone",
   "problem": "fine",
   "problemConfidence": 0.5,
@@ -6257,7 +6817,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 242,
+  "line": 249,
   "text": "Centre on me",
   "problem": "fine",
   "problemConfidence": 0.76,
@@ -6273,7 +6833,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 293,
+  "line": 300,
   "text": "Waiting for the first positions. They arrive once cars start moving.",
   "problem": "fine",
   "problemConfidence": 0.34,
@@ -6289,7 +6849,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 295,
+  "line": 302,
   "text": "Positions appear here once the leader starts the trip.",
   "problem": "fine",
   "problemConfidence": 0.54,
@@ -6305,55 +6865,71 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 318,
-  "text": "} falling behind.",
-  "problem": "unclear",
-  "problemConfidence": 0.96,
+  "line": 327,
+  "text": "You are falling behind.",
+  "problem": "tone",
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0,
-   "technical": 0.01,
+   "fine": 0.22,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.97,
-   "tone": 0.02
+   "unclear": 0.27,
+   "tone": 0.51
   },
-  "voice": 1.1,
-  "voiceConfidence": 0.23
+  "voice": 1.58,
+  "voiceConfidence": 0.5
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 320,
-  "text": ")} are falling behind.",
-  "problem": "unclear",
-  "problemConfidence": 0.6,
+  "line": 328,
+  "text": "$who is falling behind.",
+  "problem": "fine",
+  "problemConfidence": 0.29,
   "problems": {
-   "fine": 0.12,
-   "technical": 0.16,
-   "too_long": 0,
-   "unclear": 0.68,
-   "tone": 0.04
+   "fine": 0.43,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.17,
+   "tone": 0.39
   },
-  "voice": 2.27,
-  "voiceConfidence": 0.44
+  "voice": 1.73,
+  "voiceConfidence": 0.56
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 395,
-  "text": "Everyone gets a pin and a nudge.",
+  "line": 331,
+  "text": "$list are falling behind.",
   "problem": "unclear",
-  "problemConfidence": 0.75,
+  "problemConfidence": 0.3,
   "problems": {
-   "fine": 0.18,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.8,
-   "tone": 0.01
+   "fine": 0.43,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.44,
+   "tone": 0.1
   },
-  "voice": 2.19,
-  "voiceConfidence": 0.58
+  "voice": 1.41,
+  "voiceConfidence": 0.5
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 405,
+  "line": 406,
+  "text": "Drops a pin every car can route to.",
+  "problem": "unclear",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.37,
+   "technical": 0.1,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.09
+  },
+  "voice": 1.08,
+  "voiceConfidence": 0.88
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 416,
   "text": "Clear regroup pin",
   "problem": "fine",
   "problemConfidence": 0.34,
@@ -6369,7 +6945,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 413,
+  "line": 424,
   "text": "Set destination here",
   "problem": "fine",
   "problemConfidence": 0.47,
@@ -6385,7 +6961,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 420,
+  "line": 431,
   "text": "Pinned destination",
   "problem": "fine",
   "problemConfidence": 0.49,
@@ -6401,7 +6977,7 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 430,
+  "line": 441,
   "text": "Search a destination",
   "problem": "fine",
   "problemConfidence": 0.87,
@@ -6417,55 +6993,55 @@
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 466,
-  "text": "No map in this build. Positions and ETAs still flow between the cars:",
-  "problem": "technical",
-  "problemConfidence": 0.68,
+  "line": 482,
+  "text": "No map in this version. Here is where everyone is.",
+  "problem": "unclear",
+  "problemConfidence": 0.34,
   "problems": {
-   "fine": 0.04,
-   "technical": 0.74,
-   "too_long": 0,
-   "unclear": 0.2,
-   "tone": 0.02
+   "fine": 0.18,
+   "technical": 0.08,
+   "too_long": 0.01,
+   "unclear": 0.47,
+   "tone": 0.26
   },
-  "voice": 0.78,
-  "voiceConfidence": 0.68
+  "voice": 1.57,
+  "voiceConfidence": 0.42
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 501,
-  "text": "Sharing position",
-  "problem": "fine",
-  "problemConfidence": 0.7,
+  "line": 515,
+  "text": "Leader · no position yet",
+  "problem": "unclear",
+  "problemConfidence": 0.59,
   "problems": {
-   "fine": 0.76,
+   "fine": 0.24,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.67,
+   "tone": 0.05
+  },
+  "voice": 0.69,
+  "voiceConfidence": 0.6
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 525,
+  "text": "On the map",
+  "problem": "fine",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.57,
    "technical": 0.03,
    "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.02
-  },
-  "voice": 0.73,
-  "voiceConfidence": 0.67
- },
- {
-  "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 84,
-  "text": "No location fix yet.",
-  "problem": "technical",
-  "problemConfidence": 0.32,
-  "problems": {
-   "fine": 0.21,
-   "technical": 0.46,
-   "too_long": 0,
-   "unclear": 0.32,
+   "unclear": 0.39,
    "tone": 0.01
   },
-  "voice": 0.79,
-  "voiceConfidence": 0.74
+  "voice": 1.01,
+  "voiceConfidence": 0.75
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 90,
+  "line": 93,
   "text": "Where I am",
   "problem": "fine",
   "problemConfidence": 0.76,
@@ -6481,23 +7057,23 @@
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 100,
-  "text": "Location unavailable: $e",
-  "problem": "unclear",
-  "problemConfidence": 0.37,
+  "line": 103,
+  "text": "find where you are",
+  "problem": "fine",
+  "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.08,
-   "technical": 0.38,
-   "too_long": 0,
-   "unclear": 0.5,
-   "tone": 0.04
+   "fine": 0.49,
+   "technical": 0.01,
+   "too_long": 0.03,
+   "unclear": 0.36,
+   "tone": 0.11
   },
-  "voice": 0.48,
-  "voiceConfidence": 0.53
+  "voice": 1.26,
+  "voiceConfidence": 0.69
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 128,
+  "line": 126,
   "text": "Search a place or town",
   "problem": "fine",
   "problemConfidence": 0.81,
@@ -6513,23 +7089,23 @@
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 147,
-  "text": "Place search is not available right now (offline, or today's free lookups are used up). You can still set the destination to where you are.",
+  "line": 143,
+  "text": "Search is resting until tomorrow. You can still use where you are.",
   "problem": "technical",
-  "problemConfidence": 0.22,
+  "problemConfidence": 0.18,
   "problems": {
-   "fine": 0.23,
-   "technical": 0.38,
-   "too_long": 0.16,
-   "unclear": 0.12,
-   "tone": 0.11
+   "fine": 0.21,
+   "technical": 0.34,
+   "too_long": 0.1,
+   "unclear": 0.25,
+   "tone": 0.1
   },
-  "voice": 1.16,
-  "voiceConfidence": 0.79
+  "voice": 2.04,
+  "voiceConfidence": 0.63
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 156,
+  "line": 152,
   "text": "Nothing found. Try another spelling.",
   "problem": "fine",
   "problemConfidence": 0.44,
@@ -6561,18 +7137,18 @@
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 184,
-  "text": "No lookup needed",
-  "problem": "unclear",
-  "problemConfidence": 0.54,
+  "line": 185,
+  "text": "No search needed",
+  "problem": "fine",
+  "problemConfidence": 0.41,
   "problems": {
-   "fine": 0.34,
+   "fine": 0.53,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.63,
-   "tone": 0.02
+   "unclear": 0.38,
+   "tone": 0.08
   },
-  "voice": 1.09,
+  "voice": 1.13,
   "voiceConfidence": 0.82
  },
  {
@@ -8353,6 +8929,22 @@
  },
  {
   "file": "features/drive/trip_detail_screen.dart",
+  "line": 384,
+  "text": "Could not share: $e",
+  "problem": "unclear",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.07,
+   "technical": 0.2,
+   "too_long": 0,
+   "unclear": 0.65,
+   "tone": 0.08
+  },
+  "voice": 0.84,
+  "voiceConfidence": 0.78
+ },
+ {
+  "file": "features/drive/trip_detail_screen.dart",
   "line": 459,
   "text": "Moving time",
   "problem": "unclear",
@@ -9582,6 +10174,22 @@
   },
   "voice": 1.06,
   "voiceConfidence": 0.92
+ },
+ {
+  "file": "features/friends/join_circle_screen.dart",
+  "line": 45,
+  "text": "Could not join: $e",
+  "problem": "unclear",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.05,
+   "technical": 0.25,
+   "too_long": 0,
+   "unclear": 0.57,
+   "tone": 0.13
+  },
+  "voice": 0.32,
+  "voiceConfidence": 0.68
  },
  {
   "file": "features/friends/join_circle_screen.dart",
@@ -11358,22 +11966,6 @@
   },
   "voice": 0.98,
   "voiceConfidence": 0.91
- },
- {
-  "file": "features/leagues/leagues_screen.dart",
-  "line": 135,
-  "text": "Join with a code",
-  "problem": "fine",
-  "problemConfidence": 0.65,
-  "problems": {
-   "fine": 0.72,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.27,
-   "tone": 0.01
-  },
-  "voice": 1.07,
-  "voiceConfidence": 0.9
  },
  {
   "file": "features/leagues/leagues_screen.dart",
@@ -16174,6 +16766,310 @@
   },
   "voice": 1.73,
   "voiceConfidence": 0.64
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 16,
+  "text": "failed host lookup",
+  "problem": "technical",
+  "problemConfidence": 0.98,
+  "problems": {
+   "fine": 0,
+   "technical": 0.98,
+   "too_long": 0,
+   "unclear": 0.02,
+   "tone": 0
+  },
+  "voice": 0.03,
+  "voiceConfidence": 0.98
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 17,
+  "text": "network is unreachable",
+  "problem": "technical",
+  "problemConfidence": 0.16,
+  "problems": {
+   "fine": 0.27,
+   "technical": 0.33,
+   "too_long": 0,
+   "unclear": 0.29,
+   "tone": 0.11
+  },
+  "voice": 0.28,
+  "voiceConfidence": 0.72
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 18,
+  "text": "connection refused",
+  "problem": "technical",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.85,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.01
+  },
+  "voice": 0.04,
+  "voiceConfidence": 0.96
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 19,
+  "text": "connection reset",
+  "problem": "technical",
+  "problemConfidence": 0.81,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.85,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.01
+  },
+  "voice": 0.09,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 20,
+  "text": "No connection right now. Try again when you are back online.",
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0.01,
+   "too_long": 0.12,
+   "unclear": 0.01,
+   "tone": 0.24
+  },
+  "voice": 1.36,
+  "voiceConfidence": 0.65
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 22,
+  "text": "timed out",
+  "problem": "technical",
+  "problemConfidence": 0.15,
+  "problems": {
+   "fine": 0.3,
+   "technical": 0.32,
+   "too_long": 0,
+   "unclear": 0.24,
+   "tone": 0.14
+  },
+  "voice": 1.09,
+  "voiceConfidence": 0.53
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 23,
+  "text": "That took too long. Try again.",
+  "problem": "fine",
+  "problemConfidence": 0.47,
+  "problems": {
+   "fine": 0.58,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.17,
+   "tone": 0.22
+  },
+  "voice": 1.51,
+  "voiceConfidence": 0.49
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "offline build",
+  "problem": "technical",
+  "problemConfidence": 0.77,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.82,
+   "too_long": 0,
+   "unclear": 0.16,
+   "tone": 0.01
+  },
+  "voice": 0.36,
+  "voiceConfidence": 0.65
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "not configured",
+  "problem": "unclear",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.02,
+   "technical": 0.2,
+   "too_long": 0,
+   "unclear": 0.77,
+   "tone": 0.01
+  },
+  "voice": 0.13,
+  "voiceConfidence": 0.87
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 26,
+  "text": "Not available in this version yet.",
+  "problem": "unclear",
+  "problemConfidence": 0.26,
+  "problems": {
+   "fine": 0.24,
+   "technical": 0.13,
+   "too_long": 0.01,
+   "unclear": 0.41,
+   "tone": 0.21
+  },
+  "voice": 0.96,
+  "voiceConfidence": 0.9
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 29,
+  "text": "not authenticated",
+  "problem": "technical",
+  "problemConfidence": 0.49,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.59,
+   "too_long": 0,
+   "unclear": 0.38,
+   "tone": 0.02
+  },
+  "voice": 0.1,
+  "voiceConfidence": 0.91
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 31,
+  "text": "invalid token",
+  "problem": "technical",
+  "problemConfidence": 0.84,
+  "problems": {
+   "fine": 0,
+   "technical": 0.87,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0
+  },
+  "voice": 0.09,
+  "voiceConfidence": 0.92
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 32,
+  "text": "Your sign-in expired. Sign in again.",
+  "problem": "fine",
+  "problemConfidence": 0.49,
+  "problems": {
+   "fine": 0.59,
+   "technical": 0.05,
+   "too_long": 0.01,
+   "unclear": 0.02,
+   "tone": 0.33
+  },
+  "voice": 1.11,
+  "voiceConfidence": 0.89
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 34,
+  "text": "row-level security",
+  "problem": "technical",
+  "problemConfidence": 0.98,
+  "problems": {
+   "fine": 0,
+   "technical": 0.98,
+   "too_long": 0,
+   "unclear": 0.02,
+   "tone": 0
+  },
+  "voice": 0.01,
+  "voiceConfidence": 0.99
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 35,
+  "text": "You do not have access to that.",
+  "problem": "tone",
+  "problemConfidence": 0.4,
+  "problems": {
+   "fine": 0.14,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.33,
+   "tone": 0.52
+  },
+  "voice": 0.94,
+  "voiceConfidence": 0.91
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 37,
+  "text": "rate limit",
+  "problem": "technical",
+  "problemConfidence": 0.7,
+  "problems": {
+   "fine": 0,
+   "technical": 0.76,
+   "too_long": 0,
+   "unclear": 0.23,
+   "tone": 0.01
+  },
+  "voice": 0.05,
+  "voiceConfidence": 0.96
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 38,
+  "text": "Slow down a little. Try again in a minute.",
+  "problem": "fine",
+  "problemConfidence": 0.32,
+  "problems": {
+   "fine": 0.46,
+   "technical": 0.05,
+   "too_long": 0.01,
+   "unclear": 0.15,
+   "tone": 0.33
+  },
+  "voice": 2.11,
+  "voiceConfidence": 0.74
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 40,
+  "text": "Could not $doing. Try again.",
+  "problem": "unclear",
+  "problemConfidence": 0.49,
+  "problems": {
+   "fine": 0.21,
+   "technical": 0.14,
+   "too_long": 0,
+   "unclear": 0.59,
+   "tone": 0.06
+  },
+  "voice": 0.93,
+  "voiceConfidence": 0.86
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 41,
+  "text": "Something went wrong. Try again.",
+  "problem": "fine",
+  "problemConfidence": 0.25,
+  "problems": {
+   "fine": 0.4,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.26,
+   "tone": 0.33
+  },
+  "voice": 0.98,
+  "voiceConfidence": 0.95
  },
  {
   "file": "widgets/placeholder_screen.dart",

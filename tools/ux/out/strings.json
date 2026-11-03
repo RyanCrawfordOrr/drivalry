@@ -1496,102 +1496,107 @@
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 47,
+  "line": 53,
   "text": "Album full"
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 47,
+  "line": 53,
   "text": "Add photo"
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 56,
-  "text": "No photos yet. Small ones only: the album is for the recap, not a backup. Passengers, this is your job."
+  "line": 75,
+  "text": "No photos yet."
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 91,
+  "line": 76,
+  "text": "Small ones, for the recap. Passengers, this is your job."
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 109,
+  "text": "Add a photo"
+ },
+ {
+  "file": "features/convoy/album/convoy_album_screen.dart",
+  "line": 115,
   "text": "Take a photo"
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 96,
+  "line": 120,
   "text": "Choose from the library"
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 117,
+  "line": 141,
   "text": "Added to the album."
  },
  {
   "file": "features/convoy/album/convoy_album_screen.dart",
-  "line": 129,
-  "text": "Could not add: $e"
+  "line": 152,
+  "text": "add that photo"
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 113,
-  "text": "voice-${const Uuid().v4()}.m4a"
+  "line": 270,
+  "text": "send the message"
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 267,
-  "text": "Could not send: $e"
- },
- {
-  "file": "features/convoy/chat/chat_controller.dart",
-  "line": 290,
+  "line": 294,
   "text": "Message from $who: $text"
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 325,
+  "line": 329,
   "text": "Microphone permission is needed for voice notes."
  },
  {
   "file": "features/convoy/chat/chat_controller.dart",
-  "line": 367,
+  "line": 371,
   "text": "That note is too long to send."
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 37,
-  "text": "Convoy chat"
+  "line": 43,
+  "text": "Mute read-aloud"
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 40,
-  "text": "Read aloud: on"
+  "line": 44,
+  "text": "Read messages aloud"
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 40,
-  "text": "Read aloud: off"
+  "line": 62,
+  "text": "No messages yet."
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 56,
-  "text": "Nothing yet. Voice notes play in every car; text is read aloud to drivers."
+  "line": 64,
+  "text": "Voice notes play in every car. Drivers hear text read aloud."
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 89,
+  "line": 105,
   "text": "Passengers type; drivers listen."
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 131,
+  "line": 197,
   "text": "Message the convoy"
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 158,
+  "line": 210,
   "text": "Record a voice note"
  },
  {
   "file": "features/convoy/chat/convoy_chat_screen.dart",
-  "line": 227,
+  "line": 301,
   "text": "Voice note · ${(message.voice!.durationMs / 1000).toStringAsFixed(0)} s"
  },
  {
@@ -1601,292 +1606,417 @@
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 49,
+  "line": 54,
   "text": "Sign in to see the convoy."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 58,
-  "text": "This convoy is not in your list. Pull to refresh the Convoy tab, or ask for a new invite."
+  "line": 75,
+  "text": "Convoy not found."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 124,
-  "text": "${present.length} of ${convoy.maxCars} cars · no destination yet"
+  "line": 77,
+  "text": "Pull to refresh the Convoy tab, or ask for a new invite."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 138,
-  "text": "Start trip"
+  "line": 79,
+  "text": "Back to convoys"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 143,
-  "text": "End trip"
+  "line": 129,
+  "text": "$present of ${convoy.maxCars} cars"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 156,
+  "line": 206,
   "text": "Regroup here"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 171,
+  "line": 215,
   "text": "Set destination"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 232,
-  "text": "End the trip?"
+  "line": 216,
+  "text": "Move destination"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 234,
-  "text": "Positions stop flowing and everyone gets the recap. Stops, expenses and photos stay."
+  "line": 227,
+  "text": "Set destination"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 240,
-  "text": "Keep going"
+  "line": 227,
+  "text": "Move destination"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 244,
-  "text": "End trip"
+  "line": 239,
+  "text": "No cars yet. Share the invite."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 271,
+  "line": 275,
+  "text": "Start trip"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 286,
+  "text": "Waiting for the leader to start."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 287,
+  "text": "Waiting for $leaderName to start."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 294,
+  "text": "See the recap"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 326,
   "text": "No position yet. Long-press the map instead."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 283,
+  "line": 339,
   "text": "Regroup pin sent."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 284,
-  "text": "Pin set here; it could not be sent. Check your connection."
+  "line": 340,
+  "text": "Pin set here. It goes out when you are back online."
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 300,
-  "text": "On the road"
- },
- {
-  "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 341,
+  "line": 378,
   "text": "No position yet"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 345,
+  "line": 383,
   "text": "Last seen ${(age / 60000).round()} min ago"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 354,
-  "text": "${formatDistance(d, units)} from the leader"
+  "line": 410,
+  "text": " mi back"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 384,
-  "text": "Lost sheep"
+  "line": 410,
+  "text": " km back"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 424,
+  "line": 418,
+  "text": "Fallen behind"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 469,
+  "text": "End trip"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 471,
   "text": "Leave convoy"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 437,
+  "line": 483,
   "text": "Rename convoy"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 464,
+  "line": 520,
   "text": "Leave this convoy?"
  },
  {
   "file": "features/convoy/convoy_detail_screen.dart",
-  "line": 466,
+  "line": 522,
   "text": "You drop off the shared map and the radio. Rejoin with the invite code any time."
  },
  {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 548,
+  "text": "End the trip?"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 550,
+  "text": "Positions stop flowing and everyone gets the recap. Stops, expenses and photos stay."
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 556,
+  "text": "Keep going"
+ },
+ {
+  "file": "features/convoy/convoy_detail_screen.dart",
+  "line": 560,
+  "text": "End trip"
+ },
+ {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 24,
+  "line": 35,
+  "text": "Join with a code"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 41,
+  "text": "Start a convoy"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 48,
   "text": "Sign in to drive with friends in a convoy."
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 56,
-  "text": "Two to six cars, one trip. Everyone sees everyone, and the radio is one button away."
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
-  "line": 68,
-  "text": "New convoy"
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
-  "line": 76,
-  "text": "Join with code"
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
-  "line": 91,
-  "text": "No convoys yet"
- },
- {
-  "file": "features/convoy/convoy_screen.dart",
   "line": 94,
-  "text": "Start one before a road trip and share the code. While the trip is on, every car sees the others, hears the radio, votes on stops and splits the costs. Positions stay between the cars and never leave your phones in detail."
+  "text": "Road trips, together."
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 108,
+  "line": 95,
+  "text": "One map, a vote on stops and a radio between the cars."
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 96,
+  "text": "Start a convoy"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 98,
+  "text": "Join with a code"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 104,
+  "text": "Other convoys"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 113,
   "text": "Past trips"
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 122,
+  "line": 131,
   "text": "Join a convoy"
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 128,
+  "line": 144,
   "text": "Invite code"
  },
  {
   "file": "features/convoy/convoy_screen.dart",
-  "line": 161,
-  "text": "On the road"
+  "line": 180,
+  "text": "Nothing proposed yet"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 201,
+  "text": "Start trip"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 209,
+  "text": "Invite cars"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 216,
+  "text": "Invite cars"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 240,
+  "text": "Voice notes and text"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 246,
+  "text": "Same song in every car"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 252,
+  "text": "Passenger games"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 268,
+  "text": "Photos for the recap"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 275,
+  "text": "Gas, tolls and food, split"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 282,
+  "text": "The trip so far"
+ },
+ {
+  "file": "features/convoy/convoy_screen.dart",
+  "line": 311,
+  "text": "No destination yet"
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 46,
-  "text": "Could not create: $e"
+  "line": 49,
+  "text": "create the convoy"
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 55,
+  "line": 59,
   "text": "New convoy"
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 57,
+  "line": 61,
   "text": "Sign in to start a convoy."
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 69,
-  "text": "Trip name"
+  "line": 79,
+  "text": "Name your trip"
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 70,
+  "line": 80,
   "text": "Coast run, Thanksgiving drive…"
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 81,
-  "text": "Where everyone is heading. Needed for ETAs and stop suggestions; you can set it later."
+  "line": 108,
+  "text": "Optional. Powers ETAs and stop ideas."
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 83,
-  "text": "Tap to change"
+  "line": 109,
+  "text": "Tap to pick a different place."
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 102,
-  "text": "Up to six cars. You lead: you start and end the trip, accept stops and can drop a regroup pin. Anyone can propose stops, add expenses and photos."
+  "line": 122,
+  "text": "Up to six cars. You lead: start and end the trip, accept stops, drop a regroup pin."
  },
  {
   "file": "features/convoy/create_convoy_screen.dart",
-  "line": 112,
+  "line": 129,
   "text": "Create convoy"
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 80,
+  "line": 51,
   "text": "Split among the cars in the convoy."
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
   "line": 87,
+  "text": "Add an expense"
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 98,
   "text": "Settle up"
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 101,
+  "line": 119,
+  "text": "Settle up"
+ },
+ {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 120,
   "text": "All square."
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 112,
-  "text": "Nothing added yet. Gas, tolls, snacks, the motel: add it and the split works itself out."
+  "line": 135,
+  "text": "No expenses yet."
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 185,
-  "text": "Could not add: $e"
+  "line": 137,
+  "text": "Gas, tolls, snacks, the motel: add it and the split works itself out."
  },
  {
   "file": "features/convoy/expenses/convoy_expenses_screen.dart",
-  "line": 236,
+  "line": 177,
   "text": "Add an expense"
  },
  {
+  "file": "features/convoy/expenses/convoy_expenses_screen.dart",
+  "line": 194,
+  "text": "add that expense"
+ },
+ {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 28,
+  "line": 29,
+  "text": "Passengers only."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 30,
   "text": "Games are for passengers. Drivers hear the results."
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 59,
-  "text": "Spot the…"
- },
- {
-  "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 165,
+  "line": 217,
   "text": "You are asking the questions."
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 173,
-  "text": "Trivia needs at least one other car on the radio."
+  "line": 225,
+  "text": "Trivia needs another car on the radio."
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 174,
+  "line": 226,
   "text": "No question yet."
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 203,
+  "line": 290,
   "text": "Next question"
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 209,
+  "line": 296,
   "text": "Reveal now"
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 278,
-  "text": "Needs a few minutes of positions from the other cars. This ranks steadiness, not speed."
+  "line": 376,
+  "text": "Needs a few minutes of driving."
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 300,
+  "line": 377,
+  "text": "Ranks the steadiest car, not the fastest."
+ },
+ {
+  "file": "features/convoy/games/convoy_games_screen.dart",
+  "line": 422,
   "text": "Spotted by you"
  },
  {
   "file": "features/convoy/games/convoy_games_screen.dart",
-  "line": 300,
+  "line": 422,
   "text": "Spotted by $who"
  },
  {
@@ -2262,7 +2392,7 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 179,
-  "text": "Parking time"
+  "text": "Time to park"
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -2272,7 +2402,7 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 181,
-  "text": "Indicator time"
+  "text": "Blinker time"
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -2487,7 +2617,7 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 328,
-  "text": "The Eisenhower Interstate System is named after a…"
+  "text": "The Interstate System is named after Eisenhower, a US…"
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -2517,12 +2647,12 @@
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 349,
-  "text": "Only on highways"
+  "text": "Speed only counts on highways"
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
   "line": 350,
-  "text": "Bonus at night"
+  "text": "Night drives score extra"
  },
  {
   "file": "features/convoy/games/trivia_questions.dart",
@@ -2536,37 +2666,32 @@
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 45,
-  "text": "Could not join: $e"
+  "line": 49,
+  "text": "join the convoy"
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 55,
+  "line": 59,
   "text": "Convoy invite"
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 57,
+  "line": 61,
   "text": "Sign in to join the convoy."
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 71,
+  "line": 68,
   "text": "Join this convoy?"
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 74,
-  "text": "Code ${widget.code.toUpperCase()}. Everyone in the convoy sees your car on the shared map and hears you on the radio while the trip is on. Positions stay between the cars."
+  "line": 70,
+  "text": "Everyone sees your car on the map and hears you on the radio while the trip is on."
  },
  {
   "file": "features/convoy/join_convoy_screen.dart",
-  "line": 100,
-  "text": "Join convoy"
- },
- {
-  "file": "features/convoy/join_convoy_screen.dart",
-  "line": 104,
+  "line": 93,
   "text": "Not now"
  },
  {
@@ -2592,207 +2717,252 @@
  {
   "file": "features/convoy/live/convoy_live.dart",
   "line": 218,
-  "text": "Lost sheep"
+  "text": "Falling behind"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 50,
+  "line": 32,
+  "text": "Convoy DJ"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 52,
   "text": "Everyone on one playlist"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
   "line": 55,
-  "text": "Spotify Jam lets the whole convoy add to one queue. Start a Jam in Spotify and share the invite in chat."
+  "text": "Start a Jam in Spotify and share the invite in chat."
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 69,
+  "line": 61,
   "text": "Open Spotify"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 78,
-  "text": "Apple Music SharePlay"
+  "line": 71,
+  "text": "Open Apple Music"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 125,
+  "line": 129,
   "text": "Convoy DJ"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 127,
-  "text": "Not available in this build: no Spotify client id is configured (docs/09-auth-setup.md §8)."
+  "line": 132,
+  "text": "Convoy DJ isn't available in this version yet."
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 147,
-  "text": "Convoy DJ"
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 159,
-  "text": "Connect Spotify"
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 165,
-  "text": "One phone is the DJ; every car plays the same track in lockstep. Needs Spotify Premium and a spot on the Drivalry allowlist."
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 180,
-  "text": "No other cars connected yet. DJ starts once the radio mesh is up."
- },
- {
-  "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 188,
+  "line": 149,
   "text": "No DJ yet"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 190,
+  "line": 151,
   "text": "You are the DJ"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 166,
+  "text": "One phone picks, every car plays in step"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 176,
+  "text": "Needs Spotify Premium and an invite from Ryan."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 190,
+  "text": "Waiting for another car on the radio."
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
   "line": 198,
+  "text": "Connect Spotify"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 207,
   "text": "Step down"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 204,
+  "line": 223,
   "text": "Be the DJ"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 218,
+  "line": 230,
+  "text": "Disconnect Spotify"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 274,
   "text": "Vote to skip"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 228,
+  "line": 287,
   "text": "Search tracks"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 265,
+  "line": 317,
+  "text": "Add to the queue"
+ },
+ {
+  "file": "features/convoy/music/convoy_music_screen.dart",
+  "line": 327,
   "text": "Up next"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 283,
+  "line": 344,
   "text": "Start the queue"
  },
  {
   "file": "features/convoy/music/convoy_music_screen.dart",
-  "line": 283,
+  "line": 344,
   "text": "Next track"
  },
  {
   "file": "features/convoy/music/dj_controller.dart",
-  "line": 134,
-  "text": "Spotify sign-in failed: $e"
+  "line": 135,
+  "text": "connect Spotify"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 25,
+  "line": 39,
   "text": "Sign in to talk to your convoy."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 52,
-  "text": "Radio is off"
+  "line": 87,
+  "text": "Radio is off."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 55,
-  "text": "Start the radio to talk car to car. Audio goes straight between phones; nothing is recorded."
+  "line": 88,
+  "text": "Hold to talk, car to car. Nothing is recorded."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 61,
+  "line": 91,
   "text": "Start radio"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 69,
-  "text": "Microphone needed"
+  "line": 100,
+  "text": "Finding the other cars."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 71,
-  "text": "The microphone is blocked for Drivalry. Allow it in the system settings to use the radio."
+  "line": 112,
+  "text": "Allow the microphone."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 73,
-  "text": "The radio needs the microphone to transmit when you hold the button. Nothing is sent otherwise."
+  "line": 114,
+  "text": "Drivalry cannot use the mic. Turn it on in Settings."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 80,
-  "text": "Open settings"
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 85,
-  "text": "Try again"
- },
- {
-  "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 113,
-  "text": "Hold to talk"
+  "line": 115,
+  "text": "Talking needs the mic. It only sends while you hold the button."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
   "line": 120,
-  "text": "Mute everyone"
+  "text": "Open settings"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 121,
-  "text": "You can still transmit"
+  "line": 126,
+  "text": "Try again"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 131,
-  "text": "No one else is on the radio yet. Members join as they open this screen or start the radio."
+  "line": 167,
+  "text": "Hold to talk"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 145,
-  "text": "Relay available for phones that cannot connect directly. Relayed so far: ${_bytes(relayed)}."
+  "line": 183,
+  "text": "No one else is on the radio yet."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 147,
-  "text": "No relay configured: cars that cannot connect directly will show as failed."
+  "line": 199,
+  "text": "Works across networks."
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 156,
+  "line": 204,
   "text": "Stop radio"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 174,
-  "text": "You are talking"
+  "line": 236,
+  "text": "On air"
  },
  {
   "file": "features/convoy/radio/convoy_radio_screen.dart",
-  "line": 220,
+  "line": 237,
+  "text": "Everyone hears you."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 242,
+  "text": "${nameOf(talking.single)} is talking."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 243,
+  "text": "${talking.length} people are talking."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 248,
+  "text": "Waiting for the other cars."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 249,
+  "text": "1 car connected."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 250,
+  "text": "$connected cars connected."
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 294,
   "text": "Push to talk"
  },
  {
-  "file": "features/convoy/radio/ice_servers.dart",
-  "line": 55,
-  "text": "empty ice list"
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 367,
+  "text": "Mute everyone"
+ },
+ {
+  "file": "features/convoy/radio/convoy_radio_screen.dart",
+  "line": 368,
+  "text": "Your mic still works"
  },
  {
   "file": "features/convoy/radio/radio_controller.dart",
-  "line": 175,
+  "line": 176,
   "text": "Sign in to use the convoy radio."
+ },
+ {
+  "file": "features/convoy/radio/radio_controller.dart",
+  "line": 267,
+  "text": "start the radio"
  },
  {
   "file": "features/convoy/radio/webrtc_peer_link.dart",
@@ -2801,48 +2971,63 @@
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 147,
-  "text": "Nothing to recap yet: this convoy is not in your list."
+  "line": 148,
+  "text": "Nothing to recap yet."
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 157,
-  "text": "Recap failed: $error"
+  "line": 149,
+  "text": "Open it from the Convoy tab first."
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 166,
-  "text": "Built from the positions this phone received and the Drive Scores members chose to upload. Nothing was sent to make it."
+  "line": 158,
+  "text": "No recap yet."
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 195,
+  "line": 159,
+  "text": "build the recap"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 160,
+  "text": "Try again"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 197,
   "text": "${d.recap.name}: our convoy recap on Drivalry."
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 196,
+  "line": 198,
   "text": "Convoy recap"
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 203,
-  "text": "Could not share: $e"
+  "line": 204,
+  "text": "share the recap"
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 265,
-  "text": "No positions were received during this trip."
+  "line": 241,
+  "text": "Convoy recap"
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 338,
-  "text": "avg score ${m.averageScore!.round()}"
+  "line": 264,
+  "text": "No car shared its position this trip."
  },
  {
   "file": "features/convoy/recap/convoy_recap_screen.dart",
-  "line": 339,
-  "text": "${m.stopsProposed} stops proposed"
+  "line": 334,
+  "text": "On the road"
+ },
+ {
+  "file": "features/convoy/recap/convoy_recap_screen.dart",
+  "line": 415,
+  "text": "Built on this phone from what the cars shared. Nothing was uploaded to make it."
  },
  {
   "file": "features/convoy/recap/recap_card.dart",
@@ -2851,257 +3036,277 @@
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 64,
-  "text": "Suggest a stop"
+  "line": 126,
+  "text": "Propose a stop"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 67,
-  "text": "Places along the remaining route, a few lookups a day. Or propose wherever you are."
+  "line": 136,
+  "text": "Along the route, or right where you are."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 94,
-  "text": "No stops proposed yet."
+  "line": 155,
+  "text": "No stops yet."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 96,
+  "line": 156,
+  "text": "Propose gas, food or a photo stop and the convoy votes."
+ },
+ {
+  "file": "features/convoy/stops/convoy_stops_screen.dart",
+  "line": 158,
   "text": "Next up"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 177,
-  "text": "Set a destination (or get a fix) first."
+  "line": 225,
+  "text": "Needs a destination or a position first."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 215,
+  "line": 253,
   "text": "${category.label} along the way"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 223,
-  "text": "Place suggestions are not available right now (offline, or today's free lookups are used up)."
+  "line": 261,
+  "text": "Suggestions are resting until tomorrow. Propose a stop by hand."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 231,
+  "line": 266,
   "text": "Nothing of that kind near the route."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 242,
+  "line": 272,
   "text": "${formatDistance(s.detourM, units)} off route"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 245,
+  "line": 275,
   "text": "Open now"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 272,
+  "line": 301,
   "text": "${category.label} stop where I am"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 273,
-  "text": "Pin my current position"
+  "line": 302,
+  "text": "Pins your position"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 280,
-  "text": "No position fix yet."
+  "line": 310,
+  "text": "No position yet. Try again in a moment."
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 391,
-  "text": "Mark done"
+  "line": 452,
+  "text": "by you"
  },
  {
   "file": "features/convoy/stops/convoy_stops_screen.dart",
-  "line": 396,
-  "text": "Back to proposed"
+  "line": 562,
+  "text": "Reopen vote"
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 36,
-  "text": "Invite to ${live.name}"
+  "line": 15,
+  "text": "Invite to ${convoy.name}"
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 39,
-  "text": "The invite code is on its way from the server. Pull to refresh the convoy list in a moment."
+  "line": 35,
+  "text": "The invite code is on its way. Check again in a moment."
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 46,
+  "line": 40,
   "text": "Check again"
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 60,
-  "text": "Invite to ${live.name}"
+  "line": 93,
+  "text": "Share invite"
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 92,
-  "text": "Code copied."
- },
- {
-  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 97,
-  "text": "Copy code"
- },
- {
-  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 104,
+  "line": 98,
   "text": "Join my convoy \"${live.name}\" on Drivalry: $link (code ${code.toUpperCase()})"
  },
  {
   "file": "features/convoy/widgets/convoy_invite_sheet.dart",
-  "line": 106,
+  "line": 100,
   "text": "Convoy invite"
  },
  {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 112,
+  "text": "Code copied."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_invite_sheet.dart",
+  "line": 116,
+  "text": "Copy code"
+ },
+ {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 75,
+  "line": 82,
   "text": "Loading map…"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 75,
-  "text": "Map unavailable."
+  "line": 82,
+  "text": "The map could not load."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 137,
-  "text": "Lost sheep"
+  "line": 144,
+  "text": "Fallen behind"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 138,
-  "text": "Last seen a while ago"
+  "line": 145,
+  "text": "Position is a few minutes old"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 185,
+  "line": 192,
   "text": "Regroup here"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 186,
+  "line": 193,
   "text": "Set by the leader"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 236,
+  "line": 243,
   "text": "Show everyone"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 242,
+  "line": 249,
   "text": "Centre on me"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 293,
+  "line": 300,
   "text": "Waiting for the first positions. They arrive once cars start moving."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 295,
+  "line": 302,
   "text": "Positions appear here once the leader starts the trip."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 318,
-  "text": "} falling behind."
+  "line": 327,
+  "text": "You are falling behind."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 320,
-  "text": ")} are falling behind."
+  "line": 328,
+  "text": "$who is falling behind."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 394,
-  "text": "Regroup here"
- },
- {
-  "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 395,
-  "text": "Everyone gets a pin and a nudge."
+  "line": 331,
+  "text": "$list are falling behind."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
   "line": 405,
+  "text": "Regroup here"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 406,
+  "text": "Drops a pin every car can route to."
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 416,
   "text": "Clear regroup pin"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 413,
+  "line": 424,
   "text": "Set destination here"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 420,
+  "line": 431,
   "text": "Pinned destination"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 430,
+  "line": 441,
   "text": "Search a destination"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 466,
-  "text": "No map in this build. Positions and ETAs still flow between the cars:"
+  "line": 482,
+  "text": "No map in this version. Here is where everyone is."
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 494,
+  "line": 515,
+  "text": "Leader · no position yet"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_map.dart",
+  "line": 515,
   "text": "No position yet"
  },
  {
   "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 498,
-  "text": "${formatDistance(d, units)} from the leader"
+  "line": 525,
+  "text": "On the map"
  },
  {
-  "file": "features/convoy/widgets/convoy_map.dart",
-  "line": 501,
-  "text": "Sharing position"
+  "file": "features/convoy/widgets/convoy_ui.dart",
+  "line": 14,
+  "text": "On the road"
+ },
+ {
+  "file": "features/convoy/widgets/convoy_ui.dart",
+  "line": 257,
+  "text": "On the road"
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 84,
-  "text": "No location fix yet."
+  "line": 85,
+  "text": "No position yet. Try again in a moment."
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 90,
+  "line": 93,
   "text": "Where I am"
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 100,
-  "text": "Location unavailable: $e"
+  "line": 103,
+  "text": "find where you are"
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 128,
+  "line": 126,
   "text": "Search a place or town"
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 147,
-  "text": "Place search is not available right now (offline, or today's free lookups are used up). You can still set the destination to where you are."
+  "line": 143,
+  "text": "Search is resting until tomorrow. You can still use where you are."
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 156,
+  "line": 152,
   "text": "Nothing found. Try another spelling."
  },
  {
@@ -3111,8 +3316,8 @@
  },
  {
   "file": "features/convoy/widgets/destination_picker.dart",
-  "line": 184,
-  "text": "No lookup needed"
+  "line": 185,
+  "text": "No search needed"
  },
  {
   "file": "features/crash/crash_countdown_screen.dart",
@@ -6513,6 +6718,101 @@
   "file": "tracking/tracking_controller.dart",
   "line": 284,
   "text": "tracking plugin missing"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 16,
+  "text": "failed host lookup"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 17,
+  "text": "network is unreachable"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 18,
+  "text": "connection refused"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 19,
+  "text": "connection reset"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 20,
+  "text": "No connection right now. Try again when you are back online."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 22,
+  "text": "timed out"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 23,
+  "text": "That took too long. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "offline build"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 25,
+  "text": "not configured"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 26,
+  "text": "Not available in this version yet."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 29,
+  "text": "not authenticated"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 31,
+  "text": "invalid token"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 32,
+  "text": "Your sign-in expired. Sign in again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 34,
+  "text": "row-level security"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 35,
+  "text": "You do not have access to that."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 37,
+  "text": "rate limit"
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 38,
+  "text": "Slow down a little. Try again in a minute."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 40,
+  "text": "Could not $doing. Try again."
+ },
+ {
+  "file": "widgets/friendly_error.dart",
+  "line": 41,
+  "text": "Something went wrong. Try again."
  },
  {
   "file": "widgets/placeholder_screen.dart",
