@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
@@ -225,6 +226,27 @@ class WeekSummary {
   const WeekSummary({required this.userId, required this.xp});
   final String userId;
   final int xp;
+}
+
+/// A promotion the week-badge pass found for the signed-in user: one per
+/// finalised week in which their tier went up.
+class PromotionEvent {
+  const PromotionEvent({
+    required this.leagueId,
+    required this.weekStart,
+    required this.from,
+    required this.to,
+  });
+
+  final String leagueId;
+
+  /// `yyyy-MM-dd`, as stored.
+  final String weekStart;
+  final LeagueTier from;
+  final LeagueTier to;
+
+  /// Stable id for "shown once" bookkeeping.
+  String get id => 'promotion:$leagueId:$weekStart';
 }
 
 // ---------------------------------------------------------------------------
@@ -634,6 +656,11 @@ class LeaguesRepo {
   static const kindHiding = 'league_hiding';
   static const _uuid = Uuid();
 
+  final _promotions = StreamController<PromotionEvent>.broadcast();
+
+  /// Promotions as [awardRecentWeekBadges] finds them, for the celebration.
+  Stream<PromotionEvent> get promotions => _promotions.stream;
+
   void _registerHandlers() {
     if (outbox.handles(kindCreate)) return;
     outbox.register(kindCreate, (p) async {
@@ -731,7 +758,7 @@ class LeaguesRepo {
     final rows = await a.recentWeeks(weekStartDate(since));
     var mine = 0;
     String? newest;
-    for (final (_, weekStart, standings) in rows) {
+    for (final (leagueId, weekStart, standings) in rows) {
       if (newest == null || weekStart.compareTo(newest) > 0) {
         newest = weekStart;
       }
@@ -741,7 +768,17 @@ class LeaguesRepo {
         await award('league_week');
         final before = LeagueTier.fromWire(raw['tier_before'] as String?);
         final after = LeagueTier.fromWire(raw['tier_after'] as String?);
-        if (after.index > before.index) await award('promoted');
+        if (after.index > before.index) {
+          await award('promoted');
+          _promotions.add(
+            PromotionEvent(
+              leagueId: leagueId,
+              weekStart: weekStart,
+              from: before,
+              to: after,
+            ),
+          );
+        }
       }
     }
     if (newest != null) await db.setSetting(weekBadgesKey(uid), newest);
@@ -1060,6 +1097,12 @@ final leagueWeekBadgesProvider = FutureProvider<int>((ref) async {
     return 0;
   }
 });
+
+/// Promotions as the week-badge pass finds them; the Leagues screens listen
+/// and celebrate each one once.
+final promotionEventsProvider = StreamProvider<PromotionEvent>(
+  (ref) => ref.watch(leaguesRepoProvider).promotions,
+);
 
 /// The global league I sit in this week, if I joined the pool.
 final myGlobalLeagueProvider = Provider<League?>((ref) {

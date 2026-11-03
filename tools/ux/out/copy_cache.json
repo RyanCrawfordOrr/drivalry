@@ -16808,850 +16808,1435 @@
   "voice": 1.04,
   "voiceConfidence": 0.79
  },
- "That is how a drive starts on its own, even with the app closed.": {
+ "load your badges": {
   "problem": "unclear",
-  "problemConfidence": 0.85,
+  "problemConfidence": 0.62,
   "problems": {
-   "fine": 0.02,
-   "technical": 0.02,
-   "too_long": 0.03,
-   "unclear": 0.88,
-   "tone": 0.05
-  },
-  "voice": 1.41,
-  "voiceConfidence": 0.52
- },
- "Allow motion.": {
-  "problem": "unclear",
-  "problemConfidence": 0.42,
-  "problems": {
-   "fine": 0.21,
+   "fine": 0.23,
    "technical": 0.04,
    "too_long": 0,
-   "unclear": 0.54,
-   "tone": 0.21
-  },
-  "voice": 0.71,
-  "voiceConfidence": 0.63
- },
- "Tells the phone you have started moving, so recording begins on time.": {
-  "problem": "fine",
-  "problemConfidence": 0.35,
-  "problems": {
-   "fine": 0.48,
-   "technical": 0.02,
-   "too_long": 0.11,
-   "unclear": 0.18,
-   "tone": 0.21
-  },
-  "voice": 1.09,
-  "voiceConfidence": 0.88
- },
- "Friends are not available in this version.": {
-  "problem": "tone",
-  "problemConfidence": 0.32,
-  "problems": {
-   "fine": 0.11,
-   "technical": 0.04,
-   "too_long": 0,
-   "unclear": 0.39,
-   "tone": 0.46
-  },
-  "voice": 0.95,
-  "voiceConfidence": 0.91
- },
- "Sign in to see friends on the map.": {
-  "problem": "fine",
-  "problemConfidence": 0.39,
-  "problems": {
-   "fine": 0.51,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.29,
-   "tone": 0.18
-  },
-  "voice": 1.11,
-  "voiceConfidence": 0.88
- },
- "Loading the map…": {
-  "problem": "fine",
-  "problemConfidence": 0.68,
-  "problems": {
-   "fine": 0.74,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.07
-  },
-  "voice": 1.02,
-  "voiceConfidence": 0.91
- },
- "Map not available in this version.": {
-  "problem": "unclear",
-  "problemConfidence": 0.52,
-  "problems": {
-   "fine": 0.14,
-   "technical": 0.03,
-   "too_long": 0,
-   "unclear": 0.62,
-   "tone": 0.21
-  },
-  "voice": 0.82,
-  "voiceConfidence": 0.81
- },
- "No friends on the map yet": {
-  "problem": "unclear",
-  "problemConfidence": 0.47,
-  "problems": {
-   "fine": 0.38,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.04
-  },
-  "voice": 1.1,
-  "voiceConfidence": 0.88
- },
- "update the packs": {
-  "problem": "unclear",
-  "problemConfidence": 0.91,
-  "problems": {
-   "fine": 0.03,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.93,
-   "tone": 0.02
-  },
-  "voice": 0.97,
-  "voiceConfidence": 0.87
- },
- "No location known yet. Take a drive first.": {
-  "problem": "fine",
-  "problemConfidence": 0.36,
-  "problems": {
-   "fine": 0.49,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.21,
-   "tone": 0.28
-  },
-  "voice": 1.69,
-  "voiceConfidence": 0.59
- },
- "No pack covers where you are yet.": {
-  "problem": "unclear",
-  "problemConfidence": 0.75,
-  "problems": {
-   "fine": 0.12,
-   "technical": 0.05,
-   "too_long": 0,
-   "unclear": 0.8,
+   "unclear": 0.7,
    "tone": 0.03
   },
-  "voice": 0.99,
+  "voice": 1.28,
+  "voiceConfidence": 0.57
+ },
+ "Streak XP": {
+  "problem": "fine",
+  "problemConfidence": 0.27,
+  "problems": {
+   "fine": 0.42,
+   "technical": 0.16,
+   "too_long": 0,
+   "unclear": 0.41,
+   "tone": 0.01
+  },
+  "voice": 0.91,
+  "voiceConfidence": 0.75
+ },
+ "$earned of ${regular.length} badges earned": {
+  "problem": "unclear",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.13,
+   "technical": 0.07,
+   "too_long": 0.1,
+   "unclear": 0.63,
+   "tone": 0.07
+  },
+  "voice": 0.88,
+  "voiceConfidence": 0.65
+ },
+ "From lost duels and reckless trips. They wear off.": {
+  "problem": "unclear",
+  "problemConfidence": 0.77,
+  "problems": {
+   "fine": 0.09,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.82,
+   "tone": 0.09
+  },
+  "voice": 2.36,
+  "voiceConfidence": 0.49
+ },
+ "Badge earned": {
+  "problem": "fine",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.72,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.15
+  },
+  "voice": 1.1,
   "voiceConfidence": 0.87
  },
- "Add a pack from a link": {
-  "problem": "unclear",
-  "problemConfidence": 0.69,
+ "${fresh.length} new badges": {
+  "problem": "fine",
+  "problemConfidence": 0.64,
   "problems": {
-   "fine": 0.21,
-   "technical": 0.02,
+   "fine": 0.71,
+   "technical": 0.04,
    "too_long": 0,
-   "unclear": 0.75,
-   "tone": 0.02
+   "unclear": 0.22,
+   "tone": 0.03
   },
-  "voice": 1.05,
-  "voiceConfidence": 0.91
+  "voice": 1.15,
+  "voiceConfidence": 0.79
  },
- "${_intensity(e.severity)} acceleration from ${formatSpeed(_speedAtStart(e), units)}": {
+ "Challenge met": {
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.28,
+   "tone": 0.07
+  },
+  "voice": 1.3,
+  "voiceConfidence": 0.68
+ },
+ "Set one goal for the whole league.": {
   "problem": "unclear",
-  "problemConfidence": 0.11,
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.4,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.48,
+   "tone": 0.1
+  },
+  "voice": 1.46,
+  "voiceConfidence": 0.53
+ },
+ "Missed it: $shown of $needed.": {
+  "problem": "unclear",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.11,
+   "technical": 0.03,
+   "too_long": 0,
+   "unclear": 0.72,
+   "tone": 0.14
+  },
+  "voice": 1.11,
+  "voiceConfidence": 0.56
+ },
+ "One goal for the whole league. Make it and everyone earns the badge.": {
+  "problem": "fine",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.64,
+   "technical": 0,
+   "too_long": 0.07,
+   "unclear": 0.19,
+   "tone": 0.1
+  },
+  "voice": 1.74,
+  "voiceConfidence": 0.68
+ },
+ "Pick a whole number above zero.": {
+  "problem": "fine",
+  "problemConfidence": 0.34,
+  "problems": {
+   "fine": 0.47,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.16,
+   "tone": 0.36
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.88
+ },
+ "Could not create it right now. We will try again when you are back online.": {
+  "problem": "fine",
+  "problemConfidence": 0.27,
+  "problems": {
+   "fine": 0.42,
+   "technical": 0.01,
+   "too_long": 0.05,
+   "unclear": 0.24,
+   "tone": 0.28
+  },
+  "voice": 1.25,
+  "voiceConfidence": 0.69
+ },
+ "Name your league": {
+  "problem": "fine",
+  "problemConfidence": 0.9,
+  "problems": {
+   "fine": 0.92,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.04,
+   "tone": 0.04
+  },
+  "voice": 1.41,
+  "voiceConfidence": 0.54
+ },
+ "Up to 30 friends, Monday to Sunday. XP comes from how well you drive, never how far or how fast.": {
+  "problem": "fine",
+  "problemConfidence": 0.27,
+  "problems": {
+   "fine": 0.42,
+   "technical": 0.18,
+   "too_long": 0.16,
+   "unclear": 0.15,
+   "tone": 0.09
+  },
+  "voice": 1.51,
+  "voiceConfidence": 0.48
+ },
+ "Showing the last duels we saw. Pull to retry.": {
+  "problem": "unclear",
+  "problemConfidence": 0.34,
   "problems": {
    "fine": 0.22,
-   "technical": 0.26,
-   "too_long": 0.17,
-   "unclear": 0.29,
-   "tone": 0.06
-  },
-  "voice": 0.74,
-  "voiceConfidence": 0.43
- },
- "${_intensity(e.severity)} corner at ${formatSpeed(_speedAtStart(e), units)}": {
-  "problem": "unclear",
-  "problemConfidence": 0.4,
-  "problems": {
-   "fine": 0.28,
-   "technical": 0.05,
-   "too_long": 0.07,
-   "unclear": 0.52,
+   "technical": 0.22,
+   "too_long": 0.01,
+   "unclear": 0.47,
    "tone": 0.08
   },
-  "voice": 0.93,
-  "voiceConfidence": 0.58
+  "voice": 1.75,
+  "voiceConfidence": 0.52
  },
- "Phone picked up $times, ${formatDuration(e.durationS)} at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}": {
+ "No duels yet.": {
   "problem": "unclear",
   "problemConfidence": 0.36,
   "problems": {
-   "fine": 0.09,
-   "technical": 0.23,
-   "too_long": 0.12,
+   "fine": 0.35,
+   "technical": 0.09,
+   "too_long": 0,
    "unclear": 0.49,
    "tone": 0.07
   },
-  "voice": 0.81,
-  "voiceConfidence": 0.63
+  "voice": 1.04,
+  "voiceConfidence": 0.89
  },
- "Engine idling for ${formatDuration(e.durationS)}": {
-  "problem": "unclear",
-  "problemConfidence": 0.2,
+ "Pick a friend and a week. The loser wears a badge.": {
+  "problem": "fine",
+  "problemConfidence": 0.45,
   "problems": {
-   "fine": 0.33,
-   "technical": 0.08,
-   "too_long": 0.01,
-   "unclear": 0.36,
-   "tone": 0.22
-  },
-  "voice": 0.78,
-  "voiceConfidence": 0.72
- },
- "Very hard": {
-  "problem": "unclear",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.36,
+   "fine": 0.56,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.5,
-   "tone": 0.14
+   "unclear": 0.31,
+   "tone": 0.13
   },
-  "voice": 1.27,
-  "voiceConfidence": 0.7
+  "voice": 2.56,
+  "voiceConfidence": 0.56
  },
- "Hard brake": {
+ "Your move": {
+  "problem": "unclear",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.22,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.68,
+   "tone": 0.09
+  },
+  "voice": 1.44,
+  "voiceConfidence": 0.47
+ },
+ "cancel the duel": {
+  "problem": "fine",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.64,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.15,
+   "tone": 0.19
+  },
+  "voice": 1.19,
+  "voiceConfidence": 0.78
+ },
+ "Pick what @$loser wears for a week": {
   "problem": "fine",
   "problemConfidence": 0.41,
   "problems": {
    "fine": 0.53,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.23,
-   "tone": 0.24
-  },
-  "voice": 1.03,
-  "voiceConfidence": 0.9
- },
- "Hard acceleration": {
-  "problem": "fine",
-  "problemConfidence": 0.66,
-  "problems": {
-   "fine": 0.73,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.08
-  },
-  "voice": 1.08,
-  "voiceConfidence": 0.82
- },
- "Phone use": {
-  "problem": "unclear",
-  "problemConfidence": 0.41,
-  "problems": {
-   "fine": 0.27,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.53,
-   "tone": 0.19
-  },
-  "voice": 0.66,
-  "voiceConfidence": 0.62
- },
- "Fast cruise": {
-  "problem": "unclear",
-  "problemConfidence": 0.54,
-  "problems": {
-   "fine": 0.31,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.63,
-   "tone": 0.05
-  },
-  "voice": 1.06,
-  "voiceConfidence": 0.81
- },
- "Every drive gets a score.": {
-  "problem": "tone",
-  "problemConfidence": 0.27,
-  "problems": {
-   "fine": 0.39,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.19,
-   "tone": 0.42
-  },
-  "voice": 1.02,
-  "voiceConfidence": 0.96
- },
- "Drives start and stop on their own and are scored on this phone when you park.": {
-  "problem": "fine",
-  "problemConfidence": 0.35,
-  "problems": {
-   "fine": 0.48,
    "technical": 0.02,
-   "too_long": 0.03,
-   "unclear": 0.31,
-   "tone": 0.16
+   "too_long": 0.01,
+   "unclear": 0.32,
+   "tone": 0.12
   },
-  "voice": 1.15,
-  "voiceConfidence": 0.84
+  "voice": 2.35,
+  "voiceConfidence": 0.51
  },
- "Allow location all the time.": {
-  "problem": "tone",
-  "problemConfidence": 0.51,
-  "problems": {
-   "fine": 0.22,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.16,
-   "tone": 0.61
-  },
-  "voice": 0.75,
-  "voiceConfidence": 0.73
- },
- "Almost there": {
-  "problem": "unclear",
-  "problemConfidence": 0.59,
-  "problems": {
-   "fine": 0.33,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.67,
-   "tone": 0
-  },
-  "voice": 1.91,
-  "voiceConfidence": 0.77
- },
- "Set location to all the time and allow motion in your phone's settings.": {
-  "problem": "tone",
-  "problemConfidence": 0.36,
-  "problems": {
-   "fine": 0.15,
-   "technical": 0.03,
-   "too_long": 0.17,
-   "unclear": 0.16,
-   "tone": 0.49
-  },
-  "voice": 0.96,
-  "voiceConfidence": 0.87
- },
- "End drive": {
+ "You vs @${other.handle}": {
   "problem": "fine",
-  "problemConfidence": 0.54,
+  "problemConfidence": 0.52,
   "problems": {
-   "fine": 0.63,
-   "technical": 0,
+   "fine": 0.62,
+   "technical": 0.24,
    "too_long": 0,
-   "unclear": 0.21,
-   "tone": 0.16
-  },
-  "voice": 1.01,
-  "voiceConfidence": 0.93
- },
- "Turn on auto-detect": {
-  "problem": "unclear",
-  "problemConfidence": 0.5,
-  "problems": {
-   "fine": 0.38,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.6,
-   "tone": 0.01
-  },
-  "voice": 1.12,
-  "voiceConfidence": 0.87
- },
- "Resume now": {
-  "problem": "fine",
-  "problemConfidence": 0.61,
-  "problems": {
-   "fine": 0.69,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.29,
+   "unclear": 0.12,
    "tone": 0.02
   },
-  "voice": 1.21,
-  "voiceConfidence": 0.8
+  "voice": 1.37,
+  "voiceConfidence": 0.55
  },
- "Start a drive now": {
+ "Pick a badge for @${other.handle}": {
   "problem": "fine",
-  "problemConfidence": 0.76,
+  "problemConfidence": 0.71,
   "problems": {
-   "fine": 0.81,
-   "technical": 0,
-   "too_long": 0.01,
+   "fine": 0.77,
+   "technical": 0.02,
+   "too_long": 0,
    "unclear": 0.14,
-   "tone": 0.04
+   "tone": 0.07
   },
-  "voice": 1.32,
-  "voiceConfidence": 0.65
+  "voice": 1.74,
+  "voiceConfidence": 0.58
  },
- "Turn off auto-detect": {
+ "Waiting for @${other.handle} to pick your badge": {
   "problem": "fine",
-  "problemConfidence": 0.35,
+  "problemConfidence": 0.47,
   "problems": {
-   "fine": 0.48,
+   "fine": 0.58,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.28,
+   "tone": 0.11
+  },
+  "voice": 1.29,
+  "voiceConfidence": 0.66
+ },
+ "They wear ${duelBadgeName(badge)} until $until": {
+  "problem": "fine",
+  "problemConfidence": 0.22,
+  "problems": {
+   "fine": 0.38,
+   "technical": 0.13,
+   "too_long": 0.01,
+   "unclear": 0.37,
+   "tone": 0.11
+  },
+  "voice": 1.56,
+  "voiceConfidence": 0.4
+ },
+ "You wear ${duelBadgeName(badge)} until $until": {
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.33,
+   "technical": 0.13,
+   "too_long": 0.01,
+   "unclear": 0.51,
+   "tone": 0.02
+  },
+  "voice": 1.58,
+  "voiceConfidence": 0.35
+ },
+ "No answer in time": {
+  "problem": "unclear",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.09,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.47,
-   "tone": 0.04
+   "unclear": 0.78,
+   "tone": 0.12
   },
-  "voice": 1.04,
-  "voiceConfidence": 0.91
+  "voice": 0.46,
+  "voiceConfidence": 0.54
  },
- "Go for a drive.": {
+ "You beat @${duel.other(me).handle} on ${duelMetricPhrase(duel.metric)}": {
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.36,
+   "technical": 0.07,
+   "too_long": 0.08,
+   "unclear": 0.48,
+   "tone": 0.01
+  },
+  "voice": 2.01,
+  "voiceConfidence": 0.46
+ },
+ "Drive Score": {
   "problem": "fine",
   "problemConfidence": 0.81,
   "problems": {
    "fine": 0.85,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.11,
-   "tone": 0.04
+   "unclear": 0.1,
+   "tone": 0.05
   },
-  "voice": 1.94,
-  "voiceConfidence": 0.7
+  "voice": 0.8,
+  "voiceConfidence": 0.79
  },
- "We'll score it when you park.": {
-  "problem": "fine",
-  "problemConfidence": 0.64,
-  "problems": {
-   "fine": 0.71,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.25,
-   "tone": 0.04
-  },
-  "voice": 1.86,
-  "voiceConfidence": 0.72
- },
- "Drives start on their own, even with the app closed.": {
-  "problem": "fine",
-  "problemConfidence": 0.39,
-  "problems": {
-   "fine": 0.51,
-   "technical": 0.02,
-   "too_long": 0.01,
-   "unclear": 0.33,
-   "tone": 0.13
-  },
-  "voice": 1.2,
-  "voiceConfidence": 0.78
- },
- "${formatSpeed(max, units, withUnit: false)} in a ${formatSpeed(limit, units, withUnit: false)} for ${formatDuration(e.durationS)}$where": {
-  "problem": "unclear",
-  "problemConfidence": 0.22,
-  "problems": {
-   "fine": 0.02,
-   "technical": 0.26,
-   "too_long": 0.21,
-   "unclear": 0.38,
-   "tone": 0.13
-  },
-  "voice": 0.43,
-  "voiceConfidence": 0.58
- },
- "${_intensity(e.severity)} brake at ${formatSpeed(_speedAtStart(e), units)}": {
-  "problem": "unclear",
-  "problemConfidence": 0.35,
-  "problems": {
-   "fine": 0.11,
-   "technical": 0.2,
-   "too_long": 0.01,
-   "unclear": 0.48,
-   "tone": 0.2
-  },
-  "voice": 0.88,
-  "voiceConfidence": 0.47
- },
- "The roads and posted limits for one region, kept on your phone. Nothing is looked up online while you drive.": {
-  "problem": "tone",
-  "problemConfidence": 0.2,
-  "problems": {
-   "fine": 0.31,
-   "technical": 0.09,
-   "too_long": 0.17,
-   "unclear": 0.07,
-   "tone": 0.36
-  },
-  "voice": 1.03,
-  "voiceConfidence": 0.91
- },
- "From a link": {
-  "problem": "unclear",
-  "problemConfidence": 0.95,
-  "problems": {
-   "fine": 0.04,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.96,
-   "tone": 0
-  },
-  "voice": 0.63,
-  "voiceConfidence": 0.6
- },
- "Parked near $road": {
+ "phone-free trips": {
   "problem": "fine",
   "problemConfidence": 0.5,
   "problems": {
    "fine": 0.6,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.37,
+   "tone": 0.02
+  },
+  "voice": 1.16,
+  "voiceConfidence": 0.8
+ },
+ "$name · ${value.trips} of $duelScoreAvgMinTrips trips needed": {
+  "problem": "unclear",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.14,
+   "technical": 0.09,
+   "too_long": 0.05,
+   "unclear": 0.68,
+   "tone": 0.04
+  },
+  "voice": 0.74,
+  "voiceConfidence": 0.67
+ },
+ "Duel won": {
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.39,
+   "unclear": 0.29,
+   "tone": 0.06
+  },
+  "voice": 1.18,
+  "voiceConfidence": 0.77
+ },
+ "Seven days from when they accept. The loser wears a badge the winner picks.": {
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
+   "technical": 0,
+   "too_long": 0.09,
+   "unclear": 0.17,
+   "tone": 0.18
+  },
+  "voice": 1.77,
+  "voiceConfidence": 0.56
+ },
+ "Add a friend first. Duels are between friends.": {
+  "problem": "fine",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.7,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.07,
+   "tone": 0.22
+  },
+  "voice": 1.21,
+  "voiceConfidence": 0.76
+ },
+ "} · new table Monday": {
+  "problem": "unclear",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.2,
+   "too_long": 0,
+   "unclear": 0.78,
    "tone": 0.01
   },
-  "voice": 1.15,
-  "voiceConfidence": 0.79
+  "voice": 0.27,
+  "voiceConfidence": 0.74
  },
- "Walk to car": {
+ "Up to 29 drivers at your tier, a new table every Monday.": {
   "problem": "fine",
-  "problemConfidence": 0.69,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.75,
+   "fine": 0.51,
+   "technical": 0.03,
+   "too_long": 0.04,
+   "unclear": 0.39,
+   "tone": 0.03
+  },
+  "voice": 1.26,
+  "voiceConfidence": 0.73
+ },
+ "join the league": {
+  "problem": "fine",
+  "problemConfidence": 0.68,
+  "problems": {
+   "fine": 0.74,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.16,
-   "tone": 0.09
+   "unclear": 0.25,
+   "tone": 0.01
   },
-  "voice": 1.09,
-  "voiceConfidence": 0.86
+  "voice": 1.21,
+  "voiceConfidence": 0.77
  },
- "Add a photo": {
+ "League invite": {
+  "problem": "fine",
+  "problemConfidence": 0.66,
+  "problems": {
+   "fine": 0.73,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.26,
+   "tone": 0.01
+  },
+  "voice": 1,
+  "voiceConfidence": 0.85
+ },
+ "Could not join.": {
+  "problem": "unclear",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.11,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.65,
+   "tone": 0.23
+  },
+  "voice": 0.74,
+  "voiceConfidence": 0.71
+ },
+ "Showing the last tables we saw. Pull to retry.": {
+  "problem": "fine",
+  "problemConfidence": 0.5,
+  "problems": {
+   "fine": 0.6,
+   "technical": 0.07,
+   "too_long": 0.03,
+   "unclear": 0.12,
+   "tone": 0.18
+  },
+  "voice": 1.18,
+  "voiceConfidence": 0.75
+ },
+ "No leagues yet.": {
+  "problem": "unclear",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.26,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.68,
+   "tone": 0.06
+  },
+  "voice": 1,
+  "voiceConfidence": 0.9
+ },
+ "Race your friends on how well you drive.": {
+  "problem": "fine",
+  "problemConfidence": 0.65,
+  "problems": {
+   "fine": 0.72,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.22,
+   "tone": 0.05
+  },
+  "voice": 2.24,
+  "voiceConfidence": 0.65
+ },
+ "Create or join": {
+  "problem": "fine",
+  "problemConfidence": 0.4,
+  "problems": {
+   "fine": 0.52,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.46,
+   "tone": 0.02
+  },
+  "voice": 1.17,
+  "voiceConfidence": 0.8
+ },
+ "Paste the code a friend sent you": {
   "problem": "fine",
   "problemConfidence": 0.64,
   "problems": {
    "fine": 0.71,
    "technical": 0,
-   "too_long": 0,
-   "unclear": 0.27,
-   "tone": 0.02
-  },
-  "voice": 1.03,
-  "voiceConfidence": 0.91
- },
- "Pick from photos": {
-  "problem": "fine",
-  "problemConfidence": 0.77,
-  "problems": {
-   "fine": 0.82,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.16,
-   "tone": 0.02
-  },
-  "voice": 1.04,
-  "voiceConfidence": 0.92
- },
- "save the photo": {
-  "problem": "unclear",
-  "problemConfidence": 0.36,
-  "problems": {
-   "fine": 0.43,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.49,
-   "tone": 0.08
-  },
-  "voice": 0.91,
-  "voiceConfidence": 0.84
- },
- "Forget this spot?": {
-  "problem": "fine",
-  "problemConfidence": 0.31,
-  "problems": {
-   "fine": 0.45,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.38,
-   "tone": 0.16
-  },
-  "voice": 1.94,
-  "voiceConfidence": 0.65
- },
- "The photo and note go with it.": {
-  "problem": "unclear",
-  "problemConfidence": 0.36,
-  "problems": {
-   "fine": 0.39,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.49,
-   "tone": 0.11
-  },
-  "voice": 1.05,
-  "voiceConfidence": 0.9
- },
- "No maps app on this phone.": {
-  "problem": "unclear",
-  "problemConfidence": 0.54,
-  "problems": {
-   "fine": 0.23,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.63,
-   "tone": 0.12
-  },
-  "voice": 0.6,
-  "voiceConfidence": 0.57
- },
- "No spot remembered yet.": {
-  "problem": "fine",
-  "problemConfidence": 0.4,
-  "problems": {
-   "fine": 0.52,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.4,
-   "tone": 0.07
-  },
-  "voice": 1.01,
-  "voiceConfidence": 0.85
- },
- "The end of your next drive shows up here.": {
-  "problem": "unclear",
-  "problemConfidence": 0.68,
-  "problems": {
-   "fine": 0.21,
-   "technical": 0.01,
    "too_long": 0.02,
-   "unclear": 0.74,
+   "unclear": 0.25,
    "tone": 0.02
   },
-  "voice": 1.11,
-  "voiceConfidence": 0.84
+  "voice": 1.29,
+  "voiceConfidence": 0.68
  },
- "This event has no road to flag.": {
-  "problem": "unclear",
-  "problemConfidence": 0.42,
-  "problems": {
-   "fine": 0.18,
-   "technical": 0.21,
-   "too_long": 0,
-   "unclear": 0.54,
-   "tone": 0.07
-  },
-  "voice": 0.94,
-  "voiceConfidence": 0.79
- },
- "}. What does the sign say?": {
-  "problem": "unclear",
-  "problemConfidence": 0.68,
-  "problems": {
-   "fine": 0.04,
-   "technical": 0.21,
-   "too_long": 0,
-   "unclear": 0.74,
-   "tone": 0.01
-  },
-  "voice": 2.05,
-  "voiceConfidence": 0.06
- },
- "Fixed for you now, and for everyone once a second driver agrees.": {
+ "One waiting for you": {
   "problem": "unclear",
   "problemConfidence": 0.64,
-  "problems": {
-   "fine": 0.15,
-   "technical": 0.09,
-   "too_long": 0.03,
-   "unclear": 0.71,
-   "tone": 0.02
-  },
-  "voice": 1.9,
-  "voiceConfidence": 0.71
- },
- "Thanks. This road stays quiet for you until the fix lands.": {
-  "problem": "unclear",
-  "problemConfidence": 0.45,
-  "problems": {
-   "fine": 0.31,
-   "technical": 0.08,
-   "too_long": 0.01,
-   "unclear": 0.56,
-   "tone": 0.04
-  },
-  "voice": 2.17,
-  "voiceConfidence": 0.69
- },
- "Not counted, limit unsure · $at": {
-  "problem": "unclear",
-  "problemConfidence": 0.75,
-  "problems": {
-   "fine": 0.01,
-   "technical": 0.18,
-   "too_long": 0,
-   "unclear": 0.8,
-   "tone": 0.01
-  },
-  "voice": 0.51,
-  "voiceConfidence": 0.51
- },
- "Route not saved for this trip.": {
-  "problem": "unclear",
-  "problemConfidence": 0.6,
   "problems": {
    "fine": 0.27,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.68,
-   "tone": 0.04
-  },
-  "voice": 0.84,
-  "voiceConfidence": 0.82
- },
- "Replaying a drive…": {
-  "problem": "fine",
-  "problemConfidence": 0.54,
-  "problems": {
-   "fine": 0.63,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.35,
+   "unclear": 0.71,
    "tone": 0.01
   },
-  "voice": 1.11,
-  "voiceConfidence": 0.8
+  "voice": 1.62,
+  "voiceConfidence": 0.51
  },
- "Not available on this device": {
+ "$pending waiting for you": {
   "problem": "unclear",
-  "problemConfidence": 0.76,
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.24,
+   "technical": 0.06,
+   "too_long": 0.01,
+   "unclear": 0.68,
+   "tone": 0.01
+  },
+  "voice": 1.35,
+  "voiceConfidence": 0.58
+ },
+ "One running": {
+  "problem": "unclear",
+  "problemConfidence": 0.73,
   "problems": {
    "fine": 0.14,
    "technical": 0.02,
    "too_long": 0,
-   "unclear": 0.81,
+   "unclear": 0.78,
+   "tone": 0.06
+  },
+  "voice": 0.9,
+  "voiceConfidence": 0.64
+ },
+ "$running running": {
+  "problem": "unclear",
+  "problemConfidence": 0.66,
+  "problems": {
+   "fine": 0.15,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.73,
+   "tone": 0.09
+  },
+  "voice": 0.91,
+  "voiceConfidence": 0.48
+ },
+ "Challenge a friend": {
+  "problem": "fine",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.77,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.2,
    "tone": 0.03
   },
-  "voice": 0.73,
-  "voiceConfidence": 0.72
+  "voice": 1.69,
+  "voiceConfidence": 0.59
  },
- "Auto-detect is off": {
+ "Streaks, not speed": {
   "problem": "unclear",
-  "problemConfidence": 0.47,
+  "problemConfidence": 0.42,
   "problems": {
-   "fine": 0.38,
-   "technical": 0.02,
+   "fine": 0.46,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.58,
+   "unclear": 0.54,
+   "tone": 0
+  },
+  "voice": 2.49,
+  "voiceConfidence": 0.5
+ },
+ "$earned of ${regular.length} earned": {
+  "problem": "unclear",
+  "problemConfidence": 0.77,
+  "problems": {
+   "fine": 0.02,
+   "technical": 0.11,
+   "too_long": 0.03,
+   "unclear": 0.82,
    "tone": 0.02
   },
-  "voice": 0.69,
-  "voiceConfidence": 0.67
+  "voice": 0.59,
+  "voiceConfidence": 0.41
  },
- "Paused until ${clock(until)}": {
+ "You are hiding here. Others see that, not your trips.": {
   "problem": "unclear",
-  "problemConfidence": 0.49,
+  "problemConfidence": 0.39,
   "problems": {
-   "fine": 0.26,
+   "fine": 0.06,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.51,
+   "tone": 0.42
+  },
+  "voice": 2.21,
+  "voiceConfidence": 0.58
+ },
+ "Matched by tier and Driver Rating. New table every Monday.": {
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.28,
    "technical": 0.14,
    "too_long": 0,
-   "unclear": 0.59,
+   "unclear": 0.48,
+   "tone": 0.1
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.92
+ },
+ "You leave the global pool too. Rejoin any time; your tier is kept.": {
+  "problem": "unclear",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0.11,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.13
+  },
+  "voice": 1.28,
+  "voiceConfidence": 0.71
+ },
+ "Your past weeks stay. Rejoin any time with the code.": {
+  "problem": "unclear",
+  "problemConfidence": 0.9,
+  "problems": {
+   "fine": 0.03,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.92,
+   "tone": 0.01
+  },
+  "voice": 1.19,
+  "voiceConfidence": 0.74
+ },
+ "load the members": {
+  "problem": "unclear",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.07,
+   "technical": 0.29,
+   "too_long": 0,
+   "unclear": 0.61,
+   "tone": 0.03
+  },
+  "voice": 0.5,
+  "voiceConfidence": 0.51
+ },
+ "Counting this week": {
+  "problem": "unclear",
+  "problemConfidence": 0.68,
+  "problems": {
+   "fine": 0.24,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.74,
+   "tone": 0.01
+  },
+  "voice": 0.97,
+  "voiceConfidence": 0.73
+ },
+ "Week of ${DateFormat.MMMd().format(w.weekStart)} · final": {
+  "problem": "fine",
+  "problemConfidence": 0.14,
+  "problems": {
+   "fine": 0.31,
+   "technical": 0.18,
+   "too_long": 0.04,
+   "unclear": 0.3,
+   "tone": 0.17
+  },
+  "voice": 0.79,
+  "voiceConfidence": 0.73
+ },
+ "Ends Sunday at midnight · $left day${left == 1 ? ": {
+  "problem": "unclear",
+  "problemConfidence": 0.76,
+  "problems": {
+   "fine": 0.06,
+   "technical": 0.1,
+   "too_long": 0.02,
+   "unclear": 0.81,
+   "tone": 0.01
+  },
+  "voice": 1.09,
+  "voiceConfidence": 0.69
+ },
+ "Your rank": {
+  "problem": "fine",
+  "problemConfidence": 0.79,
+  "problems": {
+   "fine": 0.83,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.04
+  },
+  "voice": 0.88,
+  "voiceConfidence": 0.85
+ },
+ "Your XP": {
+  "problem": "unclear",
+  "problemConfidence": 0.37,
+  "problems": {
+   "fine": 0.31,
+   "technical": 0.19,
+   "too_long": 0,
+   "unclear": 0.5,
+   "tone": 0
+  },
+  "voice": 0.73,
+  "voiceConfidence": 0.71
+ },
+ "Driver Rating ${m.rating!.toStringAsFixed(0)}": {
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0.16,
+   "too_long": 0,
+   "unclear": 0.16,
+   "tone": 0.03
+  },
+  "voice": 0.75,
+  "voiceConfidence": 0.66
+ },
+ "$range · ends Sunday at midnight": {
+  "problem": "fine",
+  "problemConfidence": 0.34,
+  "problems": {
+   "fine": 0.47,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.47,
+   "tone": 0.03
+  },
+  "voice": 1.06,
+  "voiceConfidence": 0.85
+ },
+ "Top five move up on Sunday night, bottom five move down.": {
+  "problem": "unclear",
+  "problemConfidence": 0.42,
+  "problems": {
+   "fine": 0.39,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.54,
+   "tone": 0.06
+  },
+  "voice": 1.25,
+  "voiceConfidence": 0.74
+ },
+ "With six or more members, the top five move up on Sunday night.": {
+  "problem": "unclear",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.34,
+   "technical": 0.01,
+   "too_long": 0.12,
+   "unclear": 0.45,
+   "tone": 0.08
+  },
+  "voice": 1.07,
+  "voiceConfidence": 0.9
+ },
+ "Didn't drive. The league didn't wait.": {
+  "problem": "tone",
+  "problemConfidence": 0.54,
+  "problems": {
+   "fine": 0.05,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.32,
+   "tone": 0.63
+  },
+  "voice": 2.24,
+  "voiceConfidence": 0.42
+ },
+ "Driver Rating ${row.rating!.toStringAsFixed(0)}": {
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0.19,
+   "too_long": 0,
+   "unclear": 0.08,
+   "tone": 0.02
+  },
+  "voice": 0.52,
+  "voiceConfidence": 0.49
+ },
+ "A season is one quarter. Wrapped is built from your drives, on this phone.": {
+  "problem": "unclear",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.03,
+   "technical": 0.38,
+   "too_long": 0.01,
+   "unclear": 0.55,
+   "tone": 0.03
+  },
+  "voice": 1.32,
+  "voiceConfidence": 0.64
+ },
+ "Before your time": {
+  "problem": "unclear",
+  "problemConfidence": 0.8,
+  "problems": {
+   "fine": 0.04,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.84,
+   "tone": 0.12
+  },
+  "voice": 1.03,
+  "voiceConfidence": 0.57
+ },
+ "Result is saved when you are next online": {
+  "problem": "unclear",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.14,
+   "technical": 0.09,
+   "too_long": 0,
+   "unclear": 0.7,
+   "tone": 0.07
+  },
+  "voice": 0.75,
+  "voiceConfidence": 0.71
+ },
+ "day left": {
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.34,
+   "tone": 0.04
+  },
+  "voice": 0.79,
+  "voiceConfidence": 0.75
+ },
+ "days left": {
+  "problem": "fine",
+  "problemConfidence": 0.75,
+  "problems": {
+   "fine": 0.8,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.18,
+   "tone": 0.02
+  },
+  "voice": 0.73,
+  "voiceConfidence": 0.69
+ },
+ "Keep driving. The next season counts it all.": {
+  "problem": "unclear",
+  "problemConfidence": 0.34,
+  "problems": {
+   "fine": 0.39,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.47,
+   "tone": 0.12
+  },
+  "voice": 2.11,
+  "voiceConfidence": 0.78
+ },
+ "work out your stats": {
+  "problem": "unclear",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.34,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.49,
+   "tone": 0.16
+  },
+  "voice": 1.58,
+  "voiceConfidence": 0.49
+ },
+ "No scored trips yet.": {
+  "problem": "unclear",
+  "problemConfidence": 0.4,
+  "problems": {
+   "fine": 0.35,
+   "technical": 0.06,
+   "too_long": 0,
+   "unclear": 0.52,
+   "tone": 0.07
+  },
+  "voice": 1.03,
+  "voiceConfidence": 0.93
+ },
+ "Nothing in ${_window.label.toLowerCase()}.": {
+  "problem": "unclear",
+  "problemConfidence": 0.4,
+  "problems": {
+   "fine": 0.14,
+   "technical": 0.28,
+   "too_long": 0,
+   "unclear": 0.52,
+   "tone": 0.06
+  },
+  "voice": 0.79,
+  "voiceConfidence": 0.72
+ },
+ "Finish a drive and the numbers appear.": {
+  "problem": "fine",
+  "problemConfidence": 0.56,
+  "problems": {
+   "fine": 0.65,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.28,
+   "tone": 0.06
+  },
+  "voice": 1.26,
+  "voiceConfidence": 0.73
+ },
+ "${formatDistance(t.distanceM, units)} · ${formatHours(t.movingS)} behind the wheel": {
+  "problem": "fine",
+  "problemConfidence": 0.24,
+  "problems": {
+   "fine": 0.39,
+   "technical": 0.19,
+   "too_long": 0.1,
+   "unclear": 0.24,
+   "tone": 0.08
+  },
+  "voice": 1.18,
+  "voiceConfidence": 0.64
+ },
+ "Fuel, cost and CO₂ are estimates. Tap the fuel tile to set your price. Nothing here leaves the phone unless you share it.": {
+  "problem": "too_long",
+  "problemConfidence": 0.15,
+  "problems": {
+   "fine": 0.27,
+   "technical": 0.08,
+   "too_long": 0.32,
+   "unclear": 0.09,
+   "tone": 0.24
+  },
+  "voice": 1.48,
+  "voiceConfidence": 0.52
+ },
+ "Fuel used": {
+  "problem": "fine",
+  "problemConfidence": 0.8,
+  "problems": {
+   "fine": 0.84,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.13,
+   "tone": 0.03
+  },
+  "voice": 0.74,
+  "voiceConfidence": 0.72
+ },
+ "Typical economy, L/100 km": {
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.38,
+   "technical": 0.06,
+   "too_long": 0.01,
+   "unclear": 0.48,
+   "tone": 0.07
+  },
+  "voice": 0.86,
+  "voiceConfidence": 0.84
+ },
+ "For cars with no fuel log": {
+  "problem": "unclear",
+  "problemConfidence": 0.82,
+  "problems": {
+   "fine": 0.09,
+   "technical": 0.03,
+   "too_long": 0,
+   "unclear": 0.86,
+   "tone": 0.02
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.91
+ },
+ "Driving, not parked": {
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.3,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.51,
+   "tone": 0.18
+  },
+  "voice": 0.88,
+  "voiceConfidence": 0.66
+ },
+ "Tailpipe estimate": {
+  "problem": "unclear",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.48,
+   "tone": 0.05
+  },
+  "voice": 1,
+  "voiceConfidence": 0.85
+ },
+ "In this period": {
+  "problem": "unclear",
+  "problemConfidence": 0.46,
+  "problems": {
+   "fine": 0.41,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.57,
    "tone": 0.01
   },
   "voice": 0.86,
-  "voiceConfidence": 0.68
+  "voiceConfidence": 0.85
  },
- "Looks like a drive…": {
+ "Counted from the roads you drove": {
   "problem": "unclear",
-  "problemConfidence": 0.84,
+  "problemConfidence": 0.69,
   "problems": {
-   "fine": 0.13,
+   "fine": 0.19,
+   "technical": 0.02,
+   "too_long": 0.02,
+   "unclear": 0.75,
+   "tone": 0.02
+  },
+  "voice": 1.45,
+  "voiceConfidence": 0.46
+ },
+ "Most drives stay inside this": {
+  "problem": "unclear",
+  "problemConfidence": 0.89,
+  "problems": {
+   "fine": 0.09,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.87,
+   "unclear": 0.91,
    "tone": 0
   },
-  "voice": 1.88,
-  "voiceConfidence": 0.72
+  "voice": 1.45,
+  "voiceConfidence": 0.5
  },
- "Finish setting up auto-detect": {
+ "Farthest trip from home": {
+  "problem": "fine",
+  "problemConfidence": 0.57,
+  "problems": {
+   "fine": 0.66,
+   "technical": 0.01,
+   "too_long": 0.02,
+   "unclear": 0.29,
+   "tone": 0.02
+  },
+  "voice": 1.18,
+  "voiceConfidence": 0.69
+ },
+ "Drive a few more trips": {
+  "problem": "fine",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.51,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.04
+  },
+  "voice": 1.82,
+  "voiceConfidence": 0.68
+ },
+ "Of your driving after dark": {
   "problem": "unclear",
   "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.31,
-   "technical": 0.04,
-   "too_long": 0,
+   "fine": 0.34,
+   "technical": 0,
+   "too_long": 0.01,
    "unclear": 0.64,
    "tone": 0.01
   },
-  "voice": 1.12,
-  "voiceConfidence": 0.81
+  "voice": 1.21,
+  "voiceConfidence": 0.61
  },
- "Ready. Drives start on their own.": {
+ "Typical trip": {
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.43,
+   "tone": 0.01
+  },
+  "voice": 1.02,
+  "voiceConfidence": 0.85
+ },
+ "Repeat route": {
   "problem": "unclear",
   "problemConfidence": 0.57,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.66,
+   "tone": 0.01
+  },
+  "voice": 1.19,
+  "voiceConfidence": 0.71
+ },
+ "Drives that ended here": {
+  "problem": "unclear",
+  "problemConfidence": 0.86,
+  "problems": {
+   "fine": 0.09,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.89,
+   "tone": 0.01
+  },
+  "voice": 1.08,
+  "voiceConfidence": 0.74
+ },
+ "Honest numbers": {
+  "problem": "unclear",
+  "problemConfidence": 0.24,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.39,
+   "tone": 0.29
+  },
+  "voice": 1.65,
+  "voiceConfidence": 0.27
+ },
+ "Almost none": {
+  "problem": "unclear",
+  "problemConfidence": 0.7,
+  "problems": {
+   "fine": 0.21,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.76,
+   "tone": 0.03
+  },
+  "voice": 1.59,
+  "voiceConfidence": 0.4
+ },
+ "Tracks you DJed": {
+  "problem": "unclear",
+  "problemConfidence": 0.69,
   "problems": {
    "fine": 0.23,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.66,
-   "tone": 0.1
+   "unclear": 0.75,
+   "tone": 0.01
   },
-  "voice": 1.53,
-  "voiceConfidence": 0.43
+  "voice": 2.41,
+  "voiceConfidence": 0.42
  },
- "$over over the limit": {
+ "Distance driven": {
+  "problem": "fine",
+  "problemConfidence": 0.74,
+  "problems": {
+   "fine": 0.79,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.14,
+   "tone": 0.07
+  },
+  "voice": 0.87,
+  "voiceConfidence": 0.82
+ },
+ "of your driving after dark · ${h.weekendPercent} % at weekends": {
+  "problem": "unclear",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.16,
+   "technical": 0.02,
+   "too_long": 0.09,
+   "unclear": 0.71,
+   "tone": 0.02
+  },
+  "voice": 1.94,
+  "voiceConfidence": 0.41
+ },
+ "No state spotted yet": {
+  "problem": "unclear",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.03,
+   "technical": 0.24,
+   "too_long": 0,
+   "unclear": 0.71,
+   "tone": 0.02
+  },
+  "voice": 0.77,
+  "voiceConfidence": 0.41
+ },
+ "Your repeat route": {
+  "problem": "fine",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.62,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.34,
+   "tone": 0.03
+  },
+  "voice": 1.17,
+  "voiceConfidence": 0.77
+ },
+ "Most often ${groundhog.label}": {
+  "problem": "unclear",
+  "problemConfidence": 0.73,
+  "problems": {
+   "fine": 0.06,
+   "technical": 0.15,
+   "too_long": 0,
+   "unclear": 0.78,
+   "tone": 0.01
+  },
+  "voice": 2.36,
+  "voiceConfidence": 0.36
+ },
+ "The same route, over and over": {
+  "problem": "fine",
+  "problemConfidence": 0.49,
+  "problems": {
+   "fine": 0.59,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.17,
+   "tone": 0.23
+  },
+  "voice": 1.63,
+  "voiceConfidence": 0.36
+ },
+ "Time over the limit": {
+  "problem": "unclear",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.14,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.61,
+   "tone": 0.24
+  },
+  "voice": 0.73,
+  "voiceConfidence": 0.66
+ },
+ "Your season": {
   "problem": "unclear",
   "problemConfidence": 0.56,
   "problems": {
-   "fine": 0.14,
-   "technical": 0.08,
+   "fine": 0.33,
+   "technical": 0.01,
    "too_long": 0,
    "unclear": 0.65,
-   "tone": 0.13
+   "tone": 0.01
   },
-  "voice": 1.67,
-  "voiceConfidence": 0.27
+  "voice": 0.81,
+  "voiceConfidence": 0.7
+ },
+ "Swipe through your season.": {
+  "problem": "fine",
+  "problemConfidence": 0.44,
+  "problems": {
+   "fine": 0.55,
+   "technical": 0.01,
+   "too_long": 0.01,
+   "unclear": 0.41,
+   "tone": 0.02
+  },
+  "voice": 1.85,
+  "voiceConfidence": 0.57
+ },
+ "build your Wrapped": {
+  "problem": "unclear",
+  "problemConfidence": 0.74,
+  "problems": {
+   "fine": 0.15,
+   "technical": 0.05,
+   "too_long": 0,
+   "unclear": 0.79,
+   "tone": 0.01
+  },
+  "voice": 2.38,
+  "voiceConfidence": 0.38
+ },
+ "Nothing to wrap yet.": {
+  "problem": "unclear",
+  "problemConfidence": 0.37,
+  "problems": {
+   "fine": 0.38,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.5,
+   "tone": 0.08
+  },
+  "voice": 1.28,
+  "voiceConfidence": 0.66
+ },
+ "Drive this season and this fills in.": {
+  "problem": "unclear",
+  "problemConfidence": 0.59,
+  "problems": {
+   "fine": 0.19,
+   "technical": 0.05,
+   "too_long": 0.01,
+   "unclear": 0.67,
+   "tone": 0.08
+  },
+  "voice": 1.46,
+  "voiceConfidence": 0.51
  },
  "failed host lookup": {
   "problem": "technical",
-  "problemConfidence": 0.95,
+  "problemConfidence": 0.99,
   "problems": {
    "fine": 0,
-   "technical": 0.96,
+   "technical": 0.99,
    "too_long": 0,
-   "unclear": 0.04,
+   "unclear": 0.01,
    "tone": 0
   },
-  "voice": 0.03,
-  "voiceConfidence": 0.98
+  "voice": 0,
+  "voiceConfidence": 1
  },
  "network is unreachable": {
-  "problem": "fine",
-  "problemConfidence": 0.18,
+  "problem": "technical",
+  "problemConfidence": 0.41,
   "problems": {
-   "fine": 0.34,
-   "technical": 0.25,
+   "fine": 0.1,
+   "technical": 0.53,
    "too_long": 0,
-   "unclear": 0.3,
-   "tone": 0.11
+   "unclear": 0.32,
+   "tone": 0.05
   },
-  "voice": 0.31,
-  "voiceConfidence": 0.7
+  "voice": 0.07,
+  "voiceConfidence": 0.93
  },
  "connection refused": {
   "problem": "technical",
-  "problemConfidence": 0.81,
+  "problemConfidence": 0.8,
   "problems": {
    "fine": 0,
-   "technical": 0.85,
+   "technical": 0.84,
    "too_long": 0,
-   "unclear": 0.14,
+   "unclear": 0.15,
    "tone": 0.01
   },
-  "voice": 0.01,
-  "voiceConfidence": 0.99
+  "voice": 0.02,
+  "voiceConfidence": 0.98
  },
  "connection reset": {
   "problem": "technical",
@@ -17663,281 +18248,125 @@
    "unclear": 0.2,
    "tone": 0.01
   },
-  "voice": 0.04,
+  "voice": 0.05,
   "voiceConfidence": 0.96
  },
  "No connection right now. Try again when you are back online.": {
   "problem": "fine",
-  "problemConfidence": 0.59,
+  "problemConfidence": 0.54,
   "problems": {
-   "fine": 0.67,
+   "fine": 0.63,
    "technical": 0.01,
-   "too_long": 0.15,
-   "unclear": 0.02,
-   "tone": 0.15
+   "too_long": 0.11,
+   "unclear": 0.01,
+   "tone": 0.24
   },
-  "voice": 1.49,
-  "voiceConfidence": 0.51
+  "voice": 1.3,
+  "voiceConfidence": 0.71
  },
  "timed out": {
   "problem": "unclear",
-  "problemConfidence": 0.34,
+  "problemConfidence": 0.31,
   "problems": {
-   "fine": 0.16,
-   "technical": 0.33,
+   "fine": 0.17,
+   "technical": 0.32,
    "too_long": 0,
-   "unclear": 0.47,
-   "tone": 0.04
+   "unclear": 0.45,
+   "tone": 0.06
   },
-  "voice": 0.68,
-  "voiceConfidence": 0.54
+  "voice": 0.69,
+  "voiceConfidence": 0.3
  },
  "That took too long. Try again.": {
   "problem": "fine",
-  "problemConfidence": 0.41,
+  "problemConfidence": 0.31,
   "problems": {
-   "fine": 0.53,
+   "fine": 0.45,
    "technical": 0.01,
-   "too_long": 0.02,
-   "unclear": 0.22,
+   "too_long": 0.01,
+   "unclear": 0.31,
    "tone": 0.22
   },
-  "voice": 1.5,
-  "voiceConfidence": 0.49
+  "voice": 1.47,
+  "voiceConfidence": 0.52
  },
  "offline build": {
   "problem": "technical",
-  "problemConfidence": 0.69,
+  "problemConfidence": 0.71,
   "problems": {
-   "fine": 0.02,
-   "technical": 0.75,
+   "fine": 0.01,
+   "technical": 0.77,
    "too_long": 0,
-   "unclear": 0.22,
+   "unclear": 0.21,
    "tone": 0.01
   },
-  "voice": 0.16,
-  "voiceConfidence": 0.84
+  "voice": 0.1,
+  "voiceConfidence": 0.91
  },
  "not configured": {
   "problem": "unclear",
-  "problemConfidence": 0.73,
+  "problemConfidence": 0.45,
   "problems": {
-   "fine": 0.03,
-   "technical": 0.17,
+   "fine": 0,
+   "technical": 0.43,
    "too_long": 0,
-   "unclear": 0.78,
-   "tone": 0.02
+   "unclear": 0.56,
+   "tone": 0.01
   },
-  "voice": 0.21,
-  "voiceConfidence": 0.79
+  "voice": 0.05,
+  "voiceConfidence": 0.96
  },
  "Not available in this version yet.": {
   "problem": "unclear",
-  "problemConfidence": 0.32,
+  "problemConfidence": 0.29,
   "problems": {
-   "fine": 0.24,
-   "technical": 0.03,
-   "too_long": 0.01,
-   "unclear": 0.46,
-   "tone": 0.26
-  },
-  "voice": 1,
-  "voiceConfidence": 0.92
- },
- "Within about ${formatShortDistance(spot.accuracy, units)}": {
-  "problem": "unclear",
-  "problemConfidence": 0.52,
-  "problems": {
-   "fine": 0.28,
-   "technical": 0.05,
-   "too_long": 0.04,
-   "unclear": 0.62,
-   "tone": 0.01
-  },
-  "voice": 1.08,
-  "voiceConfidence": 0.81
- },
- "Could not make the picture.": {
-  "problem": "unclear",
-  "problemConfidence": 0.76,
-  "problems": {
-   "fine": 0.08,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.81,
-   "tone": 0.1
-  },
-  "voice": 0.88,
-  "voiceConfidence": 0.76
- },
- "replay the drive": {
-  "problem": "fine",
-  "problemConfidence": 0.61,
-  "problems": {
-   "fine": 0.69,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.29,
-   "tone": 0.01
-  },
-  "voice": 1.14,
-  "voiceConfidence": 0.84
- },
- "Plays a pretend drive through the same scoring as a real one.": {
-  "problem": "unclear",
-  "problemConfidence": 0.54,
-  "problems": {
-   "fine": 0.25,
-   "technical": 0.02,
-   "too_long": 0.06,
-   "unclear": 0.63,
-   "tone": 0.04
-  },
-  "voice": 1.73,
-  "voiceConfidence": 0.47
- },
- "Real roads from a pack": {
-  "problem": "unclear",
-  "problemConfidence": 0.84,
-  "problems": {
-   "fine": 0.1,
-   "technical": 0.02,
-   "too_long": 0,
-   "unclear": 0.87,
-   "tone": 0.01
-  },
-  "voice": 1.1,
-  "voiceConfidence": 0.85
- },
- "Install a speed-limit pack first (Settings › Speed-limit packs).": {
-  "problem": "fine",
-  "problemConfidence": 0.47,
-  "problems": {
-   "fine": 0.58,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.21,
-   "tone": 0.19
-  },
-  "voice": 0.94,
-  "voiceConfidence": 0.88
- },
- "Trip scored": {
-  "problem": "fine",
-  "problemConfidence": 0.46,
-  "problems": {
-   "fine": 0.57,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.15,
-   "tone": 0.28
-  },
-  "voice": 0.77,
-  "voiceConfidence": 0.75
- },
- "It was deleted on this phone.": {
-  "problem": "unclear",
-  "problemConfidence": 0.69,
-  "problems": {
-   "fine": 0.1,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.75,
-   "tone": 0.14
-  },
-  "voice": 0.8,
-  "voiceConfidence": 0.76
- },
- "Score again": {
-  "problem": "fine",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.5,
-   "technical": 0.01,
-   "too_long": 0,
-   "unclear": 0.47,
-   "tone": 0.02
-  },
-  "voice": 1.05,
-  "voiceConfidence": 0.9
- },
- "At night": {
-  "problem": "unclear",
-  "problemConfidence": 0.55,
-  "problems": {
-   "fine": 0.36,
-   "technical": 0,
-   "too_long": 0,
-   "unclear": 0.64,
-   "tone": 0
-  },
-  "voice": 0.98,
-  "voiceConfidence": 0.87
- },
- "${(c * 100).round()}% of this drive had known limits.": {
-  "problem": "unclear",
-  "problemConfidence": 0.37,
-  "problems": {
-   "fine": 0.33,
+   "fine": 0.22,
    "technical": 0.1,
-   "too_long": 0.03,
-   "unclear": 0.5,
-   "tone": 0.04
-  },
-  "voice": 0.96,
-  "voiceConfidence": 0.69
- },
- "No road with a known limit on this drive.": {
-  "problem": "unclear",
-  "problemConfidence": 0.44,
-  "problems": {
-   "fine": 0.32,
-   "technical": 0.04,
    "too_long": 0.01,
-   "unclear": 0.55,
-   "tone": 0.08
+   "unclear": 0.43,
+   "tone": 0.24
   },
-  "voice": 0.94,
-  "voiceConfidence": 0.89
+  "voice": 0.99,
+  "voiceConfidence": 0.88
  },
  "not authenticated": {
   "problem": "technical",
-  "problemConfidence": 0.51,
+  "problemConfidence": 0.42,
   "problems": {
-   "fine": 0.02,
-   "technical": 0.61,
+   "fine": 0.03,
+   "technical": 0.54,
    "too_long": 0,
-   "unclear": 0.35,
-   "tone": 0.02
+   "unclear": 0.38,
+   "tone": 0.05
   },
   "voice": 0.07,
   "voiceConfidence": 0.93
  },
  "invalid token": {
   "problem": "technical",
-  "problemConfidence": 0.86,
+  "problemConfidence": 0.65,
   "problems": {
-   "fine": 0,
-   "technical": 0.89,
+   "fine": 0.01,
+   "technical": 0.72,
    "too_long": 0,
-   "unclear": 0.1,
+   "unclear": 0.26,
    "tone": 0.01
   },
-  "voice": 0.08,
+  "voice": 0.07,
   "voiceConfidence": 0.93
  },
  "Your sign-in expired. Sign in again.": {
   "problem": "fine",
-  "problemConfidence": 0.42,
+  "problemConfidence": 0.52,
   "problems": {
-   "fine": 0.54,
-   "technical": 0.08,
+   "fine": 0.62,
+   "technical": 0.07,
    "too_long": 0.01,
-   "unclear": 0.03,
-   "tone": 0.34
+   "unclear": 0.02,
+   "tone": 0.28
   },
-  "voice": 1.1,
-  "voiceConfidence": 0.9
+  "voice": 1.15,
+  "voiceConfidence": 0.85
  },
  "row-level security": {
   "problem": "technical",
@@ -17949,241 +18378,553 @@
    "unclear": 0.02,
    "tone": 0
   },
-  "voice": 0.01,
-  "voiceConfidence": 0.99
+  "voice": 0.03,
+  "voiceConfidence": 0.97
  },
  "You do not have access to that.": {
   "problem": "tone",
-  "problemConfidence": 0.35,
+  "problemConfidence": 0.57,
   "problems": {
-   "fine": 0.11,
-   "technical": 0.01,
+   "fine": 0.08,
+   "technical": 0.03,
    "too_long": 0,
-   "unclear": 0.4,
-   "tone": 0.48
+   "unclear": 0.23,
+   "tone": 0.66
   },
-  "voice": 0.87,
-  "voiceConfidence": 0.86
+  "voice": 0.64,
+  "voiceConfidence": 0.63
  },
  "rate limit": {
   "problem": "technical",
-  "problemConfidence": 0.8,
+  "problemConfidence": 0.81,
   "problems": {
    "fine": 0,
-   "technical": 0.84,
+   "technical": 0.85,
    "too_long": 0,
-   "unclear": 0.15,
+   "unclear": 0.14,
    "tone": 0.01
   },
-  "voice": 0.06,
-  "voiceConfidence": 0.94
+  "voice": 0.04,
+  "voiceConfidence": 0.97
  },
  "Slow down a little. Try again in a minute.": {
   "problem": "fine",
-  "problemConfidence": 0.45,
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.56,
+   "fine": 0.55,
    "technical": 0.01,
    "too_long": 0.01,
-   "unclear": 0.1,
-   "tone": 0.32
+   "unclear": 0.07,
+   "tone": 0.36
   },
-  "voice": 2.27,
-  "voiceConfidence": 0.67
+  "voice": 2.11,
+  "voiceConfidence": 0.69
  },
  "Could not $doing. Try again.": {
   "problem": "unclear",
-  "problemConfidence": 0.47,
+  "problemConfidence": 0.64,
   "problems": {
-   "fine": 0.22,
-   "technical": 0.08,
+   "fine": 0.09,
+   "technical": 0.09,
    "too_long": 0,
-   "unclear": 0.58,
-   "tone": 0.12
+   "unclear": 0.71,
+   "tone": 0.11
   },
-  "voice": 0.89,
-  "voiceConfidence": 0.83
+  "voice": 0.71,
+  "voiceConfidence": 0.68
  },
  "Something went wrong. Try again.": {
   "problem": "tone",
-  "problemConfidence": 0.18,
+  "problemConfidence": 0.19,
   "problems": {
-   "fine": 0.33,
+   "fine": 0.3,
    "technical": 0.01,
    "too_long": 0,
-   "unclear": 0.32,
-   "tone": 0.34
+   "unclear": 0.34,
+   "tone": 0.35
   },
-  "voice": 0.97,
-  "voiceConfidence": 0.95
+  "voice": 0.94,
+  "voiceConfidence": 0.92
  },
- "Checking if you are driving…": {
-  "problem": "fine",
-  "problemConfidence": 0.54,
-  "problems": {
-   "fine": 0.63,
-   "technical": 0.01,
-   "too_long": 0.03,
-   "unclear": 0.24,
-   "tone": 0.09
-  },
-  "voice": 1.15,
-  "voiceConfidence": 0.73
- },
- "Drives then start on their own, even when the app is closed.": {
+ "Adding up this week": {
   "problem": "unclear",
-  "problemConfidence": 0.69,
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.27,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.7,
+   "tone": 0.02
+  },
+  "voice": 1.46,
+  "voiceConfidence": 0.48
+ },
+ "} left · table closes Sunday night": {
+  "problem": "unclear",
+  "problemConfidence": 0.76,
+  "problems": {
+   "fine": 0.01,
+   "technical": 0.16,
+   "too_long": 0,
+   "unclear": 0.81,
+   "tone": 0.02
+  },
+  "voice": 1.6,
+  "voiceConfidence": 0
+ },
+ "Ended before your first drive": {
+  "problem": "unclear",
+  "problemConfidence": 0.68,
+  "problems": {
+   "fine": 0.13,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.74,
+   "tone": 0.12
+  },
+  "voice": 1.62,
+  "voiceConfidence": 0.25
+ },
+ "Saved to your account when you are next online": {
+  "problem": "fine",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.08,
+   "too_long": 0.03,
+   "unclear": 0.35,
+   "tone": 0.11
+  },
+  "voice": 0.98,
+  "voiceConfidence": 0.92
+ },
+ "Used when a car has no fill-ups logged": {
+  "problem": "unclear",
+  "problemConfidence": 0.47,
   "problems": {
    "fine": 0.14,
-   "technical": 0.03,
+   "technical": 0.13,
    "too_long": 0.01,
-   "unclear": 0.75,
-   "tone": 0.07
+   "unclear": 0.58,
+   "tone": 0.14
   },
-  "voice": 1.19,
-  "voiceConfidence": 0.67
+  "voice": 0.77,
+  "voiceConfidence": 0.75
  },
- "No speed-limit pack covers your area yet.": {
-  "problem": "fine",
-  "problemConfidence": 0.35,
+ "Based on where you drove": {
+  "problem": "unclear",
+  "problemConfidence": 0.37,
   "problems": {
    "fine": 0.48,
-   "technical": 0.03,
+   "technical": 0,
    "too_long": 0,
-   "unclear": 0.42,
-   "tone": 0.07
+   "unclear": 0.5,
+   "tone": 0.02
   },
-  "voice": 1.18,
-  "voiceConfidence": 0.78
+  "voice": 1,
+  "voiceConfidence": 0.92
  },
- "Paste a pack link": {
+ "Nine in ten drives stay this close": {
   "problem": "unclear",
-  "problemConfidence": 0.55,
+  "problemConfidence": 0.77,
   "problems": {
-   "fine": 0.31,
-   "technical": 0.04,
+   "fine": 0.15,
+   "technical": 0.02,
    "too_long": 0,
-   "unclear": 0.64,
+   "unclear": 0.82,
    "tone": 0.01
   },
-  "voice": 1.04,
-  "voiceConfidence": 0.88
+  "voice": 1.64,
+  "voiceConfidence": 0.52
  },
- "Where you park next shows up here.": {
+ "Times you parked here": {
   "problem": "unclear",
   "problemConfidence": 0.42,
   "problems": {
    "fine": 0.42,
    "technical": 0.01,
-   "too_long": 0.01,
+   "too_long": 0,
    "unclear": 0.54,
-   "tone": 0.02
+   "tone": 0.03
   },
-  "voice": 1.31,
-  "voiceConfidence": 0.67
+  "voice": 0.87,
+  "voiceConfidence": 0.79
  },
- "Could not make the share image.": {
-  "problem": "unclear",
-  "problemConfidence": 0.49,
-  "problems": {
-   "fine": 0.22,
-   "technical": 0.03,
-   "too_long": 0,
-   "unclear": 0.59,
-   "tone": 0.16
-  },
-  "voice": 0.88,
-  "voiceConfidence": 0.82
- },
- "A real route from an installed pack": {
-  "problem": "unclear",
-  "problemConfidence": 0.55,
-  "problems": {
-   "fine": 0.21,
-   "technical": 0.13,
-   "too_long": 0,
-   "unclear": 0.64,
-   "tone": 0.02
-  },
-  "voice": 1.04,
-  "voiceConfidence": 0.8
- },
- "It was deleted from this phone, so there is nothing to show.": {
+ "Almost none. Nice.": {
   "problem": "unclear",
   "problemConfidence": 0.5,
   "problems": {
-   "fine": 0.23,
-   "technical": 0.05,
-   "too_long": 0.03,
-   "unclear": 0.6,
-   "tone": 0.09
-  },
-  "voice": 0.95,
-  "voiceConfidence": 0.81
- },
- "this road": {
-  "problem": "unclear",
-  "problemConfidence": 0.59,
-  "problems": {
-   "fine": 0.33,
+   "fine": 0.34,
    "technical": 0,
    "too_long": 0,
-   "unclear": 0.67,
-   "tone": 0
+   "unclear": 0.6,
+   "tone": 0.06
   },
-  "voice": 1.13,
-  "voiceConfidence": 0.8
+  "voice": 2.57,
+  "voiceConfidence": 0.59
  },
- "On $roadLabel. What does the sign say?": {
+ "Songs you played": {
   "problem": "fine",
-  "problemConfidence": 0.54,
+  "problemConfidence": 0.55,
   "problems": {
-   "fine": 0.63,
-   "technical": 0.01,
-   "too_long": 0.01,
-   "unclear": 0.33,
+   "fine": 0.64,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.34,
    "tone": 0.02
   },
-  "voice": 1.89,
-  "voiceConfidence": 0.7
+  "voice": 1.01,
+  "voiceConfidence": 0.84
  },
- "Your fix applies to you now, and to everyone once a second driver agrees.": {
+ "driven after dark · ${h.weekendPercent} % at weekends": {
+  "problem": "fine",
+  "problemConfidence": 0.47,
+  "problems": {
+   "fine": 0.58,
+   "technical": 0.06,
+   "too_long": 0.06,
+   "unclear": 0.27,
+   "tone": 0.03
+  },
+  "voice": 1.42,
+  "voiceConfidence": 0.51
+ },
+ "None yet. Drive somewhere new.": {
+  "problem": "fine",
+  "problemConfidence": 0.64,
+  "problems": {
+   "fine": 0.71,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.09,
+   "tone": 0.2
+  },
+  "voice": 1.91,
+  "voiceConfidence": 0.77
+ },
+ "Lose a duel or drive recklessly and you wear one for a week.": {
+  "problem": "unclear",
+  "problemConfidence": 0.77,
+  "problems": {
+   "fine": 0.16,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.82,
+   "tone": 0.02
+  },
+  "voice": 2.5,
+  "voiceConfidence": 0.5
+ },
+ "Fell short: $shown of $needed.": {
   "problem": "unclear",
   "problemConfidence": 0.6,
   "problems": {
-   "fine": 0.18,
-   "technical": 0.01,
-   "too_long": 0.05,
+   "fine": 0.17,
+   "technical": 0.02,
+   "too_long": 0,
    "unclear": 0.68,
-   "tone": 0.08
+   "tone": 0.13
   },
-  "voice": 1.33,
+  "voice": 1.04,
+  "voiceConfidence": 0.7
+ },
+ "Challenges for you": {
+  "problem": "fine",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.61,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.38,
+   "tone": 0.01
+  },
+  "voice": 1.02,
+  "voiceConfidence": 0.89
+ },
+ "They never answered": {
+  "problem": "unclear",
+  "problemConfidence": 0.62,
+  "problems": {
+   "fine": 0.17,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.7,
+   "tone": 0.13
+  },
+  "voice": 1.54,
+  "voiceConfidence": 0.44
+ },
+ "$name · needs $duelScoreAvgMinTrips trips, has ${value.trips}": {
+  "problem": "technical",
+  "problemConfidence": 0.25,
+  "problems": {
+   "fine": 0.05,
+   "technical": 0.4,
+   "too_long": 0.08,
+   "unclear": 0.33,
+   "tone": 0.14
+  },
+  "voice": 0.52,
+  "voiceConfidence": 0.49
+ },
+ "} this week": {
+  "problem": "unclear",
+  "problemConfidence": 0.87,
+  "problems": {
+   "fine": 0.04,
+   "technical": 0.05,
+   "too_long": 0,
+   "unclear": 0.9,
+   "tone": 0.01
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.59
+ },
+ "No friend leagues yet.": {
+  "problem": "unclear",
+  "problemConfidence": 0.31,
+  "problems": {
+   "fine": 0.43,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.11
+  },
+  "voice": 0.99,
+  "voiceConfidence": 0.88
+ },
+ "One needs your answer": {
+  "problem": "unclear",
+  "problemConfidence": 0.76,
+  "problems": {
+   "fine": 0.17,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.81,
+   "tone": 0.02
+  },
+  "voice": 1.21,
+  "voiceConfidence": 0.71
+ },
+ "$pending need your answer": {
+  "problem": "unclear",
+  "problemConfidence": 0.71,
+  "problems": {
+   "fine": 0.15,
+   "technical": 0.04,
+   "too_long": 0,
+   "unclear": 0.77,
+   "tone": 0.04
+  },
+  "voice": 1.21,
   "voiceConfidence": 0.65
  },
- "Not scored, the limit here is unsure · $at": {
+ "One duel running": {
   "problem": "unclear",
-  "problemConfidence": 0.57,
+  "problemConfidence": 0.44,
   "problems": {
-   "fine": 0.22,
-   "technical": 0.08,
+   "fine": 0.37,
+   "technical": 0.02,
    "too_long": 0.01,
-   "unclear": 0.66,
-   "tone": 0.03
-  },
-  "voice": 1.3,
-  "voiceConfidence": 0.64
- },
- "Auto-detect is not available on this device": {
-  "problem": "unclear",
-  "problemConfidence": 0.3,
-  "problems": {
-   "fine": 0.26,
-   "technical": 0.25,
-   "too_long": 0,
-   "unclear": 0.44,
+   "unclear": 0.55,
    "tone": 0.05
   },
-  "voice": 0.53,
-  "voiceConfidence": 0.52
+  "voice": 0.9,
+  "voiceConfidence": 0.78
+ },
+ "$running duels running": {
+  "problem": "unclear",
+  "problemConfidence": 0.51,
+  "problems": {
+   "fine": 0.32,
+   "technical": 0.02,
+   "too_long": 0.01,
+   "unclear": 0.61,
+   "tone": 0.04
+  },
+  "voice": 0.86,
+  "voiceConfidence": 0.66
+ },
+ "You can rejoin with the invite code any time.": {
+  "problem": "fine",
+  "problemConfidence": 0.45,
+  "problems": {
+   "fine": 0.56,
+   "technical": 0.04,
+   "too_long": 0.01,
+   "unclear": 0.32,
+   "tone": 0.07
+  },
+  "voice": 1.13,
+  "voiceConfidence": 0.86
+ },
+ "Your usual run: ${groundhog.label}": {
+  "problem": "unclear",
+  "problemConfidence": 0.6,
+  "problems": {
+   "fine": 0.24,
+   "technical": 0.07,
+   "too_long": 0,
+   "unclear": 0.68,
+   "tone": 0.01
+  },
+  "voice": 1.74,
+  "voiceConfidence": 0.57
+ },
+ "Lost duels and reckless trips. Worn for a week.": {
+  "problem": "unclear",
+  "problemConfidence": 0.52,
+  "problems": {
+   "fine": 0.1,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.62,
+   "tone": 0.27
+  },
+  "voice": 2.42,
+  "voiceConfidence": 0.43
+ },
+ "Ended at $shown of $needed.": {
+  "problem": "unclear",
+  "problemConfidence": 0.82,
+  "problems": {
+   "fine": 0.07,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.86,
+   "tone": 0.06
+  },
+  "voice": 0.7,
+  "voiceConfidence": 0.59
+ },
+ "Never answered. It lapsed.": {
+  "problem": "unclear",
+  "problemConfidence": 0.55,
+  "problems": {
+   "fine": 0.02,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.64,
+   "tone": 0.33
+  },
+  "voice": 0.97,
+  "voiceConfidence": 0.51
+ },
+ "Drivers this week: ${league.memberCount}": {
+  "problem": "fine",
+  "problemConfidence": 0.57,
+  "problems": {
+   "fine": 0.66,
+   "technical": 0.09,
+   "too_long": 0.01,
+   "unclear": 0.1,
+   "tone": 0.14
+  },
+  "voice": 1,
+  "voiceConfidence": 0.87
+ },
+ "One challenge to answer": {
+  "problem": "unclear",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.47,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.49,
+   "tone": 0.03
+  },
+  "voice": 1.04,
+  "voiceConfidence": 0.88
+ },
+ "$pending challenges to answer": {
+  "problem": "fine",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.48,
+   "technical": 0.05,
+   "too_long": 0.02,
+   "unclear": 0.35,
+   "tone": 0.1
+  },
+  "voice": 0.76,
+  "voiceConfidence": 0.69
+ },
+ "Loading this week": {
+  "problem": "unclear",
+  "problemConfidence": 0.5,
+  "problems": {
+   "fine": 0.35,
+   "technical": 0.01,
+   "too_long": 0,
+   "unclear": 0.6,
+   "tone": 0.04
+  },
+  "voice": 0.88,
+  "voiceConfidence": 0.79
+ },
+ "$left days": {
+  "problem": "fine",
+  "problemConfidence": 0.35,
+  "problems": {
+   "fine": 0.48,
+   "technical": 0.02,
+   "too_long": 0,
+   "unclear": 0.45,
+   "tone": 0.05
+  },
+  "voice": 0.77,
+  "voiceConfidence": 0.64
+ },
+ "Closes Sunday night · $days left": {
+  "problem": "fine",
+  "problemConfidence": 0.47,
+  "problems": {
+   "fine": 0.58,
+   "technical": 0,
+   "too_long": 0.06,
+   "unclear": 0.23,
+   "tone": 0.13
+  },
+  "voice": 1.4,
+  "voiceConfidence": 0.55
+ },
+ "Over before you started": {
+  "problem": "unclear",
+  "problemConfidence": 0.39,
+  "problems": {
+   "fine": 0.27,
+   "technical": 0,
+   "too_long": 0,
+   "unclear": 0.51,
+   "tone": 0.22
+  },
+  "voice": 2.48,
+  "voiceConfidence": 0.48
+ },
+ "Most drives stay this close to home": {
+  "problem": "unclear",
+  "problemConfidence": 0.36,
+  "problems": {
+   "fine": 0.42,
+   "technical": 0,
+   "too_long": 0.01,
+   "unclear": 0.49,
+   "tone": 0.08
+  },
+  "voice": 1.6,
+  "voiceConfidence": 0.48
+ },
+ "Not met. The league reached $shown of $needed.": {
+  "problem": "unclear",
+  "problemConfidence": 0.29,
+  "problems": {
+   "fine": 0.15,
+   "technical": 0.03,
+   "too_long": 0.01,
+   "unclear": 0.43,
+   "tone": 0.38
+  },
+  "voice": 0.94,
+  "voiceConfidence": 0.74
  }
 }

@@ -5,62 +5,6 @@ import '../../data/stats/stats_engine.dart';
 import 'fun_facts.dart';
 import 'us_states.dart';
 
-/// A fact as a tile in the stats grid.
-class FactTile extends StatelessWidget {
-  const FactTile({super.key, required this.fact, this.onTap});
-
-  final FunFact fact;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Icon(fact.icon, size: 18, color: theme.colorScheme.primary),
-                  const SizedBox(width: 6),
-                  Expanded(
-                    child: Text(
-                      fact.label,
-                      style: theme.textTheme.labelMedium,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                fact.value,
-                style: theme.textTheme.headlineSmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (fact.hint.isNotEmpty)
-                Text(
-                  fact.hint,
-                  style: theme.textTheme.bodySmall,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 /// The "map that fills in": every state as a chip, visited ones filled.
 class StatesGrid extends StatelessWidget {
   const StatesGrid({super.key, required this.visited, this.compact = false});

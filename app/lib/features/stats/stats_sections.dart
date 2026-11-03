@@ -36,7 +36,7 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
         FunFact(
           label: 'Behind the wheel',
           value: formatHours(t.movingS),
-          hint: 'Moving time',
+          hint: 'Driving, not parked',
           icon: Icons.schedule,
         ),
         FunFact(
@@ -46,7 +46,7 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           icon: Icons.speed_outlined,
         ),
         FunFact(
-          label: 'Fuel estimate',
+          label: 'Fuel used',
           value: formatVolume(
             t.fuelLitres,
             useGallons: units == SpeedUnits.mph,
@@ -55,15 +55,15 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           icon: Icons.local_gas_station_outlined,
         ),
         FunFact(
-          label: 'CO₂ estimate',
+          label: 'CO₂',
           value: '${t.co2Kg.round()} kg',
-          hint: 'Tailpipe only',
+          hint: 'Tailpipe estimate',
           icon: Icons.co2,
         ),
         FunFact(
           label: 'XP',
           value: '${t.xp}',
-          hint: 'Earned in this window',
+          hint: 'In this period',
           icon: Icons.stars_outlined,
         ),
       ],
@@ -125,17 +125,19 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           value: '${g.stateCodes.length}',
           hint: g.regions.length > g.stateCodes.length
               ? '+${g.regions.length - g.stateCodes.length} other regions'
-              : 'From matched packs',
+              : 'Based on where you drove',
           icon: Icons.public,
         ),
         FunFact(
           label: 'Home radius',
           value: g.homeRadiusM == null ? '–' : dist(g.homeRadiusM!),
-          hint: g.hasHome ? '90 % of distance within' : 'Save a Home place',
+          hint: g.hasHome
+              ? 'Most drives stay this close to home'
+              : 'Save a Home place',
           icon: Icons.home_outlined,
         ),
         FunFact(
-          label: 'Farthest from home',
+          label: 'Farthest trip from home',
           value: g.farthestFromHomeM == null ? '–' : dist(g.farthestFromHomeM!),
           hint: g.hasHome ? 'As the crow flies' : 'Save a Home place',
           icon: Icons.explore_outlined,
@@ -144,7 +146,7 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           label: 'Most driven road',
           value: g.mostDrivenRoad ?? '–',
           hint: g.mostDrivenRoad == null
-              ? 'Needs matched trips'
+              ? 'Drive a few more trips'
               : '${g.mostDrivenRoadTrips} trips',
           icon: Icons.signpost_outlined,
           shareable: false,
@@ -157,7 +159,7 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
         FunFact(
           label: 'Night Owl',
           value: '${h.nightPercent} %',
-          hint: 'Of distance after dark',
+          hint: 'Of your driving after dark',
           icon: Icons.dark_mode_outlined,
         ),
         FunFact(
@@ -167,13 +169,13 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           icon: Icons.weekend_outlined,
         ),
         FunFact(
-          label: 'Average trip',
+          label: 'Typical trip',
           value: dist(h.averageDistanceM),
           hint: formatElapsed(Duration(seconds: h.averageMovingS.round())),
           icon: Icons.straighten,
         ),
         FunFact(
-          label: 'Groundhog Route',
+          label: 'Repeat route',
           value: h.groundhog == null ? '–' : '${h.groundhog!.count}×',
           hint: h.groundhog == null
               ? 'No repeated route yet'
@@ -185,20 +187,20 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           FunFact(
             label: p.label,
             value: '${p.visits}',
-            hint: 'Trips ending here',
+            hint: 'Times you parked here',
             icon: Icons.place_outlined,
             shareable: false,
           ),
       ],
     ),
     FactSection(
-      title: 'Reality checks',
+      title: 'Honest numbers',
       facts: [
         FunFact(
           label: 'Over the limit',
           value: RealityChecks.formatHoursOver(rc.secondsOverLimit),
           hint: rc.timeSavedLine == null
-              ? 'Barely any'
+              ? 'Almost none. Nice.'
               : 'Saved ${formatSaved(rc.timeSavedS)}',
           icon: Icons.hourglass_bottom_outlined,
         ),
@@ -235,7 +237,7 @@ List<FactSection> statsSections(DriverStats s, SpeedUnits units) {
           ),
         if (so.djTracks > 0)
           FunFact(
-            label: 'DJ score',
+            label: 'Songs you played',
             value: '${so.djTracks}',
             hint: 'Tracks played for the convoy',
             icon: Icons.headphones_outlined,

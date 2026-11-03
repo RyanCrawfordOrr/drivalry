@@ -4,18 +4,19 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/seasons_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
 import 'season_card.dart';
 
-/// Every season: the running one in full, past ones with this phone's
-/// numbers and the uploaded result, future ones with their dates.
+/// Every season as an editorial list: the running one as the hero, past
+/// ones with this phone's numbers and the uploaded result, future ones with
+/// their dates.
 class SeasonsScreen extends ConsumerWidget {
   const SeasonsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final seasons = ref.watch(seasonsProvider).value ?? builtInSeasons;
     final results = ref.watch(mySeasonResultsProvider).value ?? const [];
     final signedIn = ref.watch(isSignedInProvider);
@@ -25,35 +26,46 @@ class SeasonsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Seasons')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+        padding: const EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.sm,
+          Space.gutter,
+          Space.xxxl,
+        ),
         children: [
           Text(
-            'A season is a quarter. When it ends, your phone writes one '
-            'summary row (trips, XP, average score, badges) and Season '
-            'Wrapped is built from your own trips, on the phone.',
-            style: theme.textTheme.bodySmall,
+            'A season is one quarter. Wrapped is built from your drives, on '
+            'this phone.',
+            style: context.caption,
           ),
-          const SizedBox(height: 12),
-          for (final s in sorted) ...[
-            if (s.contains(now))
-              Consumer(
-                builder: (ctx, ref, _) => SeasonCardView(
-                  season: s,
-                  stats:
-                      ref.watch(seasonStatsProvider(s.id)).value ??
-                      SeasonStats.none,
-                  now: now,
-                  onWrapped: () => ctx.push(Routes.wrapped),
-                ),
-              )
-            else
-              _SeasonTile(
-                season: s,
-                now: now,
-                fmt: fmt,
-                result: results.where((r) => r.seasonId == s.id).firstOrNull,
-                signedIn: signedIn,
-              ),
+          const SizedBox(height: Space.xl),
+          for (var i = 0; i < sorted.length; i++) ...[
+            if (i > 0) const SizedBox(height: Space.md),
+            Reveal(
+              delay: Reveal.stagger(i),
+              child: sorted[i].contains(now)
+                  ? Consumer(
+                      builder: (ctx, ref, _) => SeasonCardView(
+                        season: sorted[i],
+                        stats:
+                            ref
+                                .watch(seasonStatsProvider(sorted[i].id))
+                                .value ??
+                            SeasonStats.none,
+                        now: now,
+                        onWrapped: () => ctx.push(Routes.wrapped),
+                      ),
+                    )
+                  : _SeasonTile(
+                      season: sorted[i],
+                      now: now,
+                      fmt: fmt,
+                      result: results
+                          .where((r) => r.seasonId == sorted[i].id)
+                          .firstOrNull,
+                      signedIn: signedIn,
+                    ),
+            ),
           ],
         ],
       ),
@@ -78,7 +90,6 @@ class _SeasonTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final over = season.isOver(now);
     final stats = over ? ref.watch(seasonStatsProvider(season.id)).value : null;
     final r = result;
@@ -87,29 +98,36 @@ class _SeasonTile extends ConsumerWidget {
     final beforeMe = over && stats != null && stats.trips == 0;
     final lines = <String>[
       '${fmt.format(season.startsOn)} to ${fmt.format(season.endsOn)}',
-      if (beforeMe) 'Before you joined',
+      if (beforeMe) 'Over before you started',
       if (over && stats != null && !beforeMe)
-        '${stats.trips} trips · ${stats.xp} XP · avg '
+        '${stats.trips} trips · ${stats.xp} XP · average '
             '${stats.scoreAvg?.toStringAsFixed(0) ?? '–'}',
       if (over && r != null && r.bestTier != null)
         'Best tier ${r.bestTier!.label}'
             '${r.duelsWon + r.duelsLost > 0 ? ' · duels ${r.duelsWon}–${r.duelsLost}' : ''}',
       if (over && signedIn && r == null && !beforeMe)
-        'Result uploads on the next sync',
+        'Saved to your account when you are next online',
     ];
-    return Card(
-      child: ListTile(
-        leading: Icon(
-          over ? Icons.history : Icons.schedule_outlined,
-          color: over ? theme.colorScheme.outline : theme.colorScheme.primary,
-        ),
-        title: Text(season.name),
-        subtitle: Text(lines.join('\n')),
-        isThreeLine: lines.length > 2,
-        trailing: Chip(
-          label: Text(over ? 'Over' : 'Upcoming'),
-          visualDensity: VisualDensity.compact,
-        ),
+    return Tile(
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(season.name, style: context.title),
+                const SizedBox(height: 2),
+                for (final l in lines) Text(l, style: context.caption),
+              ],
+            ),
+          ),
+          const SizedBox(width: Space.md),
+          Pill(
+            over ? 'Over' : 'Upcoming',
+            tone: over ? PillTone.neutral : PillTone.primary,
+            compact: true,
+          ),
+        ],
       ),
     );
   }

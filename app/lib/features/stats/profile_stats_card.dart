@@ -3,95 +3,60 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/stats/stats_engine.dart';
 import '../../data/stats/stats_providers.dart';
 import 'fun_facts.dart' show scoreText;
 
-/// The Stats section of the owner's profile: three all-time numbers and the
-/// doors to the full stats and the Season Wrapped.
+/// The Stats section of the owner's profile: a kicker, three all-time
+/// numbers as tiles, and the doors to the full stats and the Season Wrapped.
 class ProfileStatsCard extends ConsumerWidget {
   const ProfileStatsCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final stats = ref.watch(driverStatsProvider(StatsWindow.allTime)).value;
-    final theme = Theme.of(context);
     final totals = stats?.totals ?? Totals.empty;
     final streak = stats?.records.currentCleanStreak ?? 0;
+    void openStats() => context.push(Routes.stats);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-          child: Text('Stats', style: theme.textTheme.labelLarge),
+        const Padding(
+          padding: EdgeInsets.fromLTRB(Space.lg, Space.lg, Space.lg, Space.md),
+          child: Kicker('Stats'),
         ),
-        Row(
+        StatGrid(
           children: [
-            Expanded(
-              child: _Number(label: 'Trips', value: '${totals.trips}'),
+            StatTile(
+              value: '${totals.trips}',
+              label: 'Trips',
+              onTap: openStats,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _Number(
-                label: 'Average score',
-                value: scoreText(totals.averageScore),
-              ),
+            StatTile(
+              value: scoreText(totals.averageScore),
+              label: 'Average score',
+              onTap: openStats,
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _Number(label: 'Clean streak', value: '$streak'),
-            ),
+            StatTile(value: '$streak', label: 'Clean streak', onTap: openStats),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: Space.sm),
         Row(
           children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => context.push(Routes.stats),
-                icon: const Icon(Icons.query_stats),
-                label: const Text('All stats'),
-              ),
+            TextButton.icon(
+              onPressed: openStats,
+              icon: const Icon(Icons.query_stats),
+              label: const Text('All stats'),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: FilledButton.tonalIcon(
-                onPressed: () => context.push(Routes.wrapped),
-                icon: const Icon(Icons.auto_awesome_outlined),
-                label: const Text('Season Wrapped'),
-              ),
+            TextButton.icon(
+              onPressed: () => context.push(Routes.wrapped),
+              icon: const Icon(Icons.auto_awesome_outlined),
+              label: const Text('Season Wrapped'),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class _Number extends StatelessWidget {
-  const _Number({required this.label, required this.value});
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: theme.textTheme.labelMedium,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            Text(value, style: theme.textTheme.headlineSmall),
-          ],
-        ),
-      ),
     );
   }
 }

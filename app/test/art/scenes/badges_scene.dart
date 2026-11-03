@@ -1,6 +1,7 @@
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/supabase/supabase_providers.dart';
 import 'package:drivalry/features/badges/badges_screen.dart';
+import 'package:drivalry/features/badges/moment_ledger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -70,11 +71,14 @@ const List<(String, int, int)> _awards = [
 ];
 
 Future<void> _seed(AppDatabase db) async {
+  final ledger = MomentLedger(db);
   for (final (id, month, day) in _awards) {
     await db.awardBadge(
       id,
       DateTime(2026, month, day, 18).millisecondsSinceEpoch,
     );
+    // Each was celebrated the day it landed; the shot shows the list.
+    await ledger.claim('badge:$id');
   }
 
   // Trips for the streak row, one every three days back from 28 December,

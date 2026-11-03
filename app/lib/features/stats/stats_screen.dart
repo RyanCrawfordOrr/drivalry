@@ -4,16 +4,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/stats/stats_engine.dart';
 import '../../data/stats/stats_providers.dart';
+import '../../widgets/friendly_error.dart';
+import '../../widgets/units.dart';
+import '../leagues/widgets/live_numbers.dart';
 import '../profile/profile_repo.dart' show myProfileProvider;
 import 'fun_facts.dart';
 import 'share_stats.dart';
 import 'stats_cards.dart';
 import 'stats_sections.dart';
 
-/// Stats and fun facts (docs/01 §4.4) for one time window.
+/// Stats and fun facts (docs/01 §4.4) for one time window: window chips, a
+/// headline tile with counting numbers, then editorial sections of tiles.
 class StatsScreen extends ConsumerStatefulWidget {
   const StatsScreen({super.key, this.initialWindow = StatsWindow.allTime});
 
@@ -44,26 +49,64 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            padding: const EdgeInsets.fromLTRB(
+              Space.gutter,
+              Space.sm,
+              Space.gutter,
+              0,
+            ),
             child: Wrap(
-              spacing: 8,
+              spacing: Space.sm,
               children: [
                 for (final w in StatsWindow.values)
                   ChoiceChip(
                     label: Text(w.label),
                     selected: _window == w,
-                    onSelected: (_) => setState(() => _window = w),
+                    onSelected: (_) {
+                      Haptics.select();
+                      setState(() => _window = w);
+                    },
                   ),
               ],
             ),
           ),
           Expanded(
             child: stats.when(
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) =>
-                  Center(child: Text('Could not compute stats: $e')),
+              loading: () => ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.lg,
+                  Space.gutter,
+                  Space.xxxl,
+                ),
+                children: const [
+                  SkeletonTile(height: 200),
+                  SizedBox(height: Space.section),
+                  SkeletonTile(height: 96),
+                  SizedBox(height: Space.md),
+                  SkeletonTile(height: 96),
+                ],
+              ),
+              error: (e, _) => Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Space.gutter,
+                  Space.xxxl,
+                  Space.gutter,
+                  0,
+                ),
+                child: Text(
+                  friendlyError(e, doing: 'work out your stats'),
+                  style: context.bodyMuted,
+                ),
+              ),
               data: (s) => s.isEmpty
-                  ? _Empty(window: _window)
+                  ? EmptyState(
+                      kicker: _window.label,
+                      headline: _window == StatsWindow.allTime
+                          ? 'No scored trips yet.'
+                          : 'Nothing in ${_window.label.toLowerCase()}.',
+                      body: 'Finish a drive and the numbers appear.',
+                    )
                   : _StatsBody(stats: s, units: units),
             ),
           ),
@@ -71,37 +114,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
       ),
     );
   }
-}
-
-class _Empty extends StatelessWidget {
-  const _Empty({required this.window});
-  final StatsWindow window;
-
-  @override
-  Widget build(BuildContext context) => Center(
-    child: Padding(
-      padding: const EdgeInsets.all(32),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.query_stats, size: 48),
-          const SizedBox(height: 12),
-          Text(
-            window == StatsWindow.allTime
-                ? 'No scored trips yet'
-                : 'No scored trips in ${window.label.toLowerCase()}',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Everything here is computed on this phone from your own drives. '
-            'Finish a trip as the driver and the numbers appear.',
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
-    ),
-  );
 }
 
 class _StatsBody extends ConsumerWidget {
@@ -112,83 +124,105 @@ class _StatsBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final sections = statsSections(stats, units);
     final headline = headlineFacts(stats, units);
     final visited = stats.geography.stateCodes.toSet();
     final line = stats.reality.timeSavedLine;
+    final t = stats.totals;
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
       children: [
-        Card(
+        Reveal(
           child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(stats.range.label, style: theme.textTheme.titleLarge),
-                const SizedBox(height: 4),
-                Text(
-                  [
-                    for (final f in headline)
-                      '${f.value} ${f.label.toLowerCase()}',
-                  ].join(' · '),
-                  style: theme.textTheme.bodyMedium,
-                ),
-                if (line != null) ...[const SizedBox(height: 8), Text(line)],
-                const SizedBox(height: 8),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: FilledButton.tonalIcon(
-                    onPressed: () => _share(context, ref, headline),
-                    icon: const Icon(Icons.ios_share),
-                    label: const Text('Share headline'),
+            padding: Space.screen,
+            child: Tile(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Kicker(stats.range.label),
+                  const SizedBox(height: Space.lg),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CountingHero(kicker: 'Trips', value: t.trips),
+                      ),
+                      Expanded(
+                        child: CountingHero(
+                          kicker: 'Average score',
+                          value: t.averageScore?.round(),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const SizedBox(height: Space.md),
+                  Text(
+                    '${formatDistance(t.distanceM, units)} · '
+                    '${formatHours(t.movingS)} behind the wheel',
+                    style: context.caption,
+                  ),
+                  if (line != null) ...[
+                    const SizedBox(height: Space.sm),
+                    Text(line, style: context.bodyMuted),
+                  ],
+                  const SizedBox(height: Space.lg),
+                  SecondaryButton(
+                    label: 'Share headline',
+                    icon: Icons.ios_share,
+                    onPressed: () => _share(context, ref, headline),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        for (final section in sections) ...[
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 20, 0, 8),
-            child: Text(section.title, style: theme.textTheme.titleMedium),
+        const SizedBox(height: Space.section),
+        for (var i = 0; i < sections.length; i++)
+          Reveal(
+            delay: Reveal.stagger(i + 1),
+            child: EditorialSection(
+              kicker: sections[i].title,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  StatGrid(
+                    columns: 2,
+                    children: [
+                      for (final f in sections[i].facts)
+                        StatTile(
+                          value: f.value,
+                          label: f.hint.isEmpty
+                              ? f.label
+                              : '${f.label} · ${f.hint}',
+                          icon: f.icon,
+                          onTap: _isFuelFact(f)
+                              ? () => _editFuelAssumptions(context, ref)
+                              : null,
+                        ),
+                    ],
+                  ),
+                  if (sections[i].title == 'Geography') ...[
+                    const SizedBox(height: Space.md),
+                    StatesGrid(visited: visited),
+                  ],
+                ],
+              ),
+            ),
           ),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.5,
-            children: [
-              for (final f in section.facts)
-                FactTile(
-                  fact: f,
-                  onTap: _isFuelFact(f)
-                      ? () => _editFuelAssumptions(context, ref)
-                      : null,
-                ),
-            ],
+        Padding(
+          padding: Space.screen,
+          child: Text(
+            'Fuel, cost and CO₂ are estimates. Tap the fuel tile to set your '
+            'price. Nothing here leaves the phone unless you share it.',
+            style: context.caption,
           ),
-          if (section.title == 'Geography') ...[
-            const SizedBox(height: 8),
-            StatesGrid(visited: visited),
-          ],
-        ],
-        const SizedBox(height: 24),
-        Text(
-          'Fuel, cost and CO₂ are estimates from distance and economy. Tap the '
-          'fuel tile to set your price. Nothing here leaves the phone unless '
-          'you share it.',
-          style: theme.textTheme.bodySmall,
         ),
       ],
     );
   }
 
   static bool _isFuelFact(FunFact f) =>
-      f.label == 'Fuel estimate' || f.label == 'Hard accelerations';
+      f.label == 'Fuel used' || f.label == 'Hard accelerations';
 
   Future<void> _share(
     BuildContext context,
@@ -218,12 +252,14 @@ Future<void> _editFuelAssumptions(BuildContext context, WidgetRef ref) async {
     text: (ref.read(fuelEconomyProvider).value ?? defaultLitresPer100km)
         .toStringAsFixed(1),
   );
-  final ok = await showDialog<bool>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Fuel assumptions'),
-      content: Column(
+  final ok = await showDrivalrySheet<bool>(
+    context,
+    title: 'Fuel assumptions',
+    builder: (ctx) => Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+      child: Column(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           TextField(
             controller: price,
@@ -232,26 +268,22 @@ Future<void> _editFuelAssumptions(BuildContext context, WidgetRef ref) async {
               labelText: 'Fuel price per litre',
             ),
           ),
+          const SizedBox(height: Space.md),
           TextField(
             controller: economy,
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: const InputDecoration(
-              labelText: 'Default economy, L/100 km',
-              helperText: 'Used for cars without fill-ups',
+              labelText: 'Typical economy, L/100 km',
+              helperText: 'Used when a car has no fill-ups logged',
             ),
+          ),
+          const SizedBox(height: Space.xl),
+          PrimaryButton(
+            label: 'Save',
+            onPressed: () => Navigator.pop(ctx, true),
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(ctx, false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.pop(ctx, true),
-          child: const Text('Save'),
-        ),
-      ],
     ),
   );
   final p = double.tryParse(price.text.trim());

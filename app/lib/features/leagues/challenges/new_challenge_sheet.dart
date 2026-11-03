@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/repos/challenges_repo.dart';
 
 /// Goal, target and length for a new group challenge. Resolves with the
@@ -8,10 +9,9 @@ import '../../../data/repos/challenges_repo.dart';
 Future<GroupChallenge?> showNewChallengeSheet(
   BuildContext context,
   String leagueId,
-) => showModalBottomSheet<GroupChallenge>(
-  context: context,
-  isScrollControlled: true,
-  showDragHandle: true,
+) => showDrivalrySheet<GroupChallenge>(
+  context,
+  title: 'Group challenge',
   builder: (_) => NewChallengeSheet(leagueId: leagueId),
 );
 
@@ -39,81 +39,66 @@ class _NewChallengeSheetState extends ConsumerState<NewChallengeSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text('Group challenge', style: theme.textTheme.titleLarge),
-              const SizedBox(height: 4),
-              Text(
-                'One goal for the whole league. Everyone who is a member when '
-                'it ends earns the badge if the league makes it.',
-                style: theme.textTheme.bodySmall,
-              ),
-              const SizedBox(height: 8),
-              RadioGroup<ChallengeGoal>(
-                groupValue: _goal,
-                onChanged: (v) {
-                  if (v == null) return;
-                  setState(() {
-                    _goal = v;
-                    _target.text = '${v.defaultTarget}';
-                  });
-                },
-                child: Column(
-                  children: [
-                    for (final g in ChallengeGoal.values)
-                      RadioListTile<ChallengeGoal>(
-                        dense: true,
-                        value: g,
-                        title: Text(g.label),
-                        subtitle: Text(g.description),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                controller: _target,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Target',
-                  suffixText: _goal.unit,
-                  border: const OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              SegmentedButton<int>(
-                segments: const [
-                  ButtonSegment(value: 7, label: Text('One week')),
-                  ButtonSegment(value: 14, label: Text('Two weeks')),
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              'One goal for the whole league. Make it and everyone earns '
+              'the badge.',
+              style: context.bodyMuted,
+            ),
+            const SizedBox(height: Space.sm),
+            RadioGroup<ChallengeGoal>(
+              groupValue: _goal,
+              onChanged: (v) {
+                if (v == null) return;
+                setState(() {
+                  _goal = v;
+                  _target.text = '${v.defaultTarget}';
+                });
+              },
+              child: Column(
+                children: [
+                  for (final g in ChallengeGoal.values)
+                    RadioListTile<ChallengeGoal>(
+                      contentPadding: EdgeInsets.zero,
+                      value: g,
+                      title: Text(g.label, style: context.body),
+                      subtitle: Text(g.description, style: context.caption),
+                    ),
                 ],
-                selected: {_days},
-                onSelectionChanged: (s) => setState(() => _days = s.first),
               ),
-              const SizedBox(height: 16),
-              FilledButton.icon(
-                onPressed: _busy ? null : _start,
-                icon: _busy
-                    ? const SizedBox.square(
-                        dimension: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.flag),
-                label: const Text('Start'),
+            ),
+            const SizedBox(height: Space.sm),
+            TextField(
+              controller: _target,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: 'Target',
+                suffixText: _goal.unit,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: Space.md),
+            SegmentedButton<int>(
+              segments: const [
+                ButtonSegment(value: 7, label: Text('One week')),
+                ButtonSegment(value: 14, label: Text('Two weeks')),
+              ],
+              selected: {_days},
+              onSelectionChanged: (s) => setState(() => _days = s.first),
+            ),
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Start',
+              icon: Icons.flag,
+              busy: _busy,
+              onPressed: _start,
+            ),
+          ],
         ),
       ),
     );
@@ -123,7 +108,7 @@ class _NewChallengeSheetState extends ConsumerState<NewChallengeSheet> {
     final target = int.tryParse(_target.text.trim());
     if (target == null || target <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pick a whole-number target above zero.')),
+        const SnackBar(content: Text('Pick a whole number above zero.')),
       );
       return;
     }

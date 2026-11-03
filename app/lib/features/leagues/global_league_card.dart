@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/leagues_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
-import 'widgets/tier_chip.dart';
+import 'widgets/tier_pill.dart';
 
-/// The global league (docs/02 §12.4): this week's table when joined, else a
-/// join button. Matched by tier and Driver Rating, never by speed.
+/// The global league (docs/02 §12.4) as one tile: this week's place when
+/// joined, else one sentence and one button. Matched by tier and Driver
+/// Rating, never by speed.
 class GlobalLeagueCard extends ConsumerStatefulWidget {
   const GlobalLeagueCard({super.key});
 
@@ -21,72 +23,82 @@ class _GlobalLeagueCardState extends ConsumerState<GlobalLeagueCard> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final league = ref.watch(myGlobalLeagueProvider);
+    final disc = Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        color: scheme.tertiaryContainer,
+        shape: BoxShape.circle,
+      ),
+      child: Icon(Icons.public, color: scheme.onTertiaryContainer),
+    );
     if (league != null) {
       final week = ref.watch(leagueCurrentWeekProvider(league.id)).value;
       final me = ref.watch(currentUserIdProvider);
       final mine = me == null ? null : week?.rowFor(me);
-      return Card(
-        clipBehavior: Clip.antiAlias,
-        child: ListTile(
-          onTap: () => context.push(Routes.league(league.id)),
-          leading: CircleAvatar(
-            backgroundColor: theme.colorScheme.tertiaryContainer,
-            child: Icon(
-              Icons.public,
-              color: theme.colorScheme.onTertiaryContainer,
+      final line = mine == null
+          ? 'Drivers this week: ${league.memberCount}'
+          : '#${mine.rank} of ${week!.rows.length} this week · ${mine.xp} XP';
+      return Tile(
+        onTap: () => context.push(Routes.league(league.id)),
+        child: Row(
+          children: [
+            disc,
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    league.name,
+                    style: context.title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    line,
+                    style: context.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
-          ),
-          title: Text(league.name),
-          subtitle: Text(
-            [
-              '${league.memberCount} driver${league.memberCount == 1 ? '' : 's'}',
-              if (mine != null)
-                '#${mine.rank} of ${week!.rows.length} · ${mine.xp} XP',
-              'reshuffles Monday',
-            ].join(' · '),
-          ),
-          trailing: TierChip(tier: league.myTier, dense: true),
+            const SizedBox(width: Space.sm),
+            if (mine != null) ...[
+              Pill('#${mine.rank}', tone: PillTone.primary, compact: true),
+              const SizedBox(width: Space.xs),
+            ],
+            TierPill(tier: league.myTier),
+          ],
         ),
       );
     }
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(Icons.public, color: theme.colorScheme.primary),
-                const SizedBox(width: 8),
-                Text('Global league', style: theme.textTheme.titleMedium),
-              ],
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Get matched every Monday with up to 29 drivers at your tier. '
-              'Same rules as a friend league: XP ranks, Driver Rating breaks '
-              'ties, top five move up, bottom five move down. Never by speed.',
-              style: theme.textTheme.bodySmall,
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                onPressed: _busy ? null : _join,
-                icon: _busy
-                    ? const SizedBox.square(
-                        dimension: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Icon(Icons.login),
-                label: const Text('Join the global league'),
-              ),
-            ),
-          ],
-        ),
+    return Tile(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              disc,
+              const SizedBox(width: Space.md),
+              Text('Global league', style: context.title),
+            ],
+          ),
+          const SizedBox(height: Space.md),
+          Text(
+            'Up to 29 drivers at your tier, a new table every Monday.',
+            style: context.bodyMuted,
+          ),
+          const SizedBox(height: Space.lg),
+          SecondaryButton(
+            label: _busy ? 'Joining…' : 'Join',
+            onPressed: _busy ? null : _join,
+          ),
+        ],
       ),
     );
   }
