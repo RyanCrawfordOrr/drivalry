@@ -247,7 +247,7 @@ class StatTile extends StatelessWidget {
           Text(
             label,
             style: context.caption,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -535,6 +535,7 @@ class EmptyState extends StatelessWidget {
   const EmptyState({
     super.key,
     required this.headline,
+    this.top = Space.xxxl,
     this.kicker,
     this.body,
     this.actionLabel,
@@ -551,15 +552,14 @@ class EmptyState extends StatelessWidget {
   final String? secondaryLabel;
   final VoidCallback? onSecondary;
 
+  /// Space above the kicker. Under a LargeTitleBar, 16 to 24 reads right;
+  /// the default suits a plain AppBar.
+  final double top;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        Space.gutter,
-        Space.xxxl,
-        Space.gutter,
-        Space.xxl,
-      ),
+      padding: EdgeInsets.fromLTRB(Space.gutter, top, Space.gutter, Space.xxl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -601,12 +601,14 @@ Future<T?> showDrivalrySheet<T>(
     useSafeArea: true,
     showDragHandle: true,
     builder: (ctx) {
+      // The sheet draws over the nav bar and home indicator, so the last row
+      // must clear them as well as keep its own breathing room.
       final content = Padding(
-        padding: const EdgeInsets.fromLTRB(
+        padding: EdgeInsets.fromLTRB(
           Space.gutter,
           0,
           Space.gutter,
-          Space.xl,
+          Space.xl + MediaQuery.viewPaddingOf(ctx).bottom,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

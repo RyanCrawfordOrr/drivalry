@@ -166,29 +166,35 @@ class _CelebrationViewState extends State<_CelebrationView>
                             label: widget.xp == null ? null : '',
                             animate: true,
                           ),
+                          // The stamp sits across the ring's lower arc,
+                          // under the number, never over it.
                           if (_stamp)
-                            FadeTransition(
-                              opacity: extras,
-                              child: Transform.rotate(
-                                angle: -0.28,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 10,
-                                    vertical: 2,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: scheme.error,
-                                      width: 3,
+                            Positioned(
+                              bottom: 2,
+                              child: FadeTransition(
+                                opacity: extras,
+                                child: Transform.rotate(
+                                  angle: -0.18,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 2,
                                     ),
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Text(
-                                    widget.reckless ? 'RECKLESS' : 'ROASTED',
-                                    style: context.kicker.copyWith(
-                                      color: scheme.error,
-                                      fontSize: 18,
-                                      letterSpacing: 3,
+                                    decoration: BoxDecoration(
+                                      color: scheme.surface,
+                                      border: Border.all(
+                                        color: scheme.error,
+                                        width: 3,
+                                      ),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      widget.reckless ? 'RECKLESS' : 'ROASTED',
+                                      style: context.kicker.copyWith(
+                                        color: scheme.error,
+                                        fontSize: 18,
+                                        letterSpacing: 3,
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -90,7 +90,7 @@ What people now expect from a top-tier app, applied everywhere, with the shared 
 | Live things breathe | Recording, talking, live convoy and "driving now" use a pulsing dot | `PulsingDot` |
 | Continuity between screens | The score ring and the avatar fly from list to detail; sheets slide with the emphasized curve | `Hero` (tags `trip-ring-<id>`, `avatar-<userId>`), `showDrivalrySheet` |
 | Direct manipulation | Swipe to dismiss with Undo where a row can be removed; long-press opens a sheet of actions; sheets snap to peek / half / full | `Dismissible` + `SnackBarAction`, `showDrivalrySheet`, `DraggableScrollableSheet(snap: true)` |
-| Big titles that collapse | Editorial roots (Leagues, Friends, Garage, Profile, Settings) use a large app bar that collapses on scroll | `SliverAppBar.large` |
+| Big titles that collapse | Editorial roots (Leagues, Friends, Garage, Profile, Settings) use a large app bar that collapses on scroll | `LargeTitleBar` (one toolbar row plus one title line, 104 px) |
 | Moments | Trip scored, badge, promotion, duel won, challenge met get the full-screen moment with confetti or the stamp | `showCelebration` |
 | Haptics with meaning | tap, select, success, celebrate, warning, never random | `Haptics` |
 | Respect the person | All of the above switch off under the system reduce-motion setting; nothing animates longer than 400 ms except celebrations and shimmer | `context.reduceMotion` |
@@ -110,7 +110,7 @@ Jev scores an "alive" dimension on every screen description (`tools/ux/jev_scree
 
 ### Drive (home)
 
-Map full-bleed under a transparent status bar. Floating at the top: a status capsule (idle: "Ready. Drives start on their own." · recording: speed `display` with the limit beside it · paused: "Paused until 7 pm"), and the friend-request and settings buttons as round tonal targets. Friends are avatars on the map; tapping one opens a sheet with their last drive. A `DraggableScrollableSheet` holds, in order: the live card when recording (speed, limit and road, distance, time, one "End drive" button); the passenger question when pending; the last trip as a hero (ring, verdict, three stats) that opens the trip; recents as compact rows. Crash, parking and vehicle prompts appear as single tiles at the top of the sheet only when they apply. The overflow menu keeps Simulate, Packs, Units and Diagnostics.
+Map full-bleed under a transparent status bar. Floating at the top: a status capsule (idle: "Ready" (one line at any width; the sentence lives in the auto-detect sheet) · recording: speed `display` with the limit beside it · paused: "Paused until 7 pm"), and the friend-request and settings buttons as round tonal targets. Friends are avatars on the map; tapping one opens a sheet with their last drive. A `DraggableScrollableSheet` holds, in order: the live card when recording (speed, limit and road, distance, time, one "End drive" button); the passenger question when pending; the last trip as a hero (ring, verdict, three stats) that opens the trip; recents as compact rows. Crash, parking and vehicle prompts appear as single tiles at the top of the sheet only when they apply. The overflow menu keeps Simulate, Packs, Units and Diagnostics.
 
 ### Trip
 

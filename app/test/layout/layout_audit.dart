@@ -7,8 +7,9 @@
 //   DRIVALRY_LAYOUT=1 flutter test test/layout
 //
 // Blocking issues (fail the test): a layout exception such as a RenderFlex
-// overflow, two text runs whose boxes intersect, text cut off by the screen
-// edge outside a horizontal scroller. Warnings (printed only): an empty
+// overflow, two visible text runs whose boxes intersect, text cut short by an
+// ellipsis or a fade, text cut off by the screen edge outside a horizontal
+// scroller. Text hidden under an opaque surface is ignored. Warnings (printed only): an empty
 // band taller than [LayoutAudit.gapWarn] in the top half of the screen.
 import 'dart:io';
 import 'dart:math' as math;
@@ -135,6 +136,7 @@ Future<LayoutReport> auditLayout(
     if (rect.isEmpty || !rect.overlaps(viewport)) continue;
     final text = ro.text.toPlainText().replaceAll('\n', ' ').trim();
     if (text.isEmpty || _isIconGlyph(text, ro)) continue;
+    if (!_visible(tester, ro, rect, viewport)) continue;
     boxes.add(_Box(text, rect, ro));
   }
 
@@ -153,6 +155,15 @@ Future<LayoutReport> auditLayout(
       }
     }
     final r = boxes[i].rect;
+    final p = boxes[i].ro;
+    if (p.didExceedMaxLines || p.textSize.width > p.size.width + 1) {
+      issues.add(
+        LayoutIssue(
+          'cut',
+          '"${_short(boxes[i].text)}" ${_r(r)} is cut short (ellipsis or fade)',
+        ),
+      );
+    }
     if ((r.left < -1 || r.right > size.width + 1) &&
         !_inHorizontalScroller(boxes[i].ro)) {
       issues.add(
@@ -219,6 +230,32 @@ bool _painted(RenderObject ro) {
     node = node.parent;
   }
   return true;
+}
+
+/// Whether the paragraph is what a person sees at [rect]: a hit test at a
+/// point inside it has to reach the paragraph. Text under an opaque surface
+/// (a sheet's barrier, a pinned app bar it has scrolled beneath) is not on
+/// screen and must not count for overlaps or clipping.
+bool _visible(
+  WidgetTester tester,
+  RenderParagraph ro,
+  Rect rect,
+  Rect viewport,
+) {
+  final shown = rect.intersect(viewport);
+  if (shown.isEmpty) return false;
+  final result = HitTestResult();
+  tester.binding.hitTestInView(result, shown.center, tester.view.viewId);
+  for (final entry in result.path) {
+    if (identical(entry.target, ro)) return true;
+  }
+  // A pointer-ignoring ancestor keeps the paragraph out of the path while it
+  // is still drawn; trust those.
+  for (RenderObject? n = ro.parent; n != null; n = n.parent) {
+    if (n is RenderIgnorePointer && n.ignoring) return true;
+    if (n is RenderAbsorbPointer && n.absorbing) return true;
+  }
+  return false;
 }
 
 bool _related(RenderObject a, RenderObject b) {
