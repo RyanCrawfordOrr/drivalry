@@ -125,8 +125,10 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: ${{ needs.plan.outputs.tag }}
-      PACKS: ${{ runner.temp }}/packs
     steps:
+      # runner.temp is not available in a job-level env block, so export it here.
+      - name: Locate the working directory
+        run: echo "PACKS=$RUNNER_TEMP/packs" >> "$GITHUB_ENV"
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
