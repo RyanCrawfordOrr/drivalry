@@ -12,6 +12,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:drivalry/app/brand/drivalry_mark.dart';
+import 'package:drivalry/app/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -86,6 +87,43 @@ Future<void> loadArtFonts() async {
   final icons = FontLoader('MaterialIcons')
     ..addFont(bytes('materialicons-regular.otf'));
   await icons.load();
+
+  // The cached Roboto files carry no arrows (↑ ↓ →), stars (★) or emoji, and
+  // flutter_test has no system fallback, so those would render as boxes.
+  // Windows ships Segoe UI Symbol and Segoe UI Emoji; register them as the
+  // fallback families that [artTheme] puts on every text style.
+  for (final (family, file) in artFallbackFonts) {
+    final f = File(file);
+    if (!f.existsSync()) {
+      stderr.writeln('[art] fallback font missing: $file ($family)');
+      continue;
+    }
+    final loader = FontLoader(family)
+      ..addFont(f.readAsBytes().then((b) => b.buffer.asByteData()));
+    await loader.load();
+  }
+}
+
+const artFallbackFonts = [
+  ('ArtSymbols', r'C:\Windows\Fonts\seguisym.ttf'),
+  ('ArtEmoji', r'C:\Windows\Fonts\seguiemj.ttf'),
+];
+
+const artFontFallback = ['ArtSymbols', 'ArtEmoji'];
+
+/// The app theme with the symbol and emoji fallback fonts on every text
+/// style. Scenes pass this as `theme` / `darkTheme` so arrows, stars and
+/// emoji in app strings render instead of tofu boxes.
+ThemeData artTheme([Brightness brightness = Brightness.dark]) {
+  final base = brightness == Brightness.dark
+      ? DrivalryTheme.dark()
+      : DrivalryTheme.light();
+  return base.copyWith(
+    textTheme: base.textTheme.apply(fontFamilyFallback: artFontFallback),
+    primaryTextTheme: base.primaryTextTheme.apply(
+      fontFamilyFallback: artFontFallback,
+    ),
+  );
 }
 
 /// Renders [widget] at exactly [width] x [height] pixels and returns PNG bytes.
@@ -388,10 +426,16 @@ class StoreFrame extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: tall ? 28 : 20),
+                  // The phone keeps its natural size and runs off the bottom
+                  // of the shorter 9:16 canvas instead of being squeezed.
                   Expanded(
-                    child: Align(
-                      alignment: Alignment.topCenter,
-                      child: PhoneMock(scene: scene),
+                    child: ClipRect(
+                      child: OverflowBox(
+                        alignment: Alignment.topCenter,
+                        minHeight: 0,
+                        maxHeight: double.infinity,
+                        child: PhoneMock(scene: scene),
+                      ),
                     ),
                   ),
                 ],
