@@ -8,6 +8,7 @@ import '../../data/repos/circles_repo.dart';
 import '../../data/repos/circles_sync.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import 'widgets/page_insets.dart';
 
 /// Lands `drivalry://join/circle/<code>` links and the "Join with code"
 /// sheet: one tap joins through the `join_circle` RPC.
@@ -60,11 +61,11 @@ class _JoinCircleScreenState extends ConsumerState<JoinCircleScreen> {
         message: 'Sign in to join the circle.',
         icon: Icons.groups_outlined,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             Space.gutter,
             Space.xl,
             Space.gutter,
-            Space.xxxl,
+            pageBottomInset(context),
           ),
           children: [
             const Kicker('Circle invite'),

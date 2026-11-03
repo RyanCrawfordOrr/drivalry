@@ -18,10 +18,10 @@ import 'friends_list_view.dart';
 
 /// Friends tab: the feed, the friends list and circles (docs/01 §4.5, §4.9;
 /// docs/12 §7). A large title that collapses as the list scrolls, with the
-/// three tabs pinned under it. One FAB for the whole tab, hoisted here so no
-/// segment nests a Scaffold: Add friend on Feed and Friends, New circle on
-/// Circles. It hides while the segment's empty state carries the same
-/// button, so each screen state has one primary action.
+/// three tabs pinned under it. One creating action for the whole tab, in the
+/// app bar so nothing floats over a post or a row: Add friend on Feed and
+/// Friends, New circle on Circles. It hides while the segment's empty state
+/// carries the same button, so each screen state has one primary action.
 class FriendsScreen extends ConsumerStatefulWidget {
   const FriendsScreen({super.key});
 

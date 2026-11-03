@@ -4,6 +4,7 @@ import 'package:share_plus/share_plus.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/feed_repo.dart';
 import 'feed_post_card.dart';
+import 'widgets/page_insets.dart';
 
 /// Long-press on a post: react, comment, share or report, in a sheet
 /// (docs/12 §5b, direct manipulation).
@@ -15,49 +16,53 @@ Future<void> showPostActions(
 }) {
   return showDrivalrySheet<void>(
     context,
-    builder: (ctx) => Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Kicker('React'),
-        const SizedBox(height: Space.sm),
-        ReactionRow(
-          post: post,
-          onReact: (k) {
-            Navigator.of(ctx).pop();
-            onReact(k);
-          },
-        ),
-        const SizedBox(height: Space.lg),
-        _Action(
-          icon: Icons.mode_comment_outlined,
-          label: 'Comment',
-          onTap: () {
-            Navigator.of(ctx).pop();
-            onComment?.call();
-          },
-        ),
-        const SizedBox(height: Space.sm),
-        _Action(
-          icon: Icons.share_outlined,
-          label: 'Share',
-          onTap: () {
-            Navigator.of(ctx).pop();
-            SharePlus.instance.share(
-              ShareParams(text: shareTextFor(post), subject: 'Drivalry'),
-            );
-          },
-        ),
-        const SizedBox(height: Space.sm),
-        _Action(
-          icon: Icons.flag_outlined,
-          label: 'Report',
-          onTap: () async {
-            Navigator.of(ctx).pop();
-            await _report(context);
-          },
-        ),
-      ],
+    builder: (ctx) => Padding(
+      padding: sheetBottomInset(ctx),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Kicker('React'),
+          const SizedBox(height: Space.sm),
+          ReactionRow(
+            post: post,
+            raised: true,
+            onReact: (k) {
+              Navigator.of(ctx).pop();
+              onReact(k);
+            },
+          ),
+          const SizedBox(height: Space.lg),
+          _Action(
+            icon: Icons.mode_comment_outlined,
+            label: 'Comment',
+            onTap: () {
+              Navigator.of(ctx).pop();
+              onComment?.call();
+            },
+          ),
+          const SizedBox(height: Space.sm),
+          _Action(
+            icon: Icons.share_outlined,
+            label: 'Share',
+            onTap: () {
+              Navigator.of(ctx).pop();
+              SharePlus.instance.share(
+                ShareParams(text: shareTextFor(post), subject: 'Drivalry'),
+              );
+            },
+          ),
+          const SizedBox(height: Space.sm),
+          _Action(
+            icon: Icons.flag_outlined,
+            label: 'Report',
+            onTap: () async {
+              Navigator.of(ctx).pop();
+              await _report(context);
+            },
+          ),
+        ],
+      ),
     ),
   );
 }

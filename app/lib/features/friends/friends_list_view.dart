@@ -7,9 +7,9 @@ import '../../app/ui/ui.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/repos/presence_repo.dart';
-import 'feed_view.dart' show fabClearance;
 import 'widgets/decline_with_undo.dart';
 import 'widgets/live_badge.dart';
+import 'widgets/page_insets.dart';
 import 'widgets/person_row.dart';
 import 'widgets/tab_scroll_view.dart';
 
@@ -46,7 +46,14 @@ class _FriendsListViewState extends ConsumerState<FriendsListView> {
     return TabScrollView(
       slivers: [
         SliverPadding(
-          padding: const EdgeInsets.only(top: Space.sm, bottom: fabClearance),
+          // The empty state brings its own 48 on top; a list starts 16 under
+          // the tabs.
+          padding: EdgeInsets.only(
+            top: incoming.isEmpty && s.friends.isEmpty && !skeletons
+                ? 0
+                : Space.lg,
+            bottom: pageBottomInset(context),
+          ),
           sliver: SliverToBoxAdapter(
             child: StateSwitcher(
               child: skeletons
@@ -217,7 +224,7 @@ class _RequestRow extends StatelessWidget {
       child: PersonRow(
         name: r.other.name,
         avatarPath: r.other.avatarPath,
-        caption: '@${r.other.handle} wants to be friends',
+        caption: '@${r.other.handle}',
         heroTag: 'avatar-${r.other.id}',
         onTap: () => context.push(Routes.userProfile(r.other.id)),
         trailing: Row(
@@ -228,6 +235,7 @@ class _RequestRow extends StatelessWidget {
               onPressed: onDecline,
               icon: const Icon(Icons.close),
             ),
+            const SizedBox(width: Space.sm),
             FilledButton.tonal(
               onPressed: onAccept,
               style: FilledButton.styleFrom(

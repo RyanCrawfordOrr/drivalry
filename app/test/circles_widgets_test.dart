@@ -72,7 +72,10 @@ void main() {
     expect(find.text('Home'), findsOneWidget);
     // 150 m, or about 490 ft for people whose speeds are in mph.
     expect(find.textContaining(RegExp(r'150 m|490 ft')), findsOneWidget);
-    expect(find.text('Add where I am'), findsOneWidget);
+    // With places on screen the action is an app-bar icon, never a floating
+    // button over a tile.
+    expect(find.byTooltip('Add where I am'), findsOneWidget);
+    expect(find.byType(FloatingActionButton), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
 

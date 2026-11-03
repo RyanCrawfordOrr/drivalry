@@ -12,6 +12,7 @@ import '../../data/repos/friends_sync.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import 'widgets/page_insets.dart';
 import 'widgets/person_row.dart';
 
 /// Find someone by handle, show your own invite QR and link, or paste a
@@ -112,7 +113,10 @@ class _AddFriendScreenState extends ConsumerState<AddFriendScreen> {
       body: SignedInScope(
         message: 'Sign in to add friends.',
         child: ListView(
-          padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+          padding: EdgeInsets.only(
+            top: Space.lg,
+            bottom: pageBottomInset(context),
+          ),
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(

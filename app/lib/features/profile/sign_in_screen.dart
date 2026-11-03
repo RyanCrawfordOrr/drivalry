@@ -12,7 +12,8 @@ import '../../widgets/friendly_error.dart';
 
 /// Continue with Apple (iOS) or Google (both). No passwords, no email
 /// (docs/09-auth-setup.md). The mark, one line, two buttons, one privacy
-/// sentence (docs/12 §7).
+/// sentence (docs/12 §7), starting right under the status bar rather than
+/// floating mid-screen; Not now and the privacy line hold the bottom.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key, this.cloudConfigured, this.googleConfigured});
 
@@ -108,7 +109,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             Space.gutter,
-            Space.xl,
+            Space.xxl,
             Space.gutter,
             Space.lg,
           ),
@@ -116,94 +117,76 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: Center(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        const Reveal(
-                          offset: Offset(0, 0.04),
-                          duration: Motion.celebrate,
-                          child: Center(child: DrivalryMark.tile(size: 96)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Reveal(
+                        offset: Offset(0, 0.04),
+                        duration: Motion.celebrate,
+                        child: Center(child: DrivalryMark.tile(size: 96)),
+                      ),
+                      const SizedBox(height: Space.xl),
+                      Reveal(
+                        delay: Reveal.stagger(2),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Drivalry',
+                              textAlign: TextAlign.center,
+                              style: context.headline,
+                            ),
+                            const SizedBox(height: Space.md),
+                            Text(
+                              'Score your drives. Beat your friends. '
+                              'Get roasted.',
+                              textAlign: TextAlign.center,
+                              style: context.body,
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: Space.xl),
-                        Reveal(
-                          delay: Reveal.stagger(2),
-                          child: Column(
-                            children: [
-                              Text(
-                                'Drivalry',
-                                textAlign: TextAlign.center,
-                                style: context.headline,
-                              ),
-                              const SizedBox(height: Space.md),
-                              Text(
-                                'Score your drives. Beat your friends. '
-                                'Get roasted.',
-                                textAlign: TextAlign.center,
-                                style: context.body,
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: Space.xxl),
-                        Reveal(
-                          delay: Reveal.stagger(4),
-                          child: StateSwitcher(
-                            child: !cloud
-                                ? const _Note(
-                                    key: ValueKey('offline'),
-                                    SignInScreen.unavailableNote,
-                                  )
-                                : signedIn
-                                ? const _Note(
-                                    key: ValueKey('in'),
-                                    'You are signed in.',
-                                  )
-                                : Column(
-                                    key: const ValueKey('buttons'),
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.stretch,
-                                    children: [
-                                      if (showApple) ...[
-                                        PressScale(
-                                          child: PrimaryButton(
-                                            key: const Key('sign-in-apple'),
-                                            label: 'Continue with Apple',
-                                            icon: Icons.apple,
-                                            busy: _busy == 'apple',
-                                            onPressed: _busy != null
-                                                ? null
-                                                : () => _run(
-                                                    'apple',
-                                                    auth.signInWithApple,
-                                                  ),
-                                          ),
+                      ),
+                      const SizedBox(height: Space.xxl),
+                      Reveal(
+                        delay: Reveal.stagger(4),
+                        child: StateSwitcher(
+                          child: !cloud
+                              ? const _Note(
+                                  key: ValueKey('offline'),
+                                  SignInScreen.unavailableNote,
+                                )
+                              : signedIn
+                              ? const _Note(
+                                  key: ValueKey('in'),
+                                  'You are signed in.',
+                                )
+                              : Column(
+                                  key: const ValueKey('buttons'),
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    if (showApple) ...[
+                                      PressScale(
+                                        child: PrimaryButton(
+                                          key: const Key('sign-in-apple'),
+                                          label: 'Continue with Apple',
+                                          icon: Icons.apple,
+                                          busy: _busy == 'apple',
+                                          onPressed: _busy != null
+                                              ? null
+                                              : () => _run(
+                                                  'apple',
+                                                  auth.signInWithApple,
+                                                ),
                                         ),
-                                        if (showGoogle) ...[
-                                          const SizedBox(height: Space.md),
-                                          PressScale(
-                                            child: SecondaryButton(
-                                              key: const Key('sign-in-google'),
-                                              label: 'Continue with Google',
-                                              icon:
-                                                  Icons.account_circle_outlined,
-                                              onPressed: _busy != null
-                                                  ? null
-                                                  : () => _run(
-                                                      'google',
-                                                      auth.signInWithGoogle,
-                                                    ),
-                                            ),
-                                          ),
-                                        ],
-                                      ] else
+                                      ),
+                                      if (showGoogle) ...[
+                                        const SizedBox(height: Space.md),
                                         PressScale(
-                                          child: PrimaryButton(
+                                          child: SecondaryButton(
                                             key: const Key('sign-in-google'),
                                             label: 'Continue with Google',
                                             icon: Icons.account_circle_outlined,
-                                            busy: _busy == 'google',
                                             onPressed: _busy != null
                                                 ? null
                                                 : () => _run(
@@ -212,21 +195,36 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                                   ),
                                           ),
                                         ),
-                                    ],
-                                  ),
-                          ),
+                                      ],
+                                    ] else
+                                      PressScale(
+                                        child: PrimaryButton(
+                                          key: const Key('sign-in-google'),
+                                          label: 'Continue with Google',
+                                          icon: Icons.account_circle_outlined,
+                                          busy: _busy == 'google',
+                                          onPressed: _busy != null
+                                              ? null
+                                              : () => _run(
+                                                  'google',
+                                                  auth.signInWithGoogle,
+                                                ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
                         ),
-                        if (_error != null) ...[
-                          const SizedBox(height: Space.lg),
-                          Text(
-                            _error!,
-                            key: const Key('sign-in-error'),
-                            textAlign: TextAlign.center,
-                            style: context.body.copyWith(color: scheme.error),
-                          ),
-                        ],
+                      ),
+                      if (_error != null) ...[
+                        const SizedBox(height: Space.lg),
+                        Text(
+                          _error!,
+                          key: const Key('sign-in-error'),
+                          textAlign: TextAlign.center,
+                          style: context.body.copyWith(color: scheme.error),
+                        ),
                       ],
-                    ),
+                    ],
                   ),
                 ),
               ),

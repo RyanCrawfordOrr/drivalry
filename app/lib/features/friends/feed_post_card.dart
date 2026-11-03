@@ -234,12 +234,23 @@ class _ComponentPill extends StatelessWidget {
   }
 }
 
-/// One row of reaction capsules that scrolls sideways. The ones you gave
-/// are tinted primary; each springs on press and its count counts.
+/// The reaction capsules, wrapping to a second line when the card is too
+/// narrow for all of them, so none is ever cut off at the card edge (docs/12
+/// §2). The ones you gave are tinted primary; each springs on press and its
+/// count counts.
 class ReactionRow extends StatelessWidget {
-  const ReactionRow({super.key, required this.post, required this.onReact});
+  const ReactionRow({
+    super.key,
+    required this.post,
+    required this.onReact,
+    this.raised = false,
+  });
   final FeedPost post;
   final void Function(String kind) onReact;
+
+  /// On a raised surface (a sheet) a resting capsule steps up one tone, or
+  /// it would vanish into the sheet.
+  final bool raised;
 
   @override
   Widget build(BuildContext context) {
@@ -247,22 +258,18 @@ class ReactionRow extends StatelessWidget {
       for (final k in reactionKinds)
         if (k != 'snitch' || post.hasSpeeding) k,
     ];
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          for (final k in kinds)
-            Padding(
-              padding: const EdgeInsets.only(right: Space.sm),
-              child: _ReactionPill(
-                kind: k,
-                count: post.reactions[k],
-                selected: post.myReactions.contains(k),
-                onTap: () => onReact(k),
-              ),
-            ),
-        ],
-      ),
+    return Wrap(
+      spacing: Space.sm,
+      children: [
+        for (final k in kinds)
+          _ReactionPill(
+            kind: k,
+            count: post.reactions[k],
+            selected: post.myReactions.contains(k),
+            raised: raised,
+            onTap: () => onReact(k),
+          ),
+      ],
     );
   }
 }
@@ -272,12 +279,14 @@ class _ReactionPill extends StatelessWidget {
     required this.kind,
     required this.count,
     required this.selected,
+    required this.raised,
     required this.onTap,
   });
 
   final String kind;
   final int? count;
   final bool selected;
+  final bool raised;
   final VoidCallback onTap;
 
   @override
@@ -285,7 +294,12 @@ class _ReactionPill extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final (bg, fg) = selected
         ? (scheme.primaryContainer, scheme.onPrimaryContainer)
-        : (scheme.surfaceContainerHigh, scheme.onSurface);
+        : (
+            raised
+                ? scheme.surfaceContainerHighest
+                : scheme.surfaceContainerHigh,
+            scheme.onSurface,
+          );
     final style = context.label.copyWith(color: fg);
     return Tooltip(
       message: reactionLabel(kind),

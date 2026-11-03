@@ -9,6 +9,7 @@ import '../../data/repos/friends_sync.dart';
 import '../../widgets/signed_in_scope.dart';
 import 'friends_list_view.dart' show DeclineBackground;
 import 'widgets/decline_with_undo.dart';
+import 'widgets/page_insets.dart';
 import 'widgets/person_row.dart';
 
 /// Incoming and sent friend requests. Accept is the row's button; swipe left
@@ -41,7 +42,11 @@ class _FriendRequestsScreenState extends ConsumerState<FriendRequestsScreen> {
         child: RefreshIndicator(
           onRefresh: () => ref.read(friendsSnapshotProvider.notifier).refresh(),
           child: ListView(
-            padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+            // The empty state brings its own 48 on top.
+            padding: EdgeInsets.only(
+              top: empty ? 0 : Space.lg,
+              bottom: pageBottomInset(context),
+            ),
             children: [
               StateSwitcher(
                 child: empty
@@ -170,6 +175,7 @@ class _IncomingRow extends StatelessWidget {
                 PopupMenuItem(value: 'block', child: Text('Block')),
               ],
             ),
+            const SizedBox(width: Space.sm),
             FilledButton.tonal(
               onPressed: onAccept,
               style: FilledButton.styleFrom(

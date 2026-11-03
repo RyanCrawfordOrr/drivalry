@@ -7,13 +7,17 @@ import 'package:share_plus/share_plus.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/circles_repo.dart';
 import '../../data/repos/circles_sync.dart';
+import '../friends/widgets/page_insets.dart';
 
 /// Invite code, QR and share button for a circle.
 Future<void> showCircleInviteSheet(BuildContext context, Circle circle) {
   return showDrivalrySheet<void>(
     context,
     title: 'Invite to ${circle.name}',
-    builder: (ctx) => _InviteSheet(circle: circle),
+    builder: (ctx) => Padding(
+      padding: sheetBottomInset(ctx),
+      child: _InviteSheet(circle: circle),
+    ),
   );
 }
 

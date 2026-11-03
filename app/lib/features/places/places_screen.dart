@@ -9,12 +9,13 @@ import '../../data/db/database.dart';
 import '../../data/repos/places_repo.dart';
 import '../../tracking/providers.dart';
 import '../../widgets/units.dart';
-import '../friends/feed_view.dart' show fabClearance;
+import '../friends/widgets/page_insets.dart';
 import 'radius_text.dart';
 import 'save_place_sheet.dart';
 
 /// Saved places (Home, Work, School) with per-friend arrive/leave alerts.
-/// Adding where you are is the empty state's one button, then the FAB.
+/// Adding where you are is the empty state's one button, then an app-bar
+/// action, so nothing floats over a tile.
 class PlacesScreen extends ConsumerWidget {
   const PlacesScreen({super.key});
 
@@ -27,24 +28,41 @@ class PlacesScreen extends ConsumerWidget {
       ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
     );
     final skeletons = places.isLoading && list.isEmpty;
+    final empty = !skeletons && list.isEmpty;
     return Scaffold(
-      appBar: AppBar(title: const Text('Places')),
+      appBar: AppBar(
+        title: const Text('Places'),
+        actions: [
+          if (list.isNotEmpty)
+            IconButton(
+              tooltip: 'Add where I am',
+              onPressed: () => _addHere(context, ref),
+              icon: const Icon(Icons.my_location),
+            ),
+        ],
+      ),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.lg, bottom: fabClearance),
+        // The empty state brings its own 48 on top and says what the intro
+        // line says.
+        padding: EdgeInsets.only(
+          top: empty ? 0 : Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              Space.gutter,
-              0,
-              Space.gutter,
-              Space.section,
+          if (!empty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.section,
+              ),
+              child: Text(
+                'Saved on this phone only. Long-press the map to add one, or '
+                'add where you are.',
+                style: context.bodyMuted,
+              ),
             ),
-            child: Text(
-              'Saved on this phone only. Long-press the map to add one, or '
-              'add where you are.',
-              style: context.bodyMuted,
-            ),
-          ),
           StateSwitcher(
             child: skeletons
                 ? const Padding(
@@ -57,7 +75,9 @@ class PlacesScreen extends ConsumerWidget {
                     key: const ValueKey('empty'),
                     kicker: 'Places',
                     headline: 'No places yet.',
-                    body: 'Start with Home. It powers check-ins and alerts.',
+                    body:
+                        'Start with Home. Saved on this phone, it powers '
+                        'check-ins and alerts.',
                     actionLabel: 'Add where I am',
                     onAction: () => _addHere(context, ref),
                   )
@@ -86,13 +106,6 @@ class PlacesScreen extends ConsumerWidget {
           ),
         ],
       ),
-      floatingActionButton: list.isEmpty
-          ? null
-          : FloatingActionButton.extended(
-              onPressed: () => _addHere(context, ref),
-              icon: const Icon(Icons.my_location),
-              label: const Text('Add where I am'),
-            ),
     );
   }
 

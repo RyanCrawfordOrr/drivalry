@@ -12,6 +12,7 @@ import '../../data/stats/stats_providers.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../friends/widgets/page_insets.dart';
 import '../friends/widgets/user_avatar.dart';
 import '../leagues/leagues_routes.dart' show badgesPath;
 import 'profile_model.dart';
@@ -76,7 +77,12 @@ class _ProfileBody extends ConsumerWidget {
               ],
             ),
             SliverPadding(
-              padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+              // The empty states bring their own 48 on top; the avatar and
+              // the skeletons start 16 under the title.
+              padding: EdgeInsets.only(
+                top: profile.isLoading || profile.value != null ? Space.lg : 0,
+                bottom: pageBottomInset(context),
+              ),
               sliver: SliverToBoxAdapter(
                 child: StateSwitcher(
                   child: profile.when(
@@ -303,7 +309,7 @@ class _ProfileContent extends ConsumerWidget {
     WidgetRef ref,
     Profile p,
   ) async {
-    final value = await _promptSheet(
+    final value = await showEditFieldSheet(
       context,
       title: 'Handle',
       initial: p.handle,
@@ -328,7 +334,7 @@ class _ProfileContent extends ConsumerWidget {
     WidgetRef ref,
     Profile p,
   ) async {
-    final value = await _promptSheet(
+    final value = await showEditFieldSheet(
       context,
       title: 'Name',
       initial: p.displayName,
@@ -515,8 +521,8 @@ class _DoorTile extends StatelessWidget {
 }
 
 /// Edit one field in a sheet (docs/12 §4: dialogs only for destructive
-/// confirmations).
-Future<String?> _promptSheet(
+/// confirmations). Public so the layout audit can open it on its own.
+Future<String?> showEditFieldSheet(
   BuildContext context, {
   required String title,
   required String initial,
@@ -571,7 +577,7 @@ class _EditFieldState extends State<_EditField> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      padding: sheetBottomInset(context),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
