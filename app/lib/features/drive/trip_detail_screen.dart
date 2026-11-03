@@ -1,6 +1,16 @@
 import 'package:drift/drift.dart' show Value;
 import 'package:drivalry_scoring/drivalry_scoring.dart'
-    show EventKind, RoadSegment, SpeedUnits, formatDuration, kmh, mph;
+    show
+        Attention,
+        Efficiency,
+        EventKind,
+        RoadSegment,
+        Smoothness,
+        SpeedUnits,
+        Speeding,
+        formatDuration,
+        kmh,
+        mph;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -9,17 +19,17 @@ import 'package:intl/intl.dart';
 
 import '../../app/bootstrap.dart';
 import '../../app/theme.dart';
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/models/trip_phase.dart';
 import '../../data/models/trip_score_view.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../widgets/units.dart';
-import '../../data/repos/leagues_repo.dart';
-import '../../data/supabase/supabase_providers.dart';
 import 'event_text.dart';
 import 'share_card.dart';
 import 'widgets/score_ring.dart';
+import 'widgets/sheet_action.dart';
 import 'widgets/trip_card.dart';
 
 final _samplesProvider = FutureProvider.family<List<Sample>, String>(
@@ -29,11 +39,22 @@ final _segmentsProvider = FutureProvider.family<List<RoadSegment>, String>(
   (ref, id) => ref.watch(databaseProvider).segmentsFor(id),
 );
 
-/// One trip: map, score, components, events, stats, corrections.
+/// One trip, editorial (docs/12 §7 "Trip"): the route map at 40 % fading
+/// under the content, the ring with XP under it and the verdict beside it,
+/// four thin bars, a grid of six stats, "What happened" as a timeline, and a
+/// one-line footnote about limit coverage. Share is the only app-bar action
+/// besides the overflow.
 class TripDetailScreen extends ConsumerWidget {
   const TripDetailScreen({super.key, required this.tripId});
 
   final String tripId;
+
+  /// Height of the route map at the top of the screen.
+  static double mapHeight(BuildContext context) =>
+      MediaQuery.sizeOf(context).height * 0.4;
+
+  /// How much of the map the content fades over.
+  static const fade = 72.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -42,17 +63,31 @@ class TripDetailScreen extends ConsumerWidget {
     if (trip == null) {
       return Scaffold(
         appBar: AppBar(title: const Text('Trip')),
-        body: Center(
-          child: tripAsync.isLoading
-              ? const CircularProgressIndicator()
-              : const Text('This trip is gone.'),
-        ),
+        body: tripAsync.isLoading
+            ? const Padding(
+                padding: Space.screen,
+                child: Column(
+                  children: [
+                    SizedBox(height: Space.xl),
+                    SkeletonTile(height: 160),
+                    SizedBox(height: Space.md),
+                    SkeletonTile(),
+                  ],
+                ),
+              )
+            : const EmptyState(
+                headline: 'This trip is gone.',
+                body:
+                    'It was deleted from this phone, so there is nothing '
+                    'to show.',
+              ),
       );
     }
     final t = trip.trip;
     final score = trip.score == null
         ? null
         : TripScoreView.fromJsonString(trip.score!.scoreJson);
+    final scored = score != null && score.scored;
     final unitsSetting =
         ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto;
     final units = resolveUnits(unitsSetting, packRegion: t.packRegion);
@@ -61,19 +96,91 @@ class TripDetailScreen extends ConsumerWidget {
     final segments =
         ref.watch(_segmentsProvider(tripId)).value ?? const <RoadSegment>[];
     final controller = ref.read(trackingControllerProvider.notifier);
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final mapH = mapHeight(context);
+    final topPad = MediaQuery.paddingOf(context).top;
+
+    final sections = <Widget>[
+      _Hero(trip: t, score: score, units: units),
+      if (scored) ...[
+        const SizedBox(height: Space.section),
+        EditorialSection(
+          kicker: 'Breakdown',
+          padding: EdgeInsets.zero,
+          gap: 0,
+          child: Column(
+            children: [
+              _BarRow('Speed', score.penalties.speed, Speeding.cap),
+              _BarRow('Smoothness', score.penalties.smoothness, Smoothness.cap),
+              _BarRow('Attention', score.penalties.attention, Attention.cap),
+              _BarRow('Efficiency', score.penalties.efficiency, Efficiency.cap),
+            ],
+          ),
+        ),
+      ],
+      const SizedBox(height: Space.section),
+      EditorialSection(
+        kicker: 'Stats',
+        padding: EdgeInsets.zero,
+        gap: 0,
+        child: StatGrid(
+          children: [
+            for (final (label, value) in _stats(t, score, units))
+              StatTile(value: value, label: label),
+          ],
+        ),
+      ),
+      if (score != null &&
+          (score.events.isNotEmpty || score.observations.isNotEmpty)) ...[
+        const SizedBox(height: Space.section),
+        EditorialSection(
+          kicker: 'What happened',
+          padding: EdgeInsets.zero,
+          gap: 0,
+          child: Column(
+            children: [
+              for (final (i, e) in score.events.indexed)
+                _EventRow(
+                  key: ValueKey('event-$i'),
+                  event: e,
+                  units: units,
+                  counted: true,
+                  onFlag: e.kind == EventKind.speeding
+                      ? () => _flagLimit(context, ref, t, e, segments, units)
+                      : null,
+                ),
+              for (final (i, e) in score.observations.indexed)
+                _EventRow(
+                  key: ValueKey('obs-$i'),
+                  event: e,
+                  units: units,
+                  counted: false,
+                  onFlag: () => _flagLimit(context, ref, t, e, segments, units),
+                ),
+            ],
+          ),
+        ),
+      ],
+      if (_coverageNote(t) != null) ...[
+        const SizedBox(height: Space.xl),
+        Text(_coverageNote(t)!, style: context.caption),
+      ],
+    ];
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
+        backgroundColor: Colors.transparent,
         title: Text(tripDateLabel(t)),
         actions: [
-          if (score != null && score.scored)
+          if (scored)
             IconButton(
               tooltip: 'Share',
-              icon: const Icon(Icons.share_outlined),
-              onPressed: () => _share(context, ref, t, score, units),
+              icon: const Icon(Icons.ios_share),
+              onPressed: () => shareTripFromApp(context, ref, t, score, units),
             ),
           PopupMenuButton<String>(
+            tooltip: 'More',
             onSelected: (v) async {
               switch (v) {
                 case 'passenger':
@@ -84,26 +191,7 @@ class TripDetailScreen extends ConsumerWidget {
                 case 'rescore':
                   await controller.rescore(tripId);
                 case 'delete':
-                  final ok = await showDialog<bool>(
-                    context: context,
-                    builder: (ctx) => AlertDialog(
-                      title: const Text('Delete this trip?'),
-                      content: const Text(
-                        'It disappears from your history. Nothing was uploaded.',
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(ctx, false),
-                          child: const Text('Keep'),
-                        ),
-                        FilledButton(
-                          onPressed: () => Navigator.pop(ctx, true),
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                    ),
-                  );
-                  if (ok == true) {
+                  if (await confirmDeleteTrip(context)) {
                     await controller.deleteTrip(tripId);
                     if (context.mounted) context.pop();
                   }
@@ -118,17 +206,19 @@ class TripDetailScreen extends ConsumerWidget {
                       : 'Mark as passenger',
                 ),
               ),
-              const PopupMenuItem(value: 'rescore', child: Text('Re-score')),
+              const PopupMenuItem(value: 'rescore', child: Text('Score again')),
               const PopupMenuItem(value: 'delete', child: Text('Delete trip')),
             ],
           ),
         ],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 24),
+      body: Stack(
         children: [
-          SizedBox(
-            height: 260,
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: mapH,
             child: _TripMap(
               samples: samples,
               segments: segments,
@@ -136,119 +226,104 @@ class TripDetailScreen extends ConsumerWidget {
               units: units,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Positioned.fill(
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                ScoreRing(
-                  score: score != null && score.scored ? score.score : null,
-                  size: 112,
-                  stroke: 10,
-                  reckless: score?.reckless ?? false,
-                  label: score != null && score.scored
-                      ? '+${score.xp} XP'
-                      : null,
+                SizedBox(height: mapH - fade),
+                Container(
+                  height: fade,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        scheme.surface.withValues(alpha: 0),
+                        scheme.surface,
+                      ],
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 16),
-                Expanded(
+                Container(
+                  color: scheme.surface,
+                  padding: const EdgeInsets.fromLTRB(
+                    Space.gutter,
+                    0,
+                    Space.gutter,
+                    Space.xxxl,
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      if (score != null &&
-                          score.scored &&
-                          score.roastText != null)
-                        Text(
-                          score.roastText!,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontStyle: score.headlineIsRoast
-                                ? FontStyle.italic
-                                : null,
-                          ),
-                        )
-                      else
-                        Text(
-                          unscoredLabel(t, score),
-                          style: theme.textTheme.titleMedium,
-                        ),
-                      const SizedBox(height: 8),
-                      for (final line
-                          in score?.lines ?? const <FeedbackLineView>[])
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 4),
-                          child: Text(
-                            '• ${line.text}',
-                            style: theme.textTheme.bodyMedium,
-                          ),
-                        ),
+                      for (final (i, s) in sections.indexed)
+                        Reveal(delay: Reveal.stagger(i), child: s),
                     ],
                   ),
                 ),
               ],
             ),
           ),
-          if (score != null && score.scored) ...[
-            _SectionTitle('Score breakdown'),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  _ComponentBar('Speed discipline', score.penalties.speed, 40),
-                  _ComponentBar('Smoothness', score.penalties.smoothness, 30),
-                  _ComponentBar('Attention', score.penalties.attention, 30),
-                  _ComponentBar('Efficiency', score.penalties.efficiency, 15),
-                ],
+          // Legible title over any map tile.
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: topPad + kToolbarHeight + Space.xl,
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      scheme.surface.withValues(alpha: 0.85),
+                      scheme.surface.withValues(alpha: 0),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ],
-          _SectionTitle('Stats'),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _StatsGrid(trip: t, score: score, units: units),
           ),
-          if (score != null &&
-              (score.events.isNotEmpty || score.observations.isNotEmpty)) ...[
-            _SectionTitle('What happened'),
-            for (final (i, e) in score.events.indexed)
-              _EventTile(
-                event: e,
-                units: units,
-                counted: true,
-                onFlag: e.kind == EventKind.speeding
-                    ? () => _flagLimit(context, ref, t, e, segments, units)
-                    : null,
-                key: ValueKey('event-$i'),
-              ),
-            for (final (i, e) in score.observations.indexed)
-              _EventTile(
-                event: e,
-                units: units,
-                counted: false,
-                onFlag: () => _flagLimit(context, ref, t, e, segments, units),
-                key: ValueKey('obs-$i'),
-              ),
-          ],
-          if (t.limitCoverage != null)
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              child: Text(
-                t.limitCoverage! > 0
-                    ? '${(t.limitCoverage! * 100).round()}% of this drive was on roads with a '
-                          'known speed limit (pack ${t.packRegion}, OSM ${_short(t.packVersion)}).'
-                    : t.packRegion == null
-                    ? 'No speed-limit pack covers this area yet, so speeding was not scored.'
-                    : 'No road with a known limit was matched on this drive.',
-                style: theme.textTheme.bodySmall,
-              ),
-            ),
         ],
       ),
     );
   }
 
-  static String _short(String? iso) {
-    final d = DateTime.tryParse(iso ?? '');
-    return d == null ? (iso ?? '') : DateFormat.yMMM().format(d);
+  static List<(String, String)> _stats(
+    Trip trip,
+    TripScoreView? score,
+    SpeedUnits units,
+  ) {
+    final s = score?.summary;
+    final items = <(String, String)>[
+      ('Distance', formatDistance(trip.distanceM, units)),
+      ('Driving', formatElapsed(Duration(seconds: trip.movingS.round()))),
+      if (s != null) ('Average', formatSpeed(s.avgMovingSpeed, units)),
+      if (s != null) ('Top speed', formatSpeed(s.maxSpeed, units)),
+      if (s != null && s.secondsOverLimit > 0)
+        ('Over the limit', formatDuration(s.secondsOverLimit)),
+      if (s != null && s.secondsOverLimit > 0)
+        ('Time saved', formatDuration(s.timeSavedBySpeedingS)),
+      if (trip.nightFraction != null && trip.nightFraction! > 0)
+        ('At night', '${(trip.nightFraction! * 100).round()}%'),
+      if (trip.weather != null) ('Weather', trip.weather!),
+      if (trip.vehicleLabel != null) ('Car', trip.vehicleLabel!),
+      if (trip.phase == TripPhase.unscored.wire && trip.isPassenger == true)
+        ('Role', 'Passenger'),
+    ];
+    return items.length > 6 ? items.sublist(0, 6) : items;
+  }
+
+  /// "82% of this drive had known limits." or why speeding went unscored.
+  static String? _coverageNote(Trip t) {
+    final c = t.limitCoverage;
+    if (c == null) return null;
+    if (c > 0) return '${(c * 100).round()}% of this drive had known limits.';
+    if (t.packRegion == null) {
+      return 'No speed-limit pack covers this area yet, so speeding was not '
+          'scored.';
+    }
+    return 'No road with a known limit on this drive.';
   }
 
   Future<void> _flagLimit(
@@ -270,9 +345,7 @@ class TripDetailScreen extends ConsumerWidget {
     final segName = seg?.name;
     if (wayId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No road from the pack is attached to this event.'),
-        ),
+        const SnackBar(content: Text('This event has no road to flag.')),
       );
       return;
     }
@@ -281,32 +354,24 @@ class TripDetailScreen extends ConsumerWidget {
           ? ''
           : formatSpeed(event.limitMps!, units, withUnit: false),
     );
-    final posted = await showModalBottomSheet<int>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
+    final roadLabel = segName ?? 'this road';
+    final posted = await showDrivalrySheet<int>(
+      context,
+      title: 'Limit is wrong here',
       builder: (ctx) => Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16 + MediaQuery.viewInsetsOf(ctx).bottom,
-        ),
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            Text('On $roadLabel. What does the sign say?', style: ctx.body),
+            const SizedBox(height: Space.sm),
             Text(
-              'Limit is wrong here',
-              style: Theme.of(ctx).textTheme.titleLarge,
+              'Your fix applies to you now, and to everyone once a second '
+              'driver agrees.',
+              style: ctx.caption,
             ),
-            const SizedBox(height: 4),
-            Text(
-              'On ${segName ?? 'this road'}. What does the sign say? Your flag '
-              'silences this road for you now; two agreeing flags fix it for everyone.',
-              style: Theme.of(ctx).textTheme.bodyMedium,
-            ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.lg),
             TextField(
               controller: controller,
               autofocus: true,
@@ -315,11 +380,11 @@ class TripDetailScreen extends ConsumerWidget {
                 labelText: 'Posted limit (${unitLabel(units)})',
               ),
             ),
-            const SizedBox(height: 12),
-            FilledButton(
+            const SizedBox(height: Space.lg),
+            PrimaryButton(
+              label: 'Send',
               onPressed: () =>
                   Navigator.pop(ctx, int.tryParse(controller.text.trim())),
-              child: const Text('Submit'),
             ),
           ],
         ),
@@ -340,10 +405,11 @@ class TripDetailScreen extends ConsumerWidget {
     );
     await ref.read(tripFinalizerProvider).finalize(trip.id);
     if (context.mounted) {
+      Haptics.success();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Thanks. This road is silent for you until the fix is confirmed.',
+            'Thanks. This road stays quiet for you until the fix lands.',
           ),
         ),
       );
@@ -351,88 +417,106 @@ class TripDetailScreen extends ConsumerWidget {
   }
 }
 
-/// Renders the shareable card (no map, no route) and opens the share sheet.
-Future<void> _share(
-  BuildContext context,
-  WidgetRef ref,
-  Trip trip,
-  TripScoreView score,
-  SpeedUnits units,
-) async {
-  final handle = await lookupHandle(
-    ref.read(supabaseProvider),
-    ref.read(currentUserIdProvider),
-  );
-  LeagueTier? tier;
-  for (final l in ref.read(myLeaguesProvider).value ?? const <League>[]) {
-    if (tier == null || l.myTier.index > tier.index) tier = l.myTier;
-  }
-  if (!context.mounted) return;
-  try {
-    await shareTripCard(
-      context,
-      trip: trip,
-      score: score,
-      units: units,
-      handle: handle,
-      tier: tier,
-    );
-  } catch (e) {
-    if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Could not share: $e')));
-    }
-  }
-}
+/// Ring 120 with XP under it, verdict beside it as `headline` 24.
+class _Hero extends StatelessWidget {
+  const _Hero({required this.trip, required this.score, required this.units});
 
-class _SectionTitle extends StatelessWidget {
-  const _SectionTitle(this.text);
-  final String text;
+  final Trip trip;
+  final TripScoreView? score;
+  final SpeedUnits units;
 
   @override
-  Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-    child: Text(text, style: Theme.of(context).textTheme.titleSmall),
-  );
+  Widget build(BuildContext context) {
+    final s = score;
+    final scored = s != null && s.scored;
+    final verdict = scored && s.roastText != null
+        ? s.roastText!
+        : unscoredLabel(trip, s);
+    final lines = (s?.lines ?? const <FeedbackLineView>[]).take(2).toList();
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Hero(
+              tag: tripRingTag(trip.id),
+              child: ScoreRing(
+                score: scored ? s.score : null,
+                size: 120,
+                stroke: 11,
+                reckless: s?.reckless ?? false,
+                animate: true,
+              ),
+            ),
+            if (scored) ...[
+              const SizedBox(height: Space.sm),
+              AnimatedNumber(
+                value: s.xp,
+                prefix: '+',
+                suffix: ' XP',
+                style: context.label,
+              ),
+            ],
+          ],
+        ),
+        const SizedBox(width: Space.xl),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                verdict,
+                style: context.headline.copyWith(
+                  fontSize: 24,
+                  fontStyle: scored && s.headlineIsRoast
+                      ? FontStyle.italic
+                      : null,
+                ),
+              ),
+              for (final line in lines) ...[
+                const SizedBox(height: Space.sm),
+                Text(line.text, style: context.bodyMuted),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _ComponentBar extends StatelessWidget {
-  const _ComponentBar(this.label, this.lost, this.cap);
+/// One thin bar of the breakdown: label, bar, points lost.
+class _BarRow extends StatelessWidget {
+  const _BarRow(this.label, this.lost, this.cap);
   final String label;
   final double lost;
   final double cap;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final kept = (cap - lost).clamp(0, cap);
+    final kept = (cap - lost).clamp(0.0, cap);
+    final fraction = cap <= 0 ? 0.0 : kept / cap;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: Space.sm),
       child: Row(
         children: [
-          SizedBox(
-            width: 120,
-            child: Text(label, style: theme.textTheme.bodyMedium),
-          ),
+          SizedBox(width: 96, child: Text(label, style: context.caption)),
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: LinearProgressIndicator(
-                value: kept / cap,
-                minHeight: 10,
-                color: DrivalryTheme.scoreColor((100 * kept / cap).round()),
-                backgroundColor: theme.colorScheme.surfaceContainerHighest,
-              ),
+            child: ThinBar(
+              fraction: fraction,
+              color: DrivalryTheme.scoreColor((100 * fraction).round()),
             ),
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: Space.md),
           SizedBox(
             width: 56,
             child: Text(
-              lost < 0.05 ? 'clean' : '−${lost.toStringAsFixed(1)}',
+              lost < 0.05
+                  ? 'Clean'
+                  : '−${lost.toStringAsFixed(lost < 10 ? 1 : 0)}',
               textAlign: TextAlign.end,
-              style: theme.textTheme.bodyMedium,
+              style: context.label,
             ),
           ),
         ],
@@ -441,70 +525,10 @@ class _ComponentBar extends StatelessWidget {
   }
 }
 
-class _StatsGrid extends StatelessWidget {
-  const _StatsGrid({
-    required this.trip,
-    required this.score,
-    required this.units,
-  });
-  final Trip trip;
-  final TripScoreView? score;
-  final SpeedUnits units;
-
-  @override
-  Widget build(BuildContext context) {
-    final s = score?.summary;
-    final items = <(String, String)>[
-      ('Distance', formatDistance(trip.distanceM, units)),
-      ('Moving time', formatElapsed(Duration(seconds: trip.movingS.round()))),
-      if (s != null) ('Average', formatSpeed(s.avgMovingSpeed, units)),
-      if (s != null) ('Top speed', formatSpeed(s.maxSpeed, units)),
-      if (s != null && s.secondsOverLimit > 0)
-        ('Over the limit', formatDuration(s.secondsOverLimit)),
-      if (s != null && s.secondsOverLimit > 0)
-        ('Time saved', formatDuration(s.timeSavedBySpeedingS)),
-      if (trip.nightFraction != null)
-        ('Night', '${(trip.nightFraction! * 100).round()}%'),
-      if (trip.weather != null) ('Weather', trip.weather!),
-      if (trip.vehicleLabel != null) ('Vehicle', trip.vehicleLabel!),
-      if (trip.phase == TripPhase.unscored.wire && trip.isPassenger == true)
-        ('Role', 'Passenger'),
-    ];
-    return GridView.count(
-      crossAxisCount: 3,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.9,
-      mainAxisSpacing: 8,
-      crossAxisSpacing: 8,
-      children: [
-        for (final (k, v) in items)
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  v,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(k, style: Theme.of(context).textTheme.labelSmall),
-              ],
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _EventTile extends StatelessWidget {
-  const _EventTile({
+/// Timeline row: icon, plain one-line description, kind and time; the flag
+/// stays for speeding.
+class _EventRow extends StatelessWidget {
+  const _EventRow({
     super.key,
     required this.event,
     required this.units,
@@ -521,28 +545,55 @@ class _EventTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final color = counted
-        ? severityColor(event.severity, theme.colorScheme)
-        : theme.colorScheme.outline;
+        ? severityColor(event.severity, scheme)
+        : scheme.outline;
     final at = DateFormat.jm().format(
       DateTime.fromMillisecondsSinceEpoch(event.startT),
     );
-    return ListTile(
-      leading: Icon(eventIcon(event.kind), color: color),
-      title: Text(describeEvent(event, units)),
-      subtitle: Text(
-        counted
-            ? '${eventTitle(event.kind)} · ${severityLabel(event.severity)} · $at'
-            : 'Observation only: limit not confident · $at',
-      ),
-      trailing: onFlag == null
-          ? null
-          : IconButton(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Space.sm),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color.withValues(alpha: 0.18),
+            ),
+            alignment: Alignment.center,
+            child: Icon(eventIcon(event.kind), size: 20, color: color),
+          ),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(top: Space.xs),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(describeEvent(event, units), style: context.body),
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    counted
+                        ? '${eventTitle(event.kind)} · $at'
+                        : 'Not scored, the limit here is unsure · $at',
+                    style: context.caption,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (onFlag != null)
+            IconButton(
               icon: const Icon(Icons.flag_outlined),
               tooltip: 'Limit is wrong here',
               onPressed: onFlag,
             ),
+        ],
+      ),
     );
   }
 }
@@ -562,7 +613,7 @@ class _TripMap extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     // Never build a GoogleMap before the SDK has its key (bootstrap.dart):
     // on iOS that aborts the process. While the key is on its way the
     // placeholder shows, which is also what a build without a key shows.
@@ -571,21 +622,28 @@ class _TripMap extends ConsumerWidget {
     if (!ready || samples.length < 2) {
       final String message;
       if (samples.length < 2) {
-        message = 'No route recorded.';
+        message = 'Route not saved for this trip.';
       } else if (mapsReady.isLoading) {
-        message = 'Loading map…';
+        message = 'Loading the map…';
       } else {
-        message =
-            'Map unavailable: build with --dart-define-from-file=../.env to show the route.';
+        message = 'Map not available in this version.';
       }
       return Container(
-        color: theme.colorScheme.surfaceContainerHighest,
-        alignment: Alignment.center,
-        padding: const EdgeInsets.all(16),
-        child: Text(
-          message,
-          textAlign: TextAlign.center,
-          style: theme.textTheme.bodySmall,
+        color: scheme.surfaceContainerLow,
+        // The lower part fades under the content; keep the words above it.
+        alignment: const Alignment(0, -0.2),
+        padding: const EdgeInsets.all(Space.xxl),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Kicker('Route'),
+            const SizedBox(height: Space.md),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: context.bodyMuted,
+            ),
+          ],
         ),
       );
     }
@@ -621,7 +679,7 @@ class _TripMap extends ConsumerWidget {
         Polyline(
           polylineId: const PolylineId('unknown'),
           points: unknown,
-          color: theme.colorScheme.outline,
+          color: scheme.outline,
           width: 4,
         ),
       );
@@ -660,7 +718,7 @@ class _TripMap extends ConsumerWidget {
       zoomControlsEnabled: false,
       liteModeEnabled: false,
       onMapCreated: (c) =>
-          c.moveCamera(CameraUpdate.newLatLngBounds(bounds, 24)),
+          c.animateCamera(CameraUpdate.newLatLngBounds(bounds, 24)),
     );
   }
 }

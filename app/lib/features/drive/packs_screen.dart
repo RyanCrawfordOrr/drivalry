@@ -7,6 +7,7 @@ import '../../data/db/database.dart';
 import '../../packs/pack_manager.dart';
 import '../../packs/pack_providers.dart';
 import '../../tracking/tracking_controller.dart';
+import '../../widgets/friendly_error.dart';
 
 /// Installed speed-limit packs and the catalogue (docs/03 §4.3).
 class PacksScreen extends ConsumerStatefulWidget {
@@ -33,7 +34,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
     try {
       await action();
     } catch (e) {
-      setState(() => _message = '$e');
+      setState(() => _message = friendlyError(e, doing: 'update the packs'));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -72,10 +73,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
       }
     }
     if (lat == null || lon == null) {
-      setState(
-        () => _message =
-            'No location known yet. Record or simulate a trip first.',
-      );
+      setState(() => _message = 'No location known yet. Take a drive first.');
       return;
     }
     final pack = await _manager.ensureRegionFor(
@@ -86,7 +84,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
     );
     setState(
       () => _message = pack == null
-          ? 'No pack covers that location yet.'
+          ? 'No speed-limit pack covers your area yet.'
           : 'Installed ${pack.name}.',
     );
   });
@@ -96,7 +94,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
     final url = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Import a pack by URL'),
+        title: const Text('Paste a pack link'),
         content: TextField(
           controller: controller,
           decoration: const InputDecoration(hintText: 'https://…/us-dc.pack'),
@@ -138,9 +136,8 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
         padding: const EdgeInsets.all(16),
         children: [
           Text(
-            'Packs are built from OpenStreetMap every month and hold the road '
-            'network and posted limits for one region. Matching and scoring use '
-            'them on this phone; nothing is looked up online during a drive.',
+            'The roads and posted limits for one region, kept on your phone. '
+            'Nothing is looked up online while you drive.',
             style: theme.textTheme.bodyMedium,
           ),
           const SizedBox(height: 12),
@@ -161,7 +158,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
               OutlinedButton.icon(
                 onPressed: _busy ? null : _importFromUrl,
                 icon: const Icon(Icons.link),
-                label: const Text('Import URL'),
+                label: const Text('Paste a link'),
               ),
             ],
           ),
@@ -218,7 +215,7 @@ class _PacksScreenState extends ConsumerState<PacksScreen> {
                   '${e.region} · ${(e.bytes / 1e6).toStringAsFixed(1)} MB',
                 ),
                 trailing: installedRegions.contains(e.region)
-                    ? const Icon(Icons.check, color: Colors.green)
+                    ? Icon(Icons.check, color: theme.colorScheme.primary)
                     : TextButton(
                         onPressed: _busy ? null : () => _install(e),
                         child: const Text('Install'),

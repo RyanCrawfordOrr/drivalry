@@ -10,81 +10,96 @@ import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../app/routes.dart';
+import '../../../app/ui/ui.dart';
 import '../../../data/db/database.dart';
+import '../../../widgets/friendly_error.dart';
 import '../../../widgets/relative_time.dart';
+import '../widgets/sheet_action.dart';
 import 'parking_links.dart';
 import 'parking_memory.dart';
 
-/// "Parked · 12 min ago · near Elm St" with walk-back, photo, note, forget.
-/// Shown on the Drive tab while no trip is recording.
+/// "Parked near Elm St · 12 min ago" as one tile in the Drive sheet while no
+/// trip is recording. Tap opens the parking screen; the walk icon opens
+/// directions straight away.
 class ParkingCard extends ConsumerWidget {
   const ParkingCard({super.key, required this.spot, this.compact = true});
 
   final ParkingSpot spot;
 
-  /// The Drive-tab card is compact; the full screen uses the same actions.
+  /// The Drive-sheet tile is compact; the full screen uses the same actions.
   final bool compact;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final road = ref.watch(parkingRoadNameProvider(spot.tripId)).value;
     final ago = relativeTime(
       DateTime.fromMillisecondsSinceEpoch(spot.parkedAt),
       DateTime.now(),
     );
-    final title = [
-      'Parked',
-      ago,
-      if (road != null && road.isNotEmpty) 'near $road',
-    ].join(' · ');
+    final title = road == null || road.isEmpty ? 'Parked' : 'Parked near $road';
+    final note = spot.note;
+    final caption = note == null || note.isEmpty ? ago : '$ago · $note';
 
-    return Card(
+    return Tile(
       key: const Key('parking-card'),
-      margin: const EdgeInsets.only(bottom: 12),
-      child: InkWell(
-        onTap: compact ? () => context.push(Routes.parking) : null,
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(Icons.local_parking, color: theme.colorScheme.primary),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(title, style: theme.textTheme.titleSmall),
-                  ),
-                  if (spot.photoPath != null && compact)
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(6),
-                      child: Image.file(
-                        File(spot.photoPath!),
-                        width: 44,
-                        height: 44,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) => const SizedBox.shrink(),
-                      ),
-                    ),
-                ],
-              ),
-              if (spot.note != null && spot.note!.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 6, left: 34),
-                  child: Text(spot.note!, style: theme.textTheme.bodyMedium),
+      onTap: compact ? () => context.push(Routes.parking) : null,
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.md,
+        Space.lg,
+      ),
+      child: Row(
+        children: [
+          Icon(Icons.local_parking, color: scheme.primary),
+          const SizedBox(width: Space.lg),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: context.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              const SizedBox(height: 6),
-              ParkingActions(spot: spot),
-            ],
+                const SizedBox(height: Space.xs),
+                Text(
+                  caption,
+                  style: context.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
-        ),
+          if (spot.photoPath != null && compact) ...[
+            const SizedBox(width: Space.md),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(Space.sm),
+              child: Image.file(
+                File(spot.photoPath!),
+                width: Sizes.touch,
+                height: Sizes.touch,
+                fit: BoxFit.cover,
+                errorBuilder: (_, _, _) => const SizedBox.shrink(),
+              ),
+            ),
+          ],
+          const SizedBox(width: Space.sm),
+          IconButton.filledTonal(
+            tooltip: 'Walk to car',
+            onPressed: () => openWalkBack(context, spot),
+            icon: const Icon(Icons.directions_walk),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Walk back · Photo · Note · Forget.
+/// Walk to car · Photo · Note · Forget.
 class ParkingActions extends ConsumerWidget {
   const ParkingActions({super.key, required this.spot});
 
@@ -93,12 +108,12 @@ class ParkingActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Wrap(
-      spacing: 4,
+      spacing: Space.xs,
       children: [
         TextButton.icon(
           onPressed: () => openWalkBack(context, spot),
           icon: const Icon(Icons.directions_walk),
-          label: const Text('Walk back'),
+          label: const Text('Walk to car'),
         ),
         TextButton.icon(
           onPressed: () => _addPhoto(context, ref),
@@ -120,29 +135,31 @@ class ParkingActions extends ConsumerWidget {
   }
 
   Future<void> _addPhoto(BuildContext context, WidgetRef ref) async {
-    final source = await showModalBottomSheet<ImageSource>(
-      context: context,
-      builder: (ctx) => SafeArea(
-        child: Wrap(
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_camera),
-              title: const Text('Take a photo'),
-              onTap: () => Navigator.of(ctx).pop(ImageSource.camera),
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choose from library'),
-              onTap: () => Navigator.of(ctx).pop(ImageSource.gallery),
-            ),
-          ],
-        ),
+    ImageSource? source;
+    await showDrivalrySheet<void>(
+      context,
+      title: 'Add a photo',
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SheetAction(
+            icon: Icons.photo_camera,
+            label: 'Take a photo',
+            onTap: () => source = ImageSource.camera,
+          ),
+          SheetAction(
+            icon: Icons.photo_library,
+            label: 'Pick from photos',
+            onTap: () => source = ImageSource.gallery,
+          ),
+        ],
       ),
     );
     if (source == null) return;
     try {
       final picked = await ImagePicker().pickImage(
-        source: source,
+        source: source!,
         maxWidth: 1600,
         imageQuality: 80,
       );
@@ -154,44 +171,66 @@ class ParkingActions extends ConsumerWidget {
       await File(picked.path).copy(dest);
       await ref.read(parkingMemoryProvider).setPhoto(spot.tripId, dest);
     } catch (e) {
-      debugPrint('parking photo failed: $e');
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Could not save photo: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(friendlyError(e, doing: 'save the photo'))),
+        );
       }
     }
   }
 
   Future<void> _editNote(BuildContext context, WidgetRef ref) async {
     final controller = TextEditingController(text: spot.note ?? '');
-    final value = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Parking note'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          maxLength: 80,
-          decoration: const InputDecoration(hintText: 'Level 3, near the lift'),
+    final value = await showDrivalrySheet<String>(
+      context,
+      title: 'Parking note',
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: controller,
+              autofocus: true,
+              maxLength: 80,
+              decoration: const InputDecoration(
+                hintText: 'Level 3, near the lift',
+              ),
+            ),
+            const SizedBox(height: Space.lg),
+            PrimaryButton(
+              label: 'Save',
+              onPressed: () => Navigator.of(ctx).pop(controller.text),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(controller.text),
-            child: const Text('Save'),
-          ),
-        ],
       ),
     );
+    controller.dispose();
     if (value == null) return;
     await ref.read(parkingMemoryProvider).setNote(spot.tripId, value.trim());
   }
 
   Future<void> _forget(BuildContext context, WidgetRef ref) async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Forget this spot?'),
+        content: const Text('The photo and note go with it.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Keep'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Forget'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !context.mounted) return;
     final photo = spot.photoPath;
     await ref.read(parkingMemoryProvider).forget(spot.tripId);
     if (photo != null) {
@@ -222,9 +261,9 @@ Future<void> openWalkBack(BuildContext context, ParkingSpot spot) async {
     await launchUrl(web, mode: LaunchMode.externalApplication);
   } catch (e) {
     if (context.mounted) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('No maps app available.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No maps app on this phone.')),
+      );
     }
   }
 }

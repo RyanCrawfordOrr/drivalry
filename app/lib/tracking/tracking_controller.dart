@@ -8,6 +8,7 @@ import 'package:flutter/services.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/db/database.dart';
+import '../widgets/friendly_error.dart';
 import 'providers.dart';
 import 'simulated_tracking.dart';
 import 'tracking_models.dart';
@@ -154,7 +155,11 @@ class TrackingController extends Notifier<TrackingUiState> {
       _sub ??= _port.events.listen(
         _onEvent,
         onError: (Object e) {
-          if (ref.mounted) state = state.copyWith(error: '$e');
+          if (ref.mounted) {
+            state = state.copyWith(
+              error: friendlyError(e, doing: 'listen for drives'),
+            );
+          }
         },
       );
       await _drain();
@@ -169,7 +174,12 @@ class TrackingController extends Notifier<TrackingUiState> {
       }
     } catch (e, s) {
       debugPrint('TrackingController boot failed: $e\n$s');
-      if (ref.mounted) state = state.copyWith(booted: true, error: '$e');
+      if (ref.mounted) {
+        state = state.copyWith(
+          booted: true,
+          error: friendlyError(e, doing: 'start drive detection'),
+        );
+      }
     }
   }
 
@@ -265,25 +275,34 @@ class TrackingController extends Notifier<TrackingUiState> {
     try {
       state = state.copyWith(plugin: await _port.getState(), clearError: true);
     } catch (e) {
-      state = state.copyWith(error: '$e');
+      state = state.copyWith(
+        error: friendlyError(e, doing: 'check drive detection'),
+      );
     }
   }
 
   /// Runs a plugin call for a user action. The native side answers any
   /// failure with a [PlatformException] (and a missing plugin with a
-  /// [MissingPluginException]); those become [TrackingUiState.error] for the
-  /// status card instead of an unhandled async error.
+  /// [MissingPluginException]); those become [TrackingUiState.error], one
+  /// short sentence the Drive tab can show, instead of an unhandled async
+  /// error. The raw detail goes to the log for Diagnostics.
   Future<T?> _guard<T>(Future<T> Function() op) async {
     try {
       final result = await op();
       state = state.copyWith(clearError: true);
       return result;
     } on PlatformException catch (e) {
-      state = state.copyWith(error: e.message ?? e.code);
-    } on MissingPluginException catch (e) {
-      state = state.copyWith(error: e.message ?? 'tracking plugin missing');
+      state = state.copyWith(
+        error: friendlyError(e, doing: 'change drive detection'),
+      );
+    } on MissingPluginException {
+      state = state.copyWith(
+        error: 'Drive detection is not available on this device.',
+      );
     } catch (e) {
-      state = state.copyWith(error: '$e');
+      state = state.copyWith(
+        error: friendlyError(e, doing: 'change drive detection'),
+      );
     }
     return null;
   }

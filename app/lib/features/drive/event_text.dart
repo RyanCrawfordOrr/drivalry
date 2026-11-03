@@ -4,56 +4,74 @@ import 'package:flutter/material.dart';
 import '../../data/models/trip_score_view.dart';
 import '../../widgets/units.dart';
 
-/// Human text for one engine event, e.g. "41 in a 25 for 90 s on Elm St".
+/// Plain one-line text for one engine event, e.g. "41 in a 25 for 90 s on
+/// Elm St" or "Hard brake at 40 mph". No m/s², no jargon (docs/12 §6).
 String describeEvent(TripEventView e, SpeedUnits units) {
   switch (e.kind) {
     case EventKind.speeding:
       final limit = e.limitMps;
-      final road =
-          e.roadName ??
-          switch (e.detail['roadClass']) {
-            'motorway' || 'trunk' => 'the highway',
-            'residential' => 'a residential street',
-            _ => 'that road',
-          };
+      final road = _road(e);
+      final where = road == null ? '' : ' on $road';
       final max = e.maxSpeedMps ?? 0;
       if (limit == null || limit.isNaN) {
-        return '${formatSpeed(max, units)} for ${formatDuration(e.durationS)} on $road';
+        return '${formatSpeed(max, units)} for ${formatDuration(e.durationS)}$where';
       }
       return '${formatSpeed(max, units, withUnit: false)} in a '
           '${formatSpeed(limit, units, withUnit: false)} for '
-          '${formatDuration(e.durationS)} on $road';
+          '${formatDuration(e.durationS)}$where';
     case EventKind.harshBrake:
-      return 'Hard brake, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}';
+      return '${_intensity(e.severity)} brake at '
+          '${formatSpeed(_speedAtStart(e), units)}';
     case EventKind.harshAccel:
-      return 'Hard acceleration, ${_g(e.peak)} from ${formatSpeed(_speedAtStart(e), units)}';
+      return '${_intensity(e.severity)} acceleration from '
+          '${formatSpeed(_speedAtStart(e), units)}';
     case EventKind.hardCorner:
-      return 'Hard corner, ${_g(e.peak)} at ${formatSpeed(_speedAtStart(e), units)}';
+      return '${_intensity(e.severity)} corner at '
+          '${formatSpeed(_speedAtStart(e), units)}';
     case EventKind.phoneHandling:
       final n = (e.detail['interactions'] as num?)?.toInt() ?? 1;
-      return 'Phone handled ${n == 1 ? 'once' : '$n times'} over '
-          '${formatDuration(e.durationS)} at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}';
+      final times = n == 1 ? 'once' : '$n times';
+      return 'Phone picked up $times, ${formatDuration(e.durationS)} '
+          'at up to ${formatSpeed(e.maxSpeedMps ?? 0, units)}';
     case EventKind.idling:
-      return 'Idled for ${formatDuration(e.durationS)}';
+      return 'Engine idling for ${formatDuration(e.durationS)}';
     case EventKind.highSpeedCruise:
-      return 'Cruised at ${formatSpeed(e.maxSpeedMps ?? 0, units)} for ${formatDuration(e.durationS)}';
+      return 'Cruised at ${formatSpeed(e.maxSpeedMps ?? 0, units)} '
+          'for ${formatDuration(e.durationS)}';
   }
+}
+
+/// The road name, or a plain description of the road class; null when the
+/// engine knows neither (the sentence then simply has no "on …").
+String? _road(TripEventView e) {
+  final name = e.roadName;
+  if (name != null && name.isNotEmpty) return name;
+  return switch (e.detail['roadClass']) {
+    'motorway' || 'trunk' => 'the highway',
+    'residential' => 'a residential street',
+    _ => null,
+  };
 }
 
 double _speedAtStart(TripEventView e) =>
     (e.detail['speedAtStart'] as num?)?.toDouble() ?? 0;
 
-String _g(double? peak) => '${(peak ?? 0).toStringAsFixed(1)} m/s²';
+/// "Hard" for the everyday event, "Very hard" once the engine rates it major
+/// or worse. Replaces the raw m/s² figure.
+String _intensity(Severity s) => switch (s) {
+  Severity.minor || Severity.moderate => 'Hard',
+  Severity.major || Severity.severe || Severity.reckless => 'Very hard',
+};
 
-/// Short label for an event kind.
+/// Short label for an event kind. "Hard" everywhere, never "Harsh".
 String eventTitle(EventKind kind) => switch (kind) {
   EventKind.speeding => 'Speeding',
-  EventKind.harshBrake => 'Harsh brake',
-  EventKind.harshAccel => 'Harsh acceleration',
+  EventKind.harshBrake => 'Hard brake',
+  EventKind.harshAccel => 'Hard acceleration',
   EventKind.hardCorner => 'Hard corner',
-  EventKind.phoneHandling => 'Phone handling',
+  EventKind.phoneHandling => 'Phone use',
   EventKind.idling => 'Idling',
-  EventKind.highSpeedCruise => 'High-speed cruise',
+  EventKind.highSpeedCruise => 'Fast cruise',
 };
 
 IconData eventIcon(EventKind kind) => switch (kind) {

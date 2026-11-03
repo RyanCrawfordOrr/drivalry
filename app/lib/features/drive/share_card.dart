@@ -6,6 +6,7 @@ import 'package:drivalry_scoring/drivalry_scoring.dart'
     show Attention, Efficiency, Smoothness, SpeedUnits, Speeding;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
@@ -16,6 +17,8 @@ import '../../app/theme.dart';
 import '../../data/db/database.dart';
 import '../../data/models/trip_score_view.dart';
 import '../../data/repos/leagues_repo.dart';
+import '../../data/supabase/supabase_providers.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
 import 'widgets/score_ring.dart';
 
@@ -337,7 +340,7 @@ Future<Uint8List> renderWidgetToPng(
   final image = await boundary.toImage(pixelRatio: pixelRatio);
   try {
     final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
-    if (bytes == null) throw StateError('PNG encoding failed');
+    if (bytes == null) throw StateError('Could not make the share image.');
     return bytes.buffer.asUint8List();
   } finally {
     image.dispose();
@@ -357,6 +360,43 @@ Future<String?> lookupHandle(SupabaseClient? client, String? userId) async {
     return row?['handle'] as String?;
   } catch (_) {
     return null;
+  }
+}
+
+/// Shares a trip from anywhere in the app: looks up the handle and the best
+/// league tier for the footer, renders the card, and turns any failure into
+/// one friendly line. Never throws.
+Future<void> shareTripFromApp(
+  BuildContext context,
+  WidgetRef ref,
+  Trip trip,
+  TripScoreView score,
+  SpeedUnits units,
+) async {
+  final handle = await lookupHandle(
+    ref.read(supabaseProvider),
+    ref.read(currentUserIdProvider),
+  );
+  LeagueTier? tier;
+  for (final l in ref.read(myLeaguesProvider).value ?? const <League>[]) {
+    if (tier == null || l.myTier.index > tier.index) tier = l.myTier;
+  }
+  if (!context.mounted) return;
+  try {
+    await shareTripCard(
+      context,
+      trip: trip,
+      score: score,
+      units: units,
+      handle: handle,
+      tier: tier,
+    );
+  } catch (e) {
+    if (context.mounted) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(friendlyError(e, doing: 'share'))));
+    }
   }
 }
 

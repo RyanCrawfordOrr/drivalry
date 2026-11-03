@@ -3,11 +3,14 @@ import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/repos/circles_repo.dart' show Circle;
 import 'package:drivalry/data/repos/circles_sync.dart';
+import 'package:drivalry/data/repos/friends_sync.dart';
 import 'package:drivalry/data/repos/presence_repo.dart';
 import 'package:drivalry/data/supabase/supabase_providers.dart';
 import 'package:drivalry/features/cues/live_limit.dart';
 import 'package:drivalry/features/drive/drive_screen.dart';
 import 'package:drivalry/features/drive/friends_map/friends_map.dart';
+import 'package:drivalry/features/profile/profile_model.dart';
+import 'package:drivalry/features/profile/profile_repo.dart';
 import 'package:drivalry/tracking/providers.dart';
 import 'package:drivalry/tracking/tracking_models.dart';
 import 'package:drivalry/tracking/weather.dart';
@@ -20,8 +23,9 @@ import '../../support/scored_trips.dart';
 import '../../support/sqlite_support.dart';
 import 'scene.dart';
 
-/// The Drive tab mid-drive: friends on the map, the recording card with the
-/// live speed and the posted limit, and the last scored trips underneath.
+/// The Drive tab mid-drive: the friends map full-bleed, the speed capsule and
+/// the live block in the sheet with the posted limit, the last scored trip
+/// peeking underneath.
 class DriveScene extends ArtScene {
   AppDatabase? _db;
   FakeTrackingPort? _port;
@@ -219,29 +223,25 @@ class DriveScene extends ArtScene {
         myCirclesProvider.overrideWith(() => _FixedCircles(circles)),
         circleMembershipProvider.overrideWithValue(membership),
         liveLimitProvider.overrideWith((_) => Stream.value(limit)),
+        // The floating chrome: a real avatar, two requests waiting, and no
+        // developer button in the store shot.
+        myProfileProvider.overrideWith(
+          (_) => Stream.value(
+            const Profile(id: 'me', handle: 'ryan', displayName: 'Ryan Orr'),
+          ),
+        ),
+        pendingRequestCountProvider.overrideWithValue(2),
+        devToolsVisibleProvider.overrideWithValue(false),
       ],
       child: MaterialApp(
         theme: artTheme(Brightness.light),
         darkTheme: artTheme(),
         themeMode: ThemeMode.dark,
         debugShowCheckedModeBanner: false,
-        // The map card takes 40% of the reported screen height. Report a
-        // shorter one so the recording card and the last score sit inside
-        // the store frame, which cuts the phone off at the bottom.
-        home: Builder(
-          builder: (context) => MediaQuery(
-            data: MediaQuery.of(
-              context,
-            ).copyWith(size: Size(sceneSize.width, _mapSizingHeight)),
-            child: const DriveScreen(),
-          ),
-        ),
+        home: const DriveScreen(),
       ),
     );
   }
-
-  /// Map card = 0.4 x this = 260 logical px (the real tab would use 337).
-  static const _mapSizingHeight = 650.0;
 
   @override
   Future<void> dispose() async {
