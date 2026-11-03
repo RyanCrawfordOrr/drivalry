@@ -9,6 +9,7 @@ import '../../data/models/trip_score_view.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/repos/presence_repo.dart';
 import '../../tracking/providers.dart';
+import '../cues/live_limit.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../tracking/tracking_models.dart';
 import '../../widgets/units.dart';
@@ -109,6 +110,7 @@ class DriveScreen extends ConsumerWidget {
           TrackingStatusCard(
             state: tracking,
             units: units,
+            liveLimit: ref.watch(liveLimitProvider).value,
             onRequestPermissions: controller.requestPermissions,
             onOpenSettings: controller.openSettings,
             onSetEnabled: controller.setEnabled,

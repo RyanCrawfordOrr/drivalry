@@ -34,6 +34,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       ...profileRoutes(),
       ...friendsTopLevelRoutes(),
       ...leaguesTopLevelRoutes(),
+      ...convoyTopLevelRoutes(),
     ],
   );
 });

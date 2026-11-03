@@ -347,3 +347,37 @@ class EmergencyContacts extends Table {
   @override
   Set<Column> get primaryKey => {id};
 }
+
+// --------------------------------------------------------------------------
+// Stage 4: convoys. Added in schema version 4. Positions received from other
+// cars stay on this phone for 30 days and feed the recap (docs/10 §5, §8).
+// --------------------------------------------------------------------------
+
+/// A position another car sent over the convoy data channel (or the
+/// broadcast fallback), kept for the recap. Never uploaded.
+class ConvoyTracks extends Table {
+  TextColumn get convoyId => text()();
+  TextColumn get userId => text()();
+  IntColumn get t => integer()();
+  RealColumn get lat => real()();
+  RealColumn get lon => real()();
+  RealColumn get speed => real().nullable()();
+  RealColumn get heading => real().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {convoyId, userId, t};
+}
+
+/// What this phone knows about a convoy it took part in: when it joined and
+/// left, and the recap once built (JSON), so the recap screen works offline.
+class ConvoyLocal extends Table {
+  TextColumn get convoyId => text()();
+  TextColumn get role => text().withDefault(const Constant('member'))();
+  IntColumn get joinedAt => integer()();
+  IntColumn get leftAt => integer().nullable()();
+  TextColumn get recapJson => text().nullable()();
+  IntColumn get updatedAt => integer()();
+
+  @override
+  Set<Column> get primaryKey => {convoyId};
+}

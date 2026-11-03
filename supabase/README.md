@@ -15,10 +15,12 @@ Apply in order by pasting each file into the SQL editor (Dashboard → SQL Edito
 | `migrations/0002_presence_friends_account.sql` | Presence visible to accepted friends, global `location_hidden`, `delete_own_account()`, friends in `can_view` (ADR-018) | Not yet applied; apply right after 0001 |
 | `migrations/0003_checkins.sql` | Feed post kind `checkin` | Not yet applied |
 | `migrations/0004_crash_contacts.sql` | `crash_alerts.notify_user_ids` for emergency contacts outside your circles | Not yet applied; then redeploy `functions/push` |
+| `migrations/0005_convoy_vote_withdraw.sql` | Delete policy on `convoy_stop_votes` so a member can withdraw a stop vote | Not yet applied |
+| `migrations/0006_convoy_can_view.sql` | `can_view` also covers current co-members of a convoy, so the recap can read everyone's trip summaries (docs/10 §8) | Not yet applied; apply after 0001 |
 
 `0001_init.sql` is written to run once on a fresh project. It creates enum types and policies without `if not exists`, so re-running it fails loudly rather than half-applying. Later changes go in new numbered files that only add or alter.
 
-Both files are syntax-checked with `libpg_query` (via `pglast`) but the live project is the only place the full schema has been executed; if a statement fails in the editor, paste the error here and fix forward.
+All files are syntax-checked with `libpg_query` (via `pglast`, `py -m pip install pglast`) but the live project is the only place the full schema has been executed; if a statement fails in the editor, paste the error here and fix forward.
 
 ## Auth
 

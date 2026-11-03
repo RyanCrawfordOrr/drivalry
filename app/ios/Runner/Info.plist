@@ -43,6 +43,8 @@
 	<string>Drivalry needs location access even when the app is closed so it can notice when you start driving, record the trip automatically in the background, and share your position with the friend circles you choose. Your routes stay on this phone.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Drivalry uses your location to record your drives and show them on the map.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Drivalry uses the microphone only while you hold the convoy push-to-talk button, so the other cars in your convoy can hear you.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Drivalry uses motion activity to tell when you are in a moving vehicle, so trips start and stop on their own without draining your battery.</string>
 	<key>UIApplicationSceneManifest</key>
@@ -72,6 +74,7 @@
 	<array>
 		<string>location</string>
 		<string>remote-notification</string>
+		<string>audio</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

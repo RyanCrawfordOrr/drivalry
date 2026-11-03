@@ -4,6 +4,7 @@ import UIKit
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var trackingPlugin: TrackingPlugin?
+  private let convoyAudio = ConvoyAudioPlugin()
 
   override func application(
     _ application: UIApplication,
@@ -23,5 +24,6 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     trackingPlugin?.attach(messenger: engineBridge.applicationRegistrar.messenger())
+    convoyAudio.attach(messenger: engineBridge.applicationRegistrar.messenger())
   }
 }

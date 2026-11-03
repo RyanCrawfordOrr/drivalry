@@ -62,6 +62,11 @@ class PlacesClient {
   static final Uri _nearby = Uri.parse(
     'https://places.googleapis.com/v1/places:searchNearby',
   );
+  static final Uri _text = Uri.parse(
+    'https://places.googleapis.com/v1/places:searchText',
+  );
+  static const _fieldMask =
+      'places.id,places.displayName,places.location,places.formattedAddress,places.rating,places.currentOpeningHours.openNow';
 
   bool get configured => _apiKey.isNotEmpty;
 
@@ -83,8 +88,7 @@ class PlacesClient {
             headers: {
               'Content-Type': 'application/json',
               'X-Goog-Api-Key': _apiKey,
-              'X-Goog-FieldMask':
-                  'places.id,places.displayName,places.location,places.formattedAddress,places.rating,places.currentOpeningHours.openNow',
+              'X-Goog-FieldMask': _fieldMask,
             },
             body: jsonEncode({
               'includedTypes': category.placeTypes,
@@ -105,28 +109,76 @@ class PlacesClient {
       }
       if (res.statusCode != 200) return null;
       final body = jsonDecode(res.body) as Map<String, dynamic>;
-      final places = body['places'] as List? ?? const [];
-      return [
-        for (final p in places.cast<Map<String, dynamic>>())
-          PlaceSuggestion(
-            placeId: p['id'] as String,
-            name:
-                (p['displayName'] as Map<String, dynamic>?)?['text']
-                    as String? ??
-                'Unnamed',
-            location: LatLon(
-              ((p['location'] as Map<String, dynamic>)['latitude'] as num)
-                  .toDouble(),
-              ((p['location'] as Map<String, dynamic>)['longitude'] as num)
-                  .toDouble(),
-            ),
-            address: p['formattedAddress'] as String?,
-            rating: (p['rating'] as num?)?.toDouble(),
-            openNow:
-                (p['currentOpeningHours'] as Map<String, dynamic>?)?['openNow']
-                    as bool?,
-          ),
-      ];
+      return _parsePlaces(body['places'] as List? ?? const []);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  static List<PlaceSuggestion> _parsePlaces(List places) => [
+    for (final p in places.cast<Map<String, dynamic>>())
+      PlaceSuggestion(
+        placeId: p['id'] as String,
+        name:
+            (p['displayName'] as Map<String, dynamic>?)?['text'] as String? ??
+            'Unnamed',
+        location: LatLon(
+          ((p['location'] as Map<String, dynamic>)['latitude'] as num)
+              .toDouble(),
+          ((p['location'] as Map<String, dynamic>)['longitude'] as num)
+              .toDouble(),
+        ),
+        address: p['formattedAddress'] as String?,
+        rating: (p['rating'] as num?)?.toDouble(),
+        openNow:
+            (p['currentOpeningHours'] as Map<String, dynamic>?)?['openNow']
+                as bool?,
+      ),
+  ];
+}
+
+extension PlacesTextSearch on PlacesClient {
+  /// Places matching a typed query, biased towards [near] when given. Same
+  /// quota, same fallback contract as [PlacesClient.nearby]: null when the API
+  /// is unavailable, an empty list when nothing matched.
+  Future<List<PlaceSuggestion>?> searchText(
+    String query, {
+    LatLon? near,
+    double radiusM = 50000,
+    int maxResults = 8,
+  }) async {
+    final q = query.trim();
+    if (q.isEmpty || !configured) return null;
+    if (!await _quota.tryConsume(GoogleQuota.places)) return null;
+    try {
+      final res = await _http
+          .post(
+            PlacesClient._text,
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Goog-Api-Key': _apiKey,
+              'X-Goog-FieldMask': PlacesClient._fieldMask,
+            },
+            body: jsonEncode({
+              'textQuery': q,
+              'maxResultCount': maxResults.clamp(1, 20),
+              if (near != null)
+                'locationBias': {
+                  'circle': {
+                    'center': near.toJson(),
+                    'radius': radiusM.clamp(1, 50000),
+                  },
+                },
+            }),
+          )
+          .timeout(const Duration(seconds: 10));
+      if (res.statusCode == 429) {
+        await _quota.exhaust(GoogleQuota.places);
+        return null;
+      }
+      if (res.statusCode != 200) return null;
+      final body = jsonDecode(res.body) as Map<String, dynamic>;
+      return PlacesClient._parsePlaces(body['places'] as List? ?? const []);
     } catch (_) {
       return null;
     }

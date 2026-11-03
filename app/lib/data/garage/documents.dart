@@ -65,8 +65,10 @@ class DocumentVault {
     return _cached = fresh;
   }
 
-  static Hmac _mac(Key key) =>
-      Hmac(sha256, sha256.convert([...key.bytes, ...'drivalry-doc-mac'.codeUnits]).bytes);
+  static Hmac _mac(Key key) => Hmac(
+    sha256,
+    sha256.convert([...key.bytes, ...'drivalry-doc-mac'.codeUnits]).bytes,
+  );
 
   /// Pure: encrypts [plain] with [key] under a fresh random IV and tags it.
   static Uint8List encryptBytes(Uint8List plain, Key key, {IV? iv}) {

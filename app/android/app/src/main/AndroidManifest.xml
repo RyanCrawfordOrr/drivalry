@@ -19,6 +19,12 @@
     <!-- Pre-31 equivalent needed to receive ACL connect/disconnect broadcasts. -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Convoy radio (docs/10 §4): microphone for push-to-talk, a foreground
+         service while the radio is on, and audio-mode changes for ducking. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
 
     <application
         android:label="Drivalry"
@@ -117,6 +123,24 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Convoy radio foreground service (docs/10 §4). -->
+        <service
+            android:name=".convoy.ConvoyAudioService"
+            android:exported="false"
+            android:foregroundServiceType="microphone|mediaPlayback" />
+        <!-- Spotify PKCE callback for flutter_web_auth_2. Uses its own scheme so
+             the drivalry:// deep-link filter on MainActivity never competes
+             with it (two matching activities would show a chooser). -->
+        <activity
+            android:name="com.linusu.flutter_web_auth_2.CallbackActivity"
+            android:exported="true">
+            <intent-filter android:label="flutter_web_auth_2">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="drivalry-auth" />
+            </intent-filter>
+        </activity>
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -26,7 +26,10 @@ val dartDefines: Map<String, String> =
 
 android {
     namespace = "app.drivalry"
-    compileSdk = flutter.compileSdkVersion
+    // permission_handler_android 14.1 ships AAR metadata that demands API 37.
+    // Compiling against 37 changes no runtime behaviour (targetSdk is still
+    // Flutter's default); AGP 9.0.1 only warns, silenced in gradle.properties.
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {

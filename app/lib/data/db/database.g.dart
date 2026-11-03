@@ -9861,6 +9861,868 @@ class EmergencyContactsCompanion extends UpdateCompanion<EmergencyContact> {
   }
 }
 
+class $ConvoyTracksTable extends ConvoyTracks
+    with TableInfo<$ConvoyTracksTable, ConvoyTrack> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConvoyTracksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _convoyIdMeta = const VerificationMeta(
+    'convoyId',
+  );
+  @override
+  late final GeneratedColumn<String> convoyId = GeneratedColumn<String>(
+    'convoy_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tMeta = const VerificationMeta('t');
+  @override
+  late final GeneratedColumn<int> t = GeneratedColumn<int>(
+    't',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latMeta = const VerificationMeta('lat');
+  @override
+  late final GeneratedColumn<double> lat = GeneratedColumn<double>(
+    'lat',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lonMeta = const VerificationMeta('lon');
+  @override
+  late final GeneratedColumn<double> lon = GeneratedColumn<double>(
+    'lon',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _speedMeta = const VerificationMeta('speed');
+  @override
+  late final GeneratedColumn<double> speed = GeneratedColumn<double>(
+    'speed',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _headingMeta = const VerificationMeta(
+    'heading',
+  );
+  @override
+  late final GeneratedColumn<double> heading = GeneratedColumn<double>(
+    'heading',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    convoyId,
+    userId,
+    t,
+    lat,
+    lon,
+    speed,
+    heading,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'convoy_tracks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ConvoyTrack> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('convoy_id')) {
+      context.handle(
+        _convoyIdMeta,
+        convoyId.isAcceptableOrUnknown(data['convoy_id']!, _convoyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_convoyIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('t')) {
+      context.handle(_tMeta, t.isAcceptableOrUnknown(data['t']!, _tMeta));
+    } else if (isInserting) {
+      context.missing(_tMeta);
+    }
+    if (data.containsKey('lat')) {
+      context.handle(
+        _latMeta,
+        lat.isAcceptableOrUnknown(data['lat']!, _latMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_latMeta);
+    }
+    if (data.containsKey('lon')) {
+      context.handle(
+        _lonMeta,
+        lon.isAcceptableOrUnknown(data['lon']!, _lonMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lonMeta);
+    }
+    if (data.containsKey('speed')) {
+      context.handle(
+        _speedMeta,
+        speed.isAcceptableOrUnknown(data['speed']!, _speedMeta),
+      );
+    }
+    if (data.containsKey('heading')) {
+      context.handle(
+        _headingMeta,
+        heading.isAcceptableOrUnknown(data['heading']!, _headingMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {convoyId, userId, t};
+  @override
+  ConvoyTrack map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ConvoyTrack(
+      convoyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}convoy_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      t: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}t'],
+      )!,
+      lat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lat'],
+      )!,
+      lon: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}lon'],
+      )!,
+      speed: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}speed'],
+      ),
+      heading: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}heading'],
+      ),
+    );
+  }
+
+  @override
+  $ConvoyTracksTable createAlias(String alias) {
+    return $ConvoyTracksTable(attachedDatabase, alias);
+  }
+}
+
+class ConvoyTrack extends DataClass implements Insertable<ConvoyTrack> {
+  final String convoyId;
+  final String userId;
+  final int t;
+  final double lat;
+  final double lon;
+  final double? speed;
+  final double? heading;
+  const ConvoyTrack({
+    required this.convoyId,
+    required this.userId,
+    required this.t,
+    required this.lat,
+    required this.lon,
+    this.speed,
+    this.heading,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['convoy_id'] = Variable<String>(convoyId);
+    map['user_id'] = Variable<String>(userId);
+    map['t'] = Variable<int>(t);
+    map['lat'] = Variable<double>(lat);
+    map['lon'] = Variable<double>(lon);
+    if (!nullToAbsent || speed != null) {
+      map['speed'] = Variable<double>(speed);
+    }
+    if (!nullToAbsent || heading != null) {
+      map['heading'] = Variable<double>(heading);
+    }
+    return map;
+  }
+
+  ConvoyTracksCompanion toCompanion(bool nullToAbsent) {
+    return ConvoyTracksCompanion(
+      convoyId: Value(convoyId),
+      userId: Value(userId),
+      t: Value(t),
+      lat: Value(lat),
+      lon: Value(lon),
+      speed: speed == null && nullToAbsent
+          ? const Value.absent()
+          : Value(speed),
+      heading: heading == null && nullToAbsent
+          ? const Value.absent()
+          : Value(heading),
+    );
+  }
+
+  factory ConvoyTrack.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ConvoyTrack(
+      convoyId: serializer.fromJson<String>(json['convoyId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      t: serializer.fromJson<int>(json['t']),
+      lat: serializer.fromJson<double>(json['lat']),
+      lon: serializer.fromJson<double>(json['lon']),
+      speed: serializer.fromJson<double?>(json['speed']),
+      heading: serializer.fromJson<double?>(json['heading']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'convoyId': serializer.toJson<String>(convoyId),
+      'userId': serializer.toJson<String>(userId),
+      't': serializer.toJson<int>(t),
+      'lat': serializer.toJson<double>(lat),
+      'lon': serializer.toJson<double>(lon),
+      'speed': serializer.toJson<double?>(speed),
+      'heading': serializer.toJson<double?>(heading),
+    };
+  }
+
+  ConvoyTrack copyWith({
+    String? convoyId,
+    String? userId,
+    int? t,
+    double? lat,
+    double? lon,
+    Value<double?> speed = const Value.absent(),
+    Value<double?> heading = const Value.absent(),
+  }) => ConvoyTrack(
+    convoyId: convoyId ?? this.convoyId,
+    userId: userId ?? this.userId,
+    t: t ?? this.t,
+    lat: lat ?? this.lat,
+    lon: lon ?? this.lon,
+    speed: speed.present ? speed.value : this.speed,
+    heading: heading.present ? heading.value : this.heading,
+  );
+  ConvoyTrack copyWithCompanion(ConvoyTracksCompanion data) {
+    return ConvoyTrack(
+      convoyId: data.convoyId.present ? data.convoyId.value : this.convoyId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      t: data.t.present ? data.t.value : this.t,
+      lat: data.lat.present ? data.lat.value : this.lat,
+      lon: data.lon.present ? data.lon.value : this.lon,
+      speed: data.speed.present ? data.speed.value : this.speed,
+      heading: data.heading.present ? data.heading.value : this.heading,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConvoyTrack(')
+          ..write('convoyId: $convoyId, ')
+          ..write('userId: $userId, ')
+          ..write('t: $t, ')
+          ..write('lat: $lat, ')
+          ..write('lon: $lon, ')
+          ..write('speed: $speed, ')
+          ..write('heading: $heading')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(convoyId, userId, t, lat, lon, speed, heading);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ConvoyTrack &&
+          other.convoyId == this.convoyId &&
+          other.userId == this.userId &&
+          other.t == this.t &&
+          other.lat == this.lat &&
+          other.lon == this.lon &&
+          other.speed == this.speed &&
+          other.heading == this.heading);
+}
+
+class ConvoyTracksCompanion extends UpdateCompanion<ConvoyTrack> {
+  final Value<String> convoyId;
+  final Value<String> userId;
+  final Value<int> t;
+  final Value<double> lat;
+  final Value<double> lon;
+  final Value<double?> speed;
+  final Value<double?> heading;
+  final Value<int> rowid;
+  const ConvoyTracksCompanion({
+    this.convoyId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.t = const Value.absent(),
+    this.lat = const Value.absent(),
+    this.lon = const Value.absent(),
+    this.speed = const Value.absent(),
+    this.heading = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ConvoyTracksCompanion.insert({
+    required String convoyId,
+    required String userId,
+    required int t,
+    required double lat,
+    required double lon,
+    this.speed = const Value.absent(),
+    this.heading = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : convoyId = Value(convoyId),
+       userId = Value(userId),
+       t = Value(t),
+       lat = Value(lat),
+       lon = Value(lon);
+  static Insertable<ConvoyTrack> custom({
+    Expression<String>? convoyId,
+    Expression<String>? userId,
+    Expression<int>? t,
+    Expression<double>? lat,
+    Expression<double>? lon,
+    Expression<double>? speed,
+    Expression<double>? heading,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (convoyId != null) 'convoy_id': convoyId,
+      if (userId != null) 'user_id': userId,
+      if (t != null) 't': t,
+      if (lat != null) 'lat': lat,
+      if (lon != null) 'lon': lon,
+      if (speed != null) 'speed': speed,
+      if (heading != null) 'heading': heading,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ConvoyTracksCompanion copyWith({
+    Value<String>? convoyId,
+    Value<String>? userId,
+    Value<int>? t,
+    Value<double>? lat,
+    Value<double>? lon,
+    Value<double?>? speed,
+    Value<double?>? heading,
+    Value<int>? rowid,
+  }) {
+    return ConvoyTracksCompanion(
+      convoyId: convoyId ?? this.convoyId,
+      userId: userId ?? this.userId,
+      t: t ?? this.t,
+      lat: lat ?? this.lat,
+      lon: lon ?? this.lon,
+      speed: speed ?? this.speed,
+      heading: heading ?? this.heading,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (convoyId.present) {
+      map['convoy_id'] = Variable<String>(convoyId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (t.present) {
+      map['t'] = Variable<int>(t.value);
+    }
+    if (lat.present) {
+      map['lat'] = Variable<double>(lat.value);
+    }
+    if (lon.present) {
+      map['lon'] = Variable<double>(lon.value);
+    }
+    if (speed.present) {
+      map['speed'] = Variable<double>(speed.value);
+    }
+    if (heading.present) {
+      map['heading'] = Variable<double>(heading.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConvoyTracksCompanion(')
+          ..write('convoyId: $convoyId, ')
+          ..write('userId: $userId, ')
+          ..write('t: $t, ')
+          ..write('lat: $lat, ')
+          ..write('lon: $lon, ')
+          ..write('speed: $speed, ')
+          ..write('heading: $heading, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ConvoyLocalTable extends ConvoyLocal
+    with TableInfo<$ConvoyLocalTable, ConvoyLocalData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ConvoyLocalTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _convoyIdMeta = const VerificationMeta(
+    'convoyId',
+  );
+  @override
+  late final GeneratedColumn<String> convoyId = GeneratedColumn<String>(
+    'convoy_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('member'),
+  );
+  static const VerificationMeta _joinedAtMeta = const VerificationMeta(
+    'joinedAt',
+  );
+  @override
+  late final GeneratedColumn<int> joinedAt = GeneratedColumn<int>(
+    'joined_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _leftAtMeta = const VerificationMeta('leftAt');
+  @override
+  late final GeneratedColumn<int> leftAt = GeneratedColumn<int>(
+    'left_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _recapJsonMeta = const VerificationMeta(
+    'recapJson',
+  );
+  @override
+  late final GeneratedColumn<String> recapJson = GeneratedColumn<String>(
+    'recap_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    convoyId,
+    role,
+    joinedAt,
+    leftAt,
+    recapJson,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'convoy_local';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ConvoyLocalData> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('convoy_id')) {
+      context.handle(
+        _convoyIdMeta,
+        convoyId.isAcceptableOrUnknown(data['convoy_id']!, _convoyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_convoyIdMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    }
+    if (data.containsKey('joined_at')) {
+      context.handle(
+        _joinedAtMeta,
+        joinedAt.isAcceptableOrUnknown(data['joined_at']!, _joinedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_joinedAtMeta);
+    }
+    if (data.containsKey('left_at')) {
+      context.handle(
+        _leftAtMeta,
+        leftAt.isAcceptableOrUnknown(data['left_at']!, _leftAtMeta),
+      );
+    }
+    if (data.containsKey('recap_json')) {
+      context.handle(
+        _recapJsonMeta,
+        recapJson.isAcceptableOrUnknown(data['recap_json']!, _recapJsonMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {convoyId};
+  @override
+  ConvoyLocalData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ConvoyLocalData(
+      convoyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}convoy_id'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
+      )!,
+      joinedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}joined_at'],
+      )!,
+      leftAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}left_at'],
+      ),
+      recapJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}recap_json'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ConvoyLocalTable createAlias(String alias) {
+    return $ConvoyLocalTable(attachedDatabase, alias);
+  }
+}
+
+class ConvoyLocalData extends DataClass implements Insertable<ConvoyLocalData> {
+  final String convoyId;
+  final String role;
+  final int joinedAt;
+  final int? leftAt;
+  final String? recapJson;
+  final int updatedAt;
+  const ConvoyLocalData({
+    required this.convoyId,
+    required this.role,
+    required this.joinedAt,
+    this.leftAt,
+    this.recapJson,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['convoy_id'] = Variable<String>(convoyId);
+    map['role'] = Variable<String>(role);
+    map['joined_at'] = Variable<int>(joinedAt);
+    if (!nullToAbsent || leftAt != null) {
+      map['left_at'] = Variable<int>(leftAt);
+    }
+    if (!nullToAbsent || recapJson != null) {
+      map['recap_json'] = Variable<String>(recapJson);
+    }
+    map['updated_at'] = Variable<int>(updatedAt);
+    return map;
+  }
+
+  ConvoyLocalCompanion toCompanion(bool nullToAbsent) {
+    return ConvoyLocalCompanion(
+      convoyId: Value(convoyId),
+      role: Value(role),
+      joinedAt: Value(joinedAt),
+      leftAt: leftAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(leftAt),
+      recapJson: recapJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recapJson),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ConvoyLocalData.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ConvoyLocalData(
+      convoyId: serializer.fromJson<String>(json['convoyId']),
+      role: serializer.fromJson<String>(json['role']),
+      joinedAt: serializer.fromJson<int>(json['joinedAt']),
+      leftAt: serializer.fromJson<int?>(json['leftAt']),
+      recapJson: serializer.fromJson<String?>(json['recapJson']),
+      updatedAt: serializer.fromJson<int>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'convoyId': serializer.toJson<String>(convoyId),
+      'role': serializer.toJson<String>(role),
+      'joinedAt': serializer.toJson<int>(joinedAt),
+      'leftAt': serializer.toJson<int?>(leftAt),
+      'recapJson': serializer.toJson<String?>(recapJson),
+      'updatedAt': serializer.toJson<int>(updatedAt),
+    };
+  }
+
+  ConvoyLocalData copyWith({
+    String? convoyId,
+    String? role,
+    int? joinedAt,
+    Value<int?> leftAt = const Value.absent(),
+    Value<String?> recapJson = const Value.absent(),
+    int? updatedAt,
+  }) => ConvoyLocalData(
+    convoyId: convoyId ?? this.convoyId,
+    role: role ?? this.role,
+    joinedAt: joinedAt ?? this.joinedAt,
+    leftAt: leftAt.present ? leftAt.value : this.leftAt,
+    recapJson: recapJson.present ? recapJson.value : this.recapJson,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ConvoyLocalData copyWithCompanion(ConvoyLocalCompanion data) {
+    return ConvoyLocalData(
+      convoyId: data.convoyId.present ? data.convoyId.value : this.convoyId,
+      role: data.role.present ? data.role.value : this.role,
+      joinedAt: data.joinedAt.present ? data.joinedAt.value : this.joinedAt,
+      leftAt: data.leftAt.present ? data.leftAt.value : this.leftAt,
+      recapJson: data.recapJson.present ? data.recapJson.value : this.recapJson,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConvoyLocalData(')
+          ..write('convoyId: $convoyId, ')
+          ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt, ')
+          ..write('leftAt: $leftAt, ')
+          ..write('recapJson: $recapJson, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(convoyId, role, joinedAt, leftAt, recapJson, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ConvoyLocalData &&
+          other.convoyId == this.convoyId &&
+          other.role == this.role &&
+          other.joinedAt == this.joinedAt &&
+          other.leftAt == this.leftAt &&
+          other.recapJson == this.recapJson &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ConvoyLocalCompanion extends UpdateCompanion<ConvoyLocalData> {
+  final Value<String> convoyId;
+  final Value<String> role;
+  final Value<int> joinedAt;
+  final Value<int?> leftAt;
+  final Value<String?> recapJson;
+  final Value<int> updatedAt;
+  final Value<int> rowid;
+  const ConvoyLocalCompanion({
+    this.convoyId = const Value.absent(),
+    this.role = const Value.absent(),
+    this.joinedAt = const Value.absent(),
+    this.leftAt = const Value.absent(),
+    this.recapJson = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ConvoyLocalCompanion.insert({
+    required String convoyId,
+    this.role = const Value.absent(),
+    required int joinedAt,
+    this.leftAt = const Value.absent(),
+    this.recapJson = const Value.absent(),
+    required int updatedAt,
+    this.rowid = const Value.absent(),
+  }) : convoyId = Value(convoyId),
+       joinedAt = Value(joinedAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ConvoyLocalData> custom({
+    Expression<String>? convoyId,
+    Expression<String>? role,
+    Expression<int>? joinedAt,
+    Expression<int>? leftAt,
+    Expression<String>? recapJson,
+    Expression<int>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (convoyId != null) 'convoy_id': convoyId,
+      if (role != null) 'role': role,
+      if (joinedAt != null) 'joined_at': joinedAt,
+      if (leftAt != null) 'left_at': leftAt,
+      if (recapJson != null) 'recap_json': recapJson,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ConvoyLocalCompanion copyWith({
+    Value<String>? convoyId,
+    Value<String>? role,
+    Value<int>? joinedAt,
+    Value<int?>? leftAt,
+    Value<String?>? recapJson,
+    Value<int>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ConvoyLocalCompanion(
+      convoyId: convoyId ?? this.convoyId,
+      role: role ?? this.role,
+      joinedAt: joinedAt ?? this.joinedAt,
+      leftAt: leftAt ?? this.leftAt,
+      recapJson: recapJson ?? this.recapJson,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (convoyId.present) {
+      map['convoy_id'] = Variable<String>(convoyId.value);
+    }
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (joinedAt.present) {
+      map['joined_at'] = Variable<int>(joinedAt.value);
+    }
+    if (leftAt.present) {
+      map['left_at'] = Variable<int>(leftAt.value);
+    }
+    if (recapJson.present) {
+      map['recap_json'] = Variable<String>(recapJson.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ConvoyLocalCompanion(')
+          ..write('convoyId: $convoyId, ')
+          ..write('role: $role, ')
+          ..write('joinedAt: $joinedAt, ')
+          ..write('leftAt: $leftAt, ')
+          ..write('recapJson: $recapJson, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -9891,6 +10753,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final $EmergencyContactsTable emergencyContacts =
       $EmergencyContactsTable(this);
+  late final $ConvoyTracksTable convoyTracks = $ConvoyTracksTable(this);
+  late final $ConvoyLocalTable convoyLocal = $ConvoyLocalTable(this);
   late final Index tripsStartedAt = Index(
     'trips_started_at',
     'CREATE INDEX trips_started_at ON trips (started_at)',
@@ -9922,6 +10786,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     maintenanceItems,
     vehicleDocuments,
     emergencyContacts,
+    convoyTracks,
+    convoyLocal,
     tripsStartedAt,
   ];
 }
@@ -15249,6 +16115,481 @@ typedef $$EmergencyContactsTableProcessedTableManager =
       EmergencyContact,
       PrefetchHooks Function()
     >;
+typedef $$ConvoyTracksTableCreateCompanionBuilder =
+    ConvoyTracksCompanion Function({
+      required String convoyId,
+      required String userId,
+      required int t,
+      required double lat,
+      required double lon,
+      Value<double?> speed,
+      Value<double?> heading,
+      Value<int> rowid,
+    });
+typedef $$ConvoyTracksTableUpdateCompanionBuilder =
+    ConvoyTracksCompanion Function({
+      Value<String> convoyId,
+      Value<String> userId,
+      Value<int> t,
+      Value<double> lat,
+      Value<double> lon,
+      Value<double?> speed,
+      Value<double?> heading,
+      Value<int> rowid,
+    });
+
+class $$ConvoyTracksTableFilterComposer
+    extends Composer<_$AppDatabase, $ConvoyTracksTable> {
+  $$ConvoyTracksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get convoyId => $composableBuilder(
+    column: $table.convoyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get t => $composableBuilder(
+    column: $table.t,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lat => $composableBuilder(
+    column: $table.lat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get lon => $composableBuilder(
+    column: $table.lon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get speed => $composableBuilder(
+    column: $table.speed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get heading => $composableBuilder(
+    column: $table.heading,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ConvoyTracksTableOrderingComposer
+    extends Composer<_$AppDatabase, $ConvoyTracksTable> {
+  $$ConvoyTracksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get convoyId => $composableBuilder(
+    column: $table.convoyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get t => $composableBuilder(
+    column: $table.t,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lat => $composableBuilder(
+    column: $table.lat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get lon => $composableBuilder(
+    column: $table.lon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get speed => $composableBuilder(
+    column: $table.speed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get heading => $composableBuilder(
+    column: $table.heading,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ConvoyTracksTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ConvoyTracksTable> {
+  $$ConvoyTracksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get convoyId =>
+      $composableBuilder(column: $table.convoyId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<int> get t =>
+      $composableBuilder(column: $table.t, builder: (column) => column);
+
+  GeneratedColumn<double> get lat =>
+      $composableBuilder(column: $table.lat, builder: (column) => column);
+
+  GeneratedColumn<double> get lon =>
+      $composableBuilder(column: $table.lon, builder: (column) => column);
+
+  GeneratedColumn<double> get speed =>
+      $composableBuilder(column: $table.speed, builder: (column) => column);
+
+  GeneratedColumn<double> get heading =>
+      $composableBuilder(column: $table.heading, builder: (column) => column);
+}
+
+class $$ConvoyTracksTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ConvoyTracksTable,
+          ConvoyTrack,
+          $$ConvoyTracksTableFilterComposer,
+          $$ConvoyTracksTableOrderingComposer,
+          $$ConvoyTracksTableAnnotationComposer,
+          $$ConvoyTracksTableCreateCompanionBuilder,
+          $$ConvoyTracksTableUpdateCompanionBuilder,
+          (
+            ConvoyTrack,
+            BaseReferences<_$AppDatabase, $ConvoyTracksTable, ConvoyTrack>,
+          ),
+          ConvoyTrack,
+          PrefetchHooks Function()
+        > {
+  $$ConvoyTracksTableTableManager(_$AppDatabase db, $ConvoyTracksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConvoyTracksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ConvoyTracksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ConvoyTracksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> convoyId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<int> t = const Value.absent(),
+                Value<double> lat = const Value.absent(),
+                Value<double> lon = const Value.absent(),
+                Value<double?> speed = const Value.absent(),
+                Value<double?> heading = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConvoyTracksCompanion(
+                convoyId: convoyId,
+                userId: userId,
+                t: t,
+                lat: lat,
+                lon: lon,
+                speed: speed,
+                heading: heading,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String convoyId,
+                required String userId,
+                required int t,
+                required double lat,
+                required double lon,
+                Value<double?> speed = const Value.absent(),
+                Value<double?> heading = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConvoyTracksCompanion.insert(
+                convoyId: convoyId,
+                userId: userId,
+                t: t,
+                lat: lat,
+                lon: lon,
+                speed: speed,
+                heading: heading,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ConvoyTracksTable, ConvoyTrack>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ConvoyTracksTable,
+                    ConvoyTrack
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ConvoyTracksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ConvoyTracksTable,
+      ConvoyTrack,
+      $$ConvoyTracksTableFilterComposer,
+      $$ConvoyTracksTableOrderingComposer,
+      $$ConvoyTracksTableAnnotationComposer,
+      $$ConvoyTracksTableCreateCompanionBuilder,
+      $$ConvoyTracksTableUpdateCompanionBuilder,
+      (
+        ConvoyTrack,
+        BaseReferences<_$AppDatabase, $ConvoyTracksTable, ConvoyTrack>,
+      ),
+      ConvoyTrack,
+      PrefetchHooks Function()
+    >;
+typedef $$ConvoyLocalTableCreateCompanionBuilder =
+    ConvoyLocalCompanion Function({
+      required String convoyId,
+      Value<String> role,
+      required int joinedAt,
+      Value<int?> leftAt,
+      Value<String?> recapJson,
+      required int updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ConvoyLocalTableUpdateCompanionBuilder =
+    ConvoyLocalCompanion Function({
+      Value<String> convoyId,
+      Value<String> role,
+      Value<int> joinedAt,
+      Value<int?> leftAt,
+      Value<String?> recapJson,
+      Value<int> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ConvoyLocalTableFilterComposer
+    extends Composer<_$AppDatabase, $ConvoyLocalTable> {
+  $$ConvoyLocalTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get convoyId => $composableBuilder(
+    column: $table.convoyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get leftAt => $composableBuilder(
+    column: $table.leftAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get recapJson => $composableBuilder(
+    column: $table.recapJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ConvoyLocalTableOrderingComposer
+    extends Composer<_$AppDatabase, $ConvoyLocalTable> {
+  $$ConvoyLocalTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get convoyId => $composableBuilder(
+    column: $table.convoyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get joinedAt => $composableBuilder(
+    column: $table.joinedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get leftAt => $composableBuilder(
+    column: $table.leftAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get recapJson => $composableBuilder(
+    column: $table.recapJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ConvoyLocalTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ConvoyLocalTable> {
+  $$ConvoyLocalTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get convoyId =>
+      $composableBuilder(column: $table.convoyId, builder: (column) => column);
+
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<int> get joinedAt =>
+      $composableBuilder(column: $table.joinedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get leftAt =>
+      $composableBuilder(column: $table.leftAt, builder: (column) => column);
+
+  GeneratedColumn<String> get recapJson =>
+      $composableBuilder(column: $table.recapJson, builder: (column) => column);
+
+  GeneratedColumn<int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ConvoyLocalTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ConvoyLocalTable,
+          ConvoyLocalData,
+          $$ConvoyLocalTableFilterComposer,
+          $$ConvoyLocalTableOrderingComposer,
+          $$ConvoyLocalTableAnnotationComposer,
+          $$ConvoyLocalTableCreateCompanionBuilder,
+          $$ConvoyLocalTableUpdateCompanionBuilder,
+          (
+            ConvoyLocalData,
+            BaseReferences<_$AppDatabase, $ConvoyLocalTable, ConvoyLocalData>,
+          ),
+          ConvoyLocalData,
+          PrefetchHooks Function()
+        > {
+  $$ConvoyLocalTableTableManager(_$AppDatabase db, $ConvoyLocalTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ConvoyLocalTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ConvoyLocalTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ConvoyLocalTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> convoyId = const Value.absent(),
+                Value<String> role = const Value.absent(),
+                Value<int> joinedAt = const Value.absent(),
+                Value<int?> leftAt = const Value.absent(),
+                Value<String?> recapJson = const Value.absent(),
+                Value<int> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ConvoyLocalCompanion(
+                convoyId: convoyId,
+                role: role,
+                joinedAt: joinedAt,
+                leftAt: leftAt,
+                recapJson: recapJson,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String convoyId,
+                Value<String> role = const Value.absent(),
+                required int joinedAt,
+                Value<int?> leftAt = const Value.absent(),
+                Value<String?> recapJson = const Value.absent(),
+                required int updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => ConvoyLocalCompanion.insert(
+                convoyId: convoyId,
+                role: role,
+                joinedAt: joinedAt,
+                leftAt: leftAt,
+                recapJson: recapJson,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$ConvoyLocalTable, ConvoyLocalData>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $ConvoyLocalTable,
+                    ConvoyLocalData
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ConvoyLocalTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ConvoyLocalTable,
+      ConvoyLocalData,
+      $$ConvoyLocalTableFilterComposer,
+      $$ConvoyLocalTableOrderingComposer,
+      $$ConvoyLocalTableAnnotationComposer,
+      $$ConvoyLocalTableCreateCompanionBuilder,
+      $$ConvoyLocalTableUpdateCompanionBuilder,
+      (
+        ConvoyLocalData,
+        BaseReferences<_$AppDatabase, $ConvoyLocalTable, ConvoyLocalData>,
+      ),
+      ConvoyLocalData,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -15297,4 +16638,8 @@ class $AppDatabaseManager {
       $$VehicleDocumentsTableTableManager(_db, _db.vehicleDocuments);
   $$EmergencyContactsTableTableManager get emergencyContacts =>
       $$EmergencyContactsTableTableManager(_db, _db.emergencyContacts);
+  $$ConvoyTracksTableTableManager get convoyTracks =>
+      $$ConvoyTracksTableTableManager(_db, _db.convoyTracks);
+  $$ConvoyLocalTableTableManager get convoyLocal =>
+      $$ConvoyLocalTableTableManager(_db, _db.convoyLocal);
 }

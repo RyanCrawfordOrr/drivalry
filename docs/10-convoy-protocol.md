@@ -9,7 +9,7 @@
 | Membership, destination, stops, votes, expenses, photos | Postgres tables (`convoys`, `convoy_members`, `convoy_stops`, `convoy_stop_votes`, `convoy_expenses`, `convoy_photos`) with RLS; Realtime postgres_changes while the convoy screen is open | Durable, visible to late joiners, survives app restarts |
 | WebRTC signaling, regroup pins, chat, position fallback | Supabase Realtime **Broadcast** on channel `convoy:<id>` | Ephemeral, no rows, no storage |
 | Push-to-talk audio, positions every 3–5 s, DJ sync, convoy games | WebRTC full mesh (one `RTCPeerConnection` per other car): one Opus audio track, one data channel `drivalry` | Costs nothing per message; works car to car |
-| ICE servers | Edge Function `turn` returning Metered Open Relay credentials | Keeps the Metered API key off the phone |
+| ICE servers | Metered Open Relay credentials fetched by the phone with the `.env` key, STUN-only fallback | Free 20 GB/month; see §7 |
 
 ## 2. Lifecycle
 
@@ -24,7 +24,9 @@ create (leader) ─► planning ─► start ─► active ─► end ─► rec
 
 ## 3. Broadcast messages (`convoy:<id>`)
 
-Every broadcast payload is `{ v: 1, type, from: <userId>, t: <ms>, ... }`. Unknown `type` is ignored. Realtime broadcast is best-effort; anything that must survive goes in a table.
+Every broadcast payload is `{ v: 1, type, from: <userId>, t: <ms>, ... }`. Unknown `type` is ignored. Realtime broadcast is best-effort; anything that must survive goes in a table. Every send is wrapped so a dropped socket is logged, never thrown (`safeSend`).
+
+One channel object exists per convoy per app run and is **reference-counted**: the live wiring (positions, regroup, lost sheep) and the radio each `join()` when they start and `leave()` when they stop; the socket opens on the first join and closes on the last leave, so stopping the radio never drops the live positions and vice versa. Provider disposal closes it regardless (`shutdown()`).
 
 | type | fields | notes |
 | --- | --- | --- |
@@ -32,7 +34,7 @@ Every broadcast payload is `{ v: 1, type, from: <userId>, t: <ms>, ... }`. Unkno
 | `offer` / `answer` | `{ to, sdp }` | WebRTC SDP, unicast by convention (`to` filter) |
 | `ice` | `{ to, candidate }` | trickle ICE |
 | `bye` | – | leaving the mesh |
-| `pos` | `{ lat, lon, speed, heading, acc }` | **fallback only**, every 15 s, when a peer's data channel is down |
+| `pos` | `{ lat, lon, speed, heading, acc }` | **fallback only**, every 15 s, when a peer's data channel is down; `t` is the fix time |
 | `regroup` | `{ lat, lon, label }` | leader drops a pin; everyone gets a route (Routes API, capped) |
 | `chat` | `{ text }` or `{ voice: <storage path> }` | voice notes are small Opus files in bucket `convoy-photos`? No: chat voice notes go over the data channel when connected (§5) and are not persisted. Text chat is broadcast; the screen keeps the last 100 lines locally. |
 | `ptt` | `{ on: bool }` | who is talking, for the UI; audio itself is the WebRTC track |
@@ -52,9 +54,9 @@ JSON lines `{ v: 1, type, t, ... }`, each ≤ 16 KB.
 
 | type | fields | cadence |
 | --- | --- | --- |
-| `pos` | `{ lat, lon, speed, heading, acc, battery }` | every 3 s while moving, 10 s while stopped; the sender's phone also upserts its normal `presence` row every 30 s as today |
+| `pos` | `{ fixT, lat, lon, speed, heading, acc, battery }` | every 3 s while moving, 10 s while stopped; `t` is the send time and `fixT` the GPS fix time, which is what the receiver stores (the hub keeps the newest `fixT` per car, so a frame delivered twice is a no-op); the sender's phone also upserts its normal `presence` row every 30 s as today |
 | `eta` | `{ toStopId?, seconds, estimated }` | whenever recomputed (Routes API with the straight-line fallback), max every 60 s |
-| `voice` | `{ seq, bytes: <base64 Opus/AAC chunk ≤ 12 KB>, last }` | voice-note chat; the receiving phone reassembles and plays or reads aloud |
+| `voice` | `{ id, seq, count, bytes: <base64 AAC chunk, 9 KB raw / 12 KB encoded>, last, mime, durationMs }` | voice-note chat (≤ 20 s, ≤ 120 KB); the receiving phone reassembles by `id` and plays, or reads text aloud |
 | `game` | `{ game, event, payload }` | passenger games; driver phones only render audio |
 | `dj` | see §6 | |
 
@@ -62,20 +64,20 @@ Positions received are kept on the receiving phone for 30 days (`convoy_tracks` 
 
 ## 6. Convoy DJ
 
-- Everyone's Spotify is linked locally (OAuth PKCE, Spotify Web API in Development Mode: the owner allowlists friends' Spotify accounts in the Spotify dashboard, docs/03 §9).
-- The DJ (any member, one at a time, elected by broadcast `dj {role:"claim"}`) holds the queue and sends `dj {cmd:"play", uri, positionMs, atT}`: play `uri` at `positionMs` when the receiver's clock reads `atT`. Clock offset per peer is measured with `dj {cmd:"ping", t}` / `{cmd:"pong", t, rt}` (NTP-style, median of 5) and refreshed every 30 s.
+- Everyone's Spotify is linked locally (OAuth PKCE with the redirect `drivalry-auth://spotify-callback`, tokens in secure storage; Spotify Web API in Development Mode: the owner allowlists friends' Spotify accounts in the Spotify dashboard, docs/09 §8).
+- The DJ (any member, one at a time, claimed with `dj {cmd:"claim"}` over the data channel; the lower userId wins a conflict) holds the queue and sends `dj {cmd:"play", uri, track, positionMs, atT}`: play `uri` at `positionMs` when the receiver's clock reads `atT` (`track` carries name/artist/art for the screen). Clock offset per peer is measured with `dj {cmd:"ping", t}` / `{cmd:"pong", t, rt}` (NTP-style, median of 5) and refreshed every 30 s.
 - Each phone calls Spotify `PUT /me/player/play` with `position_ms = positionMs + (now - atT)`; re-sync when drift > 500 ms. Vote-to-skip is `dj {cmd:"skip-vote"}`; the DJ skips at majority.
 - Spotify Jam and Apple Music SharePlay stay as deep-link buttons (`spotify:` / `music://`) when installed; no API.
 
 ## 7. ICE servers (`supabase/functions/turn`)
 
-- The owner creates a free Metered account (20 GB TURN per month) and stores its API key as the Edge Function secret `METERED_API_KEY` plus `METERED_DOMAIN` (`<app>.metered.live`). The old open credentials (`openrelayproject`) are gone.
-- The function requires a Supabase JWT (default `verify_jwt`), calls `https://<domain>/api/v1/turn/credentials?apiKey=…`, and returns the ICE server list to the phone, which caches it for 12 h. Without the secrets it returns Google's public STUN only (`stun:stun.l.google.com:19302`), so direct connections still work and relayed ones fail with the honest "direct connection failed" message (docs/03 §10).
+- The owner creates a free Metered account (20 GB TURN per month) and puts its domain and API key in `.env` as `METERED_DOMAIN` (`<app>.metered.live`) and `METERED_API_KEY`; the app fetches `https://<domain>/api/v1/turn/credentials?apiKey=…` and caches the list for 12 h. The old open credentials (`openrelayproject`) are gone. The key ships in the binary; the free plan caps the damage of extraction at 20 GB a month of relay. A broker Edge Function that keeps the key server-side was drafted and declined for now; it can be added later without changing the phone's protocol.
+- Without the values the mesh uses Google's public STUN only (`stun:stun.l.google.com:19302`), so direct connections still work and relayed ones fail with the honest "direct connection failed" message (docs/03 §10).
 - TURN is used only when STUN fails (default ICE behaviour). Measured use goes on the Diagnostics screen (bytes relayed per convoy, from `getStats`).
 
 ## 8. Recap
 
-Built on each phone when the convoy ends, from: received positions (30 days), the planned route and stops (tables), members' uploaded trip summaries (`trip_summaries` for the convoy window, visible through `can_view`), expenses, photos. Awards: Smoothest (highest average score), Lead Foot (most speeding minutes, dishonourable), Most Stops Proposed, DJ (most tracks played), Navigator (leader). Shareable as an image sequence/video stitched on the phone; no raw positions leave the phone.
+Built on each phone when the convoy ends, from: received positions (30 days), the planned route and stops (tables), members' uploaded trip summaries (`trip_summaries` for the convoy window, visible through `can_view`, which migration 0006 extends to current co-members of a convoy), expenses (totals and the settle-up are per currency; the recap's cost line shows the currency with the largest total), photos. Summaries upload after each member's drive ends, so a recap built within 24 h of the end with no summaries yet is provisional and rebuilt on the next open; after that, or as soon as summaries exist, it is stored as final. Awards: Smoothest (highest average score), Lead Foot (most speeding minutes, dishonourable), Most Stops Proposed, DJ (most tracks played), Navigator (leader). Shareable as an image sequence/video stitched on the phone; no raw positions leave the phone.
 
 ## 9. Car screens (Stage 5 hooks)
 

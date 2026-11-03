@@ -21,6 +21,13 @@ void main() {
       );
     });
 
+    test('convoy invite', () {
+      expect(
+        deepLinkToRoute(Uri.parse('drivalry://join/convoy/ab12cd34')),
+        '/join/convoy/ab12cd34',
+      );
+    });
+
     test('post link', () {
       expect(
         deepLinkToRoute(Uri.parse('drivalry://post/p1')),

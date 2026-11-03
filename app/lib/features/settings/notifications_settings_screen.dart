@@ -137,6 +137,7 @@ class _CategorySwitch extends ConsumerWidget {
         NotificationCategory.social => Icons.chat_bubble_outline,
         NotificationCategory.friends => Icons.person_add_alt_1_outlined,
         NotificationCategory.crash => Icons.car_crash_outlined,
+        NotificationCategory.convoy => Icons.route_outlined,
       }),
       title: Text(category.channelName),
       value: value != 'false',

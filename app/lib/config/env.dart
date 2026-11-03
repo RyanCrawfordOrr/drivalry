@@ -34,6 +34,16 @@ abstract final class Env {
   );
   static const firebaseAppIdIos = String.fromEnvironment('FIREBASE_APP_ID_IOS');
 
+  /// Convoy radio TURN relay (docs/10-convoy-protocol.md §7). Optional: with
+  /// neither set the mesh uses public STUN only and relayed connections fail
+  /// honestly. These ship in the binary; the Metered free plan caps the risk
+  /// at 20 GB a month of relay.
+  static const meteredDomain = String.fromEnvironment('METERED_DOMAIN');
+  static const meteredApiKey = String.fromEnvironment('METERED_API_KEY');
+
+  /// Spotify app client id for Convoy DJ (PKCE, no secret). Optional.
+  static const spotifyClientId = String.fromEnvironment('SPOTIFY_CLIENT_ID');
+
   /// Where the phone looks for the speed-limit pack catalogue
   /// (docs/07-pack-format.md §6). Overridable for forks and local testing.
   static const packIndexUrl = String.fromEnvironment(
@@ -51,6 +61,11 @@ abstract final class Env {
   static bool get hasGoogleMaps => googleMapsApiKey.isNotEmpty;
 
   static bool get hasGoogleSignIn => googleWebClientId.isNotEmpty;
+
+  static bool get hasTurn =>
+      meteredDomain.isNotEmpty && meteredApiKey.isNotEmpty;
+
+  static bool get hasSpotify => spotifyClientId.isNotEmpty;
 
   static bool get hasFirebase =>
       firebaseApiKey.isNotEmpty &&

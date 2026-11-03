@@ -63,17 +63,17 @@ Milestones:
 
 ## Stage 4: Convoys ("Road trip mode")
 
-1. **M4.1 Create and join.** 2–6 cars, invite by link, QR or circle, shared destination and stops. Realtime `convoy:{id}` channel.
-2. **M4.2 Radio.** flutter_webrtc full mesh, signaling over the convoy channel, STUN and TURN from Metered Open Relay. PTT button, iOS `PushToTalk` framework, Android foreground service. Siri and Assistant shortcuts.
-3. **M4.3 Convoy map.** Positions every 3–5 s over the data channel with a 15 s Realtime fallback. Leader, gaps, ETAs from Routes (300/day cap, straight-line past the cap). Regroup pin. Lost-sheep alert.
-4. **M4.4 Stops.** Propose, vote, Places suggestions along the route (150/day cap, manual pins past the cap).
-5. **M4.5 Music.** Spotify Jam and Apple Music SharePlay deep links. Convoy DJ over the data channel with allowlisted Spotify users.
-6. **M4.6 Chat, games, cost split, album.** Voice-note chat read aloud to drivers. Passenger games. Expense log with settle-up deep links. Small photos, per-convoy cap, 30-day TTL.
-7. **M4.7 Recap.** Built on each phone from received positions, the planned route and members' summaries. Awards. Shareable video.
+1. **M4.1 Create and join.** _Built 2026-11-03._ 2–6 cars, invite by link, QR or circle, shared destination and stops. Realtime `convoy:{id}` channel.
+2. **M4.2 Radio.** _Built 2026-11-03 (flutter_webrtc mesh, PTT, Metered TURN via .env; iOS PushToTalk framework and Siri/Assistant shortcuts not yet)._ flutter_webrtc full mesh, signaling over the convoy channel, STUN and TURN from Metered Open Relay. PTT button, iOS `PushToTalk` framework, Android foreground service. Siri and Assistant shortcuts.
+3. **M4.3 Convoy map.** _Built 2026-11-03._ Positions every 3–5 s over the data channel with a 15 s Realtime fallback. Leader, gaps, ETAs from Routes (300/day cap, straight-line past the cap). Regroup pin. Lost-sheep alert.
+4. **M4.4 Stops.** _Built 2026-11-03._ Propose, vote, Places suggestions along the route (150/day cap, manual pins past the cap).
+5. **M4.5 Music.** _Built 2026-11-03 (Spotify PKCE, Convoy DJ sync, Jam/SharePlay links; owner creates the Spotify app per docs/09 §8)._ Spotify Jam and Apple Music SharePlay deep links. Convoy DJ over the data channel with allowlisted Spotify users.
+6. **M4.6 Chat, games, cost split, album.** _Built 2026-11-03._ Voice-note chat read aloud to drivers. Passenger games. Expense log with settle-up deep links. Small photos, per-convoy cap, 30-day TTL.
+7. **M4.7 Recap.** _Built 2026-11-03 (on-device from received tracks; shareable card; video export not yet)._ Built on each phone from received positions, the planned route and members' summaries. Awards. Shareable video.
 
 ## Stage 5: In the car
 
-1. **M5.1 Without entitlements.** iOS Live Activity and Dynamic Island (Swift, WidgetKit). Android ongoing notification. Spoken cues via on-device TTS, off by default, live matching every 5 s against the pack.
+1. **M5.1 Without entitlements.** _Spoken cues built 2026-11-03 (off by default, live matcher every 5 s); Live Activity and the Android ongoing notification still to build._ _Spoken cues built 2026-11-03 (Settings > Spoken cues; off by default; live limit tracker every 5 s against the installed pack; rules in docs/03 §5). Live Activity and ongoing notification still to build._ iOS Live Activity and Dynamic Island (Swift, WidgetKit). Android ongoing notification. Spoken cues via on-device TTS, off by default, live matching every 5 s against the pack.
 2. **M5.2 CarPlay** with `flutter_carplay` once the Driving Task entitlement arrives: Drive, Convoy, Talk, Stops tabs. If Apple refuses, M5.1 is the iOS in-car experience and we stop here on iOS.
 3. **M5.3 Android Auto.** Kotlin `CarAppService` in the POI category: Convoy, Stops, Drive, Talk. Desktop Head Unit testing. Play car-app review.
 

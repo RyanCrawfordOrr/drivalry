@@ -12,6 +12,7 @@ import 'router.dart';
 /// - `drivalry://friend/<userId>`      → that user's profile
 /// - `drivalry://join/league/<code>`   → join a league
 /// - `drivalry://join/circle/<code>`   → join a circle
+/// - `drivalry://join/convoy/<code>`   → join a convoy
 /// - `drivalry://post/<postId>`        → a feed post
 String? deepLinkToRoute(Uri uri) {
   if (uri.scheme.toLowerCase() != Routes.scheme) return null;
@@ -26,6 +27,8 @@ String? deepLinkToRoute(Uri uri) {
       return Routes.joinLeague(code);
     case ['join', 'circle', final code]:
       return Routes.joinCircle(code);
+    case ['join', 'convoy', final code]:
+      return Routes.joinConvoy(code);
     case ['post', final id]:
       return Routes.post(id);
     default:

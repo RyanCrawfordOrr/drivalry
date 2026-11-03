@@ -45,6 +45,8 @@ class TripWithScore {
     MaintenanceItems,
     VehicleDocuments,
     EmergencyContacts,
+    ConvoyTracks,
+    ConvoyLocal,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -57,7 +59,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 4;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -80,6 +82,10 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(maintenanceItems);
         await m.createTable(vehicleDocuments);
         await m.createTable(emergencyContacts);
+      }
+      if (from < 4) {
+        await m.createTable(convoyTracks);
+        await m.createTable(convoyLocal);
       }
     },
   );
@@ -842,6 +848,48 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> deleteSetting(String key) =>
       (delete(settings)..where((s) => s.key.equals(key))).go();
+
+  // ------------------------------------------------- stage 4 (convoys) --
+
+  /// Stores positions received from other cars, one row per (peer, t).
+  Future<void> insertConvoyTrack(ConvoyTracksCompanion row) =>
+      into(convoyTracks).insert(row, mode: InsertMode.insertOrIgnore);
+
+  Future<List<ConvoyTrack>> convoyTracksFor(String convoyId) =>
+      (select(convoyTracks)
+            ..where((t) => t.convoyId.equals(convoyId))
+            ..orderBy([(t) => OrderingTerm.asc(t.t)]))
+          .get();
+
+  /// Last stored position time per peer, to throttle writes after a restart.
+  Future<Map<String, int>> convoyTrackLatest(String convoyId) async {
+    final maxT = convoyTracks.t.max();
+    final rows =
+        await (selectOnly(convoyTracks)
+              ..addColumns([convoyTracks.userId, maxT])
+              ..where(convoyTracks.convoyId.equals(convoyId))
+              ..groupBy([convoyTracks.userId]))
+            .get();
+    return {
+      for (final r in rows) r.read(convoyTracks.userId)!: r.read(maxT) ?? 0,
+    };
+  }
+
+  /// Drops positions older than [cutoffMs] (30 days, docs/10 §5).
+  Future<int> purgeOldConvoyTracks(int cutoffMs) => (delete(
+    convoyTracks,
+  )..where((t) => t.t.isSmallerThanValue(cutoffMs))).go();
+
+  Future<ConvoyLocalData?> convoyLocalFor(String convoyId) => (select(
+    convoyLocal,
+  )..where((c) => c.convoyId.equals(convoyId))).getSingleOrNull();
+
+  Stream<ConvoyLocalData?> watchConvoyLocalFor(String convoyId) => (select(
+    convoyLocal,
+  )..where((c) => c.convoyId.equals(convoyId))).watchSingleOrNull();
+
+  Future<void> upsertConvoyLocal(ConvoyLocalCompanion row) =>
+      into(convoyLocal).insertOnConflictUpdate(row);
 }
 
 /// The app's database. Overridden in tests with [AppDatabase.memory].

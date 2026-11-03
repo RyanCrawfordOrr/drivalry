@@ -141,8 +141,12 @@ class TrackingController extends Notifier<TrackingUiState> {
   Future<void> boot() => _bootFuture ??= _boot();
 
   Future<void> _boot() async {
+    // The provider can be disposed (sign-out, a test container) while boot
+    // is still awaiting the plugin or the database; every step checks before
+    // touching state so a late completion is a no-op, not an error.
     try {
       final plugin = await _port.getState();
+      if (!ref.mounted) return;
       state = state.copyWith(plugin: plugin);
       // Listen first, drain second: anything the plugin emits while the spool
       // is being read arrives live, and the recorder dedupes the overlap
@@ -150,18 +154,22 @@ class TrackingController extends Notifier<TrackingUiState> {
       _sub ??= _port.events.listen(
         _onEvent,
         onError: (Object e) {
-          state = state.copyWith(error: '$e');
+          if (ref.mounted) state = state.copyWith(error: '$e');
         },
       );
       await _drain();
+      if (!ref.mounted) return;
       await ref.read(tripFinalizerProvider).resumePending();
-      state = state.copyWith(booted: true, plugin: await _port.getState());
+      if (!ref.mounted) return;
+      final latest = await _port.getState();
+      if (!ref.mounted) return;
+      state = state.copyWith(booted: true, plugin: latest);
       if (plugin.phase == TrackingPhase.active && plugin.tripId != null) {
         await _restoreLive(plugin);
       }
     } catch (e, s) {
       debugPrint('TrackingController boot failed: $e\n$s');
-      state = state.copyWith(booted: true, error: '$e');
+      if (ref.mounted) state = state.copyWith(booted: true, error: '$e');
     }
   }
 

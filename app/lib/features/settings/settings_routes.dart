@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes.dart';
 import 'attribution_screen.dart';
 import 'crash_settings_screen.dart';
+import 'cues_settings_screen.dart';
 import 'emergency_contacts_screen.dart';
 import 'notifications_settings_screen.dart';
 import 'settings_screen.dart';
@@ -26,6 +27,7 @@ List<RouteBase> settingsRoutes() => [
         path: 'contacts',
         builder: (_, _) => const EmergencyContactsScreen(),
       ),
+      GoRoute(path: 'cues', builder: (_, _) => const CuesSettingsScreen()),
     ],
   ),
 ];

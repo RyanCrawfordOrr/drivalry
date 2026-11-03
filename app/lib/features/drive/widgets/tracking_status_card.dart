@@ -2,6 +2,7 @@ import 'package:drivalry_scoring/drivalry_scoring.dart' show SpeedUnits;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../../../features/cues/live_limit.dart';
 import '../../../tracking/tracking_controller.dart';
 import '../../../tracking/tracking_models.dart';
 import '../../../widgets/units.dart';
@@ -13,6 +14,7 @@ class TrackingStatusCard extends StatelessWidget {
     super.key,
     required this.state,
     required this.units,
+    this.liveLimit,
     required this.onRequestPermissions,
     required this.onOpenSettings,
     required this.onSetEnabled,
@@ -25,6 +27,9 @@ class TrackingStatusCard extends StatelessWidget {
 
   final TrackingUiState state;
   final SpeedUnits units;
+
+  /// The road under the car from the live matcher, when a pack covers it.
+  final LiveLimitState? liveLimit;
   final VoidCallback onRequestPermissions;
   final VoidCallback onOpenSettings;
   final ValueChanged<bool> onSetEnabled;
@@ -112,6 +117,10 @@ class TrackingStatusCard extends StatelessWidget {
               ),
             ],
           ),
+          if (liveLimit?.hasLimit == true) ...[
+            const SizedBox(height: 6),
+            _LiveLimitLine(limit: liveLimit!, theme: theme),
+          ],
           const SizedBox(height: 4),
           Text(
             'Scored when you park. Nothing leaves the phone.',
@@ -300,6 +309,45 @@ class _Section extends StatelessWidget {
           ),
         ),
         ?trailing,
+      ],
+    );
+  }
+}
+
+/// "Limit 35 mph · Elm St" with "4 over" in the error colour when speeding.
+class _LiveLimitLine extends StatelessWidget {
+  const _LiveLimitLine({required this.limit, required this.theme});
+
+  final LiveLimitState limit;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final over = limit.overByMps ?? 0;
+    final mph = limit.unitLabel == 'mph';
+    final overDisplay = (mph ? over / 0.44704 : over * 3.6).round();
+    final road = limit.roadName;
+    return Row(
+      key: const Key('live-limit'),
+      children: [
+        Icon(Icons.speed, size: 16, color: theme.colorScheme.onSurfaceVariant),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            'Limit ${limit.posted} ${limit.unitLabel}'
+            '${road == null || road.isEmpty ? '' : ' · $road'}',
+            style: theme.textTheme.bodyMedium,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (overDisplay >= 1)
+          Text(
+            '$overDisplay over',
+            style: theme.textTheme.labelLarge?.copyWith(
+              color: theme.colorScheme.error,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
       ],
     );
   }

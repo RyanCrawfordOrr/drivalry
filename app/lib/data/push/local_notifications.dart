@@ -9,7 +9,8 @@ enum NotificationCategory {
   social('social', 'Reactions and comments'),
   friends('friends', 'Friend requests'),
   crash('crash', 'Crash alerts'),
-  tripScored('trip_scored', 'Trip scored');
+  tripScored('trip_scored', 'Trip scored'),
+  convoy('convoy', 'Convoy alerts');
 
   const NotificationCategory(this.channelId, this.channelName);
   final String channelId;
@@ -19,6 +20,7 @@ enum NotificationCategory {
     'friends' => friends,
     'crash' => crash,
     'trip_scored' => tripScored,
+    'convoy' => convoy,
     _ => social,
   };
 

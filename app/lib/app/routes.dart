@@ -18,6 +18,19 @@ abstract final class Routes {
   static const parking = '/drive/parking';
   static String tripDetail(String id) => '/drive/trip/$id';
 
+  // Convoy branch.
+  static const createConvoy = '/convoy/new';
+  static String convoyDetail(String id) => '/convoy/$id';
+  static String convoyRadio(String id) => '/convoy/$id/radio';
+  static String convoyStops(String id) => '/convoy/$id/stops';
+  static String convoyChat(String id) => '/convoy/$id/chat';
+  static String convoyMusic(String id) => '/convoy/$id/music';
+  static String convoyGames(String id) => '/convoy/$id/games';
+  static String convoyExpenses(String id) => '/convoy/$id/expenses';
+  static String convoyAlbum(String id) => '/convoy/$id/album';
+  static String convoyRecap(String id) => '/convoy/$id/recap';
+  static String joinConvoy(String code) => '/join/convoy/$code';
+
   // Garage branch.
   static const newVehicle = '/garage/vehicle/new';
   static String vehicle(String id) => '/garage/vehicle/$id';
@@ -43,6 +56,7 @@ abstract final class Routes {
   static const attribution = '/settings/attribution';
   static const crashSettings = '/settings/crash';
   static const emergencyContacts = '/settings/contacts';
+  static const cuesSettings = '/settings/cues';
 
   /// Full-screen crash countdown, pushed over everything (docs/01 §4.5).
   static const crash = '/crash';

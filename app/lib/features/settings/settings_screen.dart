@@ -136,6 +136,17 @@ class SettingsScreen extends ConsumerWidget {
             onTap: () => context.push(Routes.emergencyContacts),
           ),
           const Divider(),
+          const _Header('During a drive'),
+          ListTile(
+            leading: const Icon(Icons.record_voice_over_outlined),
+            title: const Text('Spoken cues'),
+            subtitle: const Text(
+              'Short limit and smoothness cues through the car speakers. '
+              'Off by default.',
+            ),
+            onTap: () => context.push(Routes.cuesSettings),
+          ),
+          const Divider(),
           const _Header('App'),
           ListTile(
             leading: const Icon(Icons.notifications_outlined),

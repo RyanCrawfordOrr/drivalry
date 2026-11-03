@@ -5,6 +5,7 @@ import '../config/env.dart';
 import '../data/crash/crash_monitor.dart';
 import '../data/db/database.dart';
 import '../data/sync/sync_bootstrap.dart';
+import '../features/cues/spoken_cues.dart';
 import '../packs/pack_providers.dart';
 import '../tracking/providers.dart';
 import '../tracking/tracking_controller.dart';
@@ -38,6 +39,8 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   ref.watch(syncBootstrapProvider);
   // Crash countdown owner (docs/01 §4.5); fed by the recorder.
   ref.watch(crashMonitorProvider);
+  // Spoken cues (docs/01 §4.2): null and free while the switch is off.
+  ref.watch(spokenCuesProvider);
   await ref.watch(mapsReadyProvider.future);
   try {
     final removed = await ref

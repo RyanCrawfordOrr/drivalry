@@ -70,3 +70,13 @@ Firebase Cloud Messaging is free and rides on the same Google Cloud project. The
 4. **Cloud Messaging** tab → under Apple app configuration upload the APNs auth key (`.p8` from developer.apple.com → Keys, with APNs ticked; note its Key ID and your Team ID). Without this iOS devices register tokens but never receive anything.
 5. **Service accounts** tab → Generate new private key → that JSON is the `FCM_SERVICE_ACCOUNT_JSON` secret for the Edge Function (`supabase/functions/push/README.md`). Delete the local copy afterwards.
 6. Rebuild the app with `--dart-define-from-file=../.env`. Settings → Notifications shows "registered" once a token is stored in `push_tokens`.
+
+## 8. Spotify (Convoy DJ)
+
+Convoy DJ plays the same track in every car in lockstep through each member's own Spotify Premium account. Spotify keeps hobby apps in Development Mode, which means only users you allowlist can connect (docs/03 §9). Spotify Jam and Apple Music SharePlay need none of this; they are plain deep links.
+
+1. https://developer.spotify.com/dashboard → **Create app**. Name `Drivalry`, description `Convoy DJ for a driving app`, **Redirect URI** `drivalry-auth://spotify-callback` (its own scheme, so it never collides with the app's `drivalry://` invite links), tick **Web API**. Save.
+2. Copy the **Client ID** into `.env` as `SPOTIFY_CLIENT_ID`. There is no secret: the app uses PKCE.
+3. **User Management** tab → add each friend's Spotify account email (up to 25 in Development Mode). Anyone not listed sees "Ask Ryan to add your Spotify account to the Drivalry allowlist".
+4. Everyone using Convoy DJ needs Spotify Premium (playback control is Premium-only); free accounts get "Convoy DJ needs Spotify Premium on this account".
+5. Rebuild with `--dart-define-from-file=../.env`. Convoy → Music → **Connect Spotify** opens the system browser once; tokens stay in the phone's secure storage.

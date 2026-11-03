@@ -173,6 +173,8 @@ A one-hour trip is about 3,600 samples and matches in about 15 ms in an isolate 
 
 For spoken cues (opt-in) the same matcher runs live every 5 s on the latest fix only, against tiles already cached for the current area. It never touches the network.
 
+Live matching is `LiveLimitTracker` (`app/lib/features/cues/live_limit.dart`): it opens the smallest installed pack covering the first fix of the trip once, on the main isolate (a single-fix match is milliseconds), applies the cached cloud overrides and this phone's pending flags like the finalizer, and emits a `LiveLimitState` (limit, posted number and unit, road name, confidence, speed) every 5 s of trip time. With no pack it tries again a minute later, so driving into a covered region picks the pack up. The cue rules (`spoken_cues.dart`) are clock-free and work on the timestamps in those states: nothing in the first 10 s of a trip; "Limit's N" when the posted value changes, once per value per 20 s; "Over by N" after 8 continuous seconds at least 5 mph over, at most once a minute; "Smooth" after 5 clean minutes (no over-limit, no motion peak ≥ 3.5 m/s²), at most every 10 min. A limit below confidence 0.7 is treated as unknown and nothing is said. Nothing is spoken during a crash countdown. Settings keys: `cues_enabled` (default off), `cues_limit`, `cues_over`, `cues_smooth`, `cues_voice_rate`.
+
 ## 6. Battery strategy
 
 The rule is simple to state and fiddly to implement: **the GPS radio is on only while the phone is physically in a moving vehicle, and the network radio is used in bursts.**
@@ -287,6 +289,7 @@ app/                         Flutter app (bundle id app.drivalry)
       friends/               circles map, feed, profiles
       convoy/                create/join, convoy map, PTT, stops, recap
       garage/                vehicles, fuel, parking memory, documents
+      cues/                  live limit tracker, spoken-cue rules, TTS speaker
       settings/              hiding toggles, cues, diagnostics, attribution
     tracking/                Dart side of the native plugins, trip state machine, recorder
     packs/                   download manager, pack reader, matcher

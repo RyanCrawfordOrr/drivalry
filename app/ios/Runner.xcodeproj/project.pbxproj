@@ -24,6 +24,7 @@
 		DA7B1B062F2A000100D81A01 /* Spool.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A062F2A000100D81A01 /* Spool.swift */; };
 		DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A082F2A000100D81A01 /* CrashDetector.swift */; };
 		DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A072F2A000100D81A01 /* Diagnostics.swift */; };
+		DA7B1B092F2A000100D81A01 /* ConvoyAudioPlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		DA7B1A062F2A000100D81A01 /* Spool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spool.swift; sourceTree = "<group>"; };
 		DA7B1A082F2A000100D81A01 /* CrashDetector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CrashDetector.swift; sourceTree = "<group>"; };
 		DA7B1A072F2A000100D81A01 /* Diagnostics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diagnostics.swift; sourceTree = "<group>"; };
+		DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConvoyAudioPlugin.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +158,7 @@
 				DA7B1A062F2A000100D81A01 /* Spool.swift */,
 				DA7B1A082F2A000100D81A01 /* CrashDetector.swift */,
 				DA7B1A072F2A000100D81A01 /* Diagnostics.swift */,
+				DA7B1A092F2A000100D81A01 /* ConvoyAudioPlugin.swift */,
 			);
 			path = Tracking;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				DA7B1B062F2A000100D81A01 /* Spool.swift in Sources */,
 				DA7B1B082F2A000100D81A01 /* CrashDetector.swift in Sources */,
 				DA7B1B072F2A000100D81A01 /* Diagnostics.swift in Sources */,
+				DA7B1B092F2A000100D81A01 /* ConvoyAudioPlugin.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
