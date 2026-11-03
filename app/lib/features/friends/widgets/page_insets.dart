@@ -9,10 +9,7 @@ import '../../../app/ui/ui.dart';
 double pageBottomInset(BuildContext context) =>
     Space.xl + MediaQuery.paddingOf(context).bottom;
 
-/// Bottom padding for a sheet body: the keyboard while it is up, plus the
-/// gesture bar or home indicator the sheet would otherwise run under.
-EdgeInsets sheetBottomInset(BuildContext context) => EdgeInsets.only(
-  bottom:
-      MediaQuery.viewInsetsOf(context).bottom +
-      MediaQuery.paddingOf(context).bottom,
-);
+/// Bottom padding for a sheet body: the keyboard while it is up. The gesture
+/// bar or home indicator is already cleared by `showDrivalrySheet` itself.
+EdgeInsets sheetBottomInset(BuildContext context) =>
+    EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom);
