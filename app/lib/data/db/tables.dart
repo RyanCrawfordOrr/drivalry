@@ -75,6 +75,11 @@ class Trips extends Table {
   /// Soft delete: hidden everywhere, purged with the samples.
   IntColumn get deletedAt => integer().nullable()();
 
+  /// Epoch ms of the native trigger that opened the trip (the `tentative`
+  /// event), kept when `startedAt` moves to the first confirmed fix so
+  /// Diagnostics can count late starts (schema 6). Null for older rows.
+  IntColumn get triggeredAt => integer().nullable()();
+
   @override
   Set<Column> get primaryKey => {id};
 }
@@ -398,4 +403,22 @@ class ConvoyLocal extends Table {
 
   @override
   Set<Column> get primaryKey => {convoyId};
+}
+
+/// Battery level readings for Settings › Diagnostics (docs/06 M1.5): one at
+/// each trip start and end, and one a day while parked. Never uploaded;
+/// purged after 30 days.
+class BatterySamples extends Table {
+  /// Epoch ms.
+  IntColumn get t => integer()();
+
+  /// 0–1.
+  RealColumn get level => real()();
+
+  /// tripStart | tripEnd | parked (a [BatteryPhase] wire value).
+  TextColumn get phase => text()();
+  TextColumn get tripId => text().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {t, phase};
 }

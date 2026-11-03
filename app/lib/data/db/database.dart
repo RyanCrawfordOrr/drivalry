@@ -49,6 +49,7 @@ class TripWithScore {
     EmergencyContacts,
     ConvoyTracks,
     ConvoyLocal,
+    BatterySamples,
   ],
 )
 class AppDatabase extends _$AppDatabase {
@@ -61,7 +62,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.memory() : super(NativeDatabase.memory());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -106,6 +107,11 @@ class AppDatabase extends _$AppDatabase {
         ]) {
           await m.addColumn(trips, c);
         }
+      }
+      if (from < 6) {
+        // Diagnostics: trigger time for late-start counting, battery samples.
+        await m.addColumn(trips, trips.triggeredAt);
+        await m.createTable(batterySamples);
       }
     },
   );
@@ -414,6 +420,12 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<LimitFlag>> limitFlagsFor(String tripId) =>
       (select(limitFlags)..where((f) => f.tripId.equals(tripId))).get();
+
+  /// Flags this phone raised for ways in [region] (flags without a region
+  /// count too: they predate region tagging or came from an unpacked road).
+  Future<List<LimitFlag>> limitFlagsInRegion(String region) => (select(
+    limitFlags,
+  )..where((f) => f.region.equals(region) | f.region.isNull())).get();
 
   // ------------------------------------------------------------- settings --
 
@@ -804,6 +816,7 @@ class AppDatabase extends _$AppDatabase {
       'remoteCache': await count(remoteCache),
       'uploadedTrips': await count(uploadedTrips),
       'badgeAwards': await count(badgeAwards),
+      'batterySamples': await count(batterySamples),
     };
   }
 
@@ -1035,6 +1048,52 @@ class AppDatabase extends _$AppDatabase {
   Future<List<ConvoyLocalData>> allConvoyLocal() => (select(
     convoyLocal,
   )..orderBy([(c) => OrderingTerm.desc(c.joinedAt)])).get();
+
+  // ------------------------------------------- diagnostics (docs/06 M1.5) --
+
+  Future<void> insertBatterySample(BatterySamplesCompanion row) =>
+      into(batterySamples).insert(row, mode: InsertMode.insertOrIgnore);
+
+  /// Samples taken at or after [sinceMs], oldest first.
+  Future<List<BatterySample>> batterySamplesSince(int sinceMs) =>
+      (select(batterySamples)
+            ..where((b) => b.t.isBiggerOrEqualValue(sinceMs))
+            ..orderBy([(b) => OrderingTerm.asc(b.t)]))
+          .get();
+
+  /// Newest sample of one phase, or null.
+  Future<BatterySample?> lastBatterySample(String phase) =>
+      (select(batterySamples)
+            ..where((b) => b.phase.equals(phase))
+            ..orderBy([(b) => OrderingTerm.desc(b.t)])
+            ..limit(1))
+          .getSingleOrNull();
+
+  Future<int> purgeBatterySamplesBefore(int beforeMs) => (delete(
+    batterySamples,
+  )..where((b) => b.t.isSmallerThanValue(beforeMs))).go();
+
+  /// Every trip row that started at or after [sinceMs], including soft-deleted
+  /// ones, oldest first. Diagnostics counts deletions, so it must see them.
+  Future<List<Trip>> tripsStartedSince(int sinceMs) =>
+      (select(trips)
+            ..where((t) => t.startedAt.isBiggerOrEqualValue(sinceMs))
+            ..orderBy([(t) => OrderingTerm.asc(t.startedAt)]))
+          .get();
+
+  /// Time of the last fix at or above [minSpeedMps] for a trip, or null when
+  /// the samples are gone (90-day TTL) or the car never moved.
+  Future<int?> lastMovingSampleT(
+    String tripId, {
+    double minSpeedMps = 1,
+  }) async {
+    final row = await customSelect(
+      'SELECT MAX(t) AS t FROM samples WHERE trip_id = ? AND speed >= ?',
+      variables: [Variable.withString(tripId), Variable.withReal(minSpeedMps)],
+      readsFrom: {samples},
+    ).getSingle();
+    return row.readNullable<int>('t');
+  }
 }
 
 /// The app's database. Overridden in tests with [AppDatabase.memory].

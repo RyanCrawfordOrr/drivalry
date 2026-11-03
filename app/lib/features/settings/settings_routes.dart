@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
 import 'attribution_screen.dart';
+import 'auto_reply_settings_screen.dart';
 import 'crash_settings_screen.dart';
 import 'cues_settings_screen.dart';
 import 'emergency_contacts_screen.dart';
@@ -28,6 +29,10 @@ List<RouteBase> settingsRoutes() => [
         builder: (_, _) => const EmergencyContactsScreen(),
       ),
       GoRoute(path: 'cues', builder: (_, _) => const CuesSettingsScreen()),
+      GoRoute(
+        path: 'auto-reply',
+        builder: (_, _) => const AutoReplySettingsScreen(),
+      ),
     ],
   ),
 ];

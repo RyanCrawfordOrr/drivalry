@@ -42,6 +42,7 @@ idle ──motion/BT/geofence trigger──► tentative ──speed > 4 m/s for
 | `setMapsApiKey` | `{key: String}` | `null` | iOS only (`GMSServices.provideAPIKey`). Android ignores it (the key is in the manifest). |
 | `getDiagnostics` | – | `Diagnostics` map (§3.3) | For Settings › Diagnostics. |
 | `getLastKnownLocation` | `{maxAgeMs: int?}` | `{t, lat, lon, accuracy, speed?, heading?}` or `null` | Cheap: the OS's cached last fix (Android `FusedLocationProviderClient.lastLocation`, iOS `CLLocationManager.location`). When it is older than `maxAgeMs` (default 120000) the plugin requests one fresh fix (Android `getCurrentLocation`, iOS `requestLocation`) and waits up to 10 s. Used to publish presence when the app opens. Needs at least while-in-use permission; returns `null` otherwise. |
+| `openDrivingModeSettings` | – | `bool` | Opens the OS screen that owns driving mode / auto-reply: Android tries `ZEN_MODE_SETTINGS`, then the DND priority and sound settings, and answers whether one opened. iOS answers `false` (no public Focus URL), and the app shows the steps instead. Drivalry never sends replies itself (docs/01 §4.2). |
 
 ### 3.1 `State`
 

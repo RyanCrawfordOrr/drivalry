@@ -121,7 +121,8 @@ const List<BadgeDef> fallbackBadgeDefs = [
   BadgeDef(
     id: 'snitch',
     name: 'Snitch',
-    description: 'A speed-limit fix you flagged was confirmed.',
+    description:
+        'Ten speed-limit fixes you flagged were confirmed by other drivers.',
     category: 'social',
   ),
   BadgeDef(

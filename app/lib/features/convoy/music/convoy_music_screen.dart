@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../config/env.dart';
 import '../../../data/spotify/spotify_client.dart';
+import '../widgets/member_names.dart';
 import 'dj_controller.dart';
 
 /// Music for one convoy: Spotify Jam / Apple Music SharePlay deep links, and
@@ -131,6 +132,9 @@ class _DjSectionState extends ConsumerState<_DjSection> {
     }
     final s = ref.watch(djControllerProvider(widget.convoyId));
     final c = ref.read(djControllerProvider(widget.convoyId).notifier);
+    final names =
+        ref.watch(convoyMemberNamesProvider(widget.convoyId)).value ??
+        const <String, String>{};
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -184,7 +188,7 @@ class _DjSectionState extends ConsumerState<_DjSection> {
                         ? 'No DJ yet'
                         : s.isDj
                         ? 'You are the DJ'
-                        : 'DJ: ${_short(s.dj!)}',
+                        : 'DJ: ${memberLabel(names, s.dj!)}',
                   ),
                 ),
                 const Spacer(),
@@ -285,6 +289,4 @@ class _DjSectionState extends ConsumerState<_DjSection> {
       ),
     );
   }
-
-  String _short(String id) => id.length > 8 ? id.substring(0, 8) : id;
 }

@@ -123,6 +123,8 @@ class TrackingPlugin private constructor(
 
                 "getDiagnostics" -> result.success(runtime.diagnostics())
 
+                "openDrivingModeSettings" -> result.success(openDrivingModeSettings())
+
                 "getLastKnownLocation" -> getLastKnownLocation(
                     maxAgeMs = call.argument<Number>("maxAgeMs")?.toLong() ?: DEFAULT_LAST_KNOWN_MAX_AGE_MS,
                     result = result,
@@ -134,6 +136,32 @@ class TrackingPlugin private constructor(
             Log.w(TAG, "method ${call.method} failed", e)
             result.error("native", e.message ?: e.javaClass.simpleName, null)
         }
+    }
+
+    // --- openDrivingModeSettings (§3) --------------------------------------------------------------
+
+    /**
+     * Android's driving mode (auto-reply, silenced notifications) is a Do Not Disturb rule, so the
+     * closest screen we can open is DND settings; older or vendor builds fall back to the sound
+     * settings. Returns false when no settings activity resolves. Drivalry never sends replies.
+     */
+    private fun openDrivingModeSettings(): Boolean {
+        val actions = listOf(
+            "android.settings.ZEN_MODE_SETTINGS",
+            Settings.ACTION_ZEN_MODE_PRIORITY_SETTINGS,
+            Settings.ACTION_SOUND_SETTINGS,
+        )
+        for (action in actions) {
+            val intent = Intent(action).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (intent.resolveActivity(activity.packageManager) == null) continue
+            try {
+                activity.startActivity(intent)
+                return true
+            } catch (e: Exception) {
+                Log.w(TAG, "could not open $action", e)
+            }
+        }
+        return false
     }
 
     // --- getLastKnownLocation (§3) ---------------------------------------------------------------

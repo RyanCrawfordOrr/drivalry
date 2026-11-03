@@ -196,6 +196,11 @@ final class TrackingPlugin: NSObject, FlutterStreamHandler {
       let maxAgeMs = (args?["maxAgeMs"] as? NSNumber)?.int64Value ?? TrackingPlugin.lastKnownDefaultMaxAgeMs
       getLastKnownLocation(maxAgeMs: maxAgeMs, result: result)
 
+    case "openDrivingModeSettings":
+      // No public URL opens Settings › Focus (App-Prefs: schemes fail review); the app shows the
+      // steps instead. False tells Dart to do that.
+      result(false)
+
     default:
       result(FlutterMethodNotImplemented)
     }

@@ -112,6 +112,9 @@ class TripRecorder {
         TripsCompanion.insert(
           id: tripId,
           startedAt: t,
+          // The first event's time survives as the trigger time even after
+          // `active` moves startedAt to the first confirmed fix.
+          triggeredAt: Value(t),
           phase: TripPhase.recording.wire,
           triggerKind: Value(trigger),
           createdAt: _now(),

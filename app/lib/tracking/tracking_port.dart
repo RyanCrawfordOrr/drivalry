@@ -24,6 +24,12 @@ abstract class TrackingPort {
   /// (docs/08 §3). Null without location permission or without a plugin.
   Future<LastKnownLocation?> getLastKnownLocation({int maxAgeMs = 120000});
 
+  /// Opens the OS screen where a driving mode / auto-reply lives (Android:
+  /// Do Not Disturb settings). Returns false where nothing could be opened,
+  /// which is always the case on iOS (no public settings URL survives
+  /// review). Drivalry links to the OS feature; it never sends replies.
+  Future<bool> openDrivingModeSettings() async => false;
+
   /// Live events. A broadcast stream; late subscribers miss nothing important
   /// because the spool keeps the history.
   Stream<TrackingEvent> get events;

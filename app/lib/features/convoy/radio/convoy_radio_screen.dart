@@ -4,6 +4,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../widgets/signed_in_scope.dart';
 import '../channel/convoy_channel.dart';
+import '../widgets/member_names.dart';
 import 'mesh.dart';
 import 'peer_link.dart';
 import 'radio_controller.dart';
@@ -91,6 +92,8 @@ class RadioBody extends ConsumerWidget {
     final peers = state.peers.values.toList()
       ..sort((a, b) => a.peerId.compareTo(b.peerId));
     final relayed = ref.watch(relayedBytesProvider(convoyId)).value ?? 0;
+    final names =
+        ref.watch(convoyMemberNamesProvider(convoyId)).value ?? const {};
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -132,6 +135,7 @@ class RadioBody extends ConsumerWidget {
         for (final p in peers)
           _PeerTile(
             status: p,
+            name: memberLabel(names, p.peerId),
             talking: state.talking.contains(p.peerId),
             onReconnect: () => ctl.reconnect(p.peerId),
           ),
@@ -250,11 +254,13 @@ class _PttButton extends StatelessWidget {
 class _PeerTile extends StatelessWidget {
   const _PeerTile({
     required this.status,
+    required this.name,
     required this.talking,
     required this.onReconnect,
   });
 
   final PeerStatus status;
+  final String name;
   final bool talking;
   final VoidCallback onReconnect;
 
@@ -273,7 +279,7 @@ class _PeerTile extends StatelessWidget {
         talking ? Icons.graphic_eq : Icons.directions_car_outlined,
         color: color,
       ),
-      title: Text(_shortId(status.peerId)),
+      title: Text(name),
       subtitle: Text(
         '$label · ${status.dataOpen ? 'data on' : 'data off'} · '
         '↑${_bytes(status.bytesSent)} ↓${_bytes(status.bytesReceived)}',
@@ -324,8 +330,6 @@ class _Centered extends StatelessWidget {
     );
   }
 }
-
-String _shortId(String id) => id.length <= 8 ? id : id.substring(0, 8);
 
 String _bytes(int b) {
   if (b < 1024) return '$b B';

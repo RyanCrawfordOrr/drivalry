@@ -10,6 +10,8 @@ import '../../tracking/tracking_controller.dart';
 import '../../tracking/tracking_models.dart';
 import '../db/database.dart';
 import '../supabase/supabase_providers.dart';
+import 'circles_sync.dart';
+import 'friends_sync.dart';
 
 /// One row of `presence` joined with the owner's profile: where a friend or
 /// circle member is right now (ADR-018). RLS decides which rows come back.
@@ -327,12 +329,29 @@ enum PresenceGateAction { none, clear, publish }
 /// setting has been read. A foreground publish happens only on the
 /// transition to visible, not on every emission of the setting stream.
 class PresenceGate {
-  PresenceGate({this.hidden, this.userId});
+  PresenceGate({this.hidden, this.userId, this.hasAudience});
 
   bool? hidden;
   String? userId;
 
-  bool get allowed => userId != null && hidden == false;
+  /// Whether anyone could see the row: an accepted friend, or a circle the
+  /// user is not hiding in. Null while the friend and circle lists are still
+  /// loading, which counts as "someone might", so a slow load never blocks
+  /// publishing. False means hiding in every audience: publish nothing.
+  bool? hasAudience;
+
+  bool get allowed => userId != null && hidden == false && hasAudience != false;
+
+  /// Audience appears or vanishes. Vanishing clears the row (nobody could
+  /// see it, so it should not sit in the table); appearing publishes.
+  PresenceGateAction onAudienceChanged(bool? next) {
+    final prev = hasAudience;
+    hasAudience = next;
+    if (userId == null || hidden != false) return PresenceGateAction.none;
+    if (next == false && prev != false) return PresenceGateAction.clear;
+    if (next != false && prev == false) return PresenceGateAction.publish;
+    return PresenceGateAction.none;
+  }
 
   PresenceGateAction onHiddenChanged(bool? next) {
     final prev = hidden;
@@ -368,6 +387,16 @@ final locationHiddenProvider = StreamProvider<bool>(
       .map((v) => v == 'true'),
 );
 
+/// Whether anyone could see the owner's position: at least one accepted
+/// friend, or one circle the owner is not hiding in (the circle's own
+/// `hiding` flag, honoured by RLS). Null until both lists have loaded.
+final presenceAudienceProvider = Provider<bool?>((ref) {
+  final friends = ref.watch(friendsSnapshotProvider).value;
+  final circles = ref.watch(myCirclesProvider).value;
+  if (friends == null || circles == null) return null;
+  return friends.friends.isNotEmpty || circles.any((c) => !c.myHiding);
+});
+
 /// Starts publishing the owner's presence for the life of the app. Watched by
 /// the Drive tab. Null without a Supabase project.
 final presencePublisherProvider = Provider<PresencePublisher?>((ref) {
@@ -378,6 +407,7 @@ final presencePublisherProvider = Provider<PresencePublisher?>((ref) {
   final gate = PresenceGate(
     hidden: ref.read(locationHiddenProvider).value,
     userId: ref.read(currentUserIdProvider),
+    hasAudience: ref.read(presenceAudienceProvider),
   );
 
   final publisher = PresencePublisher(
@@ -412,6 +442,10 @@ final presencePublisherProvider = Provider<PresencePublisher?>((ref) {
   });
   ref.listen(currentUserIdProvider, (prev, next) {
     act(gate.onUserChanged(next), prev);
+  });
+  // Hiding in every circle with no friends: stop publishing and drop the row.
+  ref.listen(presenceAudienceProvider, (_, next) {
+    act(gate.onAudienceChanged(next), null);
   });
 
   final events = ref

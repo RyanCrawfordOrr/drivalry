@@ -96,5 +96,14 @@ class FakeTrackingPort implements TrackingPort {
     return lastKnown;
   }
 
+  /// What [openDrivingModeSettings] answers.
+  bool drivingModeSettingsOpens = true;
+
+  @override
+  Future<bool> openDrivingModeSettings() async {
+    calls.add('openDrivingModeSettings');
+    return drivingModeSettingsOpens;
+  }
+
   Future<void> dispose() => controller.close();
 }

@@ -25,6 +25,28 @@ void main() {
       expect(gate.onHiddenChanged(false), PresenceGateAction.publish);
     });
 
+    test('no audience: clear once, publish again when someone can see', () {
+      final gate = PresenceGate(hidden: false, userId: 'u1');
+      expect(gate.allowed, isTrue, reason: 'unknown audience still publishes');
+      expect(gate.onAudienceChanged(null), PresenceGateAction.none);
+      expect(gate.onAudienceChanged(true), PresenceGateAction.none);
+      expect(gate.onAudienceChanged(false), PresenceGateAction.clear);
+      expect(gate.allowed, isFalse);
+      expect(gate.onAudienceChanged(false), PresenceGateAction.none);
+      expect(gate.onAudienceChanged(true), PresenceGateAction.publish);
+      expect(gate.allowed, isTrue);
+    });
+
+    test('audience changes do nothing while hidden or signed out', () {
+      final hidden = PresenceGate(hidden: true, userId: 'u1');
+      expect(hidden.onAudienceChanged(false), PresenceGateAction.none);
+      expect(hidden.onAudienceChanged(true), PresenceGateAction.none);
+      final signedOut = PresenceGate(hidden: false);
+      expect(signedOut.onAudienceChanged(false), PresenceGateAction.none);
+      // Signing in while hiding everywhere still publishes nothing.
+      expect(signedOut.onUserChanged('u1'), PresenceGateAction.none);
+    });
+
     test('signed out never publishes; signing in while visible does', () {
       final gate = PresenceGate(hidden: false);
       expect(gate.allowed, isFalse);

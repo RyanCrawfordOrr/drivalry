@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../../widgets/units.dart';
+import '../badges/badges_sync.dart';
 import '../db/database.dart';
 import '../supabase/supabase_providers.dart';
 import 'outbox.dart';
@@ -82,6 +83,7 @@ class LimitFlagsSync {
     this._client, {
     int Function()? now,
     OverridesSource? overrides,
+    this.onConfirmedFlags,
   }) : _now = now ?? (() => DateTime.now().millisecondsSinceEpoch),
        _overrides =
            overrides ??
@@ -93,6 +95,18 @@ class LimitFlagsSync {
   final OverridesSource? _overrides;
   final int Function() _now;
   StreamSubscription<List<LimitFlag>>? _sub;
+
+  /// Called with the running total whenever a pull confirms more of this
+  /// phone's flags (docs/02: Snitch at [snitchConfirmations]).
+  final Future<void> Function(int confirmed)? onConfirmedFlags;
+
+  /// Flags of yours the shared cache has confirmed before Snitch is earned
+  /// (docs/02 §"Badges").
+  static const int snitchConfirmations = 10;
+
+  /// Settings key: JSON list of confirmed local flag ids, so a flag counts
+  /// once however many pulls return its override.
+  static const String confirmedFlagsKey = 'snitch:confirmed_flag_ids';
 
   /// Outbox kind `limit_flag`: `{flag_id, way_id, region, suggested_value,
   /// suggested_mph, suggested_mps}`.
@@ -215,6 +229,7 @@ class LimitFlagsSync {
           jsonEncode(merged),
           _now(),
         );
+        await noteConfirmedFlags(region, rows);
         if (newest != null) {
           await _db.setSetting(
             _sinceKey(region),
@@ -230,6 +245,51 @@ class LimitFlagsSync {
     }
     return done;
   }
+
+  /// Confirmed local flag ids read from settings.
+  Future<Set<int>> confirmedFlagIds() async {
+    final raw = await _db.getSetting(confirmedFlagsKey);
+    if (raw == null) return {};
+    try {
+      return {for (final v in jsonDecode(raw) as List) (v as num).toInt()};
+    } catch (_) {
+      return {};
+    }
+  }
+
+  /// An override for a way this phone flagged, committed after the flag, is
+  /// a confirmation of that flag. Each flag counts once. Fires
+  /// [onConfirmedFlags] with the new total when anything was added.
+  Future<int> noteConfirmedFlags(
+    String region,
+    List<Map<String, dynamic>> rows,
+  ) async {
+    final confirmed = await confirmedFlagIds();
+    if (rows.isEmpty) return confirmed.length;
+    final flags = await _db.limitFlagsInRegion(region);
+    if (flags.isEmpty) return confirmed.length;
+    var added = false;
+    for (final r in rows) {
+      final wayId = '${r['way_id']}';
+      final updated = DateTime.tryParse(
+        '${r['updated_at'] ?? ''}',
+      )?.millisecondsSinceEpoch;
+      for (final f in flags) {
+        if (f.wayId != wayId || confirmed.contains(f.id)) continue;
+        if (updated != null && f.createdAt > updated) continue;
+        confirmed.add(f.id);
+        added = true;
+      }
+    }
+    if (added) {
+      await _db.setSetting(
+        confirmedFlagsKey,
+        jsonEncode(confirmed.toList()..sort()),
+      );
+      await onConfirmedFlags?.call(confirmed.length);
+    }
+    return confirmed.length;
+  }
 }
 
 final limitFlagsSyncProvider = Provider<LimitFlagsSync>((ref) {
@@ -237,6 +297,12 @@ final limitFlagsSyncProvider = Provider<LimitFlagsSync>((ref) {
     ref.watch(databaseProvider),
     ref.watch(outboxWorkerProvider),
     ref.watch(supabaseProvider),
+    onConfirmedFlags: (confirmed) async {
+      if (confirmed < LimitFlagsSync.snitchConfirmations) return;
+      // Through the shared engine so the award uploads and posts like any
+      // other badge.
+      await ref.read(badgesSyncProvider).engine.award('snitch');
+    },
   );
   sync.registerHandlers();
   ref.onDispose(sync.stop);

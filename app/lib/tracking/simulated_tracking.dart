@@ -255,6 +255,10 @@ class SimulatedTracking implements TrackingPort {
   Future<TrackingDiagnostics> getDiagnostics() async =>
       const TrackingDiagnostics(lastTriggerKind: 'simulated');
 
+  /// The desk simulator has no OS settings to open.
+  @override
+  Future<bool> openDrivingModeSettings() async => false;
+
   @override
   Future<LastKnownLocation?> getLastKnownLocation({
     int maxAgeMs = 120000,

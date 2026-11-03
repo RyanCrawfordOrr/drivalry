@@ -146,6 +146,15 @@ class SettingsScreen extends ConsumerWidget {
             ),
             onTap: () => context.push(Routes.cuesSettings),
           ),
+          ListTile(
+            key: const Key('auto-reply'),
+            leading: const Icon(Icons.sms_outlined),
+            title: const Text('Auto-reply to texts'),
+            subtitle: const Text(
+              "Your phone's driving mode does this. Drivalry shows you where.",
+            ),
+            onTap: () => context.push(Routes.autoReplySettings),
+          ),
           const Divider(),
           const _Header('App'),
           ListTile(

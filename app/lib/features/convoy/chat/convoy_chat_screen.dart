@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../profile/profile_repo.dart';
 import '../audio/convoy_audio_session.dart';
+import '../widgets/member_names.dart';
 import 'chat_controller.dart';
 import 'voice_notes.dart';
 
@@ -64,7 +65,11 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
                     itemCount: state.messages.length,
                     itemBuilder: (context, i) {
                       final m = state.messages[state.messages.length - 1 - i];
-                      return _Bubble(message: m, onPlay: c.play);
+                      return _Bubble(
+                        convoyId: widget.convoyId,
+                        message: m,
+                        onPlay: c.play,
+                      );
                     },
                   ),
           ),
@@ -172,18 +177,27 @@ class _Composer extends StatelessWidget {
 }
 
 class _Bubble extends ConsumerWidget {
-  const _Bubble({required this.message, required this.onPlay});
+  const _Bubble({
+    required this.convoyId,
+    required this.message,
+    required this.onPlay,
+  });
 
+  final String convoyId;
   final ChatMessage message;
   final Future<void> Function(VoiceNote) onPlay;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final names =
+        ref.watch(convoyMemberNamesProvider(convoyId)).value ?? const {};
+    // Member name first, then a cached profile handle, never a UUID prefix.
     final name = message.mine
         ? 'You'
-        : ref.watch(profileProvider(message.from)).value?.handle ??
-              message.from.substring(0, message.from.length.clamp(0, 6));
+        : names[message.from] ??
+              ref.watch(profileProvider(message.from)).value?.handle ??
+              'Someone';
     final bg = message.mine
         ? theme.colorScheme.primaryContainer
         : theme.colorScheme.surfaceContainerHighest;

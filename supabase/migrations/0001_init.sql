@@ -827,7 +827,7 @@ insert into badges (id, name, description, category) values
   ('league_week',       'Regular',           'Finished a league week.',                                    'social'),
   ('promoted',          'Moving Up',         'Promoted at a Sunday rollover.',                             'social'),
   ('convoy_first',      'Wagon Train',       'Finished a convoy.',                                         'social'),
-  ('snitch',            'Snitch',            'A speed-limit fix you flagged was confirmed.',               'social'),
+  ('snitch',            'Snitch',            'Ten speed-limit fixes you flagged were confirmed.',          'social'),
   ('sunday_driver',     'Sunday Driver',     'Lost a duel. Seven days.',                                   'shame'),
   ('lead_foot',         'Lead Foot',         'Lost a duel. Seven days.',                                   'shame'),
   ('butterfingers',     'Butterfingers',     'Lost a duel. Seven days.',                                   'shame'),

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:drivalry/data/db/database.dart';
+
 import 'package:drivalry/data/repos/convoy_repo.dart';
 import 'package:drivalry/data/supabase/supabase_providers.dart';
 import 'package:drivalry/features/convoy/audio/convoy_audio_session.dart';
@@ -220,10 +221,27 @@ void main() {
     expect(find.text('hi convoy'), findsOneWidget);
     expect(find.text('You'), findsOneWidget);
 
-    // Not driving: nothing is read aloud, but the line still shows.
+    // Not driving: nothing is read aloud, but the line still shows, under
+    // the sender's cached name (never a UUID prefix).
+    await db.cachePut(
+      ConvoyRepo.membersKey('c1'),
+      jsonEncode([
+        ConvoyMember(
+          userId: 'sam',
+          handle: 'sam',
+          displayName: 'Sam',
+          role: 'member',
+          joinedAt: DateTime.utc(2026, 11, 3),
+        ).toJson(),
+      ]),
+      1,
+    );
     channel.inject('chat', 'sam', payload: {'text': 'yo'});
+    channel.inject('chat', 'unknown-uuid', payload: {'text': 'hey'});
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(find.text('yo'), findsOneWidget);
+    expect(find.text('Sam'), findsOneWidget);
+    expect(find.text('Someone'), findsOneWidget);
     expect(speaker.spoken, isEmpty);
 
     // Blank sends are dropped.

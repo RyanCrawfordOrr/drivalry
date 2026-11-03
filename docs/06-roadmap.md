@@ -1,6 +1,6 @@
 # Drivalry: Roadmap
 
-An ordered build plan for one person and Claude Code. The owner chose to build all the features, in this order, with no stage gates. Each stage ends with something installable on the seven test phones (5 iPhones, 2 Android) through TestFlight and Play internal testing. The tracking quality bar in Stage 1 is a bar we measure against, not a gate that blocks later stages.
+An ordered build plan for one person and Claude Code. The owner chose to build all the features, in this order, with no stage gates. Stages 1–5 and the league depth were built 2026-11-02/03; what the owner still has to switch on by hand is `11-owner-setup.md`. Each stage ends with something installable on the seven test phones (5 iPhones, 2 Android) through TestFlight and Play internal testing. The tracking quality bar in Stage 1 is a bar we measure against, not a gate that blocks later stages.
 
 ## Stage 0: Foundations (now)
 
@@ -29,7 +29,7 @@ Milestones:
 2. **M1.2 Recorder.** _Built 2026-11-02._ drift schema for trips, samples, motion events, phone events. 20 Hz sensor batches turned into brake/accel/corner events on-device. 90-day TTL on samples. Weather from Open-Meteo at trip start.
 3. **M1.3 Pack download and matcher.** _Built 2026-11-02; the ten-route check is still to do on real drives._ Pack manager (Wi-Fi only, hash check, atomic swap). Nearest-road-with-heading matcher in an isolate. Correct road names on ten known routes around the owner's home.
 4. **M1.4 Scoring on the phone.** _Built 2026-11-02; "never track" vehicles wait for the Garage._ Dart engine wired to matcher output. Trip card: map, score ring, components, event timeline with pins, limit coverage, roast line. "Were you the passenger?" interstitial with hints. Delete trip. Pause tracking. "Never track" vehicles.
-5. **M1.5 Diagnostics.** _First version built 2026-11-02 (plugin state, counters, errors, packs, DB counts); battery per hour/day measurement still to add._ Settings > Diagnostics shows battery per hour driving, battery per day parked, missed starts, false starts, late ends, and limit coverage. All measured on the phone.
+5. **M1.5 Diagnostics.** _Built 2026-11-02/03: plugin state, counters, errors, packs, DB counts, battery % per hour driving and per day parked from readings at trip start/end and once a day parked, late starts and late ends from stored trips, TURN relay bytes. Missed starts are reported as not countable (nothing is stored for them); trips started by hand stand in as the proxy._ Settings > Diagnostics shows battery per hour driving, battery per day parked, missed starts, false starts, late ends, and limit coverage. All measured on the phone.
 6. **M1.6 Seven phones.** TestFlight and Play internal builds on all test devices. Two weeks of real trips.
 7. **M1.7 Tune.** After the two weeks, adjust the numbers in `02-game-design.md`, regenerate fixtures, update both engines together.
 

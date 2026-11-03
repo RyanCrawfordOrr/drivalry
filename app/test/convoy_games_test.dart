@@ -96,7 +96,7 @@ void main() {
       'event': 'mark',
       'state': ['AL'],
     });
-    expect(find.text('me: 1'), findsOneWidget);
+    expect(find.text('You: 1'), findsOneWidget);
 
     bus.inject('sam', 'game', {
       'game': 'plates',
@@ -104,7 +104,7 @@ void main() {
       'state': ['CA', 'TX'],
     });
     await pumpFor(tester, const Duration(milliseconds: 300));
-    expect(find.text('sam: 2'), findsOneWidget);
+    expect(find.text('Sam: 2'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -149,7 +149,7 @@ void main() {
     expect(speaker.spoken.single, startsWith('Sam'), reason: 'name, not id');
     expect(find.byKey(const Key('last-result')), findsOneWidget);
     expect(find.text('Scores'), findsOneWidget);
-    expect(find.text('sam: 1'), findsOneWidget);
+    expect(find.text('Sam: 1'), findsOneWidget);
     expect(bus.sent.last.payload['event'], 'reveal');
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -166,7 +166,7 @@ void main() {
     expect(bus.sent.last.payload['game'], 'scavenger');
     expect(bus.sent.last.payload['item'], 'Red barn');
     expect(find.text('You spotted Red barn'), findsOneWidget);
-    expect(find.text('Spotted by me'), findsOneWidget);
+    expect(find.text('Spotted by you'), findsOneWidget);
 
     bus.inject('sam', 'game', {
       'game': 'scavenger',
@@ -176,6 +176,7 @@ void main() {
     });
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(find.text('Sam spotted Horse'), findsOneWidget);
+    expect(find.text('Spotted by Sam'), findsOneWidget);
 
     // An unknown car is "Someone", never a UUID prefix.
     bus.inject('9f3c2a7e-0000-4000-8000-000000000000', 'game', {
@@ -186,6 +187,7 @@ void main() {
     });
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(find.text('Someone spotted Water tower'), findsOneWidget);
+    expect(find.text('Spotted by Someone'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -259,8 +261,9 @@ void main() {
     expect(find.text('Glassy'), findsOneWidget);
     expect(find.text('Choppy'), findsOneWidget);
     expect(
-      tester.getTopLeft(find.text('sam')).dy,
-      lessThan(tester.getTopLeft(find.text('eve')).dy),
+      tester.getTopLeft(find.text('Sam')).dy,
+      // 'eve' is not a cached member, so the row says Someone, never 'eve'.
+      lessThan(tester.getTopLeft(find.text('Someone')).dy),
     );
     // No speed figure is ever shown.
     expect(find.textContaining('25'), findsNothing);

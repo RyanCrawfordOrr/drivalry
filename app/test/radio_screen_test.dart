@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:drivalry/data/db/database.dart';
+import 'package:drivalry/data/repos/convoy_repo.dart';
 import 'package:drivalry/data/supabase/supabase_providers.dart';
 import 'package:drivalry/features/convoy/channel/convoy_channel.dart';
 import 'package:drivalry/features/convoy/radio/convoy_radio_screen.dart';
@@ -17,6 +19,7 @@ import 'package:http/testing.dart';
 
 import 'support/radio_fakes.dart';
 import 'support/sqlite_support.dart';
+import 'support/widget_support.dart';
 
 /// The native audio session: counts start/stop and can report that the
 /// platform ended the session (Stop on the Android notification).
@@ -65,8 +68,22 @@ void main() {
         ],
       );
 
-  setUp(() {
+  setUp(() async {
     db = memoryDatabase();
+    // 'zed' is a cached member: the peer tile shows the name, not the id.
+    await db.cachePut(
+      ConvoyRepo.membersKey('c1'),
+      jsonEncode([
+        ConvoyMember(
+          userId: 'zed',
+          handle: 'zed',
+          displayName: 'Zed',
+          role: 'member',
+          joinedAt: DateTime.utc(2026, 11, 3),
+        ).toJson(),
+      ]),
+      1,
+    );
     channel = FakeConvoyChannel('c1', present: {'me', 'zed'});
     factory = FakePeerLinkFactory();
     audio = FakeLocalAudio();
@@ -114,6 +131,7 @@ void main() {
       await tester.pump();
       await tester.pump();
       expect(find.textContaining('Direct'), findsOneWidget);
+      expect(find.text('Zed'), findsOneWidget, reason: 'name, not id');
 
       // Hold to talk.
       final gesture = await tester.press(find.byKey(const Key('ptt-button')));
@@ -148,6 +166,8 @@ void main() {
       expect(factory.links['zed']!.closed, isTrue);
       expect(container.read(convoyDataBusProvider('c1')), isA<NoopDataBus>());
       expect(find.text('Radio is off'), findsOneWidget);
+      // The member-name stream is a drift watch: let its timer drain.
+      await unmountAndSettle(tester);
     },
     skip: skip != null,
   );
@@ -174,6 +194,7 @@ void main() {
     expect(channel.sentTypes(), contains('bye'));
     expect(channel.leaves, 1);
     expect(container.read(convoyDataBusProvider('c1')), isA<NoopDataBus>());
+    await unmountAndSettle(tester);
   }, skip: skip != null);
 
   testWidgets('a denied microphone explains and offers a retry', (

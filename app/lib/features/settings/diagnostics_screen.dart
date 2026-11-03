@@ -7,6 +7,9 @@ import 'package:intl/intl.dart';
 
 import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
+import '../../data/diagnostics/battery_stats.dart';
+import '../../data/diagnostics/detection_counters.dart';
+import '../convoy/radio/radio_stats.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../tracking/tracking_models.dart';
@@ -27,9 +30,13 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
   Future<_Report> _load() async {
     final port = ref.read(trackingPortProvider);
     final db = ref.read(databaseProvider);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    final diagnostics = await port.getDiagnostics();
     return _Report(
       state: await port.getState(),
-      diagnostics: await port.getDiagnostics(),
+      diagnostics: diagnostics,
+      battery: await BatteryStats.load(db, now),
+      detection: await DetectionCounters.load(db, diagnostics, now),
       counts: await db.tableCounts(),
       packs: await db.installedPacks(),
       crashLastCandidateAt: int.tryParse(
@@ -43,6 +50,7 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
   @override
   Widget build(BuildContext context) {
     final ui = ref.watch(trackingControllerProvider);
+    final relayed = ref.watch(totalRelayedBytesProvider).value ?? 0;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Diagnostics'),
@@ -96,6 +104,9 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
               'Last trip ended',
               '${r.diagnostics.lastTripEndReason ?? '–'} ${_ms(r.diagnostics.lastTripEndedAt)}',
             ),
+            for (final (k, v) in batteryRows(r.battery)) (k, v),
+            for (final (k, v) in detectionRows(r.detection)) (k, v),
+            ('Radio: relayed bytes (TURN)', _bytes(relayed)),
             ('Crash: last candidate', _ms(r.crashLastCandidateAt)),
             ('Crash: false alarms dismissed', '${r.crashFalsePositives}'),
             ('Crash: unresolved alert', '${r.crashUnresolved}'),
@@ -139,6 +150,13 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                       for (final p in r.packs) '${p.region} ${p.osmTimestamp}',
                     ],
                     'dart': {'booted': ui.booted, 'error': ui.error},
+                    'battery': {
+                      for (final (k, v) in batteryRows(r.battery)) k: v,
+                    },
+                    'detection': {
+                      for (final (k, v) in detectionRows(r.detection)) k: v,
+                    },
+                    'radioRelayedBytes': relayed,
                     'crash': {
                       'lastCandidateAt': r.crashLastCandidateAt,
                       'falsePositives': r.crashFalsePositives,
@@ -171,12 +189,67 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
       : DateFormat.yMd().add_jm().format(
           DateTime.fromMillisecondsSinceEpoch(ms),
         );
+
+  static String _bytes(int b) => b < 1024
+      ? '$b B'
+      : b < 1024 * 1024
+      ? '${(b / 1024).toStringAsFixed(1)} KB'
+      : '${(b / (1024 * 1024)).toStringAsFixed(1)} MB';
 }
+
+/// Battery rows for the list and the copied report: honest about how much
+/// evidence sits behind each rate (docs/06 M1.5).
+List<(String, String)> batteryRows(BatteryStats b) => [
+  (
+    'Battery: per hour driving (14 d)',
+    b.drivingPctPerHour == null
+        ? 'not enough data yet (${b.drivingPairs} trips, '
+              '${b.drivingHours.toStringAsFixed(1)} h)'
+        : '${b.drivingPctPerHour!.toStringAsFixed(1)}%/h over '
+              '${b.drivingPairs} trips',
+  ),
+  (
+    'Battery: per day parked (14 d)',
+    b.parkedPctPerDay == null
+        ? 'not enough data yet (${b.parkedDays.toStringAsFixed(1)} days)'
+        : '${b.parkedPctPerDay!.toStringAsFixed(1)}%/day over '
+              '${b.parkedDays.toStringAsFixed(1)} days',
+  ),
+];
+
+/// Detection rows. A missed start leaves nothing on the phone, so it is
+/// reported as not countable with the nearest proxy beside it.
+List<(String, String)> detectionRows(DetectionCounters d) => [
+  ('Trips recorded (14 d)', '${d.trips}'),
+  ('Missed starts', 'n/a: a missed start leaves nothing to count'),
+  ('Trips started by hand (14 d)', '${d.manualStarts} (proxy for missed)'),
+  (
+    'False starts',
+    '${d.discardedTentativesSinceInstall} dropped by the plugin since '
+        'install; ${d.deletedTrips} deleted by you (14 d)',
+  ),
+  (
+    'Late starts (14 d)',
+    d.lateStartsCountable == 0
+        ? 'n/a: no trips with a stored trigger time yet'
+        : '${d.lateStarts} of ${d.lateStartsCountable} confirmed over '
+              '2 min after the trigger',
+  ),
+  (
+    'Late ends (14 d)',
+    d.lateEndsCountable == 0
+        ? 'n/a: no stationary-ended trips with samples'
+        : '${d.lateEnds} of ${d.lateEndsCountable} ended over a minute '
+              'after the 3-min rule',
+  ),
+];
 
 class _Report {
   const _Report({
     required this.state,
     required this.diagnostics,
+    required this.battery,
+    required this.detection,
     required this.counts,
     required this.packs,
     required this.crashLastCandidateAt,
@@ -185,6 +258,8 @@ class _Report {
   });
   final TrackingState state;
   final TrackingDiagnostics diagnostics;
+  final BatteryStats battery;
+  final DetectionCounters detection;
   final Map<String, int> counts;
   final List<Pack> packs;
   final int? crashLastCandidateAt;

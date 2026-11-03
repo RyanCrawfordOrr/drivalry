@@ -112,6 +112,18 @@ class TrackingChannel implements TrackingPort {
   }
 
   @override
+  Future<bool> openDrivingModeSettings() async {
+    try {
+      return await _methods.invokeMethod<bool>('openDrivingModeSettings') ??
+          false;
+    } on MissingPluginException {
+      return false;
+    } on PlatformException {
+      return false;
+    }
+  }
+
+  @override
   Stream<TrackingEvent> get events => _eventStream ??= _events
       .receiveBroadcastStream()
       .map((e) => e is Map<Object?, Object?> ? TrackingEvent.fromMap(e) : null)

@@ -6,6 +6,7 @@ import '../car/live_activity.dart';
 import '../config/env.dart';
 import '../data/crash/crash_monitor.dart';
 import '../data/db/database.dart';
+import '../data/diagnostics/battery_sampler.dart';
 import '../data/sync/sync_bootstrap.dart';
 import '../features/cues/spoken_cues.dart';
 import '../packs/pack_providers.dart';
@@ -49,6 +50,8 @@ final appBootstrapProvider = FutureProvider<void>((ref) async {
   // iOS Live Activity / Dynamic Island mirror of the same snapshot; a no-op
   // on other platforms.
   ref.watch(liveActivityProvider);
+  // Battery readings at trip start/end and once a day parked (docs/06 M1.5).
+  ref.watch(batterySamplerProvider);
   await ref.watch(mapsReadyProvider.future);
   try {
     final removed = await ref

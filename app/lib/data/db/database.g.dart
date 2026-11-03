@@ -361,6 +361,17 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _triggeredAtMeta = const VerificationMeta(
+    'triggeredAt',
+  );
+  @override
+  late final GeneratedColumn<int> triggeredAt = GeneratedColumn<int>(
+    'triggered_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -395,6 +406,7 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
     roadNames,
     statsAt,
     deletedAt,
+    triggeredAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -635,6 +647,15 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
         deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
       );
     }
+    if (data.containsKey('triggered_at')) {
+      context.handle(
+        _triggeredAtMeta,
+        triggeredAt.isAcceptableOrUnknown(
+          data['triggered_at']!,
+          _triggeredAtMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -772,6 +793,10 @@ class $TripsTable extends Trips with TableInfo<$TripsTable, Trip> {
         DriftSqlType.int,
         data['${effectivePrefix}deleted_at'],
       ),
+      triggeredAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}triggered_at'],
+      ),
     );
   }
 
@@ -842,6 +867,11 @@ class Trip extends DataClass implements Insertable<Trip> {
 
   /// Soft delete: hidden everywhere, purged with the samples.
   final int? deletedAt;
+
+  /// Epoch ms of the native trigger that opened the trip (the `tentative`
+  /// event), kept when `startedAt` moves to the first confirmed fix so
+  /// Diagnostics can count late starts (schema 6). Null for older rows.
+  final int? triggeredAt;
   const Trip({
     required this.id,
     required this.startedAt,
@@ -875,6 +905,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     this.roadNames,
     this.statsAt,
     this.deletedAt,
+    this.triggeredAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -956,6 +987,9 @@ class Trip extends DataClass implements Insertable<Trip> {
     }
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<int>(deletedAt);
+    }
+    if (!nullToAbsent || triggeredAt != null) {
+      map['triggered_at'] = Variable<int>(triggeredAt);
     }
     return map;
   }
@@ -1040,6 +1074,9 @@ class Trip extends DataClass implements Insertable<Trip> {
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
+      triggeredAt: triggeredAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(triggeredAt),
     );
   }
 
@@ -1081,6 +1118,7 @@ class Trip extends DataClass implements Insertable<Trip> {
       roadNames: serializer.fromJson<String?>(json['roadNames']),
       statsAt: serializer.fromJson<int?>(json['statsAt']),
       deletedAt: serializer.fromJson<int?>(json['deletedAt']),
+      triggeredAt: serializer.fromJson<int?>(json['triggeredAt']),
     );
   }
   @override
@@ -1119,6 +1157,7 @@ class Trip extends DataClass implements Insertable<Trip> {
       'roadNames': serializer.toJson<String?>(roadNames),
       'statsAt': serializer.toJson<int?>(statsAt),
       'deletedAt': serializer.toJson<int?>(deletedAt),
+      'triggeredAt': serializer.toJson<int?>(triggeredAt),
     };
   }
 
@@ -1155,6 +1194,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     Value<String?> roadNames = const Value.absent(),
     Value<int?> statsAt = const Value.absent(),
     Value<int?> deletedAt = const Value.absent(),
+    Value<int?> triggeredAt = const Value.absent(),
   }) => Trip(
     id: id ?? this.id,
     startedAt: startedAt ?? this.startedAt,
@@ -1192,6 +1232,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     roadNames: roadNames.present ? roadNames.value : this.roadNames,
     statsAt: statsAt.present ? statsAt.value : this.statsAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    triggeredAt: triggeredAt.present ? triggeredAt.value : this.triggeredAt,
   );
   Trip copyWithCompanion(TripsCompanion data) {
     return Trip(
@@ -1249,6 +1290,9 @@ class Trip extends DataClass implements Insertable<Trip> {
       roadNames: data.roadNames.present ? data.roadNames.value : this.roadNames,
       statsAt: data.statsAt.present ? data.statsAt.value : this.statsAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      triggeredAt: data.triggeredAt.present
+          ? data.triggeredAt.value
+          : this.triggeredAt,
     );
   }
 
@@ -1286,7 +1330,8 @@ class Trip extends DataClass implements Insertable<Trip> {
           ..write('endLon: $endLon, ')
           ..write('roadNames: $roadNames, ')
           ..write('statsAt: $statsAt, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('triggeredAt: $triggeredAt')
           ..write(')'))
         .toString();
   }
@@ -1325,6 +1370,7 @@ class Trip extends DataClass implements Insertable<Trip> {
     roadNames,
     statsAt,
     deletedAt,
+    triggeredAt,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -1361,7 +1407,8 @@ class Trip extends DataClass implements Insertable<Trip> {
           other.endLon == this.endLon &&
           other.roadNames == this.roadNames &&
           other.statsAt == this.statsAt &&
-          other.deletedAt == this.deletedAt);
+          other.deletedAt == this.deletedAt &&
+          other.triggeredAt == this.triggeredAt);
 }
 
 class TripsCompanion extends UpdateCompanion<Trip> {
@@ -1397,6 +1444,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
   final Value<String?> roadNames;
   final Value<int?> statsAt;
   final Value<int?> deletedAt;
+  final Value<int?> triggeredAt;
   final Value<int> rowid;
   const TripsCompanion({
     this.id = const Value.absent(),
@@ -1431,6 +1479,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     this.roadNames = const Value.absent(),
     this.statsAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.triggeredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   TripsCompanion.insert({
@@ -1466,6 +1515,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     this.roadNames = const Value.absent(),
     this.statsAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.triggeredAt = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        startedAt = Value(startedAt),
@@ -1504,6 +1554,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Expression<String>? roadNames,
     Expression<int>? statsAt,
     Expression<int>? deletedAt,
+    Expression<int>? triggeredAt,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1539,6 +1590,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
       if (roadNames != null) 'road_names': roadNames,
       if (statsAt != null) 'stats_at': statsAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
+      if (triggeredAt != null) 'triggered_at': triggeredAt,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1576,6 +1628,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     Value<String?>? roadNames,
     Value<int?>? statsAt,
     Value<int?>? deletedAt,
+    Value<int?>? triggeredAt,
     Value<int>? rowid,
   }) {
     return TripsCompanion(
@@ -1611,6 +1664,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
       roadNames: roadNames ?? this.roadNames,
       statsAt: statsAt ?? this.statsAt,
       deletedAt: deletedAt ?? this.deletedAt,
+      triggeredAt: triggeredAt ?? this.triggeredAt,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1714,6 +1768,9 @@ class TripsCompanion extends UpdateCompanion<Trip> {
     if (deletedAt.present) {
       map['deleted_at'] = Variable<int>(deletedAt.value);
     }
+    if (triggeredAt.present) {
+      map['triggered_at'] = Variable<int>(triggeredAt.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1755,6 +1812,7 @@ class TripsCompanion extends UpdateCompanion<Trip> {
           ..write('roadNames: $roadNames, ')
           ..write('statsAt: $statsAt, ')
           ..write('deletedAt: $deletedAt, ')
+          ..write('triggeredAt: $triggeredAt, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -11257,6 +11315,316 @@ class ConvoyLocalCompanion extends UpdateCompanion<ConvoyLocalData> {
   }
 }
 
+class $BatterySamplesTable extends BatterySamples
+    with TableInfo<$BatterySamplesTable, BatterySample> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $BatterySamplesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _tMeta = const VerificationMeta('t');
+  @override
+  late final GeneratedColumn<int> t = GeneratedColumn<int>(
+    't',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _levelMeta = const VerificationMeta('level');
+  @override
+  late final GeneratedColumn<double> level = GeneratedColumn<double>(
+    'level',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _phaseMeta = const VerificationMeta('phase');
+  @override
+  late final GeneratedColumn<String> phase = GeneratedColumn<String>(
+    'phase',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _tripIdMeta = const VerificationMeta('tripId');
+  @override
+  late final GeneratedColumn<String> tripId = GeneratedColumn<String>(
+    'trip_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [t, level, phase, tripId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'battery_samples';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<BatterySample> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('t')) {
+      context.handle(_tMeta, t.isAcceptableOrUnknown(data['t']!, _tMeta));
+    } else if (isInserting) {
+      context.missing(_tMeta);
+    }
+    if (data.containsKey('level')) {
+      context.handle(
+        _levelMeta,
+        level.isAcceptableOrUnknown(data['level']!, _levelMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_levelMeta);
+    }
+    if (data.containsKey('phase')) {
+      context.handle(
+        _phaseMeta,
+        phase.isAcceptableOrUnknown(data['phase']!, _phaseMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_phaseMeta);
+    }
+    if (data.containsKey('trip_id')) {
+      context.handle(
+        _tripIdMeta,
+        tripId.isAcceptableOrUnknown(data['trip_id']!, _tripIdMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {t, phase};
+  @override
+  BatterySample map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return BatterySample(
+      t: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}t'],
+      )!,
+      level: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}level'],
+      )!,
+      phase: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phase'],
+      )!,
+      tripId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}trip_id'],
+      ),
+    );
+  }
+
+  @override
+  $BatterySamplesTable createAlias(String alias) {
+    return $BatterySamplesTable(attachedDatabase, alias);
+  }
+}
+
+class BatterySample extends DataClass implements Insertable<BatterySample> {
+  /// Epoch ms.
+  final int t;
+
+  /// 0–1.
+  final double level;
+
+  /// tripStart | tripEnd | parked (a [BatteryPhase] wire value).
+  final String phase;
+  final String? tripId;
+  const BatterySample({
+    required this.t,
+    required this.level,
+    required this.phase,
+    this.tripId,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['t'] = Variable<int>(t);
+    map['level'] = Variable<double>(level);
+    map['phase'] = Variable<String>(phase);
+    if (!nullToAbsent || tripId != null) {
+      map['trip_id'] = Variable<String>(tripId);
+    }
+    return map;
+  }
+
+  BatterySamplesCompanion toCompanion(bool nullToAbsent) {
+    return BatterySamplesCompanion(
+      t: Value(t),
+      level: Value(level),
+      phase: Value(phase),
+      tripId: tripId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tripId),
+    );
+  }
+
+  factory BatterySample.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return BatterySample(
+      t: serializer.fromJson<int>(json['t']),
+      level: serializer.fromJson<double>(json['level']),
+      phase: serializer.fromJson<String>(json['phase']),
+      tripId: serializer.fromJson<String?>(json['tripId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      't': serializer.toJson<int>(t),
+      'level': serializer.toJson<double>(level),
+      'phase': serializer.toJson<String>(phase),
+      'tripId': serializer.toJson<String?>(tripId),
+    };
+  }
+
+  BatterySample copyWith({
+    int? t,
+    double? level,
+    String? phase,
+    Value<String?> tripId = const Value.absent(),
+  }) => BatterySample(
+    t: t ?? this.t,
+    level: level ?? this.level,
+    phase: phase ?? this.phase,
+    tripId: tripId.present ? tripId.value : this.tripId,
+  );
+  BatterySample copyWithCompanion(BatterySamplesCompanion data) {
+    return BatterySample(
+      t: data.t.present ? data.t.value : this.t,
+      level: data.level.present ? data.level.value : this.level,
+      phase: data.phase.present ? data.phase.value : this.phase,
+      tripId: data.tripId.present ? data.tripId.value : this.tripId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BatterySample(')
+          ..write('t: $t, ')
+          ..write('level: $level, ')
+          ..write('phase: $phase, ')
+          ..write('tripId: $tripId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(t, level, phase, tripId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is BatterySample &&
+          other.t == this.t &&
+          other.level == this.level &&
+          other.phase == this.phase &&
+          other.tripId == this.tripId);
+}
+
+class BatterySamplesCompanion extends UpdateCompanion<BatterySample> {
+  final Value<int> t;
+  final Value<double> level;
+  final Value<String> phase;
+  final Value<String?> tripId;
+  final Value<int> rowid;
+  const BatterySamplesCompanion({
+    this.t = const Value.absent(),
+    this.level = const Value.absent(),
+    this.phase = const Value.absent(),
+    this.tripId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  BatterySamplesCompanion.insert({
+    required int t,
+    required double level,
+    required String phase,
+    this.tripId = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : t = Value(t),
+       level = Value(level),
+       phase = Value(phase);
+  static Insertable<BatterySample> custom({
+    Expression<int>? t,
+    Expression<double>? level,
+    Expression<String>? phase,
+    Expression<String>? tripId,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (t != null) 't': t,
+      if (level != null) 'level': level,
+      if (phase != null) 'phase': phase,
+      if (tripId != null) 'trip_id': tripId,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  BatterySamplesCompanion copyWith({
+    Value<int>? t,
+    Value<double>? level,
+    Value<String>? phase,
+    Value<String?>? tripId,
+    Value<int>? rowid,
+  }) {
+    return BatterySamplesCompanion(
+      t: t ?? this.t,
+      level: level ?? this.level,
+      phase: phase ?? this.phase,
+      tripId: tripId ?? this.tripId,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (t.present) {
+      map['t'] = Variable<int>(t.value);
+    }
+    if (level.present) {
+      map['level'] = Variable<double>(level.value);
+    }
+    if (phase.present) {
+      map['phase'] = Variable<String>(phase.value);
+    }
+    if (tripId.present) {
+      map['trip_id'] = Variable<String>(tripId.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('BatterySamplesCompanion(')
+          ..write('t: $t, ')
+          ..write('level: $level, ')
+          ..write('phase: $phase, ')
+          ..write('tripId: $tripId, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -11289,6 +11657,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $EmergencyContactsTable(this);
   late final $ConvoyTracksTable convoyTracks = $ConvoyTracksTable(this);
   late final $ConvoyLocalTable convoyLocal = $ConvoyLocalTable(this);
+  late final $BatterySamplesTable batterySamples = $BatterySamplesTable(this);
   late final Index tripsStartedAt = Index(
     'trips_started_at',
     'CREATE INDEX trips_started_at ON trips (started_at)',
@@ -11322,6 +11691,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     emergencyContacts,
     convoyTracks,
     convoyLocal,
+    batterySamples,
     tripsStartedAt,
   ];
 }
@@ -11360,6 +11730,7 @@ typedef $$TripsTableCreateCompanionBuilder =
       Value<String?> roadNames,
       Value<int?> statsAt,
       Value<int?> deletedAt,
+      Value<int?> triggeredAt,
       Value<int> rowid,
     });
 typedef $$TripsTableUpdateCompanionBuilder =
@@ -11396,6 +11767,7 @@ typedef $$TripsTableUpdateCompanionBuilder =
       Value<String?> roadNames,
       Value<int?> statsAt,
       Value<int?> deletedAt,
+      Value<int?> triggeredAt,
       Value<int> rowid,
     });
 
@@ -11564,6 +11936,11 @@ class $$TripsTableFilterComposer extends Composer<_$AppDatabase, $TripsTable> {
 
   ColumnFilters<int> get deletedAt => $composableBuilder(
     column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get triggeredAt => $composableBuilder(
+    column: $table.triggeredAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -11736,6 +12113,11 @@ class $$TripsTableOrderingComposer
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<int> get triggeredAt => $composableBuilder(
+    column: $table.triggeredAt,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$TripsTableAnnotationComposer
@@ -11864,6 +12246,11 @@ class $$TripsTableAnnotationComposer
 
   GeneratedColumn<int> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get triggeredAt => $composableBuilder(
+    column: $table.triggeredAt,
+    builder: (column) => column,
+  );
 }
 
 class $$TripsTableTableManager
@@ -11926,6 +12313,7 @@ class $$TripsTableTableManager
                 Value<String?> roadNames = const Value.absent(),
                 Value<int?> statsAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
+                Value<int?> triggeredAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TripsCompanion(
                 id: id,
@@ -11960,6 +12348,7 @@ class $$TripsTableTableManager
                 roadNames: roadNames,
                 statsAt: statsAt,
                 deletedAt: deletedAt,
+                triggeredAt: triggeredAt,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -11996,6 +12385,7 @@ class $$TripsTableTableManager
                 Value<String?> roadNames = const Value.absent(),
                 Value<int?> statsAt = const Value.absent(),
                 Value<int?> deletedAt = const Value.absent(),
+                Value<int?> triggeredAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => TripsCompanion.insert(
                 id: id,
@@ -12030,6 +12420,7 @@ class $$TripsTableTableManager
                 roadNames: roadNames,
                 statsAt: statsAt,
                 deletedAt: deletedAt,
+                triggeredAt: triggeredAt,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
@@ -17335,6 +17726,198 @@ typedef $$ConvoyLocalTableProcessedTableManager =
       ConvoyLocalData,
       PrefetchHooks Function()
     >;
+typedef $$BatterySamplesTableCreateCompanionBuilder =
+    BatterySamplesCompanion Function({
+      required int t,
+      required double level,
+      required String phase,
+      Value<String?> tripId,
+      Value<int> rowid,
+    });
+typedef $$BatterySamplesTableUpdateCompanionBuilder =
+    BatterySamplesCompanion Function({
+      Value<int> t,
+      Value<double> level,
+      Value<String> phase,
+      Value<String?> tripId,
+      Value<int> rowid,
+    });
+
+class $$BatterySamplesTableFilterComposer
+    extends Composer<_$AppDatabase, $BatterySamplesTable> {
+  $$BatterySamplesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get t => $composableBuilder(
+    column: $table.t,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get level => $composableBuilder(
+    column: $table.level,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phase => $composableBuilder(
+    column: $table.phase,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get tripId => $composableBuilder(
+    column: $table.tripId,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$BatterySamplesTableOrderingComposer
+    extends Composer<_$AppDatabase, $BatterySamplesTable> {
+  $$BatterySamplesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get t => $composableBuilder(
+    column: $table.t,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get level => $composableBuilder(
+    column: $table.level,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phase => $composableBuilder(
+    column: $table.phase,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get tripId => $composableBuilder(
+    column: $table.tripId,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$BatterySamplesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $BatterySamplesTable> {
+  $$BatterySamplesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get t =>
+      $composableBuilder(column: $table.t, builder: (column) => column);
+
+  GeneratedColumn<double> get level =>
+      $composableBuilder(column: $table.level, builder: (column) => column);
+
+  GeneratedColumn<String> get phase =>
+      $composableBuilder(column: $table.phase, builder: (column) => column);
+
+  GeneratedColumn<String> get tripId =>
+      $composableBuilder(column: $table.tripId, builder: (column) => column);
+}
+
+class $$BatterySamplesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $BatterySamplesTable,
+          BatterySample,
+          $$BatterySamplesTableFilterComposer,
+          $$BatterySamplesTableOrderingComposer,
+          $$BatterySamplesTableAnnotationComposer,
+          $$BatterySamplesTableCreateCompanionBuilder,
+          $$BatterySamplesTableUpdateCompanionBuilder,
+          (
+            BatterySample,
+            BaseReferences<_$AppDatabase, $BatterySamplesTable, BatterySample>,
+          ),
+          BatterySample,
+          PrefetchHooks Function()
+        > {
+  $$BatterySamplesTableTableManager(
+    _$AppDatabase db,
+    $BatterySamplesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$BatterySamplesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$BatterySamplesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$BatterySamplesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> t = const Value.absent(),
+                Value<double> level = const Value.absent(),
+                Value<String> phase = const Value.absent(),
+                Value<String?> tripId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BatterySamplesCompanion(
+                t: t,
+                level: level,
+                phase: phase,
+                tripId: tripId,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required int t,
+                required double level,
+                required String phase,
+                Value<String?> tripId = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => BatterySamplesCompanion.insert(
+                t: t,
+                level: level,
+                phase: phase,
+                tripId: tripId,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$BatterySamplesTable, BatterySample>(table),
+                  BaseReferences<
+                    _$AppDatabase,
+                    $BatterySamplesTable,
+                    BatterySample
+                  >(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$BatterySamplesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $BatterySamplesTable,
+      BatterySample,
+      $$BatterySamplesTableFilterComposer,
+      $$BatterySamplesTableOrderingComposer,
+      $$BatterySamplesTableAnnotationComposer,
+      $$BatterySamplesTableCreateCompanionBuilder,
+      $$BatterySamplesTableUpdateCompanionBuilder,
+      (
+        BatterySample,
+        BaseReferences<_$AppDatabase, $BatterySamplesTable, BatterySample>,
+      ),
+      BatterySample,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -17387,4 +17970,6 @@ class $AppDatabaseManager {
       $$ConvoyTracksTableTableManager(_db, _db.convoyTracks);
   $$ConvoyLocalTableTableManager get convoyLocal =>
       $$ConvoyLocalTableTableManager(_db, _db.convoyLocal);
+  $$BatterySamplesTableTableManager get batterySamples =>
+      $$BatterySamplesTableTableManager(_db, _db.batterySamples);
 }

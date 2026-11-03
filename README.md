@@ -29,6 +29,8 @@ cd app && flutter run --dart-define-from-file=../.env
 
 Copy `.env.example` to `.env` and fill in the Supabase and Google values. `.env` is gitignored.
 
+Everything the owner has to switch on by hand (migrations, sign-in, push, key locks, car screens) is one ordered list in `docs/11-owner-setup.md`.
+
 Start with `docs/00-decisions.md` for why things are the way they are, then `docs/03-architecture.md`.
 
 ## License

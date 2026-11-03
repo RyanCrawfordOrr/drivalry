@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../data/supabase/supabase_providers.dart';
 import '../audio/convoy_audio_session.dart';
+import '../widgets/member_names.dart';
 import 'games_controller.dart';
 import 'games_core.dart';
 
@@ -41,6 +43,10 @@ class _GamesBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final s = ref.watch(gamesControllerProvider(convoyId));
     final c = ref.read(gamesControllerProvider(convoyId).notifier);
+    final names =
+        ref.watch(convoyMemberNamesProvider(convoyId)).value ?? const {};
+    final selfId = ref.watch(currentUserIdProvider);
+    String nameOf(String id) => memberLabel(names, id, selfId: selfId);
     return DefaultTabController(
       length: 4,
       child: Column(
@@ -62,10 +68,10 @@ class _GamesBody extends ConsumerWidget {
           Expanded(
             child: TabBarView(
               children: [
-                _PlatesTab(controller: c),
-                _TriviaTab(controller: c, peers: s.peers),
-                _ScavengerTab(controller: c),
-                _SmoothestTab(controller: c),
+                _PlatesTab(nameOf: nameOf, controller: c),
+                _TriviaTab(nameOf: nameOf, controller: c, peers: s.peers),
+                _ScavengerTab(nameOf: nameOf, controller: c),
+                _SmoothestTab(nameOf: nameOf, controller: c),
               ],
             ),
           ),
@@ -76,8 +82,9 @@ class _GamesBody extends ConsumerWidget {
 }
 
 class _PlatesTab extends StatelessWidget {
-  const _PlatesTab({required this.controller});
+  const _PlatesTab({required this.nameOf, required this.controller});
   final GamesController controller;
+  final String Function(String) nameOf;
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +99,7 @@ class _PlatesTab extends StatelessWidget {
               spacing: 8,
               children: [
                 for (final (id, n) in standings)
-                  Chip(label: Text('${_short(id)}: $n')),
+                  Chip(label: Text('${nameOf(id)}: $n')),
               ],
             ),
           ),
@@ -136,8 +143,13 @@ class _PlatesTab extends StatelessWidget {
 }
 
 class _TriviaTab extends StatelessWidget {
-  const _TriviaTab({required this.controller, required this.peers});
+  const _TriviaTab({
+    required this.nameOf,
+    required this.controller,
+    required this.peers,
+  });
   final GamesController controller;
+  final String Function(String) nameOf;
   final Set<String> peers;
 
   @override
@@ -151,7 +163,7 @@ class _TriviaTab extends StatelessWidget {
         Text(
           controller.amTriviaHost
               ? 'You are asking the questions.'
-              : 'Host: ${_short(Trivia.hostOf(peers, t.selfId))}',
+              : 'Host: ${nameOf(Trivia.hostOf(peers, t.selfId))}',
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 12),
@@ -202,7 +214,7 @@ class _TriviaTab extends StatelessWidget {
           const Divider(),
           Text('Scores', style: theme.textTheme.labelLarge),
           for (final e in t.scores.entries)
-            Text('${_short(e.key)}: ${e.value}'),
+            Text('${nameOf(e.key)}: ${e.value}'),
         ],
       ],
     );
@@ -210,8 +222,9 @@ class _TriviaTab extends StatelessWidget {
 }
 
 class _ScavengerTab extends StatelessWidget {
-  const _ScavengerTab({required this.controller});
+  const _ScavengerTab({required this.nameOf, required this.controller});
   final GamesController controller;
+  final String Function(String) nameOf;
 
   @override
   Widget build(BuildContext context) {
@@ -225,7 +238,7 @@ class _ScavengerTab extends StatelessWidget {
             spacing: 8,
             children: [
               for (final e in tally.entries)
-                Chip(label: Text('${_short(e.key)}: ${e.value}')),
+                Chip(label: Text('${nameOf(e.key)}: ${e.value}')),
             ],
           ),
         for (final item in s.items)
@@ -239,7 +252,7 @@ class _ScavengerTab extends StatelessWidget {
             title: Text(item),
             subtitle: s.claims[item] == null
                 ? null
-                : Text('Spotted by ${_short(s.claims[item]!.$1)}'),
+                : Text(_spottedBy(nameOf(s.claims[item]!.$1))),
             onTap: s.claims.containsKey(item)
                 ? null
                 : () => controller.claimItem(item),
@@ -250,8 +263,9 @@ class _ScavengerTab extends StatelessWidget {
 }
 
 class _SmoothestTab extends StatelessWidget {
-  const _SmoothestTab({required this.controller});
+  const _SmoothestTab({required this.nameOf, required this.controller});
   final GamesController controller;
+  final String Function(String) nameOf;
 
   @override
   Widget build(BuildContext context) {
@@ -274,7 +288,7 @@ class _SmoothestTab extends StatelessWidget {
         for (var i = 0; i < rows.length; i++)
           ListTile(
             leading: CircleAvatar(child: Text('${i + 1}')),
-            title: Text(_short(rows[i].$1)),
+            title: Text(nameOf(rows[i].$1)),
             trailing: Text(SmoothestLeg.label(rows[i].$2)),
           ),
       ],
@@ -282,4 +296,5 @@ class _SmoothestTab extends StatelessWidget {
   }
 }
 
-String _short(String id) => id.length > 6 ? id.substring(0, 6) : id;
+String _spottedBy(String who) =>
+    who == 'You' ? 'Spotted by you' : 'Spotted by $who';
