@@ -20,7 +20,9 @@ import 'widgets/tier_pill.dart';
 /// Weekly leagues with friends. Score and consistency climb the table; speed
 /// never does. A large title that collapses, Duels and Badges as two tiles,
 /// the season as the hero, the global league one tile, friend leagues under
-/// a kicker. Everything arrives staggered (docs/12 §5b).
+/// a kicker. Everything arrives staggered (docs/12 §5b). Create or join
+/// lives in the app bar, so nothing floats over the list; the empty state
+/// repeats it as its one button.
 class LeaguesScreen extends ConsumerWidget {
   const LeaguesScreen({super.key});
 
@@ -31,20 +33,7 @@ class LeaguesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ready =
         ref.watch(cloudConfiguredProvider) && ref.watch(isSignedInProvider);
-    final leagues = ready
-        ? ref.watch(myLeaguesProvider).value ?? const <League>[]
-        : const <League>[];
-    final hasFriendLeagues = leagues.any((l) => !l.isGlobal);
     return Scaffold(
-      // The empty state carries the create/join button; the FAB floats once
-      // there is a list under it.
-      floatingActionButton: hasFriendLeagues
-          ? FloatingActionButton.extended(
-              onPressed: () => showAddLeagueSheet(context, ref),
-              icon: const Icon(Icons.add),
-              label: const Text('League'),
-            )
-          : null,
       body: BadgeMoments(
         child: ready
             ? const DuelMoments(child: PromotionMoments(child: _LeaguesBody()))
@@ -68,10 +57,13 @@ class LeaguesScreen extends ConsumerWidget {
 
 /// "Leagues" as a large app bar title that collapses on scroll.
 class _LargeTitle extends StatelessWidget {
-  const _LargeTitle();
+  const _LargeTitle({this.actions});
+
+  final List<Widget>? actions;
 
   @override
-  Widget build(BuildContext context) => const LargeTitleBar(title: 'Leagues');
+  Widget build(BuildContext context) =>
+      LargeTitleBar(title: 'Leagues', actions: actions);
 }
 
 class _LeaguesBody extends ConsumerWidget {
@@ -97,9 +89,21 @@ class _LeaguesBody extends ConsumerWidget {
       onRefresh: () => ref.refresh(refreshMyLeaguesProvider.future),
       child: CustomScrollView(
         slivers: [
-          const _LargeTitle(),
+          _LargeTitle(
+            actions: [
+              IconButton(
+                tooltip: 'New league',
+                icon: const Icon(Icons.add),
+                onPressed: () => showAddLeagueSheet(context, ref),
+              ),
+            ],
+          ),
           SliverPadding(
-            padding: const EdgeInsets.only(top: Space.sm, bottom: 96),
+            // The last tile clears the navigation bar or home indicator.
+            padding: EdgeInsets.only(
+              top: Space.lg,
+              bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+            ),
             sliver: SliverList.list(
               children: [
                 if (refresh.hasError)
@@ -205,7 +209,7 @@ Future<void> showAddLeagueSheet(BuildContext context, WidgetRef ref) {
           line: 'Paste the code a friend sent you',
           onTap: () {
             Navigator.pop(ctx);
-            _joinByCode(context, ref);
+            joinLeagueByCode(context, ref);
           },
         ),
       ],
@@ -213,11 +217,38 @@ Future<void> showAddLeagueSheet(BuildContext context, WidgetRef ref) {
   );
 }
 
-Future<void> _joinByCode(BuildContext context, WidgetRef ref) async {
+/// Asks for an invite code in a sheet, joins, and opens the league.
+///
+/// The field's controller lives inside [TextControllers], so it is still
+/// there while the sheet animates out after the pop.
+Future<void> joinLeagueByCode(BuildContext context, WidgetRef ref) async {
   final code = await showDrivalrySheet<String>(
     context,
     title: 'Join a league',
-    builder: (_) => const _JoinCodeForm(),
+    builder: (_) => TextControllers(
+      builder: (ctx, c) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(ctx).bottom),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: c.first,
+              autofocus: true,
+              autocorrect: false,
+              textCapitalization: TextCapitalization.characters,
+              decoration: const InputDecoration(labelText: 'Invite code'),
+              onSubmitted: (v) => Navigator.of(ctx).pop(v),
+            ),
+            const SizedBox(height: Space.lg),
+            PrimaryButton(
+              label: 'Join',
+              onPressed: () => Navigator.of(ctx).pop(c.first.text),
+            ),
+          ],
+        ),
+      ),
+    ),
   );
   if (code == null || code.trim().isEmpty || !context.mounted) return;
   try {
@@ -229,49 +260,6 @@ Future<void> _joinByCode(BuildContext context, WidgetRef ref) async {
         context,
       ).showSnackBar(SnackBar(content: Text(e.message)));
     }
-  }
-}
-
-class _JoinCodeForm extends StatefulWidget {
-  const _JoinCodeForm();
-
-  @override
-  State<_JoinCodeForm> createState() => _JoinCodeFormState();
-}
-
-class _JoinCodeFormState extends State<_JoinCodeForm> {
-  final _controller = TextEditingController();
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            autocorrect: false,
-            textCapitalization: TextCapitalization.characters,
-            decoration: const InputDecoration(labelText: 'Invite code'),
-            onSubmitted: (v) => Navigator.pop(context, v),
-          ),
-          const SizedBox(height: Space.lg),
-          PrimaryButton(
-            label: 'Join',
-            onPressed: () => Navigator.pop(context, _controller.text),
-          ),
-        ],
-      ),
-    );
   }
 }
 
@@ -332,28 +320,33 @@ class _HubTiles extends ConsumerWidget {
     final badgeLine = regular == null
         ? 'Streaks, not speed'
         : '$earned of ${regular.length} badges earned';
-    return Row(
-      children: [
-        Expanded(
-          child: _HubTile(
-            icon: Icons.bolt_outlined,
-            title: 'Duels',
-            line: duelLine,
-            count: pending,
-            live: running > 0,
-            onTap: () => context.push(duelsPath),
+    // The status line may take two lines at 360 px; both tiles stay the
+    // same height.
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: _HubTile(
+              icon: Icons.bolt_outlined,
+              title: 'Duels',
+              line: duelLine,
+              count: pending,
+              live: running > 0,
+              onTap: () => context.push(duelsPath),
+            ),
           ),
-        ),
-        const SizedBox(width: Space.md),
-        Expanded(
-          child: _HubTile(
-            icon: Icons.military_tech_outlined,
-            title: 'Badges',
-            line: badgeLine,
-            onTap: () => context.push(badgesPath),
+          const SizedBox(width: Space.md),
+          Expanded(
+            child: _HubTile(
+              icon: Icons.military_tech_outlined,
+              title: 'Badges',
+              line: badgeLine,
+              onTap: () => context.push(badgesPath),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -402,7 +395,7 @@ class _HubTile extends StatelessWidget {
           Text(
             line,
             style: context.caption,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ],
@@ -445,14 +438,14 @@ class _LeagueTile extends ConsumerWidget {
                 Text(
                   league.name,
                   style: context.title,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: 2),
                 Text(
                   line,
                   style: context.caption,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],

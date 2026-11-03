@@ -79,7 +79,13 @@ class _WrappedScreenState extends ConsumerState<WrappedScreen> {
                     setState(() => _page = i);
                   },
                   itemBuilder: (_, i) => Padding(
-                    padding: const EdgeInsets.all(Space.sm),
+                    // 16 under the app bar, 8 between cards.
+                    padding: const EdgeInsets.fromLTRB(
+                      Space.sm,
+                      Space.lg,
+                      Space.sm,
+                      Space.sm,
+                    ),
                     child: i == 0
                         ? WrappedIntroCard(rangeLabel: s.range.label)
                         : WrappedCard(
@@ -109,11 +115,12 @@ class _WrappedScreenState extends ConsumerState<WrappedScreen> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(
+                // The button clears the navigation bar or home indicator.
+                padding: EdgeInsets.fromLTRB(
                   Space.gutter,
                   Space.sm,
                   Space.gutter,
-                  Space.gutter,
+                  Space.lg + MediaQuery.paddingOf(context).bottom,
                 ),
                 child: SecondaryButton(
                   label: 'Share this card',

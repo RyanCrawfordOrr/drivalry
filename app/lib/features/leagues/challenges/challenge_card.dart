@@ -91,9 +91,9 @@ class _ChallengeCardState extends ConsumerState<ChallengeCard> {
     return Tile(
       padding: const EdgeInsets.fromLTRB(
         Space.gutter,
-        Space.lg,
         Space.md,
-        Space.sm,
+        Space.md,
+        Space.md,
       ),
       child: Row(
         children: [
@@ -209,13 +209,16 @@ class ChallengeProgressView extends StatelessWidget {
         const SizedBox(height: Space.md),
         GrowBar(fraction: p?.fraction ?? 0),
         const SizedBox(height: Space.sm),
-        Row(
+        // Count and end date at the two ends of one line while they fit,
+        // one under the other when they do not; never touching.
+        Wrap(
+          alignment: WrapAlignment.spaceBetween,
+          spacing: Space.md,
+          runSpacing: Space.xs,
           children: [
-            Expanded(
-              child: Text(
-                p == null ? 'Counting…' : challengeProgressLine(challenge, p),
-                style: context.caption,
-              ),
+            Text(
+              p == null ? 'Counting…' : challengeProgressLine(challenge, p),
+              style: context.caption,
             ),
             Text(ends, style: context.caption),
           ],

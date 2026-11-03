@@ -47,16 +47,20 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
         ],
       ),
       body: Column(
+        // Stretched, so the chips sit on the gutter rather than centred
+        // when they wrap to two rows at 360 px.
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
               Space.gutter,
-              Space.sm,
+              Space.lg,
               Space.gutter,
               0,
             ),
             child: Wrap(
               spacing: Space.sm,
+              runSpacing: Space.sm,
               children: [
                 for (final w in StatsWindow.values)
                   ChoiceChip(
@@ -73,11 +77,11 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           Expanded(
             child: stats.when(
               loading: () => ListView(
-                padding: const EdgeInsets.fromLTRB(
+                padding: EdgeInsets.fromLTRB(
                   Space.gutter,
                   Space.lg,
                   Space.gutter,
-                  Space.xxxl,
+                  Space.xl + MediaQuery.paddingOf(context).bottom,
                 ),
                 children: const [
                   SkeletonTile(height: 200),
@@ -130,7 +134,11 @@ class _StatsBody extends ConsumerWidget {
     final line = stats.reality.timeSavedLine;
     final t = stats.totals;
     return ListView(
-      padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+      // The closing note clears the navigation bar or home indicator.
+      padding: EdgeInsets.only(
+        top: Space.lg,
+        bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+      ),
       children: [
         Reveal(
           child: Padding(
@@ -189,14 +197,13 @@ class _StatsBody extends ConsumerWidget {
                     columns: 2,
                     children: [
                       for (final f in sections[i].facts)
-                        StatTile(
+                        FactTile(
                           value: f.value,
-                          label: f.hint.isEmpty
-                              ? f.label
-                              : '${f.label} · ${f.hint}',
+                          label: f.label,
+                          hint: f.hint,
                           icon: f.icon,
                           onTap: _isFuelFact(f)
-                              ? () => _editFuelAssumptions(context, ref)
+                              ? () => showFuelAssumptionsSheet(context, ref)
                               : null,
                         ),
                     ],
@@ -242,7 +249,10 @@ class _StatsBody extends ConsumerWidget {
 }
 
 /// Price per litre and default economy are plain settings rows.
-Future<void> _editFuelAssumptions(BuildContext context, WidgetRef ref) async {
+Future<void> showFuelAssumptionsSheet(
+  BuildContext context,
+  WidgetRef ref,
+) async {
   final db = ref.read(databaseProvider);
   final priceText =
       (ref.read(fuelPriceProvider).value ?? defaultFuelPricePerLitre)

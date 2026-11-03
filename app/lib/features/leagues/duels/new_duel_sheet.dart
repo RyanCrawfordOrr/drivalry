@@ -87,13 +87,21 @@ class _NewDuelSheetState extends ConsumerState<NewDuelSheet> {
           const SizedBox(height: Space.lg),
           const Kicker('On'),
           const SizedBox(height: Space.sm),
-          SegmentedButton<DuelMetric>(
-            segments: [
+          // Chips wrap at 360 px where three segments would not fit.
+          Wrap(
+            spacing: Space.sm,
+            runSpacing: Space.sm,
+            children: [
               for (final m in DuelMetric.values)
-                ButtonSegment(value: m, label: Text(m.label)),
+                ChoiceChip(
+                  label: Text(m.label),
+                  selected: _metric == m,
+                  onSelected: (_) {
+                    Haptics.select();
+                    setState(() => _metric = m);
+                  },
+                ),
             ],
-            selected: {_metric},
-            onSelectionChanged: (s) => setState(() => _metric = s.first),
           ),
           const SizedBox(height: Space.sm),
           Text(_metric.description, style: context.caption),

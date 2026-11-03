@@ -9,6 +9,7 @@ import '../../data/badges/badges_providers.dart';
 import '../../data/badges/streaks.dart';
 import '../../widgets/friendly_error.dart';
 import '../leagues/widgets/live_numbers.dart';
+import '../stats/stats_cards.dart' show FactTile;
 import 'badge_moments.dart';
 import 'moment_ledger.dart';
 
@@ -55,11 +56,11 @@ class BadgesScreen extends ConsumerWidget {
       body: BadgeMoments(
         child: badges.when(
           loading: () => ListView(
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               Space.gutter,
-              Space.sm,
+              Space.lg,
               Space.gutter,
-              Space.xxxl,
+              Space.xl + MediaQuery.paddingOf(context).bottom,
             ),
             children: const [
               SkeletonTile(height: 96),
@@ -101,24 +102,31 @@ class _BadgesList extends StatelessWidget {
     final shame = list.where((b) => b.def.isShame).toList();
     final earned = regular.where((b) => b.earned).length;
     return ListView(
-      padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+      // 16 under the app bar; the last tile clears the navigation bar or
+      // home indicator.
+      padding: EdgeInsets.only(
+        top: Space.lg,
+        bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+      ),
       children: [
         Reveal(
           child: Padding(
             padding: Space.screen,
+            // FactTile labels wrap, so "Clean streak" reads in full in a
+            // third of a 360 px screen.
             child: StatGrid(
               children: [
-                StatTile(
+                FactTile(
                   value: '${streaks.clean}',
                   label: 'Clean streak',
                   icon: Icons.verified_outlined,
                 ),
-                StatTile(
+                FactTile(
                   value: '${streaks.phoneFree}',
                   label: 'Phone-free',
                   icon: Icons.phonelink_erase_outlined,
                 ),
-                StatTile(
+                FactTile(
                   value: '+${streaks.bonusXp}',
                   label: 'Streak XP',
                   icon: Icons.bolt_outlined,
@@ -185,13 +193,10 @@ class _BadgeTile extends StatelessWidget {
     final fresh =
         lit && recentlyAt(badge.awardedAt, DateTime.now(), badgeMomentWindow);
     final progress = earned ? null : badgeProgress(badge.def, streaks);
-    final Widget? trailing = earned
+    // A badge with progress shows its count beside the bar; only a plain
+    // locked one carries the pill.
+    final Widget? trailing = earned || progress != null
         ? null
-        : progress != null
-        ? Text(
-            '${progress.$1}/${progress.$2}',
-            style: context.label.copyWith(color: scheme.onSurfaceVariant),
-          )
         : const Pill('Locked', compact: true);
     return Tile(
       padding: const EdgeInsets.all(Space.lg),
@@ -219,17 +224,27 @@ class _BadgeTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 2),
-                Text(
-                  badge.def.description,
-                  style: context.caption,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
+                Text(badge.def.description, style: context.caption),
                 if (progress != null) ...[
                   const SizedBox(height: Space.sm),
-                  GrowBar(
-                    fraction: progress.$2 == 0 ? 0 : progress.$1 / progress.$2,
-                    color: color,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GrowBar(
+                          fraction: progress.$2 == 0
+                              ? 0
+                              : progress.$1 / progress.$2,
+                          color: color,
+                        ),
+                      ),
+                      const SizedBox(width: Space.md),
+                      Text(
+                        '${progress.$1}/${progress.$2}',
+                        style: context.label.copyWith(
+                          color: scheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
                 if (earned) ...[

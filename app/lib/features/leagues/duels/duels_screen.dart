@@ -11,7 +11,9 @@ import 'duel_moments.dart';
 import 'new_duel_sheet.dart';
 
 /// Head-to-head duels with friends (docs/02 §7, §12.1): four editorial
-/// sections, one tile per duel, a won duel celebrated once.
+/// sections, one tile per duel, a won duel celebrated once. Starting a duel
+/// is an app-bar action, so nothing floats over the list; the empty state
+/// repeats it as its one button.
 class DuelsScreen extends ConsumerWidget {
   const DuelsScreen({super.key});
 
@@ -19,19 +21,18 @@ class DuelsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ready =
         ref.watch(cloudConfiguredProvider) && ref.watch(isSignedInProvider);
-    final hasDuels =
-        ready && (ref.watch(myDuelsProvider).value?.isNotEmpty ?? false);
     return Scaffold(
-      appBar: AppBar(title: const Text('Duels')),
-      // The empty state carries its own button; the FAB appears once there
-      // is a list to float over.
-      floatingActionButton: hasDuels
-          ? FloatingActionButton.extended(
+      appBar: AppBar(
+        title: const Text('Duels'),
+        actions: [
+          if (ready)
+            IconButton(
+              tooltip: 'New duel',
+              icon: const Icon(Icons.add),
               onPressed: () => startDuel(context),
-              icon: const Icon(Icons.bolt),
-              label: const Text('Duel'),
-            )
-          : null,
+            ),
+        ],
+      ),
       body: const SignedInScope(
         message: 'Sign in to duel your friends on how well you drive.',
         icon: Icons.bolt_outlined,
@@ -73,7 +74,12 @@ class _DuelsBody extends ConsumerWidget {
     return RefreshIndicator(
       onRefresh: () => ref.refresh(refreshMyDuelsProvider.future),
       child: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: 96),
+        // 16 under the app bar; the last tile clears the navigation bar or
+        // home indicator.
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           if (refresh.hasError)
             Padding(

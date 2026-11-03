@@ -6,9 +6,9 @@ import '../../../data/repos/duels_repo.dart';
 import '../widgets/live_numbers.dart';
 
 /// One duel as a tile: both avatars, who against whom, the one-line state,
-/// the metric as a pill, the two values when there is a scoreboard. Pure:
-/// the scoreboard comes in from outside so the card renders offline and in
-/// tests.
+/// the metric (and the result) as pills under it, the two values when there
+/// is a scoreboard. Pure: the scoreboard comes in from outside so the card
+/// renders offline and in tests.
 class DuelCard extends StatelessWidget {
   const DuelCard({
     super.key,
@@ -56,31 +56,32 @@ class DuelCard extends StatelessWidget {
                           ? 'You vs @${other.handle}'
                           : '@${mine.handle} vs @${other.handle}',
                       style: context.title,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 2),
                     Text(status, style: context.caption),
+                    const SizedBox(height: Space.sm),
+                    // The metric, and how it ended, under the words rather
+                    // than beside them, so the title keeps its width at
+                    // 360 px.
+                    Wrap(
+                      spacing: Space.sm,
+                      runSpacing: Space.xs,
+                      children: [
+                        if (outcome == DuelOutcome.won)
+                          const Pill(
+                            'You won',
+                            tone: PillTone.positive,
+                            compact: true,
+                          )
+                        else if (outcome == DuelOutcome.lost)
+                          const Pill('You lost', compact: true),
+                        Pill(duel.metric.label, compact: true),
+                      ],
+                    ),
                   ],
                 ),
-              ),
-              const SizedBox(width: Space.sm),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  if (outcome == DuelOutcome.won) ...[
-                    const Pill(
-                      'You won',
-                      tone: PillTone.positive,
-                      compact: true,
-                    ),
-                    const SizedBox(height: Space.xs),
-                  ] else if (outcome == DuelOutcome.lost) ...[
-                    const Pill('You lost', compact: true),
-                    const SizedBox(height: Space.xs),
-                  ],
-                  Pill(duel.metric.label, compact: true),
-                ],
               ),
             ],
           ),

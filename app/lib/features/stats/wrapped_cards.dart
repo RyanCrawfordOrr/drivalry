@@ -310,7 +310,7 @@ class WrappedCard extends StatelessWidget {
                 fontSize: 22 * scale,
               ),
             ),
-            SizedBox(height: 8 * scale),
+            SizedBox(height: 12 * scale),
             if (forShare || context.reduceMotion)
               value
             else
@@ -329,7 +329,8 @@ class WrappedCard extends StatelessWidget {
                 ),
                 child: value,
               ),
-            SizedBox(height: 12 * scale),
+            // A clear step from the number down to its words.
+            SizedBox(height: 16 * scale),
             Text(
               forShare ? data.captionForShare : data.caption,
               style: TextStyle(

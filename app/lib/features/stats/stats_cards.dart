@@ -1,9 +1,80 @@
 import 'package:flutter/material.dart';
 
 import '../../app/theme.dart';
+import '../../app/ui/ui.dart';
 import '../../data/stats/stats_engine.dart';
 import 'fun_facts.dart';
 import 'us_states.dart';
+
+/// A number over a label and a hint, for two- and three-column grids.
+///
+/// The kit's `StatTile` keeps its label to one line. Here the label and the
+/// hint each get two, so "Farthest trip from home" and "Most drives stay
+/// this close to home" read in full in half of a 360 px screen instead of
+/// ending in an ellipsis.
+class FactTile extends StatelessWidget {
+  const FactTile({
+    super.key,
+    required this.value,
+    required this.label,
+    this.hint,
+    this.icon,
+    this.onTap,
+  });
+
+  final String value;
+  final String label;
+  final String? hint;
+  final IconData? icon;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final h = hint;
+    return Tile(
+      onTap: onTap,
+      padding: const EdgeInsets.fromLTRB(
+        Space.lg,
+        Space.lg,
+        Space.lg,
+        Space.md,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 20, color: context.caption.color),
+            const SizedBox(height: Space.sm),
+          ],
+          Text(
+            value,
+            style: context.title.copyWith(
+              fontWeight: FontWeight.w700,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: context.caption,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          if (h != null && h.isNotEmpty)
+            Text(
+              h,
+              style: context.caption.copyWith(color: scheme.outline),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+        ],
+      ),
+    );
+  }
+}
 
 /// The "map that fills in": every state as a chip, visited ones filled.
 class StatesGrid extends StatelessWidget {

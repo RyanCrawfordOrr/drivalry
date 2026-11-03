@@ -62,7 +62,7 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
           IconButton(
             tooltip: 'Members',
             icon: const Icon(Icons.people_outline),
-            onPressed: () => _showMembers(context),
+            onPressed: () => showMembersSheet(context, widget.leagueId),
           ),
           if (league != null)
             PopupMenuButton<String>(
@@ -97,11 +97,13 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
               await ref.read(leagueCurrentWeekProvider(widget.leagueId).future);
             },
             child: ListView(
-              padding: const EdgeInsets.fromLTRB(
+              // 16 under the app bar; the table's footer clears the
+              // navigation bar or home indicator.
+              padding: EdgeInsets.fromLTRB(
                 Space.gutter,
-                0,
+                Space.lg,
                 Space.gutter,
-                Space.xxxl,
+                Space.xl + MediaQuery.paddingOf(context).bottom,
               ),
               children: [
                 Reveal(
@@ -187,47 +189,48 @@ class _LeagueScreenState extends ConsumerState<LeagueScreen> {
         }
     }
   }
+}
 
-  Future<void> _showMembers(BuildContext context) {
-    return showDrivalrySheet<void>(
-      context,
-      title: 'Members',
-      scrollable: true,
-      builder: (ctx) => Consumer(
-        builder: (ctx, ref, _) {
-          final members = ref.watch(leagueMembersProvider(widget.leagueId));
-          return members.when(
-            loading: () => const Column(
-              children: [
-                SkeletonTile(height: 56),
-                SizedBox(height: Space.md),
-                SkeletonTile(height: 56),
+/// Every member of a league, one row each, tapping through to the profile.
+Future<void> showMembersSheet(BuildContext context, String leagueId) {
+  return showDrivalrySheet<void>(
+    context,
+    title: 'Members',
+    scrollable: true,
+    builder: (ctx) => Consumer(
+      builder: (ctx, ref, _) {
+        final members = ref.watch(leagueMembersProvider(leagueId));
+        return members.when(
+          loading: () => const Column(
+            children: [
+              SkeletonTile(height: 56),
+              SizedBox(height: Space.md),
+              SkeletonTile(height: 56),
+            ],
+          ),
+          error: (e, _) => Text(
+            friendlyError(e, doing: 'load the members'),
+            style: ctx.bodyMuted,
+          ),
+          data: (list) => Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (final m in list) ...[
+                _MemberRow(
+                  member: m,
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    context.push(Routes.userProfile(m.userId));
+                  },
+                ),
+                const SizedBox(height: Space.sm),
               ],
-            ),
-            error: (e, _) => Text(
-              friendlyError(e, doing: 'load the members'),
-              style: ctx.bodyMuted,
-            ),
-            data: (list) => Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                for (final m in list) ...[
-                  _MemberRow(
-                    member: m,
-                    onTap: () {
-                      Navigator.pop(ctx);
-                      context.push(Routes.userProfile(m.userId));
-                    },
-                  ),
-                  const SizedBox(height: Space.sm),
-                ],
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+            ],
+          ),
+        );
+      },
+    ),
+  );
 }
 
 /// League name, the week's countdown and your two numbers.

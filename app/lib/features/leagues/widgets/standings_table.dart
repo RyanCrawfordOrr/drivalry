@@ -120,9 +120,10 @@ class ZoneLabel extends StatelessWidget {
   }
 }
 
-/// One member: rank, avatar, handle and trips, XP, tier, movement arrow.
-/// The signed-in user's row is tinted; tapping opens the profile. The rank
-/// numeral slides when it changes and the XP counts up.
+/// One member: rank, avatar, handle and trips, then XP over the tier pill
+/// and the movement arrow. The signed-in user's row is tinted; tapping opens
+/// the profile. The rank numeral slides when it changes and the XP counts
+/// up.
 class StandingRow extends StatelessWidget {
   const StandingRow({super.key, required this.row, required this.isMe});
   final Standing row;
@@ -198,30 +199,40 @@ class StandingRow extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // A long handle takes a second line rather than an
+                    // ellipsis; the right-hand cluster stays narrow for it.
                     Text(
                       '@${row.handle}',
                       style: context.body,
-                      maxLines: 1,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
+                    // Three lines: the no-drive line needs them beside a
+                    // "Learner" pill at 360 px.
                     Text(
                       trips,
                       style: context.caption,
-                      maxLines: 1,
+                      maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: Space.sm),
-              AnimatedNumber(
-                value: row.xp,
-                suffix: ' XP',
-                style: context.label,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  AnimatedNumber(
+                    value: row.xp,
+                    suffix: ' XP',
+                    style: context.label,
+                  ),
+                  const SizedBox(height: Space.xs),
+                  TierPill(tier: row.tier),
+                ],
               ),
               const SizedBox(width: Space.sm),
-              TierPill(tier: row.tier),
-              const SizedBox(width: Space.xs),
               SizedBox(width: 20, height: 20, child: arrow),
             ],
           ),
