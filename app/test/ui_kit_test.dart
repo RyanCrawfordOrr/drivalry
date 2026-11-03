@@ -105,13 +105,121 @@ void main() {
     expect(find.text('94'), findsNothing);
   });
 
-  test('friendlyError never leaks the exception text', () {
-    expect(friendlyError(Exception('boom')), 'Something went wrong. Try again.');
+  testWidgets('motion primitives animate and settle', (tester) async {
+    var taps = 0;
+    var longs = 0;
+    await tester.pumpWidget(
+      wrap(
+        Column(
+          children: [
+            PressScale(
+              onTap: () => taps++,
+              onLongPress: () => longs++,
+              child: const SizedBox(
+                width: 120,
+                height: 48,
+                child: Text('press'),
+              ),
+            ),
+            Reveal(delay: Reveal.stagger(3), child: const Text('revealed')),
+            Builder(
+              builder: (c) =>
+                  AnimatedNumber(value: 87, style: c.display, suffix: ' pts'),
+            ),
+            const PulsingDot(color: Colors.red),
+            const StateSwitcher(child: Text('a', key: ValueKey('a'))),
+          ],
+        ),
+      ),
+    );
+    // Mid-way the number is still counting; afterwards it has landed.
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(find.text('87 pts'), findsNothing);
+    await tester.pump(const Duration(seconds: 1));
+    expect(find.text('87 pts'), findsOneWidget);
+    expect(find.text('revealed'), findsOneWidget);
+
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('press')),
+    );
+    await tester.pump(const Duration(milliseconds: 150));
+    final pressed = tester.widget<AnimatedScale>(
+      find.ancestor(
+        of: find.text('press'),
+        matching: find.byType(AnimatedScale),
+      ),
+    );
+    expect(pressed.scale, 0.97);
+    await gesture.up();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(taps, 1);
+    await tester.longPress(find.text('press'));
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(longs, 1);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('reduce motion disables the entrance and press animations', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: DrivalryTheme.dark(),
+        home: MediaQuery(
+          data: const MediaQueryData(disableAnimations: true),
+          child: Scaffold(
+            body: Column(
+              children: [
+                PressScale(onTap: () {}, child: const Text('press')),
+                const Reveal(child: Text('now')),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
     expect(
-      friendlyError(Exception('SocketException: Failed host lookup'), doing: 'load'),
+      find.descendant(
+        of: find.byType(Reveal),
+        matching: find.byType(FadeTransition),
+      ),
+      findsNothing,
+    );
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('press')),
+    );
+    await tester.pump(const Duration(milliseconds: 150));
+    final scale = tester.widget<AnimatedScale>(
+      find.ancestor(
+        of: find.text('press'),
+        matching: find.byType(AnimatedScale),
+      ),
+    );
+    expect(scale.scale, 1);
+    await gesture.up();
+    await tester.pump(const Duration(milliseconds: 400));
+  });
+
+  test('friendlyError never leaks the exception text', () {
+    expect(
+      friendlyError(Exception('boom')),
+      'Something went wrong. Try again.',
+    );
+    expect(
+      friendlyError(
+        Exception('SocketException: Failed host lookup'),
+        doing: 'load',
+      ),
       contains('No connection'),
     );
-    expect(friendlyError(StateError('x'), doing: 'share'), 'Could not share. Try again.');
-    expect(friendlyError(Exception('Offline build.')), 'Not available in this version yet.');
+    expect(
+      friendlyError(StateError('x'), doing: 'share'),
+      'Could not share. Try again.',
+    );
+    expect(
+      friendlyError(Exception('Offline build.')),
+      'Not available in this version yet.',
+    );
   });
 }

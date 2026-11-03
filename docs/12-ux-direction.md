@@ -76,6 +76,27 @@ Rules: no `Card` with `shape: Border`, no `Divider` inside tiles, no icon-only b
 - **Celebrations.** Trip scored (always), badge earned, league promotion, duel won, season closed. Each is one full-screen moment with a single "Nice" / "Share" / "Fair" dismissal and never blocks a driving screen (queued until the car is parked).
 - **Loading.** Skeleton tiles in the sheet and lists; never a bare spinner in the middle of a screen. Pull to refresh on every synced list.
 
+## 5b. The premium interaction standard
+
+What people now expect from a top-tier app, applied everywhere, with the shared primitives in `lib/app/ui/motion.dart`:
+
+| Expectation | Rule | Primitive |
+| --- | --- | --- |
+| Everything tappable responds | Scales to 0.97 on press and springs back, with a light haptic; ripple stays | `PressScale` (built into `Tile`) |
+| Screens arrive, they do not pop | Content fades and slides up on first build; list items stagger 40 ms apart, capped at eight | `Reveal`, `Reveal.stagger(i)` |
+| Numbers move | Scores, XP, ranks, distances count from the previous value; rings sweep from zero on first appearance; bars animate width | `AnimatedNumber`, `ScoreRing(animate: true)`, `ThinBar` |
+| Loading never blocks | Skeletons shimmer in place of the content shape; pull to refresh on every synced list | `SkeletonTile`, `Shimmer`, `RefreshIndicator` |
+| State changes cross-fade | Idle ↔ recording, empty ↔ populated, loading ↔ loaded resize and fade instead of jumping | `StateSwitcher` |
+| Live things breathe | Recording, talking, live convoy and "driving now" use a pulsing dot | `PulsingDot` |
+| Continuity between screens | The score ring and the avatar fly from list to detail; sheets slide with the emphasized curve | `Hero` (tags `trip-ring-<id>`, `avatar-<userId>`), `showDrivalrySheet` |
+| Direct manipulation | Swipe to dismiss with Undo where a row can be removed; long-press opens a sheet of actions; sheets snap to peek / half / full | `Dismissible` + `SnackBarAction`, `showDrivalrySheet`, `DraggableScrollableSheet(snap: true)` |
+| Big titles that collapse | Editorial roots (Leagues, Friends, Garage, Profile, Settings) use a large app bar that collapses on scroll | `SliverAppBar.large` |
+| Moments | Trip scored, badge, promotion, duel won, challenge met get the full-screen moment with confetti or the stamp | `showCelebration` |
+| Haptics with meaning | tap, select, success, celebrate, warning, never random | `Haptics` |
+| Respect the person | All of the above switch off under the system reduce-motion setting; nothing animates longer than 400 ms except celebrations and shimmer | `context.reduceMotion` |
+
+Jev scores an "alive" dimension on every screen description (`tools/ux/jev_screen_audit.mjs`): the target is 2.0 or better everywhere.
+
 ## 6. Voice
 
 - Second person, present tense, short. "Scored when you park." not "Trips are scored upon completion."

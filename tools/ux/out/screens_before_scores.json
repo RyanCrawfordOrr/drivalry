@@ -1,90 +1,101 @@
 [
  {
   "id": "drive-idle",
-  "hierarchy": 1.61,
-  "load": 1.37,
-  "waze": 1.66,
-  "kith": 0.77,
-  "driving": 0.93
+  "hierarchy": 1.68,
+  "load": 1.44,
+  "waze": 1.63,
+  "kith": 0.83,
+  "driving": 0.92,
+  "alive": 0.05
  },
  {
   "id": "drive-recording",
-  "hierarchy": 1.9,
-  "load": 1.81,
-  "waze": 2.06,
-  "kith": 1.23,
-  "driving": 1.12
+  "hierarchy": 1.88,
+  "load": 1.84,
+  "waze": 2.01,
+  "kith": 1.21,
+  "driving": 1.17,
+  "alive": 0.35
  },
  {
   "id": "trip-detail",
-  "hierarchy": 1.67,
-  "load": 1.02,
-  "waze": 1.73,
-  "kith": 0.95,
-  "driving": 0.74
+  "hierarchy": 1.65,
+  "load": 1.01,
+  "waze": 1.71,
+  "kith": 0.96,
+  "driving": 0.74,
+  "alive": 0.13
  },
  {
   "id": "friends-feed",
-  "hierarchy": 1.46,
-  "load": 1.77,
-  "waze": 1.25,
-  "kith": 0.68,
-  "driving": 0.29
+  "hierarchy": 1.42,
+  "load": 1.8,
+  "waze": 1.33,
+  "kith": 0.72,
+  "driving": 0.25,
+  "alive": 0.08
  },
  {
   "id": "league",
-  "hierarchy": 1.5,
+  "hierarchy": 1.49,
   "load": 1.18,
-  "waze": 1.13,
-  "kith": 0.52,
-  "driving": 0.45
+  "waze": 1.08,
+  "kith": 0.55,
+  "driving": 0.42,
+  "alive": 0.14
  },
  {
   "id": "convoy-detail",
-  "hierarchy": 1.64,
-  "load": 0.98,
-  "waze": 1.8,
+  "hierarchy": 1.58,
+  "load": 0.94,
+  "waze": 1.73,
   "kith": 0.73,
-  "driving": 0.79
+  "driving": 0.82,
+  "alive": 0.24
  },
  {
   "id": "convoy-radio",
-  "hierarchy": 2.36,
-  "load": 1.93,
-  "waze": 1.86,
-  "kith": 1.14,
-  "driving": 1.22
+  "hierarchy": 2.35,
+  "load": 1.96,
+  "waze": 2.02,
+  "kith": 1.17,
+  "driving": 1.24,
+  "alive": 0.65
  },
  {
   "id": "badges",
-  "hierarchy": 1.49,
-  "load": 1.63,
-  "waze": 0.62,
-  "kith": 0.9,
-  "driving": 0.24
+  "hierarchy": 1.5,
+  "load": 1.64,
+  "waze": 0.67,
+  "kith": 0.87,
+  "driving": 0.2,
+  "alive": 0.01
  },
  {
   "id": "settings",
-  "hierarchy": 1.68,
-  "load": 1.11,
-  "waze": 0,
-  "kith": 1.46,
-  "driving": 0.01
+  "hierarchy": 1.63,
+  "load": 1.09,
+  "waze": 0.01,
+  "kith": 1.48,
+  "driving": 0.01,
+  "alive": 0.02
  },
  {
   "id": "sign-in",
-  "hierarchy": 2.05,
+  "hierarchy": 2.04,
   "load": 2.55,
-  "waze": 0.67,
-  "kith": 1.6,
-  "driving": 1.48
+  "waze": 0.54,
+  "kith": 1.51,
+  "driving": 1.48,
+  "alive": 0.01
  },
  {
   "id": "first-run",
-  "hierarchy": 1.34,
-  "load": 1.09,
-  "waze": 0.69,
-  "kith": 0.41,
-  "driving": 0.34
+  "hierarchy": 1.27,
+  "load": 1.03,
+  "waze": 0.68,
+  "kith": 0.38,
+  "driving": 0.33,
+  "alive": 0.02
  }
 ]
