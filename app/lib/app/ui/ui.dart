@@ -5,5 +5,6 @@ library;
 export 'celebration.dart';
 export 'components.dart';
 export 'haptics.dart';
+export 'motion.dart';
 export 'tokens.dart';
 export 'typography.dart';

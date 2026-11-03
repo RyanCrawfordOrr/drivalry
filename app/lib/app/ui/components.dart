@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'haptics.dart';
+import 'motion.dart';
 import 'tokens.dart';
 import 'typography.dart';
 
@@ -116,21 +117,30 @@ class Tile extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     final r = radius ?? Radii.cardRadius;
     final tappable = onTap != null || onLongPress != null;
-    return Material(
+    final surface = Material(
       color: color ?? colorFor(scheme, tone),
       borderRadius: r,
       clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: tappable && onTap != null
-            ? () {
+        onTap: onTap == null
+            ? null
+            : () {
                 Haptics.tap();
                 onTap!();
-              }
-            : null,
-        onLongPress: onLongPress,
+              },
+        onLongPress: onLongPress == null
+            ? null
+            : () {
+                Haptics.select();
+                onLongPress!();
+              },
         child: Padding(padding: padding, child: child),
       ),
     );
+    if (!tappable) return surface;
+    // Passive PressScale: the InkWell keeps the tap and the ripple, the
+    // whole tile gets the spring.
+    return PressScale(child: surface);
   }
 }
 
@@ -660,7 +670,7 @@ class ThinBar extends StatelessWidget {
   }
 }
 
-/// Skeleton placeholder while a list loads; never a bare spinner.
+/// Shimmering placeholder while a list loads; never a bare spinner.
 class SkeletonTile extends StatelessWidget {
   const SkeletonTile({super.key, this.height = 88});
   final double height;
@@ -668,11 +678,13 @@ class SkeletonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerLow,
-        borderRadius: Radii.cardRadius,
+    return Shimmer(
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: scheme.surfaceContainerLow,
+          borderRadius: Radii.cardRadius,
+        ),
       ),
     );
   }

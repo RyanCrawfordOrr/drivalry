@@ -76,6 +76,15 @@ const DIMENSIONS = {
       'Built for it: nothing on the screen is small or ambiguous',
     ],
   },
+  alive: {
+    instructions: 'How alive and responsive does `screen` feel, as a person using a premium app in 2026 expects: press feedback, motion when content arrives, numbers that count, live indicators, continuity between screens, gestures such as swipe and long-press, and moments worth celebrating?',
+    criteria: [
+      'Static: content appears and sits there; taps give only the default ripple',
+      'Some life: one or two animations or a loading shimmer, the rest static',
+      'Responsive: content arrives with motion, taps have feel, numbers move, live states breathe',
+      'Delightful: every interaction is considered, with continuity between screens and real moments',
+    ],
+  },
 };
 
 async function judge(entry) {
