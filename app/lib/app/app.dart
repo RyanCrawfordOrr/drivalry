@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'bootstrap.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -11,6 +12,7 @@ class DrivalryApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(appBootstrapProvider);
     final router = ref.watch(routerProvider);
     return MaterialApp.router(
       title: 'Drivalry',

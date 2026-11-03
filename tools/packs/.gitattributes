@@ -1,0 +1,2 @@
+# The test vector is a SQLite file; never normalise its line endings.
+*.pack binary

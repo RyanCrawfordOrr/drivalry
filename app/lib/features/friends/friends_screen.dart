@@ -10,7 +10,8 @@ class FriendsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const PlaceholderScreen(
       title: 'Friends',
-      tagline: 'The feed where roasts land, and the circles that share '
+      tagline:
+          'The feed where roasts land, and the circles that share '
           'where everyone is.',
       planned: [
         'Public roast feed with reactions and comments',

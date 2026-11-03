@@ -1,0 +1,19 @@
+name: drivalry_packs
+description: >-
+  Reader for Drivalry speed-limit packs (docs/07-pack-format.md) and the
+  on-device nearest-road-with-heading matcher that turns a GPS trace into the
+  RoadSegment list the scoring engine expects. Pure Dart, no Flutter dependency.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  drivalry_scoring:
+    path: ../drivalry_scoring
+  sqlite3: ^3.5.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

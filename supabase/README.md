@@ -1,10 +1,26 @@
 # Supabase
 
 Free-tier project `drivalry`. Holds accounts, handles, friends, leagues, trip
-summaries, the public roast feed, coarse presence, circles, convoy signaling
-and the shared speed-limit cache. It never holds raw GPS.
+summaries, the public roast feed, presence, circles, convoy state and the shared
+speed-limit correction cache. It never holds raw GPS, routes or start/end places.
 
-`migrations/0001_init.sql` was written before the local-first decision and
-still contains `trip_samples` and `trip_segments`. It is revised, trimmed to
-summaries only, and applied in the friends-and-leagues stage. Only `migrations/0000_heartbeat.sql` is meant to be applied now (paste it into
-the SQL editor); the rest of the schema is not applied to the live project yet. Keep-alive: `.github/workflows/supabase-keepalive.yml`.
+## Migrations
+
+Apply in order by pasting each file into the SQL editor (Dashboard → SQL Editor → New query → Run).
+
+| File | What | Status |
+| --- | --- | --- |
+| `migrations/0000_heartbeat.sql` | One-row table the daily keep-alive reads | Applied 2026-11-02 |
+| `migrations/0001_init.sql` | The whole summaries-only schema: tables, RLS, `finalize_league_week`, the speed-limit override trigger, storage buckets, badge seed | Not yet applied; apply before the friends-and-leagues stage is installed on phones |
+
+`0001_init.sql` is written to run once on a fresh project. It creates enum types and policies without `if not exists`, so re-running it fails loudly rather than half-applying. Later changes go in new numbered files that only add or alter.
+
+Both files are syntax-checked with `libpg_query` (via `pglast`) but the live project is the only place the full schema has been executed; if a statement fails in the editor, paste the error here and fix forward.
+
+## Auth
+
+Providers: Sign in with Apple and Google only. Email/password is turned off before the first external build. Configured in Dashboard → Authentication → Providers (needs the Apple Services ID and a Google OAuth client for bundle id `app.drivalry`; walkthrough comes with the friends stage).
+
+## Keep-alive
+
+`.github/workflows/supabase-keepalive.yml` runs daily, checks auth health and reads `heartbeat` through PostgREST. Needs the repo secrets `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`.

@@ -11,10 +11,10 @@ An ordered build plan for one person and Claude Code. The owner chose to build a
 - [x] Delete the old Expo app and update the README to match these docs
 - [x] `packages/scoring` emits JSON fixtures into `packages/scoring/fixtures/` (`npm run fixtures`)
 - [x] `packages/drivalry_scoring` Dart port passes every fixture
-- [ ] `tools/packs`: pyosmium builder produces one pack (the owner's home state) under 60 MB
+- [x] `tools/packs`: pyosmium builder produces one pack (the owner's home state) under 60 MB
 - [x] GitHub Actions workflows: `ci.yml` (TypeScript spec, Dart port, Flutter analyze and test) and `supabase-keepalive.yml` (daily ping that reads the one-row `heartbeat` table; needs `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` as repo secrets)
-- [ ] GitHub Actions: `packs-monthly.yml` builds every US state and publishes a release with `index.json`
-- [ ] Supabase schema rewritten for summaries only (no `trip_samples`, `trip_segments`, `convoy_positions`, `share_level`); RLS; `finalize_league_week` function
+- [x] GitHub Actions: `packs-monthly.yml` builds every US state and publishes a release with `index.json`
+- [x] Supabase schema rewritten for summaries only (no `trip_samples`, `trip_segments`, `convoy_positions`, `share_level`); RLS; `finalize_league_week` function
 - [ ] Request the CarPlay Driving Task entitlement (and Voice Conversation) for `app.drivalry`
 - [ ] First Mac build: hello-world Flutter app signed and uploaded to TestFlight, Android build to Play internal testing
 - [ ] Attribution screen stub listing OpenStreetMap, Google, Open-Meteo, Nominatim
@@ -25,11 +25,11 @@ Goal: trips on the owner's phones start and stop with no taps, get matched again
 
 Milestones:
 
-1. **M1.1 Native tracking plugins.** Swift (CoreMotion, CoreLocation) and Kotlin (ActivityRecognition receiver, `location` foreground service, FusedLocationProvider with batched delivery). Trip state machine in Dart: idle, tentative, active, ending. Works from a terminated app on both platforms.
-2. **M1.2 Recorder.** drift schema for trips, samples, motion events, phone events. 20 Hz sensor batches turned into brake/accel/corner events on-device. 90-day TTL on samples. Weather from Open-Meteo at trip start.
-3. **M1.3 Pack download and matcher.** Pack manager (Wi-Fi only, hash check, atomic swap). Nearest-road-with-heading matcher in an isolate. Correct road names on ten known routes around the owner's home.
-4. **M1.4 Scoring on the phone.** Dart engine wired to matcher output. Trip card: map, score ring, components, event timeline with pins, limit coverage, roast line. "Were you the passenger?" interstitial with hints. Delete trip. Pause tracking. "Never track" vehicles.
-5. **M1.5 Diagnostics.** Settings > Diagnostics shows battery per hour driving, battery per day parked, missed starts, false starts, late ends, and limit coverage. All measured on the phone.
+1. **M1.1 Native tracking plugins.** _Built 2026-11-02 (Kotlin compiled; Swift unverified until the Mac build)._ Swift (CoreMotion, CoreLocation) and Kotlin (ActivityRecognition receiver, `location` foreground service, FusedLocationProvider with batched delivery). Trip state machine runs natively (ADR-017): idle, tentative, active, ended; Dart mirrors it and drains the spool. Works from a terminated app on both platforms.
+2. **M1.2 Recorder.** _Built 2026-11-02._ drift schema for trips, samples, motion events, phone events. 20 Hz sensor batches turned into brake/accel/corner events on-device. 90-day TTL on samples. Weather from Open-Meteo at trip start.
+3. **M1.3 Pack download and matcher.** _Built 2026-11-02; the ten-route check is still to do on real drives._ Pack manager (Wi-Fi only, hash check, atomic swap). Nearest-road-with-heading matcher in an isolate. Correct road names on ten known routes around the owner's home.
+4. **M1.4 Scoring on the phone.** _Built 2026-11-02; "never track" vehicles wait for the Garage._ Dart engine wired to matcher output. Trip card: map, score ring, components, event timeline with pins, limit coverage, roast line. "Were you the passenger?" interstitial with hints. Delete trip. Pause tracking. "Never track" vehicles.
+5. **M1.5 Diagnostics.** _First version built 2026-11-02 (plugin state, counters, errors, packs, DB counts); battery per hour/day measurement still to add._ Settings > Diagnostics shows battery per hour driving, battery per day parked, missed starts, false starts, late ends, and limit coverage. All measured on the phone.
 6. **M1.6 Seven phones.** TestFlight and Play internal builds on all test devices. Two weeks of real trips.
 7. **M1.7 Tune.** After the two weeks, adjust the numbers in `02-game-design.md`, regenerate fixtures, update both engines together.
 

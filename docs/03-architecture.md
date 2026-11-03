@@ -64,11 +64,12 @@ Motion trigger ──► Tentative ──► Active ──► Ending ──► P
 - iOS: `CMMotionActivityManager` `automotive` transitions. Backstops: significant-location-change and a 100 m geofence around the last parking spot. Both can launch the app from a terminated state.
 - Android: `ActivityRecognition` Transition API `IN_VEHICLE ENTER` through a `BroadcastReceiver`, so it works after the app is killed. Backstops: fused location `PRIORITY_PASSIVE` and a geofence around the parking spot.
 - Both: car Bluetooth connection, CarPlay session, or Android Auto session starts a *tentative* trip immediately. Tentative becomes active when speed exceeds 4 m/s for 20 s. Otherwise it is discarded with no trace.
+- The idle → tentative → active → ended state machine runs **natively**, because it has to gate the GPS radio while the Dart side may not be running (Android kills the app; iOS relaunches it in the background). Every event the plugin emits is also appended to an on-device spool file, and Dart drains the spool when it next runs, so a trip recorded while the app was dead is replayed in full. The channel contract is `08-tracking-channel.md`.
 
 ### 3.2 Record
 
 - GPS at 1 Hz, batched delivery (§6). Each fix: `t, lat, lon, speed, accuracy, heading, altitude`.
-- Accelerometer and gyro at 20 Hz from the motion coprocessor, FIFO-batched. Brake, accel and corner events are detected on-device per batch and stored as `MotionEvent { t, kind, peak }`. Raw motion data is discarded after each batch.
+- Linear acceleration at 20 Hz from the motion coprocessor, FIFO-batched. The plugin keeps only per-second peaks above 2.5 m/s² (`accelPeak`), which corroborate the GPS-derived brake, accel and corner events the engine detects and will feed crash detection. Phone orientation is unknown, so the plugin does not try to classify the direction of a peak. Raw motion data is discarded after each batch.
 - Phone events: unlock, interaction, handheld call, and whether the screen is projecting to CarPlay or Android Auto. Timestamps only.
 - Weather at trip start from Open-Meteo (one call). Night fraction from local sunrise/sunset math.
 - Everything is appended to drift as it happens, so a killed app loses at most one batch (about 20 s).
@@ -113,31 +114,27 @@ No coordinates. No start or end place. No route. It goes into the outbox and upl
 - Target under 60 MB per pack. Large states (Texas, California) may need to drop `service` and `track` ways to fit. Measure first.
 - Runs monthly on GitHub Actions as a matrix over regions. Output: one pack per region plus `index.json` on a GitHub Release tagged `packs-YYYY.MM`. Keep the last three releases.
 
-### 4.2 Format sketch
+### 4.2 Format
 
-One SQLite file per region, opened read-only with drift.
+The exact bytes are specified in `07-pack-format.md` (schema 1). In outline: one SQLite file per region, opened read-only.
 
 ```
 meta    (key TEXT PRIMARY KEY, value TEXT)
-          region, schema_version, osm_replication_timestamp, built_at, way_count
+          schema_version, region, osm_replication_timestamp, built_at, way_count, tile_count, bbox
 tiles   (geohash TEXT PRIMARY KEY, ways BLOB)
-          geohash precision 5 (about 4.9 km × 4.9 km); blob is a zstd-compressed CBOR array
+          geohash precision 5 (about 4.9 km × 4.9 km); blob is zlib over a compact varint stream
 names   (name_id INTEGER PRIMARY KEY, name TEXT)
-          deduplicated street names
+          deduplicated street names, sorted, 1-based
 
-Each way inside a tile blob:
-  { id:   OSM way id,
-    cls:  road class 0..8 (motorway … service),
-    n:    name_id or null,
-    max:  km/h or null,            limit in the way's forward direction
-    maxb: km/h or null,            backward limit when different
-    src:  'tag' | 'type' | 'none',
-    conf: 0.9 | 0.5 | 0,
-    ow:   1 | 0 | -1,              oneway forward, both, oneway backward
-    pts:  [dlat, dlon, dlat, dlon, …]   delta-encoded int32 at 1e-6 degrees, clipped to the tile }
+Each way inside a tile blob: way id, road class 0..8, name id, forward limit, backward limit
+(when different), flags (oneway direction, limit source, mph vs km/h, roundabout), then the
+simplified polyline as zigzag-varint deltas at 1e-6 degrees. Limits are stored in the posted
+unit (35 mph stays 35 mph); the reader converts to m/s.
 ```
 
-`index.json` on the release lists `{ region, url, bytes, sha256, osmTimestamp, schemaVersion }` per pack. The app refuses a pack whose `schemaVersion` it does not know.
+Two deliberate departures from the first sketch: **zlib and hand-rolled varints instead of zstd and CBOR**, because both sides get them for free (`dart:io` and Python's standard library) and the varint stream is smaller than CBOR anyway; and **ways are stored whole in every cell they pass through** rather than clipped, which keeps the builder and the matcher simple at the cost of some duplication of long motorway ways. The reader dedupes by way id when it loads a cell and its eight neighbours.
+
+`index.json` on the release lists `{ region, name, url, bytes, sha256, osmTimestamp, wayCount, bbox }` per pack plus a top-level `schemaVersion`. The app refuses a pack whose `schemaVersion` it does not know. The index is republished every month to a permanent release tagged `packs-index`, so the app always fetches the same URL.
 
 ### 4.3 Download
 
@@ -170,7 +167,9 @@ pick the directional limit (max / maxb) from the travel direction along the way
 apply shared overrides by wayId
 ```
 
-A one-hour trip is about 3,600 samples and matches in well under a second in an isolate. Tiles for the trip's bounding box are loaded once and kept in memory for the run.
+Details fixed by the implementation in `packages/drivalry_packs` (tests pin them): limit coverage counts a sample only when the segment has confidence ≥ 0.7 *and* a limit, time-weighted by the gap to the previous sample clamped to 5 s; while a switch is pending, inaccurate or stationary samples inherit the current way without advancing or resetting the three-sample counter, and when the switch lands the whole pending run is reassigned; with no usable heading the heading term is 0 and the travel direction is inherited; a direction change on the same way (a U-turn) starts a new segment because the limit can differ per direction.
+
+A one-hour trip is about 3,600 samples and matches in about 15 ms in an isolate (measured on a 50-way grid). Tiles for the trip's bounding box are loaded once and kept in memory for the run.
 
 For spoken cues (opt-in) the same matcher runs live every 5 s on the latest fix only, against tiles already cached for the current area. It never touches the network.
 
@@ -220,7 +219,7 @@ The React Native library that implements this model needs a paid Android license
 
 ## 8. Cloud data model
 
-The existing `supabase/migrations/0001_init.sql` predates these decisions and must be rewritten. `trip_samples`, `trip_segments`, `convoy_positions` and `share_level` go away. Intended tables:
+`supabase/migrations/0001_init.sql` implements this model (rewritten 2026-11-02; the earlier draft with `trip_samples`, `trip_segments`, `convoy_positions` and `share_level` is gone). Tables:
 
 | Table | Holds | Retention |
 | --- | --- | --- |
@@ -299,12 +298,13 @@ app/                         Flutter app (bundle id app.drivalry)
 packages/
   scoring/                   TypeScript executable spec; emits fixtures/
   drivalry_scoring/          Dart port; fixture tests
+  drivalry_packs/            Dart pack reader (07-pack-format.md) and the matcher (§5)
 tools/
-  packs/                     Python + pyosmium pack builder
+  packs/                     Python + pyosmium pack builder; tests/vectors pins the bytes
 supabase/
-  migrations/                schema (summaries only, to be rewritten)
-.github/workflows/           ci.yml (TS spec, Dart port, Flutter analyze and test),
-                             supabase-keepalive.yml, packs-monthly.yml (planned)
+  migrations/                schema (summaries only; 0000 heartbeat, 0001 everything else)
+.github/workflows/           ci.yml (TS spec, Dart port, pack reader, pack builder, Flutter),
+                             supabase-keepalive.yml, packs-monthly.yml
 .env                         API keys (gitignored); .env.example is committed
 ```
 

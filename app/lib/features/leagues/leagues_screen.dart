@@ -10,7 +10,8 @@ class LeaguesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const PlaceholderScreen(
       title: 'Leagues',
-      tagline: 'Weekly tables with your friends. Score and consistency climb '
+      tagline:
+          'Weekly tables with your friends. Score and consistency climb '
           'the table. Speed never does.',
       planned: [
         "This week's table with promotion and relegation zones",

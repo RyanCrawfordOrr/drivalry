@@ -1,8 +1,33 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Network: Supabase, Google Maps tiles, pack downloads. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Tracking plugin (docs/08-tracking-channel.md §6). -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <!-- Pre-31 equivalent needed to receive ACL connect/disconnect broadcasts. -->
+    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
-        android:label="drivalry"
+        android:label="Drivalry"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <!-- Google Maps SDK key, supplied by the GOOGLE_MAPS_API_KEY dart-define
+             (flutter build with the dart-define-from-file option pointing at ../.env;
+             see app/build.gradle.kts). Empty when the define is absent. -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${googleMapsApiKey}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -25,6 +50,55 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Trip recording: GPS 1 Hz batched + 20 Hz linear acceleration. Runs only
+             while a trip is tentative or active; the service stops itself afterwards. -->
+        <service
+            android:name=".tracking.TrackingService"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
+        <!-- IN_VEHICLE ENTER/EXIT from the Activity Recognition Transition API.
+             Targeted by an explicit PendingIntent, so it stays unexported; the
+             permission guard ensures only Play services can deliver to it. -->
+        <receiver
+            android:name=".tracking.ActivityTransitionReceiver"
+            android:exported="false"
+            android:permission="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
+
+        <!-- 100 m EXIT geofence around the last parking spot (explicit PendingIntent). -->
+        <receiver
+            android:name=".tracking.GeofenceReceiver"
+            android:exported="false" />
+
+        <!-- PRIORITY_PASSIVE parked backstop (explicit PendingIntent). -->
+        <receiver
+            android:name=".tracking.PassiveLocationReceiver"
+            android:exported="false" />
+
+        <!-- Car Bluetooth connect/disconnect. ACL broadcasts are protected system
+             broadcasts sent by the Bluetooth stack (its own uid), so the receiver
+             must be exported to receive them. -->
+        <receiver
+            android:name=".tracking.BluetoothReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.bluetooth.device.action.ACL_CONNECTED" />
+                <action android:name="android.bluetooth.device.action.ACL_DISCONNECTED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Re-arms the transition request, geofence and passive request after a
+             reboot or an app update (both clear Play services registrations). -->
+        <receiver
+            android:name=".tracking.BootReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+            </intent-filter>
+        </receiver>
+
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

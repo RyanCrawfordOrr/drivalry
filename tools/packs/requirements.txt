@@ -1,0 +1,4 @@
+# Runtime
+osmium==4.3.2
+# Tests
+pytest==9.2.0

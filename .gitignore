@@ -28,3 +28,10 @@ Thumbs.db
 *.iml
 .vscode/*
 !.vscode/extensions.json
+
+# Local dev binaries (sqlite3.dll for Windows tests; see tools/dev/)
+.tools/
+
+# Firebase config (contains the sender id; keep out of the public repo)
+app/android/app/google-services.json
+app/ios/Runner/GoogleService-Info.plist

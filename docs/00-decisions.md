@@ -124,6 +124,22 @@ Each entry has three parts. **Context**: why the question came up. **Decision**:
 
 **Consequences.** No top-speed stats, no mileage leagues, a daily distance credit cap, a banned-word test on every roast template, no insurer or data-broker integrations, no teen features.
 
+## ADR-016: Pack bytes are zlib over hand-rolled varints, ways stored whole (2026-11-02)
+
+**Context.** The first sketch said zstd-compressed CBOR with ways clipped to tiles. Dart has no zstd without a native dependency, CBOR adds a library on both sides, and clipping complicates both the builder and the matcher.
+
+**Decision.** Schema 1 (`07-pack-format.md`): SQLite container, zlib (standard library on both sides) over a compact varint stream, limits stored in the posted unit with an mph flag, ways stored whole in every geohash-5 cell their segments pass through, readers dedupe by way id. A committed `mini.osm` → `mini.pack` vector pins the bytes; Python and Dart tests both read it.
+
+**Consequences.** Zero third-party dependencies for the format. Some duplication of long motorway ways across tiles, measured on real states before the first release. Any change is a schema bump.
+
+## ADR-017: The trip state machine runs natively; Dart drains a spool (2026-11-02)
+
+**Context.** The roadmap said "trip state machine in Dart". Android kills the app process between trips; iOS relaunches it in the background. The GPS radio has to be gated by whatever is alive.
+
+**Decision.** idle → tentative → active → ended runs in the Kotlin and Swift plugins. Every emitted event is also appended to an on-device JSONL spool, and Dart drains it at start-up and after every trip end, so nothing is lost when the app is dead. Dart owns everything after a trip ends (matching, scoring, storage, UI). The contract is `08-tracking-channel.md`.
+
+**Consequences.** Two small native state machines to keep identical. The Dart side is simpler and fully testable with a simulated plugin. Live, mid-trip UI works only while the app is alive, which is fine because the Live Activity and the ongoing notification are rendered by the OS.
+
 ## Open items (not decided)
 
 - **Money.** The docs now say "free, no ads, no subscription". The old Pro tier was removed because the zero-cost, no-server model leaves nothing to pay for, and several Pro perks (12-car convoys, unlimited PTT, raw-GPS retention tiers) conflict with the decisions above. Reinstating a paid tier is a new decision.

@@ -1,0 +1,199 @@
+# Monthly speed-limit pack build.
+#
+# Builds one <region>.pack per entry in tools/packs/regions.json from the
+# Geofabrik extracts, publishes them with index.json as a GitHub Release
+# tagged packs-YYYY.MM, mirrors index.json to the permanent `packs-index`
+# release the app polls, and keeps only the newest three monthly releases.
+# Format: docs/07-pack-format.md. Builder: tools/packs/README.md.
+
+name: packs-monthly
+
+on:
+  schedule:
+    - cron: '0 3 2 * *' # 03:00 UTC on the 2nd of every month
+  workflow_dispatch:
+    inputs:
+      regions:
+        description: 'Comma-separated region codes (e.g. us-dc,us-md). Empty = every region in regions.json.'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: write # gh release create / upload / delete
+
+concurrency:
+  group: packs-monthly # two runs would race on the same release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+    working-directory: tools/packs
+
+jobs:
+  # Turn regions.json (or the `regions` input) into a build matrix and name
+  # this month's release tag.
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      tag: ${{ steps.plan.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Choose regions and release tag
+        id: plan
+        env:
+          REQUESTED: ${{ inputs.regions }}
+        run: |
+          python - <<'EOF'
+          import datetime, json, os
+          regions = json.load(open("regions.json", encoding="utf-8"))
+          requested = [code.strip() for code in os.environ["REQUESTED"].split(",") if code.strip()]
+          unknown = sorted(set(requested) - set(regions))
+          if unknown:
+              raise SystemExit(f"unknown regions: {unknown}")
+          codes = requested or sorted(regions)
+          tag = "packs-" + datetime.datetime.now(datetime.timezone.utc).strftime("%Y.%m")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as out:
+              out.write("matrix=" + json.dumps({"region": codes}) + "\n")
+              out.write(f"tag={tag}\n")
+          print(f"{len(codes)} region(s) -> {tag}")
+          EOF
+
+  # One job per region. A failed region does not stop the others, but it does
+  # stop the release (see `needs` below): re-run the failed jobs and the
+  # release runs afterwards.
+  build:
+    name: Build ${{ matrix.region }}
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 8
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/packs/requirements.txt
+      - name: Install the builder
+        run: pip install -r requirements.txt
+
+      # Geofabrik drops connections now and then; `download` resumes from the
+      # .part file, so each retry only fetches what is missing.
+      - name: Download the Geofabrik extract
+        id: download
+        run: |
+          for attempt in 1 2 3 4 5; do
+            if pbf=$(python -m drivalry_packs download --region "${{ matrix.region }}" --dest "$RUNNER_TEMP/osm"); then
+              echo "pbf=$pbf" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+            echo "attempt $attempt failed; retrying in $((attempt * 30)) s"
+            sleep $((attempt * 30))
+          done
+          exit 1
+
+      - name: Build the pack
+        run: |
+          python -m drivalry_packs build \
+            --region "${{ matrix.region }}" \
+            --input "${{ steps.download.outputs.pbf }}" \
+            --out "$RUNNER_TEMP/packs"
+
+      - name: Upload the pack as an artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pack-${{ matrix.region }}
+          path: ${{ runner.temp }}/packs/${{ matrix.region }}.pack
+          if-no-files-found: error
+          retention-days: 7
+
+  # Collect every pack, write index.json, publish.
+  release:
+    name: Release
+    needs: [plan, build]
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: ${{ needs.plan.outputs.tag }}
+      PACKS: ${{ runner.temp }}/packs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/packs/requirements.txt
+      - name: Install the builder
+        run: pip install -r requirements.txt
+
+      - name: Download all pack artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: pack-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/packs
+
+      # Regions this run did not build (a partial manual run) keep their entry
+      # from the current index, so index.json always lists every region, but
+      # only while the release that entry points at survives the prune step
+      # below (this tag plus the two newest existing monthly tags). An entry
+      # whose release is about to be deleted is dropped rather than left to 404.
+      - name: Write index.json
+        run: |
+          merge=()
+          if gh release download packs-index --repo "$GITHUB_REPOSITORY" --pattern index.json --dir "$RUNNER_TEMP/previous"; then
+            merge=(--merge "$RUNNER_TEMP/previous/index.json")
+          fi
+          keep="$TAG"
+          existing=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq '.[].tagName | select(startswith("packs-20"))' \
+            | grep -vx "$TAG" | sort -r | head -n 2 | paste -sd, -)
+          if [ -n "$existing" ]; then keep="$keep,$existing"; fi
+          echo "releases that will survive the prune: $keep"
+          python -m drivalry_packs index \
+            --packs "$PACKS" \
+            --base-url "https://github.com/${{ github.repository }}/releases/download/$TAG/" \
+            --out "$PACKS/index.json" \
+            --keep-tags "$keep" \
+            "${merge[@]}"
+
+      # First run of the month creates the release; a re-run replaces assets.
+      - name: Create or update the monthly release
+        run: |
+          cd "$PACKS"
+          count=$(ls *.pack | wc -l)
+          notes="Speed-limit packs built $(date -u +%Y-%m-%dT%H:%M:%SZ) from Geofabrik extracts ($count region(s) in this run). Format: docs/07-pack-format.md. The app reads index.json from the packs-index release."
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber *.pack index.json
+          else
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "Speed-limit packs $TAG" --notes "$notes" --latest=false *.pack index.json
+          fi
+
+      # The app always fetches
+      # https://github.com/<repo>/releases/download/packs-index/index.json.
+      - name: Point the permanent packs-index release at this release
+        run: |
+          if ! gh release view packs-index --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+            gh release create packs-index --repo "$GITHUB_REPOSITORY" --title "Speed-limit pack index" \
+              --notes "index.json here always describes the newest monthly packs release. Do not delete." --latest=false
+          fi
+          gh release upload packs-index --repo "$GITHUB_REPOSITORY" --clobber "$PACKS/index.json"
+
+      # Keep the newest three packs-YYYY.MM releases (and their tags); drop the rest.
+      - name: Prune old monthly releases
+        run: |
+          gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq '.[].tagName | select(startswith("packs-20"))' \
+            | sort -r | tail -n +4 \
+            | while read -r old; do
+                echo "deleting $old"
+                gh release delete "$old" --repo "$GITHUB_REPOSITORY" --yes --cleanup-tag
+              done

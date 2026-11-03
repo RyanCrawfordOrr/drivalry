@@ -1,0 +1,11 @@
+{
+  "_comment": [
+    "Values of maxspeed:type / source:maxspeed that the builder turns into an implied limit",
+    "(flags src = 2; the reader gives it confidence 0.5). Only zones whose value is fixed by law",
+    "everywhere the tag is used belong here. Road-class defaults ('residential = 25 mph',",
+    "'US:urban', 'US:rural', ...) are intentionally NOT applied: they vary by state and city, and a",
+    "wrong implied limit roasts a driver for nothing. US-DC:urban is the District's statutory",
+    "default of 20 mph where no limit is posted (18 DCMR 2200.6, in force since June 2020)."
+  ],
+  "US-DC:urban": { "value": 20, "mph": true }
+}

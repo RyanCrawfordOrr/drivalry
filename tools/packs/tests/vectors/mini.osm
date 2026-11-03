@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Hand-written test vector for docs/07-pack-format.md. Twenty ways around
+  geohash cell dqcjr (Washington, DC). Seventeen are kept, three are dropped.
+  Way ids are deliberately out of order in the file; the tile must sort them.
+  Regenerate mini.pack with the command in tests/test_build.py when this changes.
+-->
+<osm version="0.6" generator="drivalry-mini">
+  <!-- w101 Oak Street: node 2 is collinear and is simplified away -->
+  <node id="1" lat="38.9000" lon="-77.0300"/>
+  <node id="2" lat="38.9000" lon="-77.0290"/>
+  <node id="3" lat="38.9000" lon="-77.0280"/>
+  <!-- w102 Metric Avenue (km/h) -->
+  <node id="4" lat="38.9010" lon="-77.0300"/>
+  <node id="5" lat="38.9010" lon="-77.0280"/>
+  <!-- w103 Split Road (forward 45 mph, backward 35 mph) -->
+  <node id="6" lat="38.9020" lon="-77.0300"/>
+  <node id="7" lat="38.9020" lon="-77.0280"/>
+  <!-- w104 backward-only limit, unnamed -->
+  <node id="8" lat="38.9030" lon="-77.0300"/>
+  <node id="9" lat="38.9030" lon="-77.0280"/>
+  <!-- w105 Nolimit Lane -->
+  <node id="10" lat="38.9040" lon="-77.0300"/>
+  <node id="11" lat="38.9040" lon="-77.0280"/>
+  <!-- w106 Zone Street (maxspeed:type=US-DC:urban) -->
+  <node id="12" lat="38.9050" lon="-77.0300"/>
+  <node id="13" lat="38.9050" lon="-77.0280"/>
+  <!-- w107 oneway=yes -->
+  <node id="14" lat="38.9060" lon="-77.0300"/>
+  <node id="15" lat="38.9060" lon="-77.0280"/>
+  <!-- w108 oneway=-1 -->
+  <node id="16" lat="38.9070" lon="-77.0300"/>
+  <node id="17" lat="38.9070" lon="-77.0280"/>
+  <!-- w109 motorway, oneway implied -->
+  <node id="18" lat="38.9080" lon="-77.0300"/>
+  <node id="19" lat="38.9080" lon="-77.0280"/>
+  <!-- w110 Circle: closed roundabout, all five points survive simplification -->
+  <node id="20" lat="38.9100" lon="-77.0300"/>
+  <node id="21" lat="38.9101" lon="-77.0299"/>
+  <node id="22" lat="38.9100" lon="-77.0298"/>
+  <node id="23" lat="38.9099" lon="-77.0299"/>
+  <!-- w111 footway (dropped) -->
+  <node id="24" lat="38.9110" lon="-77.0300"/>
+  <node id="25" lat="38.9110" lon="-77.0280"/>
+  <!-- w112 driveway (dropped by default) -->
+  <node id="26" lat="38.9120" lon="-77.0300"/>
+  <node id="27" lat="38.9120" lon="-77.0280"/>
+  <!-- w113 Alley Service (kept service road) -->
+  <node id="28" lat="38.9130" lon="-77.0300"/>
+  <node id="29" lat="38.9130" lon="-77.0280"/>
+  <!-- w114 Long Pike: 15.6 km across five cells; nodes 33 (collinear) and 34 (0.1 m off) simplify away -->
+  <node id="30" lat="38.9050" lon="-77.1200"/>
+  <node id="31" lat="38.9055" lon="-77.1100"/>
+  <node id="32" lat="38.9050" lon="-77.1000"/>
+  <node id="33" lat="38.9050" lon="-77.0500"/>
+  <node id="34" lat="38.905001" lon="-77.0000"/>
+  <node id="35" lat="38.9050" lon="-76.9400"/>
+  <!-- w115 area=yes (dropped) -->
+  <node id="36" lat="38.9140" lon="-77.0300"/>
+  <node id="37" lat="38.9140" lon="-77.0290"/>
+  <node id="38" lat="38.9145" lon="-77.0290"/>
+  <node id="39" lat="38.9145" lon="-77.0300"/>
+  <!-- w116 Émile Way: maxspeed=none, maxspeed:type=sign (no zone) -->
+  <node id="40" lat="38.9150" lon="-77.0300"/>
+  <node id="41" lat="38.9150" lon="-77.0280"/>
+  <!-- w117 list value "30 mph;25 mph" -->
+  <node id="42" lat="38.9160" lon="-77.0300"/>
+  <node id="43" lat="38.9160" lon="-77.0280"/>
+  <!-- w118 motorway_link with explicit oneway=no -->
+  <node id="44" lat="38.9170" lon="-77.0300"/>
+  <node id="45" lat="38.9170" lon="-77.0280"/>
+  <!-- w119 equal forward and backward limits -->
+  <node id="46" lat="38.9180" lon="-77.0300"/>
+  <node id="47" lat="38.9180" lon="-77.0280"/>
+  <!-- w120 maxspeed:forward only -->
+  <node id="48" lat="38.9190" lon="-77.0300"/>
+  <node id="49" lat="38.9190" lon="-77.0280"/>
+
+  <way id="114">
+    <nd ref="30"/><nd ref="31"/><nd ref="32"/><nd ref="33"/><nd ref="34"/><nd ref="35"/>
+    <tag k="highway" v="trunk"/>
+    <tag k="name" v="Long Pike"/>
+    <tag k="maxspeed" v="45 mph"/>
+  </way>
+  <way id="101">
+    <nd ref="1"/><nd ref="2"/><nd ref="3"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Oak Street"/>
+    <tag k="maxspeed" v="25 mph"/>
+  </way>
+  <way id="102">
+    <nd ref="4"/><nd ref="5"/>
+    <tag k="highway" v="secondary"/>
+    <tag k="name" v="Metric Avenue"/>
+    <tag k="maxspeed" v="50"/>
+  </way>
+  <way id="103">
+    <nd ref="6"/><nd ref="7"/>
+    <tag k="highway" v="primary"/>
+    <tag k="name" v="Split Road"/>
+    <tag k="maxspeed:forward" v="45 mph"/>
+    <tag k="maxspeed:backward" v="35 mph"/>
+  </way>
+  <way id="104">
+    <nd ref="8"/><nd ref="9"/>
+    <tag k="highway" v="tertiary"/>
+    <tag k="maxspeed:backward" v="30 mph"/>
+  </way>
+  <way id="105">
+    <nd ref="10"/><nd ref="11"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Nolimit Lane"/>
+  </way>
+  <way id="106">
+    <nd ref="12"/><nd ref="13"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Zone Street"/>
+    <tag k="maxspeed:type" v="US-DC:urban"/>
+  </way>
+  <way id="107">
+    <nd ref="14"/><nd ref="15"/>
+    <tag k="highway" v="residential"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="maxspeed" v="25 mph"/>
+  </way>
+  <way id="108">
+    <nd ref="16"/><nd ref="17"/>
+    <tag k="highway" v="residential"/>
+    <tag k="oneway" v="-1"/>
+    <tag k="maxspeed" v="25 mph"/>
+  </way>
+  <way id="109">
+    <nd ref="18"/><nd ref="19"/>
+    <tag k="highway" v="motorway"/>
+    <tag k="name" v="I-395"/>
+    <tag k="maxspeed" v="55 mph"/>
+  </way>
+  <way id="111">
+    <nd ref="24"/><nd ref="25"/>
+    <tag k="highway" v="footway"/>
+    <tag k="name" v="Trail"/>
+  </way>
+  <way id="112">
+    <nd ref="26"/><nd ref="27"/>
+    <tag k="highway" v="service"/>
+    <tag k="service" v="driveway"/>
+  </way>
+  <way id="113">
+    <nd ref="28"/><nd ref="29"/>
+    <tag k="highway" v="service"/>
+    <tag k="name" v="Alley Service"/>
+  </way>
+  <way id="115">
+    <nd ref="36"/><nd ref="37"/><nd ref="38"/><nd ref="39"/><nd ref="36"/>
+    <tag k="highway" v="residential"/>
+    <tag k="area" v="yes"/>
+    <tag k="name" v="Plaza"/>
+  </way>
+  <way id="116">
+    <nd ref="40"/><nd ref="41"/>
+    <tag k="highway" v="residential"/>
+    <tag k="name" v="Émile Way"/>
+    <tag k="maxspeed" v="none"/>
+    <tag k="maxspeed:type" v="sign"/>
+  </way>
+  <way id="117">
+    <nd ref="42"/><nd ref="43"/>
+    <tag k="highway" v="unclassified"/>
+    <tag k="maxspeed" v="30 mph;25 mph"/>
+  </way>
+  <way id="118">
+    <nd ref="44"/><nd ref="45"/>
+    <tag k="highway" v="motorway_link"/>
+    <tag k="oneway" v="no"/>
+  </way>
+  <way id="119">
+    <nd ref="46"/><nd ref="47"/>
+    <tag k="highway" v="living_street"/>
+    <tag k="maxspeed" v="15 mph"/>
+    <tag k="maxspeed:backward" v="15 mph"/>
+  </way>
+  <way id="120">
+    <nd ref="48"/><nd ref="49"/>
+    <tag k="highway" v="primary_link"/>
+    <tag k="maxspeed:forward" v="40 mph"/>
+  </way>
+  <way id="110">
+    <nd ref="20"/><nd ref="21"/><nd ref="22"/><nd ref="23"/><nd ref="20"/>
+    <tag k="highway" v="residential"/>
+    <tag k="junction" v="roundabout"/>
+    <tag k="name" v="Circle"/>
+  </way>
+</osm>

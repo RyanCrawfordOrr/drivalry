@@ -10,17 +10,20 @@ Drivalry never rewards speed or distance. It costs nothing to run: every service
 app/                      Flutter app (Android + iOS), bundle id app.drivalry
 packages/scoring/         TypeScript scoring engine: the executable spec, with JSON fixtures
 packages/drivalry_scoring Dart port of the engine; must match the fixtures
-tools/packs/              Speed-limit pack builder (OpenStreetMap, Python) - coming
+packages/drivalry_packs   Dart speed-limit pack reader and on-device road matcher
+tools/packs/              Speed-limit pack builder (OpenStreetMap, Python); monthly GitHub Release
 supabase/                 Database schema and policies for the free-tier backend
 docs/                     Product spec, game design, architecture, car platforms,
-                          privacy, roadmap, decision log
+                          privacy, roadmap, decision log, pack format, tracking contract
 ```
 
 ## Working on it
 
 ```bash
-npm install && npm test                 # TypeScript spec + fixtures
+npm install && npm test                        # TypeScript spec + fixtures
 cd packages/drivalry_scoring && dart test
+cd packages/drivalry_packs && dart test
+cd tools/packs && python -m pytest             # see tools/packs/README.md for the venv
 cd app && flutter run --dart-define-from-file=../.env
 ```
 

@@ -10,7 +10,8 @@ class ConvoyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return const PlaceholderScreen(
       title: 'Convoy',
-      tagline: 'Two to six cars, one trip. Everyone sees everyone, and the '
+      tagline:
+          'Two to six cars, one trip. Everyone sees everyone, and the '
           'radio is one button away.',
       planned: [
         'Live convoy map with ETAs for every car',
