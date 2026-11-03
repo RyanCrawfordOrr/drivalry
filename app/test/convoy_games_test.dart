@@ -125,13 +125,16 @@ void main() {
     expect(find.text('0 answered'), findsOneWidget);
     expect(bus.sent.last.payload['event'], 'question');
 
-    await tester.tap(find.byKey(const Key('choice-0')));
+    // Questions are picked at random, so pick a choice that is wrong for
+    // whichever question came up; only Sam should get it.
+    final c = container(tester).read(gamesControllerProvider('c1').notifier);
+    final right = c.trivia.current!.answer;
+    final wrong = (right + 1) % c.trivia.current!.choices.length;
+    await tester.tap(find.byKey(Key('choice-$wrong')));
     await pumpFor(tester, const Duration(milliseconds: 300));
     expect(find.text('1 answered'), findsOneWidget);
     expect(bus.sent.last.payload['event'], 'answer');
 
-    final c = container(tester).read(gamesControllerProvider('c1').notifier);
-    final right = c.trivia.current!.answer;
     bus.inject('sam', 'game', {
       'game': 'trivia',
       'event': 'answer',
