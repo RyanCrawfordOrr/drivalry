@@ -71,6 +71,7 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
               sliver: LargeTitleBar(
                 title: 'Friends',
                 actions: [
+                  if (signedIn) ?_createAction(context),
                   IconButton(
                     tooltip: 'Friend requests',
                     onPressed: () => context.push(Routes.friendRequests),
@@ -105,11 +106,14 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
           ),
         ),
       ),
-      floatingActionButton: signedIn ? _fab(context) : null,
     );
   }
 
-  Widget? _fab(BuildContext context) {
+  /// The tab's one creating action, in the app bar rather than a floating
+  /// button, so nothing ever sits on top of a post or a row. The empty
+  /// states carry the same action as their one button, so the icon only
+  /// appears once there is content.
+  Widget? _createAction(BuildContext context) {
     switch (_tabs.index) {
       case 0:
         if (ref.watch(feedControllerProvider).posts.isEmpty) return null;
@@ -122,17 +126,17 @@ class _FriendsScreenState extends ConsumerState<FriendsScreen>
       default:
         final circles = ref.watch(myCirclesProvider).value ?? const [];
         if (circles.isEmpty) return null;
-        return FloatingActionButton.extended(
+        return IconButton(
+          tooltip: 'New circle',
           onPressed: () => context.push(Routes.createCircle),
           icon: const Icon(Icons.group_add_outlined),
-          label: const Text('New circle'),
         );
     }
   }
 
-  Widget _addFriend(BuildContext context) => FloatingActionButton.extended(
+  Widget _addFriend(BuildContext context) => IconButton(
+    tooltip: 'Add friend',
     onPressed: () => context.push(Routes.addFriend),
     icon: const Icon(Icons.person_add_alt_1_outlined),
-    label: const Text('Add friend'),
   );
 }

@@ -13,7 +13,11 @@ import '../support/widget_support.dart';
 import 'layout_audit.dart';
 
 void main() {
-  setUpAll(loadArtFonts);
+  // Fonts come from the Flutter cache, which CI does not populate; only load
+  // them when the audit actually runs.
+  setUpAll(() async {
+    if (layoutShots) await loadArtFonts();
+  });
   final sqliteSkip = skipWithoutSqlite();
   for (final factory in sceneFactories) {
     final id = factory().id;

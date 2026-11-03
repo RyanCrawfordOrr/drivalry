@@ -1,4 +1,6 @@
+import java.io.FileInputStream
 import java.util.Base64
+import java.util.Properties
 
 plugins {
     id("com.android.application")
@@ -55,11 +57,31 @@ android {
         manifestPlaceholders["googleMapsApiKey"] = dartDefines["GOOGLE_MAPS_API_KEY"] ?: ""
     }
 
+    // Upload-key signing for Google Play. `android/key.properties` is
+    // gitignored and points at a keystore outside the repo (docs/11 Part 15).
+    // Without it a release build falls back to the debug key, so a fresh
+    // clone and CI still build; Play rejects such a bundle, which is the
+    // reminder to set the key up.
+    val keystoreProperties = Properties().apply {
+        val f = rootProject.file("key.properties")
+        if (f.exists()) FileInputStream(f).use { load(it) }
+    }
+    val hasUploadKey = keystoreProperties.containsKey("storeFile")
+    if (hasUploadKey) {
+        signingConfigs.create("release") {
+            keyAlias = keystoreProperties["keyAlias"] as String
+            keyPassword = keystoreProperties["keyPassword"] as String
+            storeFile = file(keystoreProperties["storeFile"] as String)
+            storePassword = keystoreProperties["storePassword"] as String
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (hasUploadKey) "release" else "debug")
+            // Flutter already shrinks release builds with R8; these rules keep
+            // the classes plugins reach by reflection.
+            proguardFile("proguard-rules.pro")
         }
     }
 }

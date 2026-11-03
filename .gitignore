@@ -41,3 +41,6 @@ app/ios/Runner/GoogleService-Info.plist
 
 # layout audit renders
 app/test/layout/out/
+
+# upload keystore and other local secrets
+.secrets/

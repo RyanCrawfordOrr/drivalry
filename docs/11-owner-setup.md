@@ -536,6 +536,95 @@ Everything else that needs a person. Order is the order a new phone meets them.
 | **Live Activities** (iPhone) | iPhone Settings → Drivalry → Live Activities on | Lock-screen limit and convoy |
 | **Android Auto** | Plug in; the Drivalry icon appears in the car launcher | Part 7 to test on the desktop head unit first |
 
+## Part 15: Build for Google Play internal testing (the device-testing pipeline)
+
+**What it is.** From here on, testing on a phone goes through Google Play: one command builds a signed App Bundle, you upload it to the Internal testing track, and every tester's phone gets it from the Play Store like any other update. No cables, no debug APKs, and the build is the same one that will ship.
+
+**What it needs, in order.**
+
+| Need | Done by | Where |
+| --- | --- | --- |
+| The upload key | done, back it up | 15a |
+| The Play Console app (one-time, about 30 minutes of forms) | you | 15b |
+| The build command | you, each release | 15c |
+| Upload and roll out | you, each release | 15d |
+| Two certificate fingerprints in Google Cloud | you, once, after the first upload | 15e |
+
+### 15a. The upload key (already created; back it up now)
+
+Two files exist outside git and must never be committed or shared:
+
+| File | What it is |
+| --- | --- |
+| `C:\Drivalry\.secrets\upload-keystore.jks` | The upload key. Google verifies every bundle you send against it. |
+| `C:\Drivalry\app\android\key.properties` | Its password and alias. The release build reads it. |
+
+1. Copy both files somewhere safe that is not this PC: a password manager's file attachment, or an encrypted drive. If the PC dies and these are gone, Play can still let you back in (Play App Signing keeps the real app key and lets you register a new upload key through support), but it takes days.
+2. Check: in Explorer, `C:\Drivalry\.secrets` shows `upload-keystore.jks`, and `git status` in `C:\Drivalry` never lists it.
+
+Its public fingerprints (safe to paste anywhere Google asks for a SHA-1 or SHA-256 of the *upload* certificate):
+
+```
+SHA1:   C3:15:76:1C:53:C2:48:1D:10:54:24:40:B9:78:7B:8B:26:36:2D:8F
+SHA256: BB:34:A0:88:2D:E9:C0:40:F2:E1:2C:D0:2F:6C:AF:1B:B6:C4:1A:35:0D:89:74:E3:FE:10:1E:52:91:7D:7D:4A
+```
+
+### 15b. Create the app in Play Console (once)
+
+1. https://play.google.com/console → sign in with your Google account → if asked, pay the one-time developer registration fee and finish identity verification (this can take a day or two; everything below waits on it).
+2. **Create app**. App name `Drivalry`, default language English (United States), **App**, **Free**. Tick the two declarations → **Create app**.
+3. The dashboard opens with a **Set up your app** checklist. Work down it; each item is a short form. Answers that fit Drivalry: Privacy policy = the URL from `docs/05-privacy-safety-legal.md` once published (a GitHub Pages page of that file is fine); App access = all functionality available without special access (sign-in is optional); Ads = no; Content rating = fill the questionnaire, answer honestly (no violence, no gambling, user interaction yes, shares location yes); Target audience = 18 and over; News app = no; COVID = no; Data safety = location (collected, shared with friends you choose, not sold), name and email (account), see `store/listing.md` for the wording; Government app = no; Financial features = none; Health = none.
+4. **Store listing** (left menu → Grow → Store presence → Main store listing): paste the texts from `store/listing.md`, upload `store/play/icon-512.png`, `store/play/feature-graphic-1024x500.png` and the eight `store/play/phone/*.png`. Save. Internal testing does not need the listing to be approved, but it does need it saved.
+5. **Testers**: left menu → Testing → **Internal testing** → **Testers** tab → **Create email list** → name `Drivers`, add the Gmail address of every phone that should get builds (yours first) → **Save changes**. Tick the list. Keep this page open; you will copy the opt-in link in 15d.
+
+Check: Testing → Internal testing shows your list under Testers and "No releases yet".
+
+### 15c. Build the bundle (every release)
+
+1. Commit your work first. The version code is the number of commits on the branch, so an uncommitted build reuses the previous number and Play will refuse it.
+2. In a PowerShell window:
+   ```powershell
+   cd C:\Drivalry
+   .\tools\release\build_android.ps1
+   ```
+   About three minutes. The last line reads `Done: …\app-release.aab (NN MB), version 0.1.0 (CODE)`.
+3. Check: `C:\Drivalry\app\build\app\outputs\bundle\release\app-release.aab` exists and the printed CODE is higher than the last one you uploaded.
+
+For a release build you can install by cable instead (same signing, same code), add `-Apk` and run the `adb install` line it prints. That is only for a phone that is not on the tester list.
+
+### 15d. Upload and roll out (every release)
+
+1. Play Console → Testing → **Internal testing** → **Create new release**.
+2. The first time, under **App integrity** choose **Use Google-generated key** (Play App Signing) → **Continue**. Google now holds the real signing key; your file from 15a is only the upload key.
+3. **App bundles** → **Upload** → pick `app-release.aab` from 15c. Wait for the green tick. Release name fills itself (`CODE (0.1.0)`). Release notes: one line of what changed.
+4. **Next** → fix anything red (warnings in yellow are fine for internal testing) → **Save** → **Go to overview** → **Start rollout to Internal testing** → **Rollout**.
+5. First time only: **Testers** tab → under "How testers join your test" → **Copy link**. Send it to each tester. On the phone, open the link in a browser signed in with the tester's Gmail → **Accept invite** → **Download it on Google Play** → **Install**.
+6. Later releases: repeat 1, 3 and 4. Phones pick the update up within a few minutes; opening the Play Store page for Drivalry and tapping **Update** forces it.
+
+Check: Internal testing → Releases shows the new CODE as "Available to internal testers", and the phone's Play Store page offers Install or Update.
+
+### 15e. Two fingerprints Google needs after the first upload (once)
+
+Phones get APKs signed by Google's app signing key, not by your upload key, so the Maps key lock (Part 3) and the Android sign-in client (Part 2) must both know that certificate, or the Play build shows a blank map and Google sign-in fails with "error 10".
+
+1. Play Console → left menu → Test and release → **Setup** → **App signing** (it may be called App integrity → App signing). Under **App signing key certificate** copy the **SHA-1** and **SHA-256**.
+2. Google Cloud Console → APIs & Services → **Credentials** → the Android key from Part 3 → under Android restrictions **Add an item** → package `app.drivalry`, the SHA-1 from step 1 → **Save**. Add a second item with the upload SHA-1 from 15a so `-Apk` builds work too.
+3. Same page → **Create credentials** → **OAuth client ID** → Android → name `Drivalry Play`, package `app.drivalry`, the SHA-1 from step 1 → **Create**. Repeat once more with the upload SHA-1 from 15a, named `Drivalry upload key`. No change to `.env`; the Android client is matched by certificate.
+4. Check: install the internal-testing build, the map shows tiles, and Settings → Sign in with Google completes.
+
+### 15f. If it fails
+
+| You see | Cause | Fix |
+| --- | --- | --- |
+| `Version code N has already been used` | No new commit since the last build | Commit, rebuild |
+| `…signed in debug mode` or `…upload key does not match` | `key.properties` missing or pointing at a different keystore | 15a; restore the two files from your backup |
+| Blank map in the Play build, map fine in debug | Maps key lock lacks the app signing SHA-1 | 15e step 2 |
+| Google sign-in "error 10" / "DEVELOPER_ERROR" | No Android OAuth client for the app signing SHA-1 | 15e step 3 |
+| Testers see "the item you requested is not found" | They opened the link with a Gmail that is not on the list, or the rollout has not finished | Add the Gmail in 15b step 5; wait ten minutes |
+| The build stops at `flutter build appbundle failed` | Read the lines above it; a Kotlin or Gradle error names the file | Fix, or run `flutter build appbundle --release --dart-define-from-file=../.env` by hand inside `app` to see the whole log |
+
+Two things release builds do differently from the debug APKs you used until now: the **Simulate a drive** and **Diagnostics** developer entries on the Drive tab are hidden (Diagnostics stays under Settings → About), and the code is shrunk, so a crash report from a tester names fewer internal details.
+
 ## Troubleshooting, all in one place
 
 | You see | Cause | Fix |

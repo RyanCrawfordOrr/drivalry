@@ -168,9 +168,10 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('5 comments'), findsOneWidget);
-    // With posts on screen the FAB is the one Add friend.
-    expect(find.byType(FloatingActionButton), findsOneWidget);
-    expect(find.text('Add friend'), findsOneWidget);
+    // With posts on screen, Add friend is an app-bar icon: nothing floats
+    // over the posts.
+    expect(find.byType(FloatingActionButton), findsNothing);
+    expect(find.byTooltip('Add friend'), findsOneWidget);
 
     await tester.longPress(
       find.text('Forty-one in a twenty-five on Elm Street.'),
