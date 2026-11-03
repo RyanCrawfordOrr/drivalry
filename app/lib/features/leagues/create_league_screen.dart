@@ -60,7 +60,7 @@ class _CreateLeagueScreenState extends ConsumerState<CreateLeagueScreen> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(
             Space.gutter,
-            Space.sm,
+            Space.lg,
             Space.gutter,
             Space.gutter,
           ),

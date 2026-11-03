@@ -105,7 +105,7 @@ class SeasonCardView extends StatelessWidget {
             '${stats.xp} XP · average $avg · '
             '${stats.phoneFreeTrips} phone-free',
             style: context.caption,
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
         ],

@@ -54,14 +54,14 @@ class _GlobalLeagueCardState extends ConsumerState<GlobalLeagueCard> {
                   Text(
                     league.name,
                     style: context.title,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 2),
                   Text(
                     line,
                     style: context.caption,
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],

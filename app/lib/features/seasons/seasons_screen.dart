@@ -22,15 +22,25 @@ class SeasonsScreen extends ConsumerWidget {
     final signedIn = ref.watch(isSignedInProvider);
     final now = DateTime.now();
     final fmt = DateFormat.MMMd();
-    final sorted = [...seasons]..sort((a, b) => b.number.compareTo(a.number));
+    // The running season leads as the hero; the rest follow newest first.
+    final newestFirst = [...seasons]
+      ..sort((a, b) => b.number.compareTo(a.number));
+    final sorted = [
+      for (final s in newestFirst)
+        if (s.contains(now)) s,
+      for (final s in newestFirst)
+        if (!s.contains(now)) s,
+    ];
     return Scaffold(
       appBar: AppBar(title: const Text('Seasons')),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(
+        // 16 under the app bar; the last tile clears the navigation bar or
+        // home indicator.
+        padding: EdgeInsets.fromLTRB(
           Space.gutter,
-          Space.sm,
+          Space.lg,
           Space.gutter,
-          Space.xxxl,
+          Space.xl + MediaQuery.paddingOf(context).bottom,
         ),
         children: [
           Text(
