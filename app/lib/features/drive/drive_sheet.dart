@@ -90,11 +90,12 @@ class _DriveSheetState extends State<DriveSheet> {
         clipBehavior: Clip.antiAlias,
         child: ListView(
           controller: scroll,
-          padding: const EdgeInsets.fromLTRB(
+          // The last tile clears the navigation bar or home indicator.
+          padding: EdgeInsets.fromLTRB(
             Space.gutter,
             0,
             Space.gutter,
-            Space.xxxl,
+            Space.xl + MediaQuery.paddingOf(context).bottom,
           ),
           children: [const _Handle(), ...widget.children],
         ),

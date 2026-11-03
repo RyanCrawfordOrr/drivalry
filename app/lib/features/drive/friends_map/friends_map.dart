@@ -10,7 +10,7 @@ import '../../../app/bootstrap.dart';
 import '../../../app/routes.dart';
 import '../../../app/ui/ui.dart';
 import '../../../config/env.dart';
-import '../../../data/db/database.dart' show Place;
+import '../../../data/db/database.dart' show ParkingSpot, Place;
 import '../../../data/repos/circles_sync.dart';
 import '../../../data/repos/places_repo.dart';
 import '../../../data/repos/presence_repo.dart';
@@ -20,6 +20,7 @@ import '../../../tracking/tracking_controller.dart';
 import '../../../tracking/tracking_models.dart';
 import '../../../widgets/units.dart';
 import '../../places/save_place_sheet.dart';
+import '../parking/parking_memory.dart';
 import 'friend_marker.dart';
 import 'marker_icons.dart';
 
@@ -53,10 +54,27 @@ class FriendsMap extends ConsumerStatefulWidget {
 }
 
 class _FriendsMapState extends ConsumerState<FriendsMap> {
+  /// Only when nothing at all is known about where the phone is.
   static const _usa = CameraPosition(target: LatLng(39.5, -98.35), zoom: 3);
+
+  /// Where you are when nobody is sharing: a city, never a continent.
+  static const _cityZoom = 12.0;
+
+  /// The OS's cached fix is good enough for a map; nothing wakes the GPS.
+  static const _lastFixMaxAge = Duration(days: 1);
 
   GoogleMapController? _map;
   bool _fitted = false;
+
+  /// The empty map has been pointed at the phone's position.
+  bool _homed = false;
+
+  /// The OS's cached position, asked for once; null until answered.
+  LatLng? _lastFix;
+  bool _fixChecked = false;
+
+  /// The phone's position as of this build, or null when unknown.
+  LatLng? _here;
 
   /// Circle id to filter by, or null for everyone.
   String? _circleFilter;
@@ -65,9 +83,39 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
   final Set<String> _requested = {};
 
   @override
+  void initState() {
+    super.initState();
+    unawaited(_loadLastFix());
+  }
+
+  @override
   void dispose() {
     _map?.dispose();
     super.dispose();
+  }
+
+  Future<void> _loadLastFix() async {
+    try {
+      final loc = await ref
+          .read(trackingPortProvider)
+          .getLastKnownLocation(maxAgeMs: _lastFixMaxAge.inMilliseconds);
+      if (loc != null) _lastFix = LatLng(loc.lat, loc.lon);
+    } catch (_) {
+      // No permission or no plugin: the parking spot, or nothing.
+    } finally {
+      if (mounted) setState(() => _fixChecked = true);
+    }
+  }
+
+  /// The phone's position as best the app knows it: the drive in progress,
+  /// then the OS's cached fix, then where the car was parked.
+  LatLng? _knownPosition(LiveTripStats? live, ParkingSpot? parking) {
+    final lat = live?.lastLat;
+    final lon = live?.lastLon;
+    if (lat != null && lon != null) return LatLng(lat, lon);
+    if (_lastFix != null) return _lastFix;
+    if (parking != null) return LatLng(parking.lat, parking.lon);
+    return null;
   }
 
   @override
@@ -124,9 +172,16 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
     final perms = ref.watch(
       trackingControllerProvider.select((s) => s.plugin.permissions),
     );
+    final parking = ref.watch(latestParkingSpotProvider).value;
+    final live = ref.watch(trackingControllerProvider.select((s) => s.live));
+    _here = _knownPosition(live, parking);
     if (!_fitted && markers.isNotEmpty && _map != null) {
       _fitted = true;
       unawaited(_fit(markers));
+    } else if (!_homed && markers.isEmpty && _here != null && _map != null) {
+      // Nobody sharing: look at where you are, not at the whole country.
+      _homed = true;
+      unawaited(_home(_here!));
     }
 
     final chips = circles.isEmpty
@@ -137,6 +192,7 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
             onSelected: (id) => setState(() {
               _circleFilter = id;
               _fitted = false;
+              _homed = false;
             }),
           );
     final noFriends = markers.isEmpty && !presence.isLoading
@@ -147,6 +203,12 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
       children: [
         if (surface != null)
           Positioned.fill(child: surface(context))
+        else if (!_fixChecked)
+          // Hold the map until the phone's position is known or ruled out,
+          // so it never opens on the continent and then jumps.
+          Positioned.fill(
+            child: ColoredBox(color: theme.colorScheme.surfaceContainerLow),
+          )
         else
           GoogleMap(
             initialCameraPosition: _initialCamera(markers),
@@ -179,6 +241,9 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
               if (markers.isNotEmpty && !_fitted) {
                 _fitted = true;
                 unawaited(_fit(markers));
+              } else if (markers.isEmpty && _here != null) {
+                _homed = true;
+                unawaited(_home(_here!));
               }
             },
           ),
@@ -198,19 +263,28 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
             ),
           )
         else ...[
+          // Floating controls: 12 under the top edge, 20 from the sides
+          // (docs/12 §2), with room for the buttons on the right.
           if (chips != null)
-            Positioned(top: Space.sm, left: Space.sm, right: 60, child: chips),
+            Positioned(
+              top: Space.md,
+              left: Space.gutter,
+              right: Space.gutter + Sizes.touch + Space.md,
+              child: chips,
+            ),
           Positioned(
-            top: Space.sm,
-            right: Space.sm,
+            top: Space.md,
+            right: Space.gutter,
             child: Column(
               children: [
-                if (!widget.fullScreen)
+                if (!widget.fullScreen) ...[
                   IconButton.filledTonal(
                     tooltip: 'Expand map',
                     onPressed: () => context.push(Routes.friendsMap),
                     icon: const Icon(Icons.open_in_full),
                   ),
+                  const SizedBox(height: Space.sm),
+                ],
                 IconButton.filledTonal(
                   tooltip: 'Show everyone',
                   onPressed: markers.isEmpty ? null : () => _fit(markers),
@@ -221,9 +295,9 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
           ),
           if (noFriends != null)
             Positioned(
-              left: Space.md,
-              right: Space.md,
-              bottom: Space.md,
+              left: Space.gutter,
+              right: Space.gutter,
+              bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
               child: noFriends,
             ),
         ],
@@ -239,7 +313,11 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
   }
 
   CameraPosition _initialCamera(List<FriendMarker> markers) {
-    if (markers.isEmpty) return _usa;
+    if (markers.isEmpty) {
+      final here = _here;
+      if (here == null) return _usa;
+      return CameraPosition(target: here, zoom: _cityZoom);
+    }
     final b = boundsOf(markers)!;
     return CameraPosition(
       target: LatLng(
@@ -248,6 +326,17 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
       ),
       zoom: markers.length == 1 ? 13 : 10,
     );
+  }
+
+  Future<void> _home(LatLng here) async {
+    final map = _map;
+    if (map == null) return;
+    try {
+      await map.animateCamera(CameraUpdate.newLatLngZoom(here, _cityZoom));
+    } catch (_) {
+      // Not laid out yet; the next build tries again.
+      _homed = false;
+    }
   }
 
   Future<void> _fit(List<FriendMarker> markers) async {

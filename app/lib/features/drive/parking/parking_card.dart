@@ -61,14 +61,14 @@ class ParkingCard extends ConsumerWidget {
                 Text(
                   title,
                   style: context.title,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: Space.xs),
                 Text(
                   caption,
                   style: context.caption,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -108,7 +108,8 @@ class ParkingActions extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Wrap(
-      spacing: Space.xs,
+      spacing: Space.sm,
+      runSpacing: Space.sm,
       children: [
         TextButton.icon(
           onPressed: () => openWalkBack(context, spot),

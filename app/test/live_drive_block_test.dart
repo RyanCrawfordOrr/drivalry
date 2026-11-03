@@ -125,21 +125,22 @@ void main() {
   });
 
   group('status capsule', () {
-    test('reads every state in one line', () {
+    test('reads every state in a word or two', () {
+      const ready = TrackingUiState(
+        plugin: TrackingState(permissions: granted),
+        booted: true,
+      );
+      expect(DriveStatusCapsule.statusText(ready), 'Ready');
+      // The sentence the capsule has no room for goes in its sheet.
       expect(
-        DriveStatusCapsule.statusText(
-          const TrackingUiState(
-            plugin: TrackingState(permissions: granted),
-            booted: true,
-          ),
-        ),
-        'Ready. Drives start on their own.',
+        DriveStatusCapsule.statusDetail(ready),
+        'Ready. Drives start on their own, even with the app closed.',
       );
       expect(
         DriveStatusCapsule.statusText(
           const TrackingUiState(plugin: TrackingState(), booted: true),
         ),
-        'Finish setting up auto-detect',
+        'Set up auto-detect',
       );
       expect(
         DriveStatusCapsule.statusText(
@@ -147,7 +148,7 @@ void main() {
             plugin: TrackingState(enabled: false, permissions: granted),
           ),
         ),
-        'Auto-detect is off',
+        'Auto-detect off',
       );
       final until = DateTime(2026, 11, 3, 19);
       expect(
@@ -171,13 +172,13 @@ void main() {
             ),
           ),
         ),
-        'Checking if you are driving…',
+        'Checking…',
       );
       expect(
         DriveStatusCapsule.statusText(
           const TrackingUiState(plugin: TrackingState.unavailable()),
         ),
-        'Auto-detect is not available on this device',
+        'Auto-detect unavailable',
       );
       expect(DriveStatusCapsule.statusText(recording), isNull);
     });
