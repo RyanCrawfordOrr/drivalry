@@ -291,7 +291,10 @@ void main() {
       expect(byKey['Missed starts'], startsWith('n/a'));
       expect(byKey['Late starts (14 d)'], startsWith('n/a'));
       expect(byKey['Late ends (14 d)'], startsWith('n/a'));
-      expect(byKey['False starts'], startsWith('2 dropped by the plugin'));
+      expect(
+        byKey['False starts'],
+        startsWith('2 dropped before they became trips'),
+      );
     });
   });
 }
