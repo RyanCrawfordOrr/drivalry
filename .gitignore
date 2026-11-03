@@ -35,3 +35,6 @@ Thumbs.db
 # Firebase config (contains the sender id; keep out of the public repo)
 app/android/app/google-services.json
 app/ios/Runner/GoogleService-Info.plist
+
+# Claude Code agent worktrees
+.claude/worktrees/

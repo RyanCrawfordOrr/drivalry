@@ -14,6 +14,11 @@ Future<void> initSupabase() async {
   );
 }
 
+/// Whether this build has a Supabase project, as a provider so a test or the
+/// store-art renderer can show the social screens with seeded local data in a
+/// build that has none. Defaults to [Env.hasSupabase].
+final cloudConfiguredProvider = Provider<bool>((ref) => Env.hasSupabase);
+
 /// The client, or null when the build has no Supabase project. Overridable in
 /// tests with a mock client.
 final supabaseProvider = Provider<SupabaseClient?>(

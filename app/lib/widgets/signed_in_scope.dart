@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../app/routes.dart';
-import '../config/env.dart';
 import '../data/supabase/supabase_providers.dart';
 
 /// Wraps a social screen. Shows [child] when signed in; otherwise a short
@@ -23,7 +22,7 @@ class SignedInScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (!Env.hasSupabase) {
+    if (!ref.watch(cloudConfiguredProvider)) {
       return _Notice(
         icon: Icons.cloud_off_outlined,
         title: 'Offline build',
