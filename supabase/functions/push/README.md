@@ -4,23 +4,26 @@ One Edge Function. Database Webhooks call it when a row that should notify someo
 
 ## Deploy (owner, once; then on every change to `index.ts`)
 
-Needs the Supabase CLI (`npm i -g supabase` or `winget install Supabase.CLI`) and a one-time `supabase login` in a browser.
+Needs the Supabase CLI. No permanent install is required: `npx` fetches it (Node 20+). A one-time `login` opens the browser. Step-by-step with screenshots-level detail: `docs/11-owner-setup.md` Part 5.
 
 ```powershell
 cd C:\Drivalry
-supabase link --project-ref htqyutdwnnguqatakofx
-supabase functions deploy push --no-verify-jwt
+npx --yes supabase@latest login
+npx --yes supabase@latest link --project-ref htqyutdwnnguqatakofx
+npx --yes supabase@latest functions deploy push --no-verify-jwt --use-api
 ```
 
-`--no-verify-jwt` because webhooks do not carry a user JWT; the function checks `x-push-secret` instead.
+`--no-verify-jwt` because webhooks do not carry a user JWT; the function checks `x-push-secret` instead. `--use-api` bundles on Supabase's side so Docker is not needed.
 
 ## Secrets
 
+Easiest in the dashboard: Edge Functions → **Secrets** (`https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/functions/secrets`) → **Add new secret**, one row per key, pasting the whole file contents for the multi-line ones. Functions read new secrets at once; no redeploy. The CLI equivalent:
+
 ```powershell
-supabase secrets set PUSH_WEBHOOK_SECRET=<long random string>
-supabase secrets set APNS_TEAM_ID=<10-char team id> APNS_KEY_ID=<10-char key id> APNS_BUNDLE_ID=app.drivalry APNS_SANDBOX=true
-supabase secrets set APNS_PRIVATE_KEY="$(Get-Content -Raw .\AuthKey_XXXXXXXXXX.p8)"
-supabase secrets set FCM_SERVICE_ACCOUNT_JSON="$(Get-Content -Raw .\drivalry-firebase-adminsdk.json)"
+npx --yes supabase@latest secrets set PUSH_WEBHOOK_SECRET=<long random string>
+npx --yes supabase@latest secrets set APNS_TEAM_ID=<10-char team id> APNS_KEY_ID=<10-char key id> APNS_BUNDLE_ID=app.drivalry APNS_SANDBOX=true
+npx --yes supabase@latest secrets set APNS_PRIVATE_KEY="$(Get-Content -Raw .\AuthKey_XXXXXXXXXX.p8)"
+npx --yes supabase@latest secrets set FCM_SERVICE_ACCOUNT_JSON="$(Get-Content -Raw .\drivalry-firebase-adminsdk.json)"
 ```
 
 - **APNs key**: developer.apple.com → Keys → `+` → name `Drivalry push`, tick Apple Push Notifications service (APNs) → Register → download the `.p8` once. Team ID is top right of the account page. Set `APNS_SANDBOX=false` once builds come from TestFlight or the App Store.
@@ -41,8 +44,10 @@ Create one webhook per row, all `POST` to the function URL `https://htqyutdwnngu
 
 ## Test
 
+In PowerShell use `curl.exe` (plain `curl` is an alias for `Invoke-WebRequest` there) and escape the inner quotes:
+
 ```powershell
-curl -X POST https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push -H "x-push-secret: <secret>" -H "content-type: application/json" -d '{"type":"INSERT","table":"friendships","schema":"public","record":{"requester_id":"<uuid>","addressee_id":"<uuid>","status":"pending"},"old_record":null}'
+curl.exe -X POST https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push -H "x-push-secret: <secret>" -H "content-type: application/json" -d "{\"type\":\"INSERT\",\"table\":\"friendships\",\"schema\":\"public\",\"record\":{\"requester_id\":\"<uuid>\",\"addressee_id\":\"<uuid>\",\"status\":\"pending\"},\"old_record\":null}"
 ```
 
 Expect `{"sent":N,"dead":0,"recipients":1}`. Logs: Dashboard → Edge Functions → push → Logs.

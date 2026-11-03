@@ -73,10 +73,10 @@ Firebase Cloud Messaging is free and rides on the same Google Cloud project. The
 
 ## 8. Spotify (Convoy DJ)
 
-Convoy DJ plays the same track in every car in lockstep through each member's own Spotify Premium account. Spotify keeps hobby apps in Development Mode, which means only users you allowlist can connect (docs/03 §9). Spotify Jam and Apple Music SharePlay need none of this; they are plain deep links.
+Convoy DJ plays the same track in every car in lockstep through each member's own Spotify Premium account. Spotify keeps hobby apps in Development Mode, which means only users you allowlist can connect (docs/03 §9). Since February 2026 the developer's own account must be Premium, each developer gets one Development Mode app, and the allowlist holds at most five users. Spotify Jam and Apple Music SharePlay need none of this; they are plain deep links.
 
 1. https://developer.spotify.com/dashboard → **Create app**. Name `Drivalry`, description `Convoy DJ for a driving app`, **Redirect URI** `drivalry-auth://spotify-callback` (its own scheme, so it never collides with the app's `drivalry://` invite links), tick **Web API**. Save.
 2. Copy the **Client ID** into `.env` as `SPOTIFY_CLIENT_ID`. There is no secret: the app uses PKCE.
-3. **User Management** tab → add each friend's Spotify account email (up to 25 in Development Mode). Anyone not listed sees "Ask Ryan to add your Spotify account to the Drivalry allowlist".
+3. **User Management** tab → add each friend's name and Spotify account email (five at most in Development Mode). Anyone not listed sees "Ask Ryan to add your Spotify account to the Drivalry allowlist".
 4. Everyone using Convoy DJ needs Spotify Premium (playback control is Premium-only); free accounts get "Convoy DJ needs Spotify Premium on this account".
 5. Rebuild with `--dart-define-from-file=../.env`. Convoy → Music → **Connect Spotify** opens the system browser once; tokens stay in the phone's secure storage.

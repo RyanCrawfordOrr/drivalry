@@ -272,7 +272,7 @@ Row-level security: a user writes only their own rows; reads are scoped to accep
 | Metered Open Relay (TURN) | 20 GB/month | TURN only when direct fails; about 14 MB per relayed stream-hour | Relayed peers cannot hear each other; direct peers unaffected; app says "direct connection failed" |
 | Open-Meteo | 10,000 calls/day, non-commercial | One call per trip start | Weather bonus skipped |
 | Nominatim | 1 request/s, light use, attribution | One lookup per trip start or end away from a saved place, cached by 100 m cell | Place names fall back to the road name from the pack |
-| Spotify Web API | Development Mode, small allowlist | Allowlist friends who use Convoy DJ | Convoy DJ unavailable to others; Jam deep link still works |
+| Spotify Web API | Development Mode, five allowlisted users (Feb 2026 rules; developer needs Premium) | Allowlist the friends who use Convoy DJ | Convoy DJ unavailable to others; Jam deep link still works |
 | APNs, FCM | Free | None needed | n/a |
 
 The card on file in Google Cloud exists so the project can call the APIs at all. The hard quotas are what make a bill impossible. Check every allowance against the provider's pricing page before each release; they change.

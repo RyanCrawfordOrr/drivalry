@@ -6,7 +6,7 @@ speed-limit correction cache. It never holds raw GPS, routes or start/end places
 
 ## Migrations
 
-Apply in order by pasting each file into the SQL editor (Dashboard → SQL Editor → New query → Run).
+Apply in order by pasting each file into the SQL editor (Dashboard → SQL Editor → New query → Run). Click-by-click, with a verification query: `docs/11-owner-setup.md` Part 1.
 
 | File | What | Status |
 | --- | --- | --- |
