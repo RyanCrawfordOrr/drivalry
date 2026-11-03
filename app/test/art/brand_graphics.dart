@@ -84,8 +84,9 @@ class BrandBanner extends StatelessWidget {
                       child: FittedBox(
                         fit: BoxFit.scaleDown,
                         alignment: Alignment.centerLeft,
-                        child: SizedBox(
+                        child: Container(
                           width: width - tile - h * 0.4,
+                          padding: EdgeInsets.symmetric(vertical: h * 0.07),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +96,7 @@ class BrandBanner extends StatelessWidget {
                                 style: TextStyle(
                                   fontFamily: 'Roboto',
                                   fontWeight: FontWeight.w900,
-                                  fontSize: h * 0.21,
+                                  fontSize: h * 0.2,
                                   height: 1,
                                   letterSpacing: -h * 0.006,
                                   color: Colors.white,
@@ -146,7 +147,7 @@ class _Chip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: h * 0.05, vertical: h * 0.022),
+      padding: EdgeInsets.symmetric(horizontal: h * 0.045, vertical: h * 0.018),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(h),
         border: Border.all(color: Colors.white.withValues(alpha: 0.22)),
@@ -157,7 +158,7 @@ class _Chip extends StatelessWidget {
         style: TextStyle(
           fontFamily: 'Roboto',
           fontWeight: FontWeight.w500,
-          fontSize: h * 0.058,
+          fontSize: h * 0.054,
           color: const Color(0xFFE6EAF2),
         ),
       ),
