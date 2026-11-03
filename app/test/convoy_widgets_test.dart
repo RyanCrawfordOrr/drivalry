@@ -89,7 +89,7 @@ void main() {
     await tester.pumpWidget(wrap(const ConvoyStopsScreen(convoyId: 'c1')));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.text('Tacos'), findsOneWidget);
-    expect(find.text('Proposed'), findsOneWidget);
+    expect(find.text('PROPOSED'), findsOneWidget);
     expect(find.byIcon(Icons.thumb_up), findsNothing); // me is null here
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -98,8 +98,9 @@ void main() {
     await seed.addExpense('c1', amountCents: 4500, category: 'gas');
     await tester.pumpWidget(wrap(const ConvoyExpensesScreen(convoyId: 'c1')));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.text(r'Total $45.00'), findsOneWidget);
-    expect(find.text(r'$45.00'), findsOneWidget);
+    // The hero total and the expense row.
+    expect(find.text('TOTAL'), findsOneWidget);
+    expect(find.text(r'$45.00'), findsNWidgets(2));
     // Only the payer is known as a participant: nothing to settle.
     expect(find.text('All square.'), findsOneWidget);
     await unmountAndSettle(tester);
@@ -118,13 +119,15 @@ void main() {
     );
     await tester.pumpWidget(wrap(const ConvoyExpensesScreen(convoyId: 'c1')));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.text(r'Total $45.00'), findsOneWidget);
-    expect(find.text('Total 20.00 EUR'), findsOneWidget);
-    expect(find.text(r'Total $65.00'), findsNothing, reason: 'never summed');
+    // One hero figure per currency plus its expense row.
+    expect(find.text(r'$45.00'), findsNWidgets(2));
+    expect(find.text('20.00 EUR'), findsNWidgets(2));
+    expect(find.text(r'$65.00'), findsNothing, reason: 'never summed');
     expect(find.textContaining(r'10.00 EUR + $22.50 each'), findsOneWidget);
     // Two payers, two currencies: one transfer each way, never netted.
-    expect(find.text(r'Someone → someone: $22.50'), findsOneWidget);
-    expect(find.text('Someone → someone: 10.00 EUR'), findsOneWidget);
+    expect(find.text('Someone → someone'), findsNWidgets(2));
+    expect(find.text(r'$22.50'), findsOneWidget);
+    expect(find.text('10.00 EUR'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -170,6 +173,9 @@ void main() {
     await pumpFor(tester, const Duration(seconds: 2));
     expect(find.text('Coast run'), findsOneWidget);
     expect(find.textContaining('2.8 mi'), findsOneWidget);
+    // The replay button sits at the bottom of the map, just under the fold.
+    await tester.drag(find.byType(ListView), const Offset(0, -240));
+    await tester.pump();
     await tester.tap(find.byKey(const Key('replay')));
     await pumpFor(tester, const Duration(seconds: 9));
     // Awards sit below the replay; scroll them into view.

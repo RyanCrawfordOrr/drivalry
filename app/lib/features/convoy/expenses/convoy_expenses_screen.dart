@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../../data/convoy/settle_up.dart';
 import '../../../data/repos/convoy_repo.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../data/supabase/supabase_providers.dart';
+import '../../../widgets/friendly_error.dart';
 import '../../../widgets/relative_time.dart';
+import '../widgets/convoy_ui.dart';
 
 IconData expenseIcon(String category) => switch (category) {
   'gas' => Icons.local_gas_station_outlined,
@@ -24,7 +27,6 @@ class ConvoyExpensesScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final me = ref.watch(currentUserIdProvider);
     final expenses = ref.watch(convoyExpensesProvider(convoyId));
     final list = expenses.value ?? const <ConvoyExpense>[];
@@ -45,107 +47,115 @@ class ConvoyExpensesScreen extends ConsumerWidget {
       participants.isEmpty ? 0 : t.value ~/ participants.length,
       currency: t.key,
     );
+    final split = participants.isEmpty
+        ? 'Split among the cars in the convoy.'
+        : 'Split ${participants.length} ways: '
+              '${totals.isEmpty ? formatCents(0) : totals.entries.map(each).join(' + ')} each.';
+    final totalEntries = totals.entries.toList();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Expenses')),
-      floatingActionButton: FloatingActionButton.extended(
-        key: const Key('add-expense'),
-        onPressed: me == null ? null : () => _add(context, ref),
-        icon: const Icon(Icons.add),
-        label: const Text('Add'),
-      ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 96),
+        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
+          Padding(
+            padding: Space.screen,
+            child: Reveal(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (totals.isEmpty)
-                    Text(
-                      'Total ${formatCents(0)}',
-                      style: theme.textTheme.titleLarge,
-                    ),
-                  // One line per currency: different currencies are never
-                  // added together.
-                  for (final t in totals.entries)
-                    Text(
-                      'Total ${formatCents(t.value, currency: t.key)}',
-                      style: theme.textTheme.titleLarge,
-                    ),
-                  Text(
-                    participants.isEmpty
-                        ? 'Split among the cars in the convoy.'
-                        : 'Split ${participants.length} ways: '
-                              '${totals.isEmpty ? formatCents(0) : totals.entries.map(each).join(' + ')} each.',
-                    style: theme.textTheme.bodySmall,
-                  ),
-                  if (transfers.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Text('Settle up', style: theme.textTheme.titleSmall),
-                    for (final c in transfers.entries)
-                      for (final t in c.value)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Text(
-                            '${nameOf[t.from] ?? 'Someone'} → '
-                            '${nameOf[t.to] ?? 'someone'}: '
-                            '${formatCents(t.cents, currency: c.key)}',
-                          ),
+                  if (totalEntries.isEmpty)
+                    HeroNumber(kicker: 'Total', value: formatCents(0))
+                  else
+                    for (var i = 0; i < totalEntries.length; i++) ...[
+                      if (i > 0) const SizedBox(height: Space.sm),
+                      // One figure per currency: never added together.
+                      HeroNumber(
+                        kicker: i == 0 ? 'Total' : null,
+                        value: formatCents(
+                          totalEntries[i].value,
+                          currency: totalEntries[i].key,
                         ),
-                  ],
-                  if (list.isNotEmpty && transfers.isEmpty) ...[
-                    const SizedBox(height: 12),
-                    const Text('All square.'),
-                  ],
+                        small: i > 0,
+                      ),
+                    ],
+                  const SizedBox(height: Space.xs),
+                  Text(split, style: context.caption),
+                  const SizedBox(height: Space.xl),
+                  PrimaryButton(
+                    key: const Key('add-expense'),
+                    label: 'Add an expense',
+                    icon: Icons.add,
+                    onPressed: me == null ? null : () => _add(context, ref),
+                  ),
                 ],
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          if (expenses.isLoading && list.isEmpty)
-            const LinearProgressIndicator(minHeight: 2),
-          if (!expenses.isLoading && list.isEmpty)
-            Text(
-              'Nothing added yet. Gas, tolls, snacks, the motel: add it and '
-              'the split works itself out.',
-              style: theme.textTheme.bodyMedium,
-            ),
-          for (final e in list.reversed)
-            Dismissible(
-              key: ValueKey('expense:${e.id}'),
-              direction: e.payerId == me
-                  ? DismissDirection.endToStart
-                  : DismissDirection.none,
-              background: Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.only(right: 24),
-                color: theme.colorScheme.errorContainer,
-                child: Icon(
-                  Icons.delete_outline,
-                  color: theme.colorScheme.onErrorContainer,
-                ),
+          const SizedBox(height: Space.section),
+          if (transfers.isNotEmpty)
+            EditorialSection(
+              kicker: 'Settle up',
+              child: Column(
+                children: [
+                  for (final c in transfers.entries)
+                    for (final t in c.value)
+                      ConvoyRow(
+                        leading: const Icon(Icons.swap_horiz),
+                        title:
+                            '${nameOf[t.from] ?? 'Someone'} → '
+                            '${nameOf[t.to] ?? 'someone'}',
+                        titleStyle: context.body,
+                        trailing: Text(
+                          formatCents(t.cents, currency: c.key),
+                          style: context.label,
+                        ),
+                      ),
+                ],
               ),
-              onDismissed: (_) =>
-                  ref.read(convoyRepoProvider).deleteExpense(convoyId, e.id),
-              child: ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: Icon(expenseIcon(e.category)),
-                title: Text(
-                  e.note == null || e.note!.isEmpty
-                      ? _label(e.category)
-                      : e.note!,
-                ),
-                subtitle: Text(
-                  '${nameOf[e.payerId] ?? 'Someone'} · '
-                  '${relativeTime(e.createdAt, now)}',
-                ),
-                trailing: Text(
-                  formatCents(e.amountCents, currency: e.currency),
-                  style: theme.textTheme.titleMedium,
-                ),
+            ),
+          if (list.isNotEmpty && transfers.isEmpty)
+            EditorialSection(
+              kicker: 'Settle up',
+              child: Text('All square.', style: context.bodyMuted),
+            ),
+          if (expenses.isLoading && list.isEmpty)
+            const Padding(
+              padding: Space.screen,
+              child: Column(
+                children: [
+                  SkeletonTile(height: 64),
+                  SizedBox(height: Space.md),
+                  SkeletonTile(height: 64),
+                ],
+              ),
+            ),
+          if (!expenses.isLoading && list.isEmpty)
+            const EmptyState(
+              headline: 'No expenses yet.',
+              body:
+                  'Gas, tolls, snacks, the motel: add it and the split works '
+                  'itself out.',
+            ),
+          if (list.isNotEmpty)
+            EditorialSection(
+              kicker: 'Spent',
+              child: Column(
+                children: [
+                  for (final (i, e) in list.reversed.indexed)
+                    Reveal(
+                      delay: Reveal.stagger(i),
+                      child: _ExpenseRow(
+                        expense: e,
+                        mine: e.payerId == me,
+                        payer: nameOf[e.payerId] ?? 'Someone',
+                        now: now,
+                        onRemove: () => ref
+                            .read(convoyRepoProvider)
+                            .deleteExpense(convoyId, e.id),
+                      ),
+                    ),
+                ],
               ),
             ),
         ],
@@ -153,7 +163,7 @@ class ConvoyExpensesScreen extends ConsumerWidget {
     );
   }
 
-  static String _label(String category) => switch (category) {
+  static String label(String category) => switch (category) {
     'gas' => 'Gas',
     'tolls' => 'Tolls',
     'food' => 'Food',
@@ -162,10 +172,9 @@ class ConvoyExpensesScreen extends ConsumerWidget {
   };
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final result = await showModalBottomSheet<_NewExpense>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
+    final result = await showDrivalrySheet<_NewExpense>(
+      context,
+      title: 'Add an expense',
       builder: (_) => const _AddExpenseSheet(),
     );
     if (result == null || !context.mounted) return;
@@ -178,13 +187,68 @@ class ConvoyExpensesScreen extends ConsumerWidget {
             category: result.category,
             note: result.note,
           );
+      Haptics.success();
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Could not add: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(friendlyError(e, doing: 'add that expense'))),
+        );
       }
     }
+  }
+}
+
+class _ExpenseRow extends StatelessWidget {
+  const _ExpenseRow({
+    required this.expense,
+    required this.mine,
+    required this.payer,
+    required this.now,
+    required this.onRemove,
+  });
+
+  final ConvoyExpense expense;
+  final bool mine;
+  final String payer;
+  final DateTime now;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final e = expense;
+    final row = ConvoyRow(
+      leading: Icon(expenseIcon(e.category), size: 28),
+      title: e.note == null || e.note!.isEmpty
+          ? ConvoyExpensesScreen.label(e.category)
+          : e.note!,
+      caption: '$payer · ${relativeTime(e.createdAt, now)}',
+      trailing: Text(
+        formatCents(e.amountCents, currency: e.currency),
+        style: context.title.copyWith(
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
+    );
+    if (!mine) return row;
+    return Dismissible(
+      key: ValueKey('expense:${e.id}'),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: Space.xl),
+        decoration: BoxDecoration(
+          color: scheme.errorContainer,
+          borderRadius: Radii.tileRadius,
+        ),
+        child: Icon(Icons.delete_outline, color: scheme.onErrorContainer),
+      ),
+      onDismissed: (_) {
+        Haptics.warning();
+        onRemove();
+      },
+      child: row,
+    );
   }
 }
 
@@ -222,19 +286,12 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: MediaQuery.viewInsetsOf(context).bottom + 16,
-      ),
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
       child: Column(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Add an expense', style: theme.textTheme.titleLarge),
-          const SizedBox(height: 12),
           TextField(
             key: const Key('expense-amount'),
             controller: _amount,
@@ -246,37 +303,38 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             ),
             onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Space.md),
           Wrap(
-            spacing: 8,
+            spacing: Space.sm,
+            runSpacing: Space.sm,
             children: [
               for (final c in ConvoyExpense.categories)
                 ChoiceChip(
                   avatar: Icon(expenseIcon(c), size: 18),
-                  label: Text(ConvoyExpensesScreen._label(c)),
+                  label: Text(ConvoyExpensesScreen.label(c)),
                   selected: _category == c,
-                  onSelected: (_) => setState(() => _category = c),
+                  onSelected: (_) {
+                    Haptics.select();
+                    setState(() => _category = c);
+                  },
                 ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: Space.md),
           TextField(
             controller: _note,
             textCapitalization: TextCapitalization.sentences,
             maxLength: 60,
             decoration: const InputDecoration(labelText: 'Note (optional)'),
           ),
-          const SizedBox(height: 8),
-          Align(
-            alignment: Alignment.centerRight,
-            child: FilledButton(
-              onPressed: _cents == null
-                  ? null
-                  : () => Navigator.of(
-                      context,
-                    ).pop(_NewExpense(_cents!, _category, _note.text)),
-              child: const Text('Add'),
-            ),
+          const SizedBox(height: Space.sm),
+          PrimaryButton(
+            label: 'Add',
+            onPressed: _cents == null
+                ? null
+                : () => Navigator.of(
+                    context,
+                  ).pop(_NewExpense(_cents!, _category, _note.text)),
           ),
         ],
       ),

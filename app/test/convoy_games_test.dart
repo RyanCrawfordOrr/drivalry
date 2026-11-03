@@ -151,7 +151,16 @@ void main() {
     expect(speaker.spoken.single, endsWith('got it: $answer.'));
     expect(speaker.spoken.single, startsWith('Sam'), reason: 'name, not id');
     expect(find.byKey(const Key('last-result')), findsOneWidget);
-    expect(find.text('Scores'), findsOneWidget);
+    // The scores sit under the question and the host's buttons.
+    await tester.scrollUntilVisible(
+      find.text('SCORES'),
+      200,
+      scrollable: find.descendant(
+        of: find.byType(ListView),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    expect(find.text('SCORES'), findsOneWidget);
     expect(find.text('Sam: 1'), findsOneWidget);
     expect(bus.sent.last.payload['event'], 'reveal');
     await unmountAndSettle(tester);
@@ -162,7 +171,7 @@ void main() {
     await tester.pumpWidget(harness());
     await pumpFor(tester, const Duration(seconds: 1));
 
-    await tester.tap(find.text('Spot the…'));
+    await tester.tap(find.text('I spy'));
     await pumpFor(tester, const Duration(seconds: 1));
     await tester.tap(find.byKey(const Key('spot-Red barn')));
     await pumpFor(tester, const Duration(milliseconds: 300));

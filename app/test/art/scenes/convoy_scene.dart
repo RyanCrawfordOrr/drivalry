@@ -126,8 +126,8 @@ class ConvoyRadioScene extends ArtScene {
     _channel = channel;
     final links = FakePeerLinkFactory();
     _links = links;
-    // A TURN relay is configured, so the footer reads "Relay available"
-    // rather than warning about cars that cannot connect directly.
+    // A TURN relay is configured, so the screen can say "Works across
+    // networks." under the cars.
     final client = MockClient(
       (_) async => http.Response(
         jsonEncode([
@@ -190,8 +190,8 @@ class ConvoyRadioScene extends ArtScene {
     await pumpFor(tester, const Duration(milliseconds: 300));
 
     // Sam and Priya connect directly; Jordan's car is behind a strict NAT
-    // and goes through the relay, which is what the footer's byte count
-    // comes from.
+    // and goes through the relay. All three read "Connected"; the transport
+    // and the bytes stay on the Diagnostics screen.
     const kb = 1024;
     for (final (peer, relayed, sent, received) in [
       (ArtConvoy.sam, false, 412 * kb, 388 * kb),

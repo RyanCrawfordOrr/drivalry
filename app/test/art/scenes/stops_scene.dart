@@ -51,8 +51,8 @@ class ConvoyStopsScene extends ArtScene {
         databaseProvider.overrideWithValue(db),
         trackingPortProvider.overrideWithValue(port),
         currentUserIdProvider.overrideWithValue(ArtConvoy.me),
-        // Sam leads this convoy; the leader's accept/reject menu stays out
-        // of the tiles so the votes carry the screen.
+        // Sam leads this convoy; the leader's inline Accept / Reject stays
+        // off the tiles so the votes carry the screen.
         amConvoyLeaderProvider.overrideWith((ref, id) => false),
       ],
       child: MaterialApp(

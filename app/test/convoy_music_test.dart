@@ -47,7 +47,10 @@ void main() {
     expect(find.byKey(const Key('open-spotify')), findsOneWidget);
     expect(find.text('Convoy DJ'), findsOneWidget);
     // Tests build without SPOTIFY_CLIENT_ID.
-    expect(find.textContaining('Not available in this build'), findsOneWidget);
+    expect(
+      find.textContaining("isn't available in this version"),
+      findsOneWidget,
+    );
     expect(find.byKey(const Key('connect-spotify')), findsNothing);
     await unmountAndSettle(tester);
   });

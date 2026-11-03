@@ -1,21 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../app/ui/ui.dart';
+import '../../../data/repos/convoy_models.dart';
+import '../../../data/repos/convoy_sync.dart';
 import '../../../widgets/signed_in_scope.dart';
 import '../channel/convoy_channel.dart';
-import '../widgets/member_names.dart';
+import '../widgets/convoy_ui.dart';
+import '../widgets/member_avatar.dart';
 import 'mesh.dart';
 import 'peer_link.dart';
 import 'radio_controller.dart';
-import 'radio_stats.dart';
 
 /// Push-to-talk radio for one convoy (docs/10 §4). Hold the big button to
-/// talk; everyone else hears you through their current audio route.
+/// talk; everyone else hears you through their current audio route. A
+/// driving screen: 64 targets, a `display` state word, nothing below
+/// `label` (docs/12 §7).
 class ConvoyRadioScreen extends ConsumerWidget {
-  const ConvoyRadioScreen({super.key, required this.convoyId});
+  const ConvoyRadioScreen({
+    super.key,
+    required this.convoyId,
+    this.autoStart = false,
+  });
 
   final String convoyId;
+
+  /// Start the radio as the screen opens (the Talk button's way in).
+  final bool autoStart;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +38,7 @@ class ConvoyRadioScreen extends ConsumerWidget {
       body: SignedInScope(
         message: 'Sign in to talk to your convoy.',
         icon: Icons.radio_outlined,
-        child: RadioBody(convoyId: convoyId),
+        child: RadioBody(convoyId: convoyId, autoStart: autoStart),
       ),
     );
   }
@@ -32,57 +46,85 @@ class ConvoyRadioScreen extends ConsumerWidget {
 
 /// The radio screen body without the sign-in gate, so it can be tested with
 /// provider overrides.
-class RadioBody extends ConsumerWidget {
-  const RadioBody({super.key, required this.convoyId});
+class RadioBody extends ConsumerStatefulWidget {
+  const RadioBody({super.key, required this.convoyId, this.autoStart = false});
 
   final String convoyId;
+  final bool autoStart;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(radioControllerProvider(convoyId));
-    final ctl = ref.read(radioControllerProvider(convoyId).notifier);
-    final channel = ref.watch(convoyChannelProvider(convoyId));
-    final theme = Theme.of(context);
+  ConsumerState<RadioBody> createState() => _RadioBodyState();
+}
+
+class _RadioBodyState extends ConsumerState<RadioBody> {
+  @override
+  void initState() {
+    super.initState();
+    if (!widget.autoStart) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final id = widget.convoyId;
+      final off = ref.read(radioControllerProvider(id)).phase == RadioPhase.off;
+      final channel = ref.read(convoyChannelProvider(id));
+      if (off && channel != null) {
+        unawaited(ref.read(radioControllerProvider(id).notifier).start());
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final id = widget.convoyId;
+    final state = ref.watch(radioControllerProvider(id));
+    final ctl = ref.read(radioControllerProvider(id).notifier);
+    final channel = ref.watch(convoyChannelProvider(id));
 
     switch (state.phase) {
       case RadioPhase.off:
       case RadioPhase.error:
-        return _Centered(
-          icon: Icons.radio_outlined,
-          title: 'Radio is off',
-          body:
-              state.error ??
-              'Start the radio to talk car to car. Audio goes straight '
-                  'between phones; nothing is recorded.',
-          action: FilledButton.icon(
+        return ConvoyNotice(
+          kicker: 'Radio',
+          headline: 'Radio is off.',
+          body: state.error ?? 'Hold to talk, car to car. Nothing is recorded.',
+          action: PrimaryButton(
             key: const Key('radio-start'),
+            label: 'Start radio',
+            icon: Icons.mic,
             onPressed: channel == null ? null : ctl.start,
-            icon: const Icon(Icons.power_settings_new),
-            label: const Text('Start radio'),
           ),
         );
       case RadioPhase.starting:
-        return const Center(child: CircularProgressIndicator());
+        return const ConvoyNotice(
+          kicker: 'Radio',
+          headline: 'Starting…',
+          body: 'Finding the other cars.',
+          action: Column(
+            children: [
+              SkeletonTile(height: Sizes.drivingTouch),
+              SizedBox(height: Space.md),
+              SkeletonTile(height: Sizes.drivingTouch),
+            ],
+          ),
+        );
       case RadioPhase.noPermission:
-        return _Centered(
-          icon: Icons.mic_off_outlined,
-          title: 'Microphone needed',
+        return ConvoyNotice(
+          kicker: 'Radio',
+          headline: 'Allow the microphone.',
           body: state.permanentlyDenied
-              ? 'The microphone is blocked for Drivalry. Allow it in the '
-                    'system settings to use the radio.'
-              : 'The radio needs the microphone to transmit when you hold '
-                    'the button. Nothing is sent otherwise.',
+              ? 'Drivalry cannot use the mic. Turn it on in Settings.'
+              : 'Talking needs the mic. It only sends while you hold the '
+                    'button.',
           action: state.permanentlyDenied
-              ? OutlinedButton.icon(
+              ? PrimaryButton(
                   key: const Key('radio-open-settings'),
+                  label: 'Open settings',
+                  icon: Icons.settings_outlined,
                   onPressed: openAppSettings,
-                  icon: const Icon(Icons.settings_outlined),
-                  label: const Text('Open settings'),
                 )
-              : FilledButton(
+              : PrimaryButton(
                   key: const Key('radio-retry'),
+                  label: 'Try again',
                   onPressed: ctl.start,
-                  child: const Text('Try again'),
                 ),
         );
       case RadioPhase.on:
@@ -91,15 +133,27 @@ class RadioBody extends ConsumerWidget {
 
     final peers = state.peers.values.toList()
       ..sort((a, b) => a.peerId.compareTo(b.peerId));
-    final relayed = ref.watch(relayedBytesProvider(convoyId)).value ?? 0;
-    final names =
-        ref.watch(convoyMemberNamesProvider(convoyId)).value ?? const {};
+    final members = ref.watch(convoyMembersProvider(id)).value ?? const [];
+    final byId = {for (final m in members) m.userId: m};
+    String nameOf(String peerId) => byId[peerId]?.name ?? 'Someone';
+    final connected = peers.where((p) => p.state == LinkState.connected).length;
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.lg,
+        Space.gutter,
+        Space.xxxl,
+      ),
       children: [
-        _TalkingBanner(talking: state.talking, holding: state.holding),
-        const SizedBox(height: 16),
+        _StateWord(
+          kicker: ref.watch(convoyProvider(id))?.name ?? 'Radio',
+          holding: state.holding,
+          talking: state.talking,
+          connected: connected,
+          nameOf: nameOf,
+        ),
+        const SizedBox(height: Space.xxl),
         Center(
           child: _PttButton(
             holding: state.holding,
@@ -107,95 +161,114 @@ class RadioBody extends ConsumerWidget {
             onRelease: ctl.release,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: Space.md),
         Center(
           child: Text(
             state.holding ? 'Transmitting' : 'Hold to talk',
-            style: theme.textTheme.labelLarge,
+            style: context.title,
           ),
         ),
-        const SizedBox(height: 16),
-        SwitchListTile(
-          key: const Key('radio-mute-incoming'),
-          title: const Text('Mute everyone'),
-          subtitle: const Text('You can still transmit'),
-          value: state.muteIncoming,
-          onChanged: ctl.setMuteIncoming,
-        ),
-        const Divider(),
-        Text('Cars', style: theme.textTheme.titleMedium),
-        if (peers.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 12),
-            child: Text(
-              'No one else is on the radio yet. Members join as they open '
-              'this screen or start the radio.',
-            ),
+        const SizedBox(height: Space.xxl),
+        _MuteTile(value: state.muteIncoming, onChanged: ctl.setMuteIncoming),
+        const SizedBox(height: Space.section),
+        EditorialSection(
+          kicker: 'Cars',
+          padding: EdgeInsets.zero,
+          child: Column(
+            children: [
+              if (peers.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: Space.sm),
+                  child: Text(
+                    'No one else is on the radio yet.',
+                    style: context.bodyMuted,
+                  ),
+                ),
+              for (final p in peers)
+                _PeerRow(
+                  status: p,
+                  member: byId[p.peerId],
+                  name: nameOf(p.peerId),
+                  talking: state.talking.contains(p.peerId),
+                  onReconnect: () => ctl.reconnect(p.peerId),
+                ),
+            ],
           ),
-        for (final p in peers)
-          _PeerTile(
-            status: p,
-            name: memberLabel(names, p.peerId),
-            talking: state.talking.contains(p.peerId),
-            onReconnect: () => ctl.reconnect(p.peerId),
-          ),
-        const SizedBox(height: 12),
-        Text(
-          state.relayAvailable
-              ? 'Relay available for phones that cannot connect directly. '
-                    'Relayed so far: ${_bytes(relayed)}.'
-              : 'No relay configured: cars that cannot connect directly '
-                    'will show as failed.',
-          style: theme.textTheme.bodySmall,
         ),
-        const SizedBox(height: 16),
-        OutlinedButton.icon(
+        if (state.relayAvailable) ...[
+          Text('Works across networks.', style: context.caption),
+          const SizedBox(height: Space.lg),
+        ],
+        SecondaryButton(
           key: const Key('radio-stop'),
+          label: 'Stop radio',
+          icon: Icons.power_settings_new,
           onPressed: ctl.stop,
-          icon: const Icon(Icons.power_settings_new),
-          label: const Text('Stop radio'),
         ),
       ],
     );
   }
 }
 
-class _TalkingBanner extends StatelessWidget {
-  const _TalkingBanner({required this.talking, required this.holding});
+/// One `display` word for the radio's state and one line under it.
+class _StateWord extends StatelessWidget {
+  const _StateWord({
+    required this.kicker,
+    required this.holding,
+    required this.talking,
+    required this.connected,
+    required this.nameOf,
+  });
 
-  final Set<String> talking;
+  final String kicker;
   final bool holding;
+  final Set<String> talking;
+  final int connected;
+  final String Function(String) nameOf;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final String text;
+    final scheme = Theme.of(context).colorScheme;
+    final String word;
+    final String detail;
+    Color? color;
     if (holding) {
-      text = 'You are talking';
-    } else if (talking.isEmpty) {
-      text = 'Quiet';
+      word = 'On air';
+      detail = 'Everyone hears you.';
+      color = scheme.error;
+    } else if (talking.isNotEmpty) {
+      word = 'Live';
+      detail = talking.length == 1
+          ? '${nameOf(talking.single)} is talking.'
+          : '${talking.length} people are talking.';
+      color = scheme.primary;
     } else {
-      text =
-          '${talking.length == 1 ? 'Someone is' : '${talking.length} people are'} talking';
+      word = 'Quiet';
+      detail = switch (connected) {
+        0 => 'Waiting for the other cars.',
+        1 => '1 car connected.',
+        _ => '$connected cars connected.',
+      };
     }
-    return Card(
-      color: holding || talking.isNotEmpty
-          ? theme.colorScheme.primaryContainer
-          : null,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Kicker(kicker),
+        const SizedBox(height: Space.sm),
+        Row(
           children: [
-            Icon(
-              holding || talking.isNotEmpty
-                  ? Icons.graphic_eq
-                  : Icons.volume_mute_outlined,
-            ),
-            const SizedBox(width: 12),
-            Text(text, style: theme.textTheme.titleMedium),
+            Text(word, style: context.display.copyWith(color: color)),
+            if (color != null) ...[
+              const SizedBox(width: Space.md),
+              PulsingDot(color: color, size: 12),
+            ],
           ],
         ),
-      ),
+        const SizedBox(height: Space.sm),
+        StateSwitcher(
+          child: Text(detail, key: ValueKey(detail), style: context.title),
+        ),
+      ],
     );
   }
 }
@@ -215,35 +288,45 @@ class _PttButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final color = holding ? scheme.error : scheme.primary;
     return Semantics(
       button: true,
       label: 'Push to talk',
       child: Listener(
         key: const Key('ptt-button'),
-        onPointerDown: (_) => onPress(),
-        onPointerUp: (_) => onRelease(),
+        onPointerDown: (_) {
+          Haptics.select();
+          onPress();
+        },
+        onPointerUp: (_) {
+          Haptics.select();
+          onRelease();
+        },
         onPointerCancel: (_) => onRelease(),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 120),
-          width: 200,
-          height: 200,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: holding ? scheme.error : scheme.primary,
-            boxShadow: [
-              BoxShadow(
-                color: (holding ? scheme.error : scheme.primary).withValues(
-                  alpha: 0.4,
+        child: AnimatedScale(
+          scale: holding && !context.reduceMotion ? 1.06 : 1,
+          duration: Motion.quick,
+          curve: Curves.easeOut,
+          child: AnimatedContainer(
+            duration: Motion.quick,
+            width: 200,
+            height: 200,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: color,
+              boxShadow: [
+                BoxShadow(
+                  color: color.withValues(alpha: 0.4),
+                  blurRadius: holding ? 32 : 12,
+                  spreadRadius: holding ? 8 : 2,
                 ),
-                blurRadius: holding ? 32 : 12,
-                spreadRadius: holding ? 8 : 2,
-              ),
-            ],
-          ),
-          child: Icon(
-            holding ? Icons.mic : Icons.mic_none,
-            size: 88,
-            color: scheme.onPrimary,
+              ],
+            ),
+            child: Icon(
+              holding ? Icons.mic : Icons.mic_none,
+              size: 88,
+              color: holding ? scheme.onError : scheme.onPrimary,
+            ),
           ),
         ),
       ),
@@ -251,79 +334,46 @@ class _PttButton extends StatelessWidget {
   }
 }
 
-class _PeerTile extends StatelessWidget {
-  const _PeerTile({
-    required this.status,
-    required this.name,
-    required this.talking,
-    required this.onReconnect,
-  });
-
-  final PeerStatus status;
-  final String name;
-  final bool talking;
-  final VoidCallback onReconnect;
+/// "Mute everyone" as a 64-tall tile with a switch; the whole row toggles.
+class _MuteTile extends StatelessWidget {
+  const _MuteTile({required this.value, required this.onChanged});
+  final bool value;
+  final ValueChanged<bool> onChanged;
 
   @override
   Widget build(BuildContext context) {
-    final (label, color) = switch (status.state) {
-      LinkState.connected when status.relayed => ('Relayed', Colors.orange),
-      LinkState.connected => ('Direct', Colors.green),
-      LinkState.connecting => ('Connecting', Colors.blueGrey),
-      LinkState.disconnected => ('Reconnecting', Colors.orange),
-      LinkState.failed => ('Failed', Colors.red),
-      LinkState.closed => ('Closed', Colors.grey),
-    };
-    return ListTile(
-      leading: Icon(
-        talking ? Icons.graphic_eq : Icons.directions_car_outlined,
-        color: color,
+    return Tile(
+      onTap: () => onChanged(!value),
+      padding: const EdgeInsets.symmetric(
+        horizontal: Space.gutter,
+        vertical: Space.sm,
       ),
-      title: Text(name),
-      subtitle: Text(
-        '$label · ${status.dataOpen ? 'data on' : 'data off'} · '
-        '↑${_bytes(status.bytesSent)} ↓${_bytes(status.bytesReceived)}',
-      ),
-      trailing: status.state == LinkState.connected
-          ? null
-          : IconButton(
-              tooltip: 'Reconnect',
-              icon: const Icon(Icons.refresh),
-              onPressed: onReconnect,
-            ),
-    );
-  }
-}
-
-class _Centered extends StatelessWidget {
-  const _Centered({
-    required this.icon,
-    required this.title,
-    required this.body,
-    required this.action,
-  });
-
-  final IconData icon;
-  final String title;
-  final String body;
-  final Widget action;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(
+          minHeight: Sizes.drivingTouch - 2 * Space.sm,
+        ),
+        child: Row(
           children: [
-            Icon(icon, size: 48, color: theme.colorScheme.primary),
-            const SizedBox(height: 16),
-            Text(title, style: theme.textTheme.titleLarge),
-            const SizedBox(height: 8),
-            Text(body, textAlign: TextAlign.center),
-            const SizedBox(height: 20),
-            action,
+            Icon(
+              value ? Icons.volume_off_outlined : Icons.volume_up_outlined,
+              size: 28,
+            ),
+            const SizedBox(width: Space.lg),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Mute everyone', style: context.title),
+                  Text('Your mic still works', style: context.caption),
+                ],
+              ),
+            ),
+            Switch(
+              key: const Key('radio-mute-incoming'),
+              value: value,
+              onChanged: onChanged,
+            ),
           ],
         ),
       ),
@@ -331,8 +381,62 @@ class _Centered extends StatelessWidget {
   }
 }
 
-String _bytes(int b) {
-  if (b < 1024) return '$b B';
-  if (b < 1024 * 1024) return '${(b / 1024).toStringAsFixed(0)} KB';
-  return '${(b / (1024 * 1024)).toStringAsFixed(1)} MB';
+class _PeerRow extends StatelessWidget {
+  const _PeerRow({
+    required this.status,
+    required this.member,
+    required this.name,
+    required this.talking,
+    required this.onReconnect,
+  });
+
+  final PeerStatus status;
+  final ConvoyMember? member;
+  final String name;
+  final bool talking;
+  final VoidCallback onReconnect;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final pill = switch (status.state) {
+      LinkState.connected => const Pill('Connected', tone: PillTone.positive),
+      LinkState.connecting => const Pill('Connecting…'),
+      LinkState.disconnected ||
+      LinkState.failed ||
+      LinkState.closed => const Pill('Reconnecting', tone: PillTone.warning),
+    };
+    final stuck =
+        status.state == LinkState.failed || status.state == LinkState.closed;
+    return ConvoyRow(
+      leading: MemberAvatar(name: name, avatarPath: member?.avatarPath),
+      title: name,
+      subtitle: talking
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                PulsingDot(color: scheme.primary, size: 8),
+                const SizedBox(width: Space.xs),
+                Text(
+                  'Talking',
+                  style: context.label.copyWith(color: scheme.primary),
+                ),
+              ],
+            )
+          : null,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (stuck) ...[
+            TextButton(onPressed: onReconnect, child: const Text('Retry')),
+            const SizedBox(width: Space.xs),
+          ],
+          // Connecting… cross-fades into Connected.
+          StateSwitcher(
+            child: KeyedSubtree(key: ValueKey(status.state), child: pill),
+          ),
+        ],
+      ),
+    );
+  }
 }

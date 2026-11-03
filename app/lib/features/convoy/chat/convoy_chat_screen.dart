@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../app/ui/ui.dart';
 import '../../profile/profile_repo.dart';
 import '../audio/convoy_audio_session.dart';
 import '../widgets/member_names.dart';
@@ -32,16 +33,22 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
     final state = ref.watch(chatControllerProvider(widget.convoyId));
     final c = ref.read(chatControllerProvider(widget.convoyId).notifier);
     final driving = ref.watch(isDrivingNowProvider);
+    final scheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Convoy chat'),
+        title: const Text('Chat'),
         actions: [
           IconButton(
-            tooltip: state.readAloud ? 'Read aloud: on' : 'Read aloud: off',
+            tooltip: state.readAloud
+                ? 'Mute read-aloud'
+                : 'Read messages aloud',
             icon: Icon(
               state.readAloud ? Icons.record_voice_over : Icons.voice_over_off,
             ),
-            onPressed: () => c.setReadAloud(!state.readAloud),
+            onPressed: () {
+              Haptics.select();
+              c.setReadAloud(!state.readAloud);
+            },
           ),
         ],
       ),
@@ -50,18 +57,22 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
           Expanded(
             child: state.messages.isEmpty
                 ? const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(32),
-                      child: Text(
-                        'Nothing yet. Voice notes play in every car; text is '
-                        'read aloud to drivers.',
-                        textAlign: TextAlign.center,
-                      ),
+                    child: EmptyState(
+                      kicker: 'Chat',
+                      headline: 'No messages yet.',
+                      body:
+                          'Voice notes play in every car. Drivers hear text '
+                          'read aloud.',
                     ),
                   )
                 : ListView.builder(
                     reverse: true,
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.fromLTRB(
+                      Space.gutter,
+                      Space.sm,
+                      Space.gutter,
+                      Space.sm,
+                    ),
                     itemCount: state.messages.length,
                     itemBuilder: (context, i) {
                       final m = state.messages[state.messages.length - 1 - i];
@@ -75,19 +86,25 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
           ),
           if (state.error != null)
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.sm,
+              ),
               child: Text(
                 state.error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: context.caption.copyWith(color: scheme.error),
               ),
             ),
           if (driving)
-            const Padding(
-              key: Key('driver-banner'),
-              padding: EdgeInsets.all(12),
+            Padding(
+              key: const Key('driver-banner'),
+              padding: const EdgeInsets.all(Space.lg),
               child: Text(
                 'Passengers type; drivers listen.',
                 textAlign: TextAlign.center,
+                style: context.bodyMuted,
               ),
             )
           else
@@ -111,65 +128,106 @@ class _Composer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    const target = BoxConstraints.tightFor(
+      width: Sizes.touch,
+      height: Sizes.touch,
+    );
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: state.recording
-                  ? Text(
-                      'Recording… ${(state.recordingMs / 1000).toStringAsFixed(0)} s '
-                      '(max 20)',
-                      key: const Key('recording-label'),
-                    )
-                  : TextField(
-                      key: const Key('chat-input'),
-                      controller: controller,
-                      decoration: const InputDecoration(
-                        hintText: 'Message the convoy',
-                        border: OutlineInputBorder(),
-                        isDense: true,
+        padding: const EdgeInsets.fromLTRB(
+          Space.gutter,
+          Space.xs,
+          Space.gutter,
+          Space.sm,
+        ),
+        child: StateSwitcher(
+          child: state.recording
+              ? Row(
+                  key: const ValueKey('recording'),
+                  children: [
+                    Expanded(
+                      child: Row(
+                        key: const Key('recording-label'),
+                        children: [
+                          PulsingDot(color: scheme.error, size: 8),
+                          const SizedBox(width: Space.xs),
+                          Text('Recording · ', style: context.title),
+                          AnimatedNumber(
+                            value: state.recordingMs / 1000,
+                            style: context.title,
+                            suffix: ' s',
+                            duration: Motion.reveal,
+                          ),
+                          const SizedBox(width: Space.sm),
+                          Text('Max 20 seconds', style: context.caption),
+                        ],
                       ),
-                      textInputAction: TextInputAction.send,
-                      onSubmitted: (v) {
-                        chat.sendText(v);
+                    ),
+                    IconButton(
+                      tooltip: 'Cancel',
+                      constraints: target,
+                      icon: const Icon(Icons.delete_outline),
+                      onPressed: chat.cancelRecording,
+                    ),
+                    const SizedBox(width: Space.xs),
+                    SizedBox(
+                      height: Sizes.touch,
+                      child: FilledButton.icon(
+                        key: const Key('send-voice'),
+                        onPressed: () {
+                          Haptics.success();
+                          chat.stopRecordingAndSend();
+                        },
+                        icon: const Icon(Icons.send),
+                        label: const Text('Send'),
+                      ),
+                    ),
+                  ],
+                )
+              : Row(
+                  key: const ValueKey('idle'),
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        key: const Key('chat-input'),
+                        controller: controller,
+                        decoration: const InputDecoration(
+                          hintText: 'Message the convoy',
+                        ),
+                        textCapitalization: TextCapitalization.sentences,
+                        textInputAction: TextInputAction.send,
+                        onSubmitted: (v) {
+                          chat.sendText(v);
+                          controller.clear();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: Space.sm),
+                    IconButton.filledTonal(
+                      key: const Key('record-voice'),
+                      tooltip: 'Record a voice note',
+                      constraints: target,
+                      icon: const Icon(Icons.mic),
+                      onPressed: () {
+                        Haptics.select();
+                        chat.startRecording();
+                      },
+                    ),
+                    const SizedBox(width: Space.xs),
+                    IconButton.filled(
+                      key: const Key('send-text'),
+                      tooltip: 'Send',
+                      constraints: target,
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        chat.sendText(controller.text);
                         controller.clear();
                       },
                     ),
-            ),
-            const SizedBox(width: 8),
-            if (state.recording) ...[
-              IconButton(
-                tooltip: 'Cancel',
-                icon: const Icon(Icons.delete_outline),
-                onPressed: chat.cancelRecording,
-              ),
-              FilledButton.icon(
-                key: const Key('send-voice'),
-                onPressed: chat.stopRecordingAndSend,
-                icon: const Icon(Icons.send),
-                label: const Text('Send'),
-              ),
-            ] else ...[
-              IconButton.filledTonal(
-                key: const Key('record-voice'),
-                tooltip: 'Record a voice note',
-                icon: const Icon(Icons.mic),
-                onPressed: chat.startRecording,
-              ),
-              IconButton.filled(
-                key: const Key('send-text'),
-                tooltip: 'Send',
-                icon: const Icon(Icons.send),
-                onPressed: () {
-                  chat.sendText(controller.text);
-                  controller.clear();
-                },
-              ),
-            ],
-          ],
+                  ],
+                ),
         ),
       ),
     );
@@ -189,7 +247,7 @@ class _Bubble extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
+    final scheme = Theme.of(context).colorScheme;
     final names =
         ref.watch(convoyMemberNamesProvider(convoyId)).value ?? const {};
     // Member name first, then a cached profile handle, never a UUID prefix.
@@ -199,38 +257,60 @@ class _Bubble extends ConsumerWidget {
               ref.watch(profileProvider(message.from)).value?.handle ??
               'Someone';
     final bg = message.mine
-        ? theme.colorScheme.primaryContainer
-        : theme.colorScheme.surfaceContainerHighest;
+        ? scheme.primaryContainer
+        : scheme.surfaceContainerHigh;
+    final fg = message.mine ? scheme.onPrimaryContainer : scheme.onSurface;
     return Align(
       alignment: message.mine ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        constraints: const BoxConstraints(maxWidth: 320),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(name, style: theme.textTheme.labelSmall),
-            if (message.isVoice)
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.play_arrow),
-                    onPressed: () => onPlay(message.voice!),
-                  ),
-                  Text(
-                    'Voice note · ${(message.voice!.durationMs / 1000).toStringAsFixed(0)} s',
-                  ),
-                ],
-              )
-            else
-              Text(message.text ?? ''),
-          ],
+      child: Reveal(
+        child: Container(
+          margin: const EdgeInsets.symmetric(vertical: Space.xs),
+          padding: const EdgeInsets.symmetric(
+            horizontal: Space.md,
+            vertical: Space.sm,
+          ),
+          constraints: const BoxConstraints(maxWidth: 320),
+          decoration: BoxDecoration(color: bg, borderRadius: Radii.tileRadius),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: context.caption.copyWith(
+                  color: fg.withValues(alpha: 0.8),
+                ),
+              ),
+              if (message.isVoice)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton.filledTonal(
+                      tooltip: 'Play',
+                      constraints: const BoxConstraints.tightFor(
+                        width: Sizes.touch,
+                        height: Sizes.touch,
+                      ),
+                      icon: const Icon(Icons.play_arrow),
+                      onPressed: () {
+                        Haptics.tap();
+                        onPlay(message.voice!);
+                      },
+                    ),
+                    const SizedBox(width: Space.sm),
+                    Text(
+                      'Voice note · '
+                      '${(message.voice!.durationMs / 1000).toStringAsFixed(0)} s',
+                      style: context.label.copyWith(color: fg),
+                    ),
+                  ],
+                )
+              else
+                Text(
+                  message.text ?? '',
+                  style: context.body.copyWith(color: fg),
+                ),
+            ],
+          ),
         ),
       ),
     );

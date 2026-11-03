@@ -8,6 +8,7 @@ import '../../../data/db/database.dart';
 import '../../../data/spotify/spotify_client.dart';
 import '../../../data/spotify/spotify_providers.dart';
 import '../../../data/supabase/supabase_providers.dart';
+import '../../../widgets/friendly_error.dart';
 import '../radio/data_bus.dart';
 import 'dj_core.dart';
 
@@ -131,7 +132,7 @@ class DjController extends Notifier<DjState> {
       ref.invalidate(spotifySignedInProvider);
       state = state.copyWith(spotifyConnected: true, clearError: true);
     } catch (e) {
-      state = state.copyWith(error: 'Spotify sign-in failed: $e');
+      state = state.copyWith(error: friendlyError(e, doing: 'connect Spotify'));
     }
   }
 

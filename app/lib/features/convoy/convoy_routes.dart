@@ -29,7 +29,11 @@ List<RouteBase> convoyBranchRoutes() => [
         routes: [
           GoRoute(
             path: 'radio',
-            builder: (_, s) => ConvoyRadioScreen(convoyId: _id(s)),
+            builder: (_, s) => ConvoyRadioScreen(
+              convoyId: _id(s),
+              // The Talk button opens the radio already running.
+              autoStart: s.uri.queryParameters['start'] == '1',
+            ),
           ),
           GoRoute(
             path: 'stops',

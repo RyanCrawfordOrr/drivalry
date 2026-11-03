@@ -176,9 +176,9 @@ const List<TriviaQuestion> triviaQuestions = [
     'Brake fluid',
   ], 2),
   TriviaQuestion('What is the "two-second rule"?', [
-    'Parking time',
+    'Time to park',
     'Following distance',
-    'Indicator time',
+    'Blinker time',
     'Horn length',
   ], 1),
   TriviaQuestion('Which US city is famous for its cable cars?', [
@@ -325,7 +325,7 @@ const List<TriviaQuestion> triviaQuestions = [
     '1966',
     '1976',
   ], 1),
-  TriviaQuestion('The Eisenhower Interstate System is named after a…', [
+  TriviaQuestion('The Interstate System is named after Eisenhower, a US…', [
     'Senator',
     'President',
     'Engineer',
@@ -346,8 +346,8 @@ const List<TriviaQuestion> triviaQuestions = [
   TriviaQuestion('What is the Drivalry rule about speed?', [
     'Faster scores higher',
     'Speed never scores',
-    'Only on highways',
-    'Bonus at night',
+    'Speed only counts on highways',
+    'Night drives score extra',
   ], 1),
   TriviaQuestion('Which score is a perfect Drive Score?', [
     '10',

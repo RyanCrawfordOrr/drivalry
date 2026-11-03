@@ -215,7 +215,7 @@ class ConvoyLive {
       final why = started.first.reason == 'silent'
           ? 'stopped sharing their position'
           : 'fell more than five minutes behind';
-      unawaited(notify('Lost sheep', '$who $why.'));
+      unawaited(notify('Falling behind', '$who $why.'));
     }
   }
 
