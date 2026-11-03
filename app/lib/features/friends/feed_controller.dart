@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repos/feed_repo.dart';
 import '../../data/repos/friends_sync.dart';
 import '../../data/supabase/supabase_providers.dart';
+import '../../widgets/friendly_error.dart';
 
 class FeedState {
   const FeedState({
@@ -75,7 +76,10 @@ class FeedController extends Notifier<FeedState> {
       );
     } catch (e) {
       if (state.filter != filter) return;
-      state = state.copyWith(loading: false, error: 'Could not refresh: $e');
+      state = state.copyWith(
+        loading: false,
+        error: friendlyError(e, doing: 'refresh the feed'),
+      );
     }
   }
 
@@ -108,7 +112,10 @@ class FeedController extends Notifier<FeedState> {
       );
     } catch (e) {
       if (state.filter != filter) return;
-      state = state.copyWith(loading: false, error: 'Could not load more: $e');
+      state = state.copyWith(
+        loading: false,
+        error: friendlyError(e, doing: 'load more'),
+      );
     }
   }
 

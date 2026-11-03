@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/circles_sync.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
 
 /// Name a circle; the invite code arrives from the server a moment later.
@@ -42,12 +44,13 @@ class _CreateCircleScreenState extends ConsumerState<CreateCircleScreen> {
     try {
       final id = await ref.read(circlesRepoProvider).create(name);
       if (!mounted) return;
+      Haptics.success();
       context.pushReplacement(Routes.circle(id));
     } catch (e) {
       if (mounted) {
         setState(() {
           _busy = false;
-          _error = 'Could not create the circle: $e';
+          _error = friendlyError(e, doing: 'create the circle');
         });
       }
     }
@@ -55,14 +58,18 @@ class _CreateCircleScreenState extends ConsumerState<CreateCircleScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(title: const Text('New circle')),
       body: SignedInScope(
         message: 'Sign in to create a circle.',
         icon: Icons.groups_outlined,
         child: ListView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.lg,
+            Space.gutter,
+            Space.xxxl,
+          ),
           children: [
             TextField(
               controller: _name,
@@ -76,24 +83,18 @@ class _CreateCircleScreenState extends ConsumerState<CreateCircleScreen> {
               ),
               onSubmitted: (_) => _create(),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: Space.md),
             Text(
-              'Everyone you invite sees everyone else\'s live location, '
-              'precise, and the trips and roasts you all earn. Anyone can hide '
-              'at any time; the circle can see that they are hiding.',
-              style: theme.textTheme.bodySmall,
+              'Everyone in it sees each other\'s live location and roasts. '
+              'Anyone can hide, and the circle sees that.',
+              style: context.caption,
             ),
-            const SizedBox(height: 24),
-            FilledButton.icon(
-              onPressed: _busy ? null : _create,
-              icon: _busy
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.group_add_outlined),
-              label: const Text('Create circle'),
+            const SizedBox(height: Space.xl),
+            PrimaryButton(
+              label: 'Create circle',
+              icon: Icons.group_add_outlined,
+              busy: _busy,
+              onPressed: _create,
             ),
           ],
         ),

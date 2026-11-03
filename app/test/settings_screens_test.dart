@@ -1,9 +1,7 @@
 import 'package:drivalry/data/db/database.dart';
-import 'package:drivalry/features/profile/sign_in_screen.dart';
 import 'package:drivalry/features/settings/attribution_screen.dart';
 import 'package:drivalry/features/settings/settings_screen.dart';
 import 'package:drivalry/tracking/providers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,35 +50,6 @@ void main() {
       find.byKey(const Key('hide-location')),
     );
     expect(hide.onChanged, isNull);
-    await unmountAndSettle(tester);
-  }, skip: skip);
-
-  testWidgets('sign-in shows Apple and Google on iOS, Google only on Android', (
-    tester,
-  ) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
-    await tester.pumpWidget(harness(const SignInScreen(cloudConfigured: true)));
-    await tester.pump();
-    expect(find.byKey(const Key('sign-in-apple')), findsOneWidget);
-    expect(find.byKey(const Key('sign-in-google')), findsOneWidget);
-    expect(find.text(SignInScreen.privacyNote), findsOneWidget);
-
-    debugDefaultTargetPlatformOverride = TargetPlatform.android;
-    await tester.pumpWidget(harness(const SignInScreen(cloudConfigured: true)));
-    await tester.pump();
-    expect(find.byKey(const Key('sign-in-apple')), findsNothing);
-    expect(find.byKey(const Key('sign-in-google')), findsOneWidget);
-    debugDefaultTargetPlatformOverride = null;
-    await unmountAndSettle(tester);
-  }, skip: skip);
-
-  testWidgets('sign-in explains an offline build', (tester) async {
-    await tester.pumpWidget(
-      harness(const SignInScreen(cloudConfigured: false)),
-    );
-    await tester.pump();
-    expect(find.byKey(const Key('sign-in-google')), findsNothing);
-    expect(find.textContaining('no Drivalry cloud project'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);
 

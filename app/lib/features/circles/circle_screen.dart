@@ -3,17 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
 import '../../data/repos/circles_repo.dart';
 import '../../data/repos/circles_sync.dart';
 import '../../data/repos/presence_repo.dart';
 import '../../data/supabase/supabase_providers.dart';
+import '../../widgets/friendly_error.dart';
 import '../../widgets/relative_time.dart';
 import '../../widgets/signed_in_scope.dart';
-import '../friends/widgets/user_avatar.dart';
+import '../friends/widgets/live_badge.dart';
+import '../friends/widgets/person_row.dart';
+import '../friends/widgets/quiet_error_tile.dart';
 import 'checkin_sheet.dart';
 import 'circle_invite_sheet.dart';
 
-/// One circle: members with where they are, my hiding switch, invite, leave.
+/// One circle: the hide switch as a tile, check-in, then members as rows
+/// with where they are. Invite in the app bar, leave in the overflow.
 class CircleScreen extends ConsumerWidget {
   const CircleScreen({super.key, required this.circleId});
 
@@ -28,8 +33,8 @@ class CircleScreen extends ConsumerWidget {
     final me = ref.watch(currentUserIdProvider);
     final byUser = {for (final p in presence) p.userId: p};
     final now = DateTime.now().toUtc();
-    final theme = Theme.of(context);
     final repo = ref.read(circlesRepoProvider);
+    final scheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: AppBar(
@@ -43,6 +48,7 @@ class CircleScreen extends ConsumerWidget {
             ),
           if (circle != null)
             PopupMenuButton<String>(
+              tooltip: 'More',
               onSelected: (v) async {
                 if (v == 'leave') await _leave(context, ref, circle);
               },
@@ -56,66 +62,124 @@ class CircleScreen extends ConsumerWidget {
         message: 'Sign in to see this circle.',
         icon: Icons.groups_outlined,
         child: circle == null
-            ? const Center(child: Text('This circle is not in your list.'))
+            ? const EmptyState(
+                kicker: 'Circle',
+                headline: 'Not in this circle.',
+                body: 'A member can invite you back.',
+              )
             : RefreshIndicator(
                 onRefresh: () async {
                   ref.invalidate(circleMembersProvider(circleId));
                   await ref.read(myCirclesProvider.notifier).refresh();
                 },
                 child: ListView(
-                  padding: const EdgeInsets.fromLTRB(0, 8, 0, 24),
+                  padding: const EdgeInsets.only(
+                    top: Space.lg,
+                    bottom: Space.xxxl,
+                  ),
                   children: [
-                    SwitchListTile(
-                      key: const Key('circle-hiding'),
-                      secondary: Icon(
-                        circle.myHiding
-                            ? Icons.visibility_off_outlined
-                            : Icons.visibility_outlined,
-                      ),
-                      title: const Text('Hide from this circle'),
-                      subtitle: const Text(
-                        'Everyone in this circle can see that you are hiding.',
-                      ),
-                      value: circle.myHiding,
-                      onChanged: (v) => repo.setHiding(circle.id, v),
-                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 4,
-                      ),
-                      child: FilledButton.tonalIcon(
-                        onPressed: () => showCheckinSheet(context),
-                        icon: const Icon(Icons.home_outlined),
-                        label: const Text('I got home'),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-                      child: Text(
-                        'Members',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          color: theme.colorScheme.primary,
+                      padding: Space.screen,
+                      child: Tile(
+                        key: const Key('circle-hiding'),
+                        child: Row(
+                          children: [
+                            Icon(
+                              circle.myHiding
+                                  ? Icons.visibility_off_outlined
+                                  : Icons.visibility_outlined,
+                              color: scheme.onSurfaceVariant,
+                            ),
+                            const SizedBox(width: Space.lg),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Hide from this circle',
+                                    style: context.body.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                  const SizedBox(height: Space.xs),
+                                  Text(
+                                    'They can see that you are hiding.',
+                                    style: context.caption,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: Space.sm),
+                            Switch(
+                              value: circle.myHiding,
+                              onChanged: (v) {
+                                Haptics.select();
+                                repo.setHiding(circle.id, v);
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    if (members.isLoading && (members.value?.isEmpty ?? true))
-                      const LinearProgressIndicator(minHeight: 2),
-                    for (final m in members.value ?? const <CircleMember>[])
-                      _MemberTile(
-                        member: m,
-                        presence: byUser[m.userId],
-                        isMe: m.userId == me,
-                        now: now,
-                      ),
-                    if (members.hasError)
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text(
-                          'Could not load members: ${members.error}',
-                          style: theme.textTheme.bodySmall,
+                    const SizedBox(height: Space.md),
+                    Padding(
+                      padding: Space.screen,
+                      child: Tile(
+                        onTap: () => showCheckinSheet(context),
+                        child: Row(
+                          children: [
+                            Icon(Icons.home_outlined, color: scheme.primary),
+                            const SizedBox(width: Space.lg),
+                            Expanded(
+                              child: Text(
+                                'I got home',
+                                style: context.body.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right),
+                          ],
                         ),
                       ),
+                    ),
+                    const SizedBox(height: Space.section),
+                    EditorialSection(
+                      kicker: 'Members',
+                      child: Column(
+                        children: [
+                          if (members.isLoading &&
+                              (members.value?.isEmpty ?? true))
+                            for (var i = 0; i < 3; i++)
+                              const Padding(
+                                padding: EdgeInsets.only(bottom: Space.md),
+                                child: SkeletonTile(height: 56),
+                              ),
+                          for (final (i, m)
+                              in (members.value ?? const <CircleMember>[])
+                                  .indexed)
+                            Reveal(
+                              delay: Reveal.stagger(i),
+                              child: _MemberRow(
+                                member: m,
+                                presence: byUser[m.userId],
+                                isMe: m.userId == me,
+                                now: now,
+                              ),
+                            ),
+                          if (members.hasError)
+                            QuietErrorTile(
+                              message: friendlyError(
+                                members.error!,
+                                doing: 'load the members',
+                              ),
+                              onRetry: () => ref.invalidate(
+                                circleMembersProvider(circleId),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -150,8 +214,8 @@ class CircleScreen extends ConsumerWidget {
   }
 }
 
-class _MemberTile extends StatelessWidget {
-  const _MemberTile({
+class _MemberRow extends StatelessWidget {
+  const _MemberRow({
     required this.member,
     required this.presence,
     required this.isMe,
@@ -165,7 +229,6 @@ class _MemberTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final p = presence;
     final stale =
         p != null && now.difference(p.updatedAt) > const Duration(hours: 24);
@@ -178,23 +241,28 @@ class _MemberTile extends StatelessWidget {
     } else if (driving) {
       where = 'Driving now';
     } else {
-      where = 'Parked · ${relativeTime(p.updatedAt, now)}';
+      where = 'Parked ${relativeTime(p.updatedAt, now)}';
     }
-    return ListTile(
-      leading: UserAvatar(
-        name: member.name,
-        avatarPath: member.avatarPath,
-        highlighted: driving,
-      ),
-      title: Text(isMe ? '${member.name} (you)' : member.name),
-      subtitle: Text('@${member.handle} · $where'),
-      trailing: member.hiding
-          ? Chip(
-              label: const Text('hiding'),
-              visualDensity: VisualDensity.compact,
-              side: BorderSide(color: theme.colorScheme.outlineVariant),
-            )
-          : null,
+    final Widget? badge;
+    if (member.hiding) {
+      badge = const Pill(
+        'Hiding',
+        icon: Icons.visibility_off_outlined,
+        compact: true,
+      );
+    } else if (driving) {
+      badge = const LiveBadge('Driving');
+    } else {
+      badge = null;
+    }
+    return PersonRow(
+      name: isMe ? '${member.name} (you)' : member.name,
+      avatarPath: member.avatarPath,
+      caption: '@${member.handle} · $where',
+      highlighted: driving,
+      isMe: isMe,
+      heroTag: 'avatar-${member.userId}',
+      badge: badge,
       onTap: () => context.push(Routes.userProfile(member.userId)),
     );
   }

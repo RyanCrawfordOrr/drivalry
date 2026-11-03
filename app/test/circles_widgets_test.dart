@@ -3,6 +3,7 @@ import 'package:drivalry/app/router.dart';
 import 'package:drivalry/data/db/database.dart';
 import 'package:drivalry/data/repos/places_repo.dart';
 import 'package:drivalry/features/circles/circles_list_screen.dart';
+import 'package:drivalry/features/circles/circles_view.dart';
 import 'package:drivalry/features/friends/join_circle_screen.dart';
 import 'package:drivalry/features/places/places_screen.dart';
 import 'package:drivalry/tracking/providers.dart';
@@ -42,7 +43,8 @@ void main() {
     await tester.pumpWidget(wrap(const CirclesListScreen()));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.widgetWithText(AppBar, 'Circles'), findsOneWidget);
-    expect(find.text('Offline build'), findsOneWidget);
+    // Signed out / offline: the scope notice, never the circles list.
+    expect(find.byType(CirclesView), findsNothing);
     expect(find.text('I got home'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
@@ -50,9 +52,9 @@ void main() {
   testWidgets('circle invite link lands on the join screen', (tester) async {
     await tester.pumpWidget(wrap(const JoinCircleScreen(code: 'abc12345')));
     await pumpFor(tester, const Duration(seconds: 1));
-    expect(find.widgetWithText(AppBar, 'Circle invite'), findsOneWidget);
     // Signed out / offline: the scope notice, never the router error page.
-    expect(find.text('Offline build'), findsOneWidget);
+    expect(find.byType(JoinCircleScreen), findsOneWidget);
+    expect(find.text('Join this circle?'), findsNothing);
     await unmountAndSettle(tester);
   }, skip: skip);
 
@@ -66,7 +68,8 @@ void main() {
     await tester.pumpWidget(wrap(const PlacesScreen()));
     await pumpFor(tester, const Duration(seconds: 1));
     expect(find.text('Home'), findsOneWidget);
-    expect(find.textContaining('150 m'), findsOneWidget);
+    // 150 m, or about 490 ft for people whose speeds are in mph.
+    expect(find.textContaining(RegExp(r'150 m|490 ft')), findsOneWidget);
     expect(find.text('Add where I am'), findsOneWidget);
     await unmountAndSettle(tester);
   }, skip: skip);

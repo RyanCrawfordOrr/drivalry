@@ -110,7 +110,9 @@ class ProfileRepo {
     final err = Profile.validateHandle(h);
     if (err != null) throw ProfileError(err);
     final c = _client;
-    if (c == null) throw const ProfileError('Offline build.');
+    if (c == null) {
+      throw const ProfileError('Not available in this version yet.');
+    }
     try {
       await c.from('profiles').update({'handle': h}).eq('id', userId);
     } on PostgrestException catch (e) {
@@ -155,7 +157,9 @@ class ProfileRepo {
       );
     }
     final c = _client;
-    if (c == null) throw const ProfileError('Offline build.');
+    if (c == null) {
+      throw const ProfileError('Not available in this version yet.');
+    }
     final path = '$userId/avatar.jpg';
     await c.storage
         .from(avatarBucket)

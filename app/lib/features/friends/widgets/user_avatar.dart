@@ -2,52 +2,60 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../data/repos/friends_repo.dart' show initialsOf;
+import '../../../app/ui/ui.dart';
 import '../../../data/supabase/supabase_providers.dart';
 
-/// Avatar from the public `avatars` bucket, or initials when there is none.
+/// The shared [Avatar] for a person with a profile: resolves [avatarPath] in
+/// the public `avatars` bucket to an image, or shows initials. Every social
+/// screen draws people through this, so there is one avatar in the app
+/// (docs/12 §4).
 class UserAvatar extends ConsumerWidget {
   const UserAvatar({
     super.key,
     required this.name,
     this.avatarPath,
-    this.radius = 20,
+    this.size,
+    this.radius,
     this.highlighted = false,
+    this.isMe = false,
   });
 
   final String name;
   final String? avatarPath;
-  final double radius;
 
-  /// Driving right now: primary colour instead of secondary.
+  /// One of the three house sizes. Wins over [radius].
+  final AvatarSize? size;
+
+  /// Older call sites size by radius; mapped onto the nearest house size.
+  final double? radius;
+
+  /// Driving right now (or leading a convoy): tinted with the primary colour.
   final bool highlighted;
+
+  /// Draws the primary ring that marks the signed-in person.
+  final bool isMe;
+
+  AvatarSize get _size {
+    if (size != null) return size!;
+    final r = radius ?? 20;
+    if (r <= 16) return AvatarSize.sm;
+    if (r <= 22) return AvatarSize.md;
+    return AvatarSize.lg;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final path = avatarPath;
     final client = ref.watch(supabaseProvider);
     final url = (path != null && path.isNotEmpty && client != null)
         ? client.storage.from('avatars').getPublicUrl(path)
         : null;
-    return CircleAvatar(
-      radius: radius,
-      backgroundColor: highlighted
-          ? theme.colorScheme.primary
-          : theme.colorScheme.secondaryContainer,
-      foregroundColor: highlighted
-          ? theme.colorScheme.onPrimary
-          : theme.colorScheme.onSecondaryContainer,
-      backgroundImage: url == null ? null : CachedNetworkImageProvider(url),
-      child: url == null
-          ? Text(
-              initialsOf(name),
-              style: TextStyle(
-                fontSize: radius * 0.8,
-                fontWeight: FontWeight.w600,
-              ),
-            )
-          : null,
+    return Avatar(
+      name: name,
+      size: _size,
+      image: url == null ? null : CachedNetworkImageProvider(url),
+      isMe: isMe,
+      color: highlighted ? Theme.of(context).colorScheme.primary : null,
     );
   }
 }

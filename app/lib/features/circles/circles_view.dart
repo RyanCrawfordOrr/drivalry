@@ -3,22 +3,36 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
+import '../../app/ui/ui.dart';
+import '../../data/db/database.dart';
 import '../../data/repos/circles_repo.dart';
 import '../../data/repos/circles_sync.dart';
+import '../../data/repos/friends_sync.dart';
+import '../../data/repos/places_repo.dart';
 import '../../data/repos/presence_repo.dart';
+import '../friends/feed_view.dart' show fabClearance;
+import '../friends/widgets/live_badge.dart';
+import '../friends/widgets/tab_scroll_view.dart';
 import 'checkin_sheet.dart';
+import 'widgets/stacked_avatars.dart';
 
-/// The Circles segment of the Friends tab: check-in, places, my circles,
-/// create or join (docs/01 §4.5).
+/// The Circles segment of the Friends tab (docs/01 §4.5; docs/12 §7): an
+/// "I got home" hero when it applies, circles as tiles with stacked avatars
+/// and a breathing "driving now" badge, the door to Places, and Join with
+/// code as a text action. Creating a circle is the empty state's one button,
+/// or the tab's FAB once there are some. The root wraps this in pull to
+/// refresh.
 class CirclesView extends ConsumerWidget {
   const CirclesView({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final circles = ref.watch(myCirclesProvider);
     final membership = ref.watch(circleMembershipProvider);
     final presence = ref.watch(visiblePresenceProvider).value ?? const [];
+    final places = ref.watch(placesProvider).value ?? const <Place>[];
+    final friends =
+        ref.watch(friendsSnapshotProvider).value?.friends ?? const [];
     final now = DateTime.now().toUtc();
     final drivingNow = {
       for (final p in presence)
@@ -27,137 +41,284 @@ class CirclesView extends ConsumerWidget {
           p.userId,
     };
     final list = circles.value ?? const <Circle>[];
+    final skeletons = circles.isLoading && list.isEmpty;
+    // Check-in needs a saved place and someone to tell.
+    final showCheckin =
+        places.isNotEmpty && (list.isNotEmpty || friends.isNotEmpty);
+    final scheme = Theme.of(context).colorScheme;
 
-    return RefreshIndicator(
-      onRefresh: () => ref.read(myCirclesProvider.notifier).refresh(),
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 88),
+    return TabScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.only(top: Space.lg, bottom: fabClearance),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (showCheckin) ...[
+                  Padding(
+                    padding: Space.screen,
+                    child: Reveal(
+                      child: Tile(
+                        key: const Key('checkin-button'),
+                        tone: TileTone.raised,
+                        onTap: () => showCheckinSheet(context),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.home_outlined,
+                              size: 28,
+                              color: scheme.primary,
+                            ),
+                            const SizedBox(width: Space.lg),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('I got home', style: context.title),
+                                  const SizedBox(height: Space.xs),
+                                  Text(
+                                    'Tell your circles and friends in one tap.',
+                                    style: context.caption,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.chevron_right),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: Space.section),
+                ],
+                StateSwitcher(
+                  child: skeletons
+                      ? Column(
+                          key: const ValueKey('skeleton'),
+                          children: [
+                            for (var i = 0; i < 3; i++)
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                  Space.gutter,
+                                  0,
+                                  Space.gutter,
+                                  Space.md,
+                                ),
+                                child: SkeletonTile(),
+                              ),
+                          ],
+                        )
+                      : list.isEmpty
+                      ? EmptyState(
+                          key: const ValueKey('empty'),
+                          kicker: 'Circles',
+                          headline: 'No circles yet.',
+                          body:
+                              'Family, roommates, the crew: always on each '
+                              'other\'s map.',
+                          actionLabel: 'New circle',
+                          onAction: () => context.push(Routes.createCircle),
+                          secondaryLabel: 'Join with code',
+                          onSecondary: () => joinCircleByCode(context),
+                        )
+                      : EditorialSection(
+                          key: const ValueKey('list'),
+                          kicker: 'Circles',
+                          actionLabel: 'Join with code',
+                          onAction: () => joinCircleByCode(context),
+                          child: Column(
+                            children: [
+                              for (var i = 0; i < list.length; i++) ...[
+                                Reveal(
+                                  delay: Reveal.stagger(i),
+                                  child: _CircleTile(
+                                    circle: list[i],
+                                    memberIds: membership[list[i].id],
+                                    drivingNow: drivingNow,
+                                  ),
+                                ),
+                                if (i < list.length - 1)
+                                  const SizedBox(height: Space.md),
+                              ],
+                            ],
+                          ),
+                        ),
+                ),
+                EditorialSection(
+                  kicker: 'Places',
+                  child: Tile(
+                    onTap: () => context.push(Routes.places),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.place_outlined,
+                          color: scheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: Space.lg),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Places', style: context.title),
+                              const SizedBox(height: Space.xs),
+                              Text(
+                                places.isEmpty
+                                    ? 'Save Home to unlock check-ins and '
+                                          'alerts.'
+                                    : '${places.length} saved · alerts when '
+                                          'friends arrive or leave',
+                                style: context.caption,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CircleTile extends ConsumerWidget {
+  const _CircleTile({
+    required this.circle,
+    required this.memberIds,
+    required this.drivingNow,
+  });
+
+  final Circle circle;
+  final Set<String>? memberIds;
+  final Set<String> drivingNow;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final members =
+        ref.watch(circleMembersProvider(circle.id)).value ??
+        const <CircleMember>[];
+    final count = circle.memberCount == 0
+        ? (memberIds?.length ?? members.length)
+        : circle.memberCount;
+    final driving = memberIds == null
+        ? 0
+        : memberIds!.where(drivingNow.contains).length;
+    final pills = <Widget>[
+      if (driving > 0) LiveBadge('$driving driving now'),
+      if (circle.myHiding)
+        const Pill(
+          'Hiding',
+          icon: Icons.visibility_off_outlined,
+          compact: true,
+        ),
+    ];
+    return Tile(
+      onTap: () => context.push(Routes.circle(circle.id)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Expanded(
-                child: FilledButton.icon(
-                  key: const Key('checkin-button'),
-                  onPressed: () => showCheckinSheet(context),
-                  icon: const Icon(Icons.home_outlined),
-                  label: const Text('I got home'),
-                ),
+              StackedAvatars(
+                people: [
+                  for (final m in members)
+                    (name: m.name, avatarPath: m.avatarPath),
+                ],
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: Space.lg),
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () => context.push(Routes.places),
-                  icon: const Icon(Icons.place_outlined),
-                  label: const Text('Places'),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          if (circles.isLoading && list.isEmpty)
-            const LinearProgressIndicator(minHeight: 2),
-          if (!circles.isLoading && list.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('No circles yet', style: theme.textTheme.titleMedium),
-                    const SizedBox(height: 4),
                     Text(
-                      'A circle is a group that always sees each other on the '
-                      'map: family, roommates, the crew. Everyone is precise; '
-                      'anyone can hide, and the circle sees that they are.',
-                      style: theme.textTheme.bodyMedium,
+                      circle.name,
+                      style: context.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: Space.xs),
+                    Text(
+                      '$count member${count == 1 ? '' : 's'}',
+                      style: context.caption,
                     ),
                   ],
                 ),
               ),
-            ),
-          for (final c in list)
-            Card(
-              margin: const EdgeInsets.symmetric(vertical: 4),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: theme.colorScheme.secondaryContainer,
-                  foregroundColor: theme.colorScheme.onSecondaryContainer,
-                  child: const Icon(Icons.groups_outlined),
-                ),
-                title: Text(c.name),
-                subtitle: Text(_subtitle(c, membership[c.id], drivingNow)),
-                trailing: const Icon(Icons.chevron_right),
-                onTap: () => context.push(Routes.circle(c.id)),
-              ),
-            ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => context.push(Routes.createCircle),
-                  icon: const Icon(Icons.add),
-                  label: const Text('New circle'),
-                ),
-              ),
-              Expanded(
-                child: TextButton.icon(
-                  onPressed: () => _joinByCode(context, ref),
-                  icon: const Icon(Icons.key_outlined),
-                  label: const Text('Join with code'),
-                ),
-              ),
+              const Icon(Icons.chevron_right),
             ],
           ),
+          if (pills.isNotEmpty) ...[
+            const SizedBox(height: Space.md),
+            Wrap(spacing: Space.sm, runSpacing: Space.sm, children: pills),
+          ],
         ],
       ),
     );
   }
+}
 
-  static String _subtitle(
-    Circle c,
-    Set<String>? members,
-    Set<String> drivingNow,
-  ) {
-    final count = c.memberCount == 0 ? (members?.length ?? 0) : c.memberCount;
-    final driving = members == null
-        ? 0
-        : members.where(drivingNow.contains).length;
-    final parts = <String>[
-      '$count member${count == 1 ? '' : 's'}',
-      if (driving > 0) '$driving driving now',
-      if (c.myHiding) 'you are hiding',
-    ];
-    return parts.join(' · ');
+/// Asks for an invite code in a sheet and opens the join screen with it.
+Future<void> joinCircleByCode(BuildContext context) async {
+  final code = await showDrivalrySheet<String>(
+    context,
+    title: 'Join a circle',
+    builder: (ctx) => const _JoinCodeForm(),
+  );
+  if (code == null || code.trim().isEmpty || !context.mounted) return;
+  context.push(Routes.joinCircle(code.trim().toLowerCase()));
+}
+
+class _JoinCodeForm extends StatefulWidget {
+  const _JoinCodeForm();
+
+  @override
+  State<_JoinCodeForm> createState() => _JoinCodeFormState();
+}
+
+class _JoinCodeFormState extends State<_JoinCodeForm> {
+  final _code = TextEditingController();
+
+  @override
+  void dispose() {
+    _code.dispose();
+    super.dispose();
   }
 
-  Future<void> _joinByCode(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController();
-    final code = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Join a circle'),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          textCapitalization: TextCapitalization.characters,
-          decoration: const InputDecoration(labelText: 'Invite code'),
-          onSubmitted: (v) => Navigator.of(ctx).pop(v),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('Cancel'),
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'The code is on the invite a member shared with you.',
+            style: context.bodyMuted,
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(controller.text),
-            child: const Text('Join'),
+          const SizedBox(height: Space.lg),
+          TextField(
+            controller: _code,
+            autofocus: true,
+            textCapitalization: TextCapitalization.characters,
+            decoration: const InputDecoration(labelText: 'Invite code'),
+            onSubmitted: (v) => Navigator.of(context).pop(v),
+          ),
+          const SizedBox(height: Space.lg),
+          PressScale(
+            child: PrimaryButton(
+              label: 'Join',
+              onPressed: () => Navigator.of(context).pop(_code.text),
+            ),
           ),
         ],
       ),
     );
-    controller.dispose();
-    if (code == null || code.trim().isEmpty || !context.mounted) return;
-    context.push(Routes.joinCircle(code.trim().toLowerCase()));
   }
 }

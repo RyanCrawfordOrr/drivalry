@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/db/database.dart';
 import '../../data/repos/places_repo.dart';
+import '../../tracking/providers.dart';
+import '../../widgets/units.dart';
+import 'radius_text.dart';
 
 /// Add a saved place at [lat], [lon], or edit [existing]. Places never leave
 /// the phone.
@@ -12,10 +16,9 @@ Future<void> showSavePlaceSheet(
   required double lon,
   Place? existing,
 }) {
-  return showModalBottomSheet<void>(
-    context: context,
-    showDragHandle: true,
-    isScrollControlled: true,
+  return showDrivalrySheet<void>(
+    context,
+    title: existing == null ? 'Save a place' : 'Edit place',
     builder: (ctx) => _SavePlaceSheet(lat: lat, lon: lon, existing: existing),
   );
 }
@@ -75,95 +78,88 @@ class _SavePlaceSheetState extends ConsumerState<_SavePlaceSheet> {
     } else {
       await repo.updatePlace(e.id, label: label, kind: _kind, radiusM: _radius);
     }
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    Haptics.success();
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          16,
-          0,
-          16,
-          16 + MediaQuery.viewInsetsOf(context).bottom,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              widget.existing == null ? 'Save a place' : 'Edit place',
-              style: theme.textTheme.titleLarge,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Stays on this phone. Friends\' arrivals and departures are '
-              'worked out here from their live position.',
-              style: theme.textTheme.bodySmall,
-            ),
-            const SizedBox(height: 12),
-            SegmentedButton<PlaceKind>(
-              segments: [
-                for (final k in PlaceKind.values)
-                  ButtonSegment(
-                    value: k,
-                    icon: Icon(k.icon),
-                    label: Text(k.label),
-                  ),
-              ],
-              selected: {_kind},
-              showSelectedIcon: false,
-              onSelectionChanged: (s) => setState(() {
-                final previousDefault = _kind.label;
-                _kind = s.first;
-                if (_label.text.trim() == previousDefault ||
-                    _label.text.trim().isEmpty) {
-                  _label.text = _kind.label;
-                }
-              }),
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _label,
-              maxLength: 30,
-              textCapitalization: TextCapitalization.words,
-              decoration: InputDecoration(labelText: 'Name', errorText: _error),
-            ),
-            Row(
-              children: [
-                const Icon(Icons.radio_button_unchecked, size: 18),
-                Expanded(
-                  child: Slider(
-                    value: _radius,
-                    min: PlacesRepo.minRadiusM,
-                    max: PlacesRepo.maxRadiusM,
-                    divisions: 18,
-                    label: '${_radius.round()} m',
-                    onChanged: (v) => setState(() => _radius = v),
-                  ),
+    final units = resolveUnits(
+      ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
+    );
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Stays on this phone. Alerts are worked out here from your '
+            'friends\' live position.',
+            style: context.caption,
+          ),
+          const SizedBox(height: Space.lg),
+          SegmentedButton<PlaceKind>(
+            segments: [
+              for (final k in PlaceKind.values)
+                ButtonSegment(
+                  value: k,
+                  icon: Icon(k.icon),
+                  label: Text(k.label),
                 ),
-                SizedBox(
-                  width: 56,
-                  child: Text('${_radius.round()} m', textAlign: TextAlign.end),
+            ],
+            selected: {_kind},
+            showSelectedIcon: false,
+            onSelectionChanged: (s) => setState(() {
+              Haptics.select();
+              final previousDefault = _kind.label;
+              _kind = s.first;
+              if (_label.text.trim() == previousDefault ||
+                  _label.text.trim().isEmpty) {
+                _label.text = _kind.label;
+              }
+            }),
+          ),
+          const SizedBox(height: Space.lg),
+          TextField(
+            controller: _label,
+            maxLength: 30,
+            textCapitalization: TextCapitalization.words,
+            decoration: InputDecoration(labelText: 'Name', errorText: _error),
+          ),
+          const SizedBox(height: Space.sm),
+          Row(
+            children: [
+              const Kicker('Radius'),
+              Expanded(
+                child: Slider(
+                  value: _radius,
+                  min: PlacesRepo.minRadiusM,
+                  max: PlacesRepo.maxRadiusM,
+                  divisions: 18,
+                  label: radiusText(_radius, units),
+                  onChanged: (v) => setState(() => _radius = v),
                 ),
-              ],
-            ),
-            Text(
-              '${widget.lat.toStringAsFixed(4)}, ${widget.lon.toStringAsFixed(4)}',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.outline,
               ),
-            ),
-            const SizedBox(height: 12),
-            FilledButton.icon(
+              SizedBox(
+                width: 64,
+                child: Text(
+                  radiusText(_radius, units),
+                  textAlign: TextAlign.end,
+                  style: context.label,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: Space.lg),
+          PressScale(
+            child: PrimaryButton(
+              label: widget.existing == null ? 'Save place' : 'Save',
               onPressed: _save,
-              icon: const Icon(Icons.save_outlined),
-              label: Text(widget.existing == null ? 'Save place' : 'Save'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
