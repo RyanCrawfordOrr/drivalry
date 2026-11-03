@@ -5,19 +5,21 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
 import '../../data/diagnostics/battery_stats.dart';
 import '../../data/diagnostics/detection_counters.dart';
-import '../convoy/radio/radio_stats.dart';
 import '../../tracking/providers.dart';
 import '../../tracking/tracking_controller.dart';
 import '../../tracking/tracking_models.dart';
 import '../../widgets/friendly_error.dart';
+import '../convoy/radio/radio_stats.dart';
 
 /// Settings › Diagnostics (docs/06 M1.5): what the plugin has seen, what is
 /// in the database, which packs are installed. Nothing here leaves the phone
-/// unless the user copies it.
+/// unless the user copies it. Each figure is a label over its value, so a
+/// long value wraps instead of being cut at 360 wide.
 class DiagnosticsScreen extends ConsumerStatefulWidget {
   const DiagnosticsScreen({super.key});
 
@@ -52,6 +54,12 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
   Widget build(BuildContext context) {
     final ui = ref.watch(trackingControllerProvider);
     final relayed = ref.watch(totalRelayedBytesProvider).value ?? 0;
+    final padding = EdgeInsets.fromLTRB(
+      Space.gutter,
+      Space.lg,
+      Space.gutter,
+      Space.xl + MediaQuery.paddingOf(context).bottom,
+    );
     return Scaffold(
       appBar: AppBar(
         title: const Text('Diagnostics'),
@@ -68,17 +76,22 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
         builder: (context, snap) {
           if (!snap.hasData) {
             if (snap.hasError) {
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(
-                    friendlyError(snap.error!, doing: 'read the numbers'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+              return EmptyState(
+                kicker: 'Diagnostics',
+                headline: 'Could not read the numbers.',
+                body: friendlyError(snap.error!, doing: 'read the numbers'),
               );
             }
-            return const Center(child: CircularProgressIndicator());
+            return ListView(
+              padding: padding,
+              children: const [
+                SkeletonTile(height: 56),
+                SizedBox(height: Space.md),
+                SkeletonTile(height: 56),
+                SizedBox(height: Space.md),
+                SkeletonTile(height: 56),
+              ],
+            );
           }
           final r = snap.data!;
           final rows = <(String, String)>[
@@ -132,23 +145,13 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
               ('Pack ${p.region}', '${p.name}, OSM ${p.osmTimestamp}'),
           ];
           return ListView(
-            padding: const EdgeInsets.all(16),
+            padding: padding,
             children: [
-              for (final (k, v) in rows)
-                ListTile(
-                  dense: true,
-                  title: Text(k),
-                  trailing: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 200),
-                    child: Text(
-                      v,
-                      textAlign: TextAlign.end,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                ),
-              const SizedBox(height: 12),
-              FilledButton.icon(
+              for (final (k, v) in rows) _ValueRow(label: k, value: v),
+              const SizedBox(height: Space.md),
+              SecondaryButton(
+                label: 'Copy for a bug report',
+                icon: Icons.copy,
                 onPressed: () async {
                   final text = const JsonEncoder.withIndent('  ').convert({
                     'state': r.state.permissions.toMap()
@@ -186,8 +189,6 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
                     ).showSnackBar(const SnackBar(content: Text('Copied')));
                   }
                 },
-                icon: const Icon(Icons.copy),
-                label: const Text('Copy for a bug report'),
               ),
             ],
           );
@@ -207,6 +208,30 @@ class _DiagnosticsScreenState extends ConsumerState<DiagnosticsScreen> {
       : b < 1024 * 1024
       ? '${(b / 1024).toStringAsFixed(1)} KB'
       : '${(b / (1024 * 1024)).toStringAsFixed(1)} MB';
+}
+
+/// One figure: the label as a caption over the value, which wraps freely.
+class _ValueRow extends StatelessWidget {
+  const _ValueRow({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final v = value.trim();
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Space.md),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label, style: context.caption),
+          const SizedBox(height: 2),
+          Text(v.isEmpty ? '–' : v, style: context.label),
+        ],
+      ),
+    );
+  }
 }
 
 /// Battery rows for the list and the copied report: honest about how much

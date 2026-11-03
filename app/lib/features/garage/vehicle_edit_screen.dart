@@ -85,11 +85,11 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
       body: Form(
         key: _form,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             Space.gutter,
             Space.lg,
             Space.gutter,
-            Space.xxxl,
+            Space.xl + MediaQuery.paddingOf(context).bottom,
           ),
           children: [
             TextFormField(
@@ -98,7 +98,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
               validator: (v) =>
                   (v == null || v.trim().isEmpty) ? 'Give it a name.' : null,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.md),
             Row(
               children: [
                 Expanded(
@@ -107,7 +107,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                     decoration: const InputDecoration(labelText: 'Make'),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: Space.md),
                 Expanded(
                   child: TextFormField(
                     controller: _model,
@@ -116,7 +116,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.md),
             Row(
               children: [
                 Expanded(
@@ -133,7 +133,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                     },
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: Space.md),
                 Expanded(
                   child: TextFormField(
                     controller: _tank,
@@ -157,7 +157,8 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
             ),
             const SizedBox(height: Space.sm),
             Wrap(
-              spacing: 8,
+              spacing: Space.sm,
+              runSpacing: Space.sm,
               children: [
                 for (final n in _btNames)
                   InputChip(
@@ -166,6 +167,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                   ),
               ],
             ),
+            if (_btNames.isNotEmpty) const SizedBox(height: Space.sm),
             Row(
               children: [
                 Expanded(
@@ -184,7 +186,7 @@ class _VehicleEditScreenState extends ConsumerState<VehicleEditScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Space.md),
             SwitchListTile(
               key: const Key('never-track'),
               contentPadding: EdgeInsets.zero,

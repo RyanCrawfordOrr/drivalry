@@ -13,7 +13,8 @@ import 'widgets/settings_rows.dart';
 
 /// Settings › Emergency contacts: who gets the prefilled text when a crash
 /// countdown runs out. Stored on this phone only. A contact who is also a
-/// Drivalry friend can be linked so they get the push as well.
+/// Drivalry friend can be linked so they get the push as well. Adding lives
+/// in the app bar once there is a list, so nothing floats over the rows.
 class EmergencyContactsScreen extends ConsumerWidget {
   const EmergencyContactsScreen({super.key});
 
@@ -21,24 +22,28 @@ class EmergencyContactsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final contacts = ref.watch(emergencyContactsProvider);
     final rows = contacts.value ?? const <EmergencyContact>[];
+    final padding = EdgeInsets.fromLTRB(
+      Space.gutter,
+      Space.lg,
+      Space.gutter,
+      Space.xl + MediaQuery.paddingOf(context).bottom,
+    );
     return Scaffold(
-      appBar: AppBar(title: const Text('Emergency contacts')),
-      floatingActionButton: rows.isEmpty
-          ? null
-          : FloatingActionButton.extended(
+      appBar: AppBar(
+        title: const Text('Emergency contacts'),
+        actions: [
+          if (rows.isNotEmpty)
+            IconButton(
               key: const Key('contact-add'),
+              tooltip: 'Add contact',
+              icon: const Icon(Icons.person_add_alt_1_outlined),
               onPressed: () => showAddContactSheet(context, ref),
-              icon: const Icon(Icons.add),
-              label: const Text('Add contact'),
             ),
+        ],
+      ),
       body: contacts.when(
         loading: () => ListView(
-          padding: const EdgeInsets.fromLTRB(
-            Space.gutter,
-            Space.sm,
-            Space.gutter,
-            Space.xxxl,
-          ),
+          padding: padding,
           children: const [
             SkeletonTile(height: 72),
             SizedBox(height: Space.sm),
@@ -65,12 +70,7 @@ class EmergencyContactsScreen extends ConsumerWidget {
                 ],
               )
             : ListView(
-                padding: const EdgeInsets.fromLTRB(
-                  Space.gutter,
-                  Space.sm,
-                  Space.gutter,
-                  Space.xxxl + Space.xxl,
-                ),
+                padding: padding,
                 children: [
                   Reveal(
                     child: SettingsGroup(
@@ -134,98 +134,103 @@ class EmergencyContactsScreen extends ConsumerWidget {
   }
 }
 
-/// Name + phone, with an optional friend to link for the push.
+/// Name + phone, with an optional friend to link for the push. The fields
+/// live inside [TextControllers], which outlives the sheet's exit animation.
 Future<void> showAddContactSheet(BuildContext context, WidgetRef ref) {
-  final name = TextEditingController();
-  final phone = TextEditingController();
   String? linkedUserId;
   final formKey = GlobalKey<FormState>();
   return showDrivalrySheet<void>(
     context,
     title: 'Add emergency contact',
-    builder: (sheet) => Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(sheet).bottom),
-      child: StatefulBuilder(
-        builder: (sheet, setState) {
-          final friends =
-              ref.watch(friendsSnapshotProvider).value?.friends ??
-              const <FriendProfile>[];
-          return Form(
-            key: formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                TextFormField(
-                  key: const Key('contact-name'),
-                  controller: name,
-                  decoration: const InputDecoration(labelText: 'Name'),
-                  textCapitalization: TextCapitalization.words,
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Add a name.' : null,
-                ),
-                const SizedBox(height: Space.md),
-                TextFormField(
-                  key: const Key('contact-phone'),
-                  controller: phone,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone number',
-                    hintText: '+1 555 123 4567',
+    builder: (_) => TextControllers(
+      initial: const ['', ''],
+      builder: (sheet, c) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(sheet).bottom),
+        child: StatefulBuilder(
+          builder: (sheet, setState) {
+            final friends =
+                ref.watch(friendsSnapshotProvider).value?.friends ??
+                const <FriendProfile>[];
+            return Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  TextFormField(
+                    key: const Key('contact-name'),
+                    controller: c[0],
+                    decoration: const InputDecoration(labelText: 'Name'),
+                    textCapitalization: TextCapitalization.words,
+                    validator: (v) =>
+                        (v == null || v.trim().isEmpty) ? 'Add a name.' : null,
                   ),
-                  keyboardType: TextInputType.phone,
-                  validator: (v) => normalisePhone(v ?? '').length < 5
-                      ? 'Enter a phone number.'
-                      : null,
-                ),
-                if (friends.isNotEmpty) ...[
                   const SizedBox(height: Space.md),
-                  DropdownButtonFormField<String?>(
-                    key: const Key('contact-friend'),
-                    initialValue: linkedUserId,
+                  TextFormField(
+                    key: const Key('contact-phone'),
+                    controller: c[1],
                     decoration: const InputDecoration(
-                      labelText: 'Also a friend on Drivalry?',
-                      helperText:
-                          'They get an alert in the app as well as the text.',
+                      labelText: 'Phone number',
+                      hintText: '+1 555 123 4567',
                     ),
-                    items: [
-                      const DropdownMenuItem<String?>(
-                        value: null,
-                        child: Text('No'),
+                    keyboardType: TextInputType.phone,
+                    validator: (v) => normalisePhone(v ?? '').length < 5
+                        ? 'Enter a phone number.'
+                        : null,
+                  ),
+                  if (friends.isNotEmpty) ...[
+                    const SizedBox(height: Space.md),
+                    DropdownButtonFormField<String?>(
+                      key: const Key('contact-friend'),
+                      initialValue: linkedUserId,
+                      decoration: const InputDecoration(
+                        labelText: 'Also a friend on Drivalry?',
+                        helperText:
+                            'They get an alert in the app as well as the '
+                            'text.',
                       ),
-                      for (final f in friends)
-                        DropdownMenuItem<String?>(
-                          value: f.id,
-                          child: Text('${f.displayName} (@${f.handle})'),
+                      items: [
+                        const DropdownMenuItem<String?>(
+                          value: null,
+                          child: Text('No'),
                         ),
-                    ],
-                    onChanged: (v) => setState(() => linkedUserId = v),
+                        for (final f in friends)
+                          DropdownMenuItem<String?>(
+                            value: f.id,
+                            child: Text('${f.displayName} (@${f.handle})'),
+                          ),
+                      ],
+                      onChanged: (v) => setState(() => linkedUserId = v),
+                    ),
+                  ],
+                  const SizedBox(height: Space.xl),
+                  PrimaryButton(
+                    key: const Key('contact-save'),
+                    label: 'Save',
+                    onPressed: () async {
+                      if (!(formKey.currentState?.validate() ?? false)) {
+                        return;
+                      }
+                      await ref
+                          .read(databaseProvider)
+                          .upsertEmergencyContact(
+                            EmergencyContactsCompanion.insert(
+                              id: const Uuid().v4(),
+                              name: c[0].text.trim(),
+                              phone: normalisePhone(c[1].text),
+                              userId: Value(linkedUserId),
+                              createdAt: DateTime.now().millisecondsSinceEpoch,
+                            ),
+                          );
+                      Haptics.success();
+                      if (sheet.mounted) Navigator.of(sheet).pop();
+                    },
                   ),
                 ],
-                const SizedBox(height: Space.xl),
-                PrimaryButton(
-                  key: const Key('contact-save'),
-                  label: 'Save',
-                  onPressed: () async {
-                    if (!(formKey.currentState?.validate() ?? false)) return;
-                    await ref
-                        .read(databaseProvider)
-                        .upsertEmergencyContact(
-                          EmergencyContactsCompanion.insert(
-                            id: const Uuid().v4(),
-                            name: name.text.trim(),
-                            phone: normalisePhone(phone.text),
-                            userId: Value(linkedUserId),
-                            createdAt: DateTime.now().millisecondsSinceEpoch,
-                          ),
-                        );
-                    Haptics.success();
-                    if (sheet.mounted) Navigator.of(sheet).pop();
-                  },
-                ),
-              ],
-            ),
-          );
-        },
+              ),
+            );
+          },
+        ),
       ),
     ),
   );

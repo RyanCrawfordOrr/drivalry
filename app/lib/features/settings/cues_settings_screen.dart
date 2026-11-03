@@ -32,9 +32,7 @@ class CuesSettingsScreen extends ConsumerWidget {
               key: const Key('cues-enabled'),
               icon: Icons.record_voice_over_outlined,
               title: 'Spoken cues',
-              caption:
-                  'Short words through the car speakers. The roast waits '
-                  'until you park.',
+              caption: 'Short words through the car speakers.',
               value: cfg.enabled,
               onChanged: (v) => set(CueKeys.enabled, v),
             ),
@@ -116,7 +114,7 @@ class CuesSettingsScreen extends ConsumerWidget {
         padding: Space.screen,
         child: Text(
           'Cues come from the roads stored on this phone. Nothing is said '
-          'where the limit is unknown, and phone handling is never a cue.',
+          'where the limit is unknown. The roast waits until you park.',
           style: context.caption,
         ),
       ),
@@ -125,7 +123,10 @@ class CuesSettingsScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Spoken cues')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           for (var i = 0; i < blocks.length; i++)
             Reveal(delay: Reveal.stagger(i), child: blocks[i]),

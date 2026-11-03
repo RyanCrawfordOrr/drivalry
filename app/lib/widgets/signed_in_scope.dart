@@ -44,8 +44,12 @@ class SignedInScope extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final padding = EdgeInsets.only(
+      bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+    );
     if (!ref.watch(cloudConfiguredProvider)) {
       return SingleChildScrollView(
+        padding: padding,
         child: EmptyState(
           kicker: _kicker,
           headline: 'Not available in this version yet.',
@@ -57,6 +61,7 @@ class SignedInScope extends ConsumerWidget {
     }
     if (ref.watch(isSignedInProvider)) return child;
     return SingleChildScrollView(
+      padding: padding,
       child: EmptyState(
         kicker: _kicker,
         headline: 'Sign in to see this.',

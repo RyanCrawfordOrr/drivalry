@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../app/ui/ui.dart';
 import '../../data/crash/crash_monitor.dart';
 import '../../widgets/friendly_error.dart';
 
 /// Full-screen "Possible crash detected" prompt (docs/01 §4.5): a 30 s
 /// countdown with one huge "I'm OK" button. Also the place to resolve an
-/// alert that already went out, and an honest empty state otherwise.
+/// alert that already went out, and an honest empty state otherwise. Plain
+/// throughout: the crash flow is the one place with no jokes (docs/12 §6).
 class CrashCountdownScreen extends ConsumerWidget {
   const CrashCountdownScreen({super.key});
 
@@ -16,6 +18,7 @@ class CrashCountdownScreen extends ConsumerWidget {
     final state = ref.watch(crashMonitorProvider);
     final monitor = ref.read(crashMonitorProvider.notifier);
     final scheme = Theme.of(context).colorScheme;
+    final bottom = Space.xl + MediaQuery.paddingOf(context).bottom;
 
     if (state.countingDown) {
       return _Countdown(state: state, monitor: monitor);
@@ -28,24 +31,30 @@ class CrashCountdownScreen extends ConsumerWidget {
       return Scaffold(
         appBar: AppBar(title: const Text('Help was requested')),
         body: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.fromLTRB(
+            Space.gutter,
+            Space.lg,
+            Space.gutter,
+            bottom,
+          ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Icon(Icons.emergency_share, size: 64, color: scheme.error),
-              const SizedBox(height: 16),
+              const SizedBox(height: Space.lg),
               Text(
                 'At $when your phone reported a possible crash.',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: context.title,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: Space.md),
               Text(
                 _sentSummary(unresolved.contactsTexted, unresolved.cloudSent),
+                style: context.bodyMuted,
                 textAlign: TextAlign.center,
               ),
               const Spacer(),
               SizedBox(
-                width: double.infinity,
                 height: 72,
                 child: FilledButton.icon(
                   key: const Key('crash-resolve'),
@@ -70,9 +79,10 @@ class CrashCountdownScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
+              const SizedBox(height: Space.sm),
+              Text(
                 'Tells your friends you are fine and lets the trip score.',
+                style: context.caption,
                 textAlign: TextAlign.center,
               ),
             ],
@@ -82,31 +92,17 @@ class CrashCountdownScreen extends ConsumerWidget {
     }
     return Scaffold(
       appBar: AppBar(title: const Text('Crash detection')),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.verified_outlined, size: 56, color: scheme.primary),
-              const SizedBox(height: 12),
-              const Text('No crash detected.'),
-              if (state.lastOutcome != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  _outcomeText(state),
-                  style: Theme.of(context).textTheme.bodySmall,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-              const SizedBox(height: 20),
-              OutlinedButton(
-                onPressed: () => Navigator.of(context).maybePop(),
-                child: const Text('Close'),
-              ),
-            ],
+      body: ListView(
+        padding: EdgeInsets.only(bottom: bottom),
+        children: [
+          EmptyState(
+            kicker: 'Crash detection',
+            headline: 'No crash detected.',
+            body: state.lastOutcome == null ? null : _outcomeText(state),
+            actionLabel: 'Close',
+            onAction: () => Navigator.of(context).maybePop(),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -136,6 +132,9 @@ void _toast(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
 }
 
+/// The countdown itself: icon, one headline, one line of what happens, the
+/// seconds as a 120 px display number, then a 96 px "I'm OK" and a 56 px
+/// "Send help now". Both buttons clear the home indicator.
 class _Countdown extends StatelessWidget {
   const _Countdown({required this.state, required this.monitor});
 
@@ -145,7 +144,7 @@ class _Countdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final text = Theme.of(context).textTheme;
+    final fg = scheme.onErrorContainer;
     return PopScope(
       // A reflex back-swipe must not dismiss the only "I'm OK" control.
       canPop: false,
@@ -153,63 +152,59 @@ class _Countdown extends StatelessWidget {
         backgroundColor: scheme.errorContainer,
         body: SafeArea(
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(
+              Space.gutter,
+              Space.lg,
+              Space.gutter,
+              Space.xl,
+            ),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (state.testMode)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: scheme.surface,
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: const Text('TEST: nothing will be sent'),
-                  ),
-                const SizedBox(height: 16),
-                Icon(Icons.car_crash, size: 72, color: scheme.onErrorContainer),
-                const SizedBox(height: 12),
+                  const Center(child: Pill('TEST: nothing will be sent')),
+                const SizedBox(height: Space.lg),
+                Icon(Icons.car_crash, size: 72, color: fg),
+                const SizedBox(height: Space.md),
                 Text(
                   'Possible crash detected',
-                  style: text.headlineMedium?.copyWith(
-                    color: scheme.onErrorContainer,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: context.headline.copyWith(color: fg),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: Space.sm),
                 Text(
                   "Tap I'm OK if you are fine. Otherwise your contacts and "
                   'friends are alerted when the timer ends.',
-                  style: text.bodyLarge?.copyWith(
-                    color: scheme.onErrorContainer,
-                  ),
+                  style: context.body.copyWith(color: fg),
                   textAlign: TextAlign.center,
                 ),
                 const Spacer(),
+                Kicker('Seconds left', color: fg, textAlign: TextAlign.center),
+                const SizedBox(height: Space.xs),
                 Text(
                   '${state.secondsLeft}',
                   key: const Key('crash-seconds'),
-                  style: text.displayLarge?.copyWith(
+                  textAlign: TextAlign.center,
+                  style: context.display.copyWith(
                     fontSize: 120,
                     fontWeight: FontWeight.w900,
-                    color: scheme.onErrorContainer,
+                    letterSpacing: -4,
+                    color: fg,
                   ),
                 ),
                 const Spacer(),
                 SizedBox(
-                  width: double.infinity,
                   height: 96,
                   child: FilledButton(
                     key: const Key('crash-im-ok'),
                     style: FilledButton.styleFrom(
                       backgroundColor: scheme.primary,
                       foregroundColor: scheme.onPrimary,
-                      textStyle: const TextStyle(
+                      // A button's textStyle replaces the theme's, so it
+                      // must carry the app face, not only the size.
+                      textStyle: context.title.copyWith(
                         fontSize: 32,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     onPressed: () async {
@@ -232,15 +227,14 @@ class _Countdown extends StatelessWidget {
                     child: const Text("I'm OK"),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: Space.md),
                 SizedBox(
-                  width: double.infinity,
                   height: 56,
                   child: OutlinedButton.icon(
                     key: const Key('crash-send-help'),
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: scheme.onErrorContainer,
-                      side: BorderSide(color: scheme.onErrorContainer),
+                      foregroundColor: fg,
+                      side: BorderSide(color: fg),
                     ),
                     onPressed: () async {
                       try {

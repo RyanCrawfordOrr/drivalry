@@ -72,14 +72,15 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
             ),
+            // Captions beside a switch get about 24 characters a line at
+            // 360 wide and may take two lines, never an ellipsis.
             SettingsSwitchRow(
               key: const Key('auto-detect'),
               icon: Icons.directions_car_outlined,
-              title: 'Record drives automatically',
+              title: 'Record drives',
               caption: tracking.plugin.enabled
-                  ? 'The app notices when you set off and scores when you '
-                        'park.'
-                  : 'Off. Nothing is recorded until you turn this on.',
+                  ? 'Notices when you set off, scores when you park.'
+                  : 'Off. Nothing is recorded until you turn it on.',
               value: tracking.plugin.enabled,
               onChanged: (v) => _setAutoDetect(context, ref, v),
             ),
@@ -210,9 +211,7 @@ class SettingsScreen extends ConsumerWidget {
               SettingsRow(
                 icon: Icons.delete_forever_outlined,
                 title: 'Delete account',
-                caption:
-                    'Leaves every league, circle and feed for good. Trips on '
-                    'this phone stay.',
+                caption: 'Leaves every league and circle. Trips stay here.',
                 danger: true,
                 onTap: () => _deleteAccount(context, ref),
               ),
@@ -257,7 +256,12 @@ class SettingsScreen extends ConsumerWidget {
         slivers: [
           const LargeTitleBar(title: 'Settings'),
           SliverPadding(
-            padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+            // The title sits 16 above the bar's edge; 8 more puts the first
+            // kicker 24 under it. The last row clears the gesture bar.
+            padding: EdgeInsets.only(
+              top: Space.sm,
+              bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+            ),
             // Five sections: built at once so every reveal starts together.
             sliver: SliverToBoxAdapter(
               child: Column(

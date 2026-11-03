@@ -10,7 +10,9 @@ import 'tabs/fuel_tab.dart';
 import 'tabs/maintenance_tab.dart';
 import 'tabs/stats_tab.dart';
 
-/// One vehicle: Stats, Fuel, Maintenance, Documents.
+/// One vehicle: Stats, Fuel, Upkeep (maintenance reminders), Papers
+/// (documents). Four fixed tabs share 360 px, so each label must fit in
+/// 58 px: that is why the last two are the short words.
 class VehicleDetailScreen extends ConsumerWidget {
   const VehicleDetailScreen({super.key, required this.vehicleId});
 
@@ -36,8 +38,8 @@ class VehicleDetailScreen extends ConsumerWidget {
             tabs: [
               Tab(text: 'Stats'),
               Tab(text: 'Fuel'),
-              Tab(text: 'Maintenance'),
-              Tab(text: 'Documents'),
+              Tab(text: 'Upkeep'),
+              Tab(text: 'Papers'),
             ],
           ),
         ),

@@ -22,7 +22,9 @@ class PlaceholderScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(title)),
       body: ListView(
-        padding: const EdgeInsets.only(bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           EmptyState(
             kicker: title,

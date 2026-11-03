@@ -53,7 +53,10 @@ class AttributionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('About')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: Space.xl + MediaQuery.paddingOf(context).bottom,
+        ),
         children: [
           Reveal(
             child: Padding(

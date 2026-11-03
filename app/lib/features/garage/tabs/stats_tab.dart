@@ -9,6 +9,7 @@ import '../../../data/repos/garage_repo.dart';
 import '../../../tracking/providers.dart';
 import '../../../widgets/relative_time.dart';
 import '../../../widgets/units.dart';
+import '../widgets/unit_stat.dart';
 
 /// Trips, distance, average score, fuel economy and odometer for one vehicle
 /// as a stat grid whose numbers count up (docs/12 §5b), with one caption per
@@ -40,38 +41,42 @@ class StatsTab extends ConsumerWidget {
     final notes = <String>[
       if (fuel.segments.isEmpty)
         'Log two full tanks with the odometer to see fuel economy.',
-      if (odo == null) 'Add a fill-up with the odometer to estimate mileage.',
+      if (odo == null)
+        'Add a fill-up with the odometer to estimate mileage.'
+      else
+        'The odometer is estimated from your last fill-up and the trips '
+            'since.',
     ];
 
     final tiles = <Widget>[
-      _Stat(value: stats?.trips ?? 0, label: 'Trips'),
-      _Stat(
+      UnitStat(value: stats?.trips ?? 0, label: 'Trips'),
+      UnitStat(
         value: distance,
         decimals: distanceDecimals,
-        suffix: distanceUnit,
+        unit: distanceUnit,
         label: 'Distance',
       ),
-      _Stat(value: stats?.averageScore?.round(), label: 'Average score'),
-      _Stat(value: stats?.averageScore30d?.round(), label: 'Last 30 days'),
-      _Stat(
+      UnitStat(value: stats?.averageScore?.round(), label: 'Average score'),
+      UnitStat(value: stats?.averageScore30d?.round(), label: 'Last 30 days'),
+      UnitStat(
         value: hasEconomy ? (imperial ? 235.214583 / economy : economy) : null,
         decimals: 1,
-        suffix: imperial ? ' mpg' : ' L/100 km',
+        unit: imperial ? 'mpg' : 'L/100 km',
         label: 'Fuel economy',
       ),
-      _Stat(
+      UnitStat(
         value: odo == null ? null : (imperial ? kmToMiles(odo) : odo).round(),
-        suffix: imperial ? ' mi' : ' km',
-        label: odo == null ? 'Odometer' : 'Odometer, estimated',
+        unit: imperial ? 'mi' : 'km',
+        label: 'Odometer',
       ),
     ];
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
         Space.gutter,
         Space.lg,
         Space.gutter,
-        Space.xxxl,
+        Space.xl + MediaQuery.paddingOf(context).bottom,
       ),
       children: [
         if (vehicle.neverTrack) ...[
@@ -145,61 +150,9 @@ class StatsTab extends ConsumerWidget {
   static (double, int, String) _distanceParts(double metres, SpeedUnits u) {
     if (u == SpeedUnits.mph) {
       final mi = metres / 1609.344;
-      return (mi, mi < 10 ? 1 : 0, ' mi');
+      return (mi, mi < 10 ? 1 : 0, 'mi');
     }
     final km = metres / 1000;
-    return (km, km < 10 ? 1 : 0, ' km');
-  }
-}
-
-/// A [StatTile] whose number counts up; a null [value] shows a dash.
-class _Stat extends StatelessWidget {
-  const _Stat({
-    required this.value,
-    required this.label,
-    this.decimals = 0,
-    this.suffix = '',
-  });
-
-  final num? value;
-  final String label;
-  final int decimals;
-  final String suffix;
-
-  @override
-  Widget build(BuildContext context) {
-    final style = context.title.copyWith(
-      fontWeight: FontWeight.w700,
-      fontFeatures: const [FontFeature.tabularFigures()],
-    );
-    return Tile(
-      padding: const EdgeInsets.fromLTRB(
-        Space.lg,
-        Space.lg,
-        Space.lg,
-        Space.md,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (value == null)
-            Text('–', style: style)
-          else
-            AnimatedNumber(
-              value: value!,
-              decimals: decimals,
-              suffix: suffix,
-              style: style,
-            ),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: context.caption,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
+    return (km, km < 10 ? 1 : 0, 'km');
   }
 }
