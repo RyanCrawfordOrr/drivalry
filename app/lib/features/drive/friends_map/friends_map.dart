@@ -20,6 +20,11 @@ import '../../places/save_place_sheet.dart';
 import 'friend_marker.dart';
 import 'marker_icons.dart';
 
+/// Replaces the Google map surface when set. Tests and the store-art renderer
+/// (`test/art/`) use it: platform views do not exist there, so they draw a
+/// stand-in and keep the chips, buttons and notices that sit on top real.
+final friendsMapSurfaceProvider = Provider<WidgetBuilder?>((_) => null);
+
 /// Live map of friends and circle members (ADR-018). Embedded at the top of
 /// the Drive tab and shown full screen at [Routes.friendsMap]. Subscribes to
 /// presence only while mounted.
@@ -53,7 +58,8 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if (!Env.hasSupabase) {
+    final surface = ref.watch(friendsMapSurfaceProvider);
+    if (surface == null && !Env.hasSupabase) {
       return _MapNotice(
         icon: Icons.cloud_off_outlined,
         text:
@@ -71,7 +77,7 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
       );
     }
     final mapsReady = ref.watch(mapsReadyProvider);
-    if (mapsReady.value != true) {
+    if (surface == null && mapsReady.value != true) {
       return _MapNotice(
         icon: Icons.map_outlined,
         text: mapsReady.isLoading
@@ -109,40 +115,43 @@ class _FriendsMapState extends ConsumerState<FriendsMap> {
 
     return Stack(
       children: [
-        GoogleMap(
-          initialCameraPosition: _initialCamera(markers),
-          markers: {
-            for (final m in markers)
-              Marker(
-                markerId: MarkerId(m.id),
-                position: m.position,
-                anchor: const Offset(0.5, 0.5),
-                icon:
-                    _ready[m.iconKey(now)] ??
-                    BitmapDescriptor.defaultMarkerWithHue(m.hue),
-                onTap: () => _showFriend(context, m),
-              ),
-            for (final p in places) _placeMarker(context, p),
-          },
-          circles: {for (final p in places) _placeRadius(theme, p)},
-          onLongPress: (pos) => showSavePlaceSheet(
-            context,
-            lat: pos.latitude,
-            lon: pos.longitude,
+        if (surface != null)
+          Positioned.fill(child: surface(context))
+        else
+          GoogleMap(
+            initialCameraPosition: _initialCamera(markers),
+            markers: {
+              for (final m in markers)
+                Marker(
+                  markerId: MarkerId(m.id),
+                  position: m.position,
+                  anchor: const Offset(0.5, 0.5),
+                  icon:
+                      _ready[m.iconKey(now)] ??
+                      BitmapDescriptor.defaultMarkerWithHue(m.hue),
+                  onTap: () => _showFriend(context, m),
+                ),
+              for (final p in places) _placeMarker(context, p),
+            },
+            circles: {for (final p in places) _placeRadius(theme, p)},
+            onLongPress: (pos) => showSavePlaceSheet(
+              context,
+              lat: pos.latitude,
+              lon: pos.longitude,
+            ),
+            myLocationEnabled: perms.location != LocationPermission.denied,
+            myLocationButtonEnabled: false,
+            zoomControlsEnabled: false,
+            mapToolbarEnabled: false,
+            compassEnabled: false,
+            onMapCreated: (c) {
+              _map = c;
+              if (markers.isNotEmpty && !_fitted) {
+                _fitted = true;
+                unawaited(_fit(markers));
+              }
+            },
           ),
-          myLocationEnabled: perms.location != LocationPermission.denied,
-          myLocationButtonEnabled: false,
-          zoomControlsEnabled: false,
-          mapToolbarEnabled: false,
-          compassEnabled: false,
-          onMapCreated: (c) {
-            _map = c;
-            if (markers.isNotEmpty && !_fitted) {
-              _fitted = true;
-              unawaited(_fit(markers));
-            }
-          },
-        ),
         if (circles.isNotEmpty)
           Positioned(
             top: 8,

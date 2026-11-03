@@ -374,6 +374,16 @@ All the iOS code is written and has never been compiled. `app/ios/README-mac.md`
 - Read `docs/05-privacy-safety-legal.md` and publish the privacy-policy page it describes; the store listings link to it.
 - Publish the Google consent screen (Part 2a) so testers no longer have to be listed by hand.
 
+## Part 11: Store listings (when you open the Play Console and App Store Connect)
+
+Every graphic is already rendered and every text field already written:
+
+- `store/README.md` says which file goes in which upload box, with sizes.
+- `store/listing.md` has the app name, short and long descriptions, keywords, categories and the answers to the content and data-safety questionnaires.
+- The launcher icons, splash and status-bar icon inside the app are regenerated from the same source (`DRIVALRY_ART=1 flutter test test/art` in `app/`), so you never edit a PNG by hand.
+
+Two things only you can supply: Android Auto screenshots from the Desktop Head Unit (Part 7), and the iPad decision noted in `store/README.md`.
+
 ---
 
 ## Troubleshooting, all in one place

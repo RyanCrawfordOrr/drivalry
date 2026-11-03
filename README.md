@@ -1,5 +1,7 @@
 # Drivalry
 
+![Drivalry: the step challenge for driving](docs/assets/banner-1600x480.png)
+
 The step challenge for driving. Your phone notices when you drive, scores the trip 0 to 100 on the device, and your friends see the result. Smooth, legal, efficient driving climbs the weekly league. Speeding and phone use get roasted in public. Circles share where everyone is, and convoys turn a road trip into one shared map with a push-to-talk radio.
 
 Drivalry never rewards speed or distance. It costs nothing to run: every service it touches is a free tier, there is no server of ours, and raw GPS never leaves the phone.
