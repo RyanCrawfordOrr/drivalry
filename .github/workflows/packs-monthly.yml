@@ -158,8 +158,10 @@ jobs:
             merge=(--merge "$RUNNER_TEMP/previous/index.json")
           fi
           keep="$TAG"
+          # grep exits 1 when there are no older releases yet; with pipefail that
+          # would abort the step, so swallow that one status.
           existing=$(gh release list --repo "$GITHUB_REPOSITORY" --limit 200 --json tagName --jq '.[].tagName | select(startswith("packs-20"))' \
-            | grep -vx "$TAG" | sort -r | head -n 2 | paste -sd, -)
+            | { grep -vx "$TAG" || true; } | sort -r | head -n 2 | paste -sd, -)
           if [ -n "$existing" ]; then keep="$keep,$existing"; fi
           echo "releases that will survive the prune: $keep"
           python -m drivalry_packs index \
