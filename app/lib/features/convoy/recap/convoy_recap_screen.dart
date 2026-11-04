@@ -104,11 +104,20 @@ class ConvoyRecapScreen extends ConsumerStatefulWidget {
 
 class _ConvoyRecapScreenState extends ConsumerState<ConvoyRecapScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _anim = AnimationController(
-    vsync: this,
-    duration: const Duration(seconds: 8),
-  );
+  // Created up front, not on first use: a lazy controller that the empty,
+  // loading and error branches never touched would be built inside
+  // dispose(), where the ticker lookup throws and the unmount is cut short.
+  late final AnimationController _anim;
   bool _sharing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _anim = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 8),
+    );
+  }
 
   @override
   void dispose() {
@@ -230,7 +239,7 @@ class _RecapBody extends StatelessWidget {
     final order = [for (final m in r.members) m.userId];
     final d = r.duration;
     return ListView(
-      padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+      padding: EdgeInsets.only(top: Space.lg, bottom: pageBottomInset(context)),
       children: [
         Padding(
           padding: Space.screen,
@@ -320,31 +329,36 @@ class _RecapBody extends StatelessWidget {
                     ),
                   ),
                 const SizedBox(height: Space.xl),
-                StatGrid(
-                  children: [
-                    StatTile(
-                      value: '${r.members.length}',
-                      label: r.members.length == 1 ? 'Car' : 'Cars',
-                    ),
-                    StatTile(
-                      value: formatDistance(total, units),
-                      label: 'Together',
-                    ),
-                    if (d != null)
-                      StatTile(value: formatElapsed(d), label: 'On the road'),
-                    StatTile(
-                      value: '${r.stopsDone}',
-                      label: r.stopsDone == 1 ? 'Stop' : 'Stops',
-                    ),
-                    if (r.totalCostCents > 0)
+                // Three columns cut "$112.90" and "On the road" short on a
+                // 360 phone; two columns there, three from 390 up.
+                LayoutBuilder(
+                  builder: (context, constraints) => StatGrid(
+                    columns: constraints.maxWidth < 340 ? 2 : 3,
+                    children: [
                       StatTile(
-                        value: formatCents(
-                          r.totalCostCents,
-                          currency: r.costCurrency,
-                        ),
-                        label: 'Spent',
+                        value: '${r.members.length}',
+                        label: r.members.length == 1 ? 'Car' : 'Cars',
                       ),
-                  ],
+                      StatTile(
+                        value: formatDistance(total, units),
+                        label: 'Together',
+                      ),
+                      if (d != null)
+                        StatTile(value: formatElapsed(d), label: 'On the road'),
+                      StatTile(
+                        value: '${r.stopsDone}',
+                        label: r.stopsDone == 1 ? 'Stop' : 'Stops',
+                      ),
+                      if (r.totalCostCents > 0)
+                        StatTile(
+                          value: formatCents(
+                            r.totalCostCents,
+                            currency: r.costCurrency,
+                          ),
+                          label: 'Spent',
+                        ),
+                    ],
+                  ),
                 ),
               ],
             ),

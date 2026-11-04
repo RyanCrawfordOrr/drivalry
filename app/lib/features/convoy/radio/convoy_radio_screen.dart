@@ -139,11 +139,11 @@ class _RadioBodyState extends ConsumerState<RadioBody> {
     final connected = peers.where((p) => p.state == LinkState.connected).length;
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
         Space.gutter,
         Space.lg,
         Space.gutter,
-        Space.xxxl,
+        pageBottomInset(context),
       ),
       children: [
         _StateWord(

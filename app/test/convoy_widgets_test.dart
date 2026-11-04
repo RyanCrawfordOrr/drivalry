@@ -191,6 +191,16 @@ void main() {
     await unmountAndSettle(tester);
   }, skip: skip);
 
+  testWidgets('a recap with nothing to show closes cleanly', (tester) async {
+    // The replay controller used to be created on first use, so leaving the
+    // empty state built it inside dispose() and threw.
+    await tester.pumpWidget(wrap(const ConvoyRecapScreen(convoyId: 'nope')));
+    await pumpFor(tester, const Duration(seconds: 1));
+    expect(find.text('Nothing to recap yet.'), findsOneWidget);
+    await unmountAndSettle(tester);
+    expect(tester.takeException(), isNull);
+  }, skip: skip);
+
   test('convoy routes are registered', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);

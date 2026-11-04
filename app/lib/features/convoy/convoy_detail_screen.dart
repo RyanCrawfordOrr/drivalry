@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../app/routes.dart';
 import '../../app/ui/ui.dart';
+import '../../config/env.dart';
 import '../../data/convoy/eta.dart';
+import '../../data/convoy/lost_sheep.dart';
 import '../../data/google/routes_client.dart' show LatLon;
 import '../../data/repos/convoy_repo.dart';
 import '../../data/repos/convoy_sync.dart';
@@ -165,95 +167,157 @@ class _Sheet extends ConsumerWidget {
         ?.name;
     final dest = convoy.destination;
 
-    return DraggableScrollableSheet(
-      key: const Key('convoy-sheet'),
-      initialChildSize: 0.46,
-      minChildSize: 0.22,
-      maxChildSize: 0.92,
-      snap: true,
-      snapSizes: const [0.22, 0.46, 0.92],
-      builder: (ctx, controller) => Container(
-        decoration: BoxDecoration(
-          color: scheme.surfaceContainerHigh,
-          borderRadius: Radii.sheetRadius,
-          boxShadow: [
-            BoxShadow(
-              color: scheme.shadow.withValues(alpha: 0.12),
-              blurRadius: 24,
-              offset: const Offset(0, -4),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final bottomInset = MediaQuery.paddingOf(context).bottom;
+        // Peek is measured, not guessed: the handle and the first row sit
+        // whole above the gesture bar or home indicator on any phone
+        // (docs/12 §2); half and full stay fractions of the stage.
+        const half = 0.46;
+        const full = 0.92;
+        final peekPx =
+            Space.md +
+            SheetHandle.height +
+            Space.lg +
+            Sizes.drivingTouch +
+            Space.lg +
+            bottomInset;
+        final height = constraints.maxHeight;
+        final peek = height.isFinite && height > 0
+            ? (peekPx / height).clamp(0.12, half - 0.04)
+            : 0.22;
+        return DraggableScrollableSheet(
+          key: const Key('convoy-sheet'),
+          initialChildSize: half,
+          minChildSize: peek,
+          maxChildSize: full,
+          snap: true,
+          snapSizes: [peek, half, full],
+          builder: (ctx, controller) => Container(
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHigh,
+              borderRadius: Radii.sheetRadius,
+              boxShadow: [
+                BoxShadow(
+                  color: scheme.shadow.withValues(alpha: 0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, -4),
+                ),
+              ],
             ),
-          ],
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: ListView(
-          controller: controller,
-          padding: const EdgeInsets.fromLTRB(
-            Space.gutter,
-            Space.md,
-            Space.gutter,
-            Space.xxxl,
+            clipBehavior: Clip.antiAlias,
+            child: _sheetBody(
+              context,
+              ref,
+              controller,
+              amLeader: amLeader,
+              leaderName: leaderName,
+              dest: dest,
+              present: present,
+              me: me,
+              leader: leader,
+              positions: positions,
+              lead: lead,
+              etas: etas,
+              lost: lost,
+              units: units,
+              bottomInset: bottomInset,
+            ),
           ),
-          children: [
-            const SheetHandle(),
-            const SizedBox(height: Space.lg),
-            ..._primaryAction(context, ref, amLeader, leaderName),
-            if (amLeader && convoy.isActive) ...[
-              const SizedBox(height: Space.md),
-              Row(
-                children: [
-                  Expanded(
-                    child: PairedAction(
-                      label: 'Regroup here',
-                      icon: Icons.group_work_outlined,
-                      onPressed: () => _regroupHere(context, ref),
-                    ),
-                  ),
-                  const SizedBox(width: Space.md),
-                  Expanded(
-                    child: PairedAction(
-                      label: dest == null
-                          ? 'Set destination'
-                          : 'Move destination',
-                      icon: Icons.flag_outlined,
-                      onPressed: () => _pickDestination(context, ref),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-            if (amLeader && convoy.status == ConvoyStatus.planning) ...[
-              const SizedBox(height: Space.sm),
-              SecondaryButton(
-                label: dest == null ? 'Set destination' : 'Move destination',
-                icon: Icons.flag_outlined,
-                onPressed: () => _pickDestination(context, ref),
-              ),
-            ],
-            const SizedBox(height: Space.xl),
-            const Kicker('Cars'),
-            const SizedBox(height: Space.xs),
-            if (present.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: Space.md),
-                child: Text(
-                  'No cars yet. Share the invite.',
-                  style: context.bodyMuted,
+        );
+      },
+    );
+  }
+
+  Widget _sheetBody(
+    BuildContext context,
+    WidgetRef ref,
+    ScrollController controller, {
+    required bool amLeader,
+    required String? leaderName,
+    required Destination? dest,
+    required List<ConvoyMember> present,
+    required String? me,
+    required String? leader,
+    required Map<String, PeerPosition> positions,
+    required PeerPosition? lead,
+    required Map<String, EtaInfo> etas,
+    required Map<String, LostSheep> lost,
+    required SpeedUnits units,
+    required double bottomInset,
+  }) {
+    return ListView(
+      controller: controller,
+      padding: EdgeInsets.fromLTRB(
+        Space.gutter,
+        Space.md,
+        Space.gutter,
+        Space.xl + bottomInset,
+      ),
+      children: [
+        const SheetHandle(),
+        const SizedBox(height: Space.lg),
+        ..._primaryAction(context, ref, amLeader, leaderName),
+        if (amLeader && convoy.isActive) ...[
+          const SizedBox(height: Space.md),
+          Row(
+            children: [
+              Expanded(
+                child: PairedAction(
+                  label: 'Regroup here',
+                  icon: Icons.group_work_outlined,
+                  onPressed: () => _regroupHere(context, ref),
                 ),
               ),
-            for (final m in present)
-              _MemberRow(
-                member: m,
-                isMe: m.userId == me,
-                isLeader: m.userId == leader,
-                position: positions[m.userId],
-                leaderPosition: lead,
-                eta: etas[m.userId],
-                lost: lost.containsKey(m.userId),
-                units: units,
+              const SizedBox(width: Space.md),
+              Expanded(
+                child: PairedAction(
+                  label: dest == null ? 'Set destination' : 'Move destination',
+                  icon: Icons.flag_outlined,
+                  onPressed: () => _pickDestination(context, ref),
+                ),
               ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        ],
+        if (amLeader && convoy.status == ConvoyStatus.planning) ...[
+          const SizedBox(height: Space.sm),
+          SecondaryButton(
+            label: dest == null ? 'Set destination' : 'Move destination',
+            icon: Icons.flag_outlined,
+            onPressed: () => _pickDestination(context, ref),
+          ),
+        ],
+        const SizedBox(height: Space.xl),
+        const Kicker('Cars'),
+        if (!Env.hasGoogleMaps) ...[
+          const SizedBox(height: Space.sm),
+          Text(
+            'No map in this version. Every car is listed here.',
+            style: context.caption,
+          ),
+        ],
+        const SizedBox(height: Space.xs),
+        if (present.isEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: Space.md),
+            child: Text(
+              'No cars yet. Share the invite.',
+              style: context.bodyMuted,
+            ),
+          ),
+        for (final m in present)
+          _MemberRow(
+            member: m,
+            isMe: m.userId == me,
+            isLeader: m.userId == leader,
+            position: positions[m.userId],
+            leaderPosition: lead,
+            eta: etas[m.userId],
+            lost: lost.containsKey(m.userId),
+            units: units,
+          ),
+      ],
     );
   }
 
@@ -372,6 +436,8 @@ class _MemberRow extends StatelessWidget {
       color: Theme.of(context).colorScheme.onSurfaceVariant,
     );
     // Speed and gap count to their values (docs/12 §5b, "numbers move").
+    // Each entry is one unbreakable chunk; the line wraps between chunks
+    // when a pill leaves it too little room on a narrow phone.
     final line = <Widget>[];
     final p = position;
     if (p == null) {
@@ -401,13 +467,18 @@ class _MemberRow extends StatelessWidget {
         final d = LatLon(lead.lat, lead.lon).distanceTo(LatLon(p.lat, p.lon));
         final mi = units == SpeedUnits.mph;
         final value = mi ? d / 1609.344 : d / 1000;
-        line.add(Text(' · ', style: style));
         line.add(
-          AnimatedNumber(
-            value: value,
-            decimals: value < 10 ? 1 : 0,
-            style: style,
-            suffix: mi ? ' mi back' : ' km back',
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(' · ', style: style),
+              AnimatedNumber(
+                value: value,
+                decimals: value < 10 ? 1 : 0,
+                style: style,
+                suffix: mi ? ' mi back' : ' km back',
+              ),
+            ],
           ),
         );
       }
@@ -435,7 +506,10 @@ class _MemberRow extends StatelessWidget {
         isMe: isMe,
       ),
       title: isMe ? 'You' : member.name,
-      subtitle: Row(mainAxisSize: MainAxisSize.min, children: line),
+      subtitle: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: line,
+      ),
       trailing: pills.isEmpty
           ? null
           : Column(
@@ -477,7 +551,7 @@ class _Menu extends ConsumerWidget {
     final repo = ref.read(convoyRepoProvider);
     switch (v) {
       case 'rename':
-        final name = await showDrivalrySheet<String>(
+        final name = await showConvoySheet<String>(
           context,
           title: 'Rename convoy',
           builder: (_) => TextControllers(

@@ -1,27 +1,22 @@
 import 'dart:async';
 
-import 'package:drivalry_scoring/drivalry_scoring.dart' show SpeedUnits;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart' hide Tile;
 
 import '../../../app/bootstrap.dart';
+import '../../../app/ui/ui.dart';
 import '../../../config/env.dart';
-import '../../../data/convoy/eta.dart';
 import '../../../data/google/places_client.dart' show StopCategory;
 import '../../../data/google/routes_client.dart' show LatLon;
 import '../../../data/repos/convoy_repo.dart';
 import '../../../data/repos/convoy_sync.dart';
 import '../../../data/supabase/supabase_providers.dart';
-import '../../../tracking/providers.dart';
-import '../../../app/ui/ui.dart';
-import '../../../widgets/units.dart';
 import '../../drive/friends_map/marker_icons.dart';
 import '../live/convoy_live.dart';
 import '../positions/peer_positions.dart';
 import 'convoy_ui.dart';
 import 'destination_picker.dart';
-import 'member_avatar.dart';
 
 /// Icon for a stop category; tolerant of categories added later.
 IconData stopIcon(StopCategory c) => switch (c.wire) {
@@ -40,7 +35,7 @@ const staleAfter = Duration(minutes: 2);
 /// The shared convoy map: every car as an initials pin (leader ringed),
 /// the destination, accepted stops, the regroup pin and my routed line.
 /// Long-press (leader only) drops a regroup pin or moves the destination.
-/// Without a Maps key the same data is shown as a list.
+/// Without a Maps key the stage stays quiet; the detail sheet lists the cars.
 class ConvoyMap extends ConsumerStatefulWidget {
   const ConvoyMap({super.key, required this.convoyId, this.showNotices = true});
 
@@ -72,9 +67,7 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
   @override
   Widget build(BuildContext context) {
     final id = widget.convoyId;
-    if (!Env.hasGoogleMaps) {
-      return _PositionsList(convoyId: id);
-    }
+    if (!Env.hasGoogleMaps) return const _NoMapStage();
     final mapsReady = ref.watch(mapsReadyProvider);
     if (mapsReady.value != true) {
       return Center(
@@ -234,9 +227,11 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
             }
           },
         ),
+        // Floating controls sit 12 under the top edge and 20 from the side
+        // (docs/12 §2), 8 apart.
         Positioned(
-          top: 8,
-          right: 8,
+          top: Space.md,
+          right: Space.gutter,
           child: Column(
             children: [
               IconButton.filledTonal(
@@ -244,7 +239,8 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
                 onPressed: points.isEmpty ? null : () => _fit(points),
                 icon: const Icon(Icons.fit_screen_outlined),
               ),
-              if (me != null && positions[me] != null)
+              if (me != null && positions[me] != null) ...[
+                const SizedBox(height: Space.sm),
                 IconButton.filledTonal(
                   tooltip: 'Centre on me',
                   onPressed: () => _map?.animateCamera(
@@ -255,54 +251,58 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
                   ),
                   icon: const Icon(Icons.my_location),
                 ),
+              ],
             ],
           ),
         ),
         if (widget.showNotices && lost.isNotEmpty)
           Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: Card(
-              color: theme.colorScheme.errorContainer,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_amber_rounded,
-                      color: theme.colorScheme.onErrorContainer,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        _lostText(lost.keys, members, me),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onErrorContainer,
-                        ),
+            left: Space.gutter,
+            right: Space.gutter,
+            bottom: Space.gutter + MediaQuery.paddingOf(context).bottom,
+            child: Tile(
+              tone: TileTone.danger,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Space.lg,
+                vertical: Space.md,
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    color: theme.colorScheme.onErrorContainer,
+                  ),
+                  const SizedBox(width: Space.md),
+                  Expanded(
+                    child: Text(
+                      _lostText(lost.keys, members, me),
+                      style: context.body.copyWith(
+                        color: theme.colorScheme.onErrorContainer,
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         if (widget.showNotices && points.isEmpty)
           Positioned(
-            left: 12,
-            right: 12,
-            bottom: 12,
-            child: Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  convoy?.isActive == true
-                      ? 'Waiting for the first positions. They arrive once '
-                            'cars start moving.'
-                      : 'Positions appear here once the leader starts the '
-                            'trip.',
-                  style: theme.textTheme.bodySmall,
-                ),
+            left: Space.gutter,
+            right: Space.gutter,
+            bottom: Space.gutter + MediaQuery.paddingOf(context).bottom,
+            child: Tile(
+              tone: TileTone.raised,
+              padding: const EdgeInsets.symmetric(
+                horizontal: Space.lg,
+                vertical: Space.md,
+              ),
+              child: Text(
+                convoy?.isActive == true
+                    ? 'Waiting for the first positions. They arrive once '
+                          'cars start moving.'
+                    : 'Positions appear here once the leader starts the '
+                          'trip.',
+                style: context.bodyMuted,
               ),
             ),
           ),
@@ -393,135 +393,79 @@ class _ConvoyMapState extends ConsumerState<ConvoyMap> {
   ) async {
     final repo = ref.read(convoyRepoProvider);
     final id = widget.convoyId;
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.group_work_outlined),
-              title: const Text('Regroup here'),
-              subtitle: const Text('Drops a pin every car can route to.'),
-              enabled: live != null,
+    await showConvoySheet<void>(
+      context,
+      title: 'This spot',
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ConvoyRow(
+            leading: const Icon(Icons.group_work_outlined, size: 28),
+            title: 'Regroup here',
+            caption: 'Drops a pin every car can route to.',
+            onTap: live == null
+                ? null
+                : () {
+                    Navigator.of(ctx).pop();
+                    unawaited(live.setRegroup(pos.latitude, pos.longitude));
+                  },
+          ),
+          if (live?.regroupPin != null)
+            ConvoyRow(
+              leading: const Icon(Icons.close, size: 28),
+              title: 'Clear regroup pin',
               onTap: () {
                 Navigator.of(ctx).pop();
-                unawaited(live?.setRegroup(pos.latitude, pos.longitude));
+                unawaited(live?.clearRegroup());
               },
             ),
-            if (live?.regroupPin != null)
-              ListTile(
-                leading: const Icon(Icons.close),
-                title: const Text('Clear regroup pin'),
-                onTap: () {
-                  Navigator.of(ctx).pop();
-                  unawaited(live?.clearRegroup());
-                },
-              ),
-            ListTile(
-              leading: const Icon(Icons.flag_outlined),
-              title: const Text('Set destination here'),
-              onTap: () {
-                Navigator.of(ctx).pop();
-                unawaited(
-                  repo.setDestination(
-                    id,
-                    Destination(
-                      name: 'Pinned destination',
-                      lat: pos.latitude,
-                      lon: pos.longitude,
-                    ),
+          ConvoyRow(
+            leading: const Icon(Icons.flag_outlined, size: 28),
+            title: 'Set destination here',
+            onTap: () {
+              Navigator.of(ctx).pop();
+              unawaited(
+                repo.setDestination(
+                  id,
+                  Destination(
+                    name: 'Pinned destination',
+                    lat: pos.latitude,
+                    lon: pos.longitude,
                   ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.search),
-              title: const Text('Search a destination'),
-              onTap: () async {
-                Navigator.of(ctx).pop();
-                final d = await showDestinationPicker(context);
-                if (d != null) await repo.setDestination(id, d);
-              },
-            ),
-          ],
-        ),
+                ),
+              );
+            },
+          ),
+          ConvoyRow(
+            leading: const Icon(Icons.search, size: 28),
+            title: 'Search a destination',
+            onTap: () async {
+              Navigator.of(ctx).pop();
+              final d = await showDestinationPicker(context);
+              if (d != null) await repo.setDestination(id, d);
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Fallback without a Maps key: who is where, relative to the leader.
-class _PositionsList extends ConsumerWidget {
-  const _PositionsList({required this.convoyId});
-  final String convoyId;
+/// The stage without a Maps key: a quiet surface under the capsule and the
+/// sheet, which carries every car with its speed, gap and ETA. A list here
+/// would run under both and say the same thing twice.
+class _NoMapStage extends StatelessWidget {
+  const _NoMapStage();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final me = ref.watch(currentUserIdProvider);
-    final members =
-        ref.watch(convoyMembersProvider(convoyId)).value ?? const [];
-    final positions =
-        ref.watch(peerPositionsProvider(convoyId)).value ?? const {};
-    final etas = ref.watch(convoyEtasProvider(convoyId)).value ?? const {};
-    final leader = ref.watch(convoyLeaderProvider(convoyId));
-    final units = resolveUnits(
-      ref.watch(unitsSettingProvider).value ?? UnitsSetting.auto,
-    );
-    final lead = leader == null ? null : positions[leader];
-    return ListView(
-      padding: const EdgeInsets.fromLTRB(
-        Space.gutter,
-        Space.lg,
-        Space.gutter,
-        Space.xxxl,
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return ColoredBox(
+      color: scheme.surfaceContainerLow,
+      child: Center(
+        child: Icon(Icons.map_outlined, size: 48, color: scheme.outline),
       ),
-      children: [
-        Text(
-          'No map in this version. Here is where everyone is.',
-          style: context.bodyMuted,
-        ),
-        const SizedBox(height: Space.sm),
-        for (final m in members)
-          if (m.isPresent)
-            ConvoyRow(
-              leading: MemberAvatar(
-                name: m.name,
-                avatarPath: m.avatarPath,
-                isMe: m.userId == me,
-              ),
-              title: m.userId == me ? 'You' : m.name,
-              caption: _describe(
-                positions[m.userId],
-                lead,
-                etas[m.userId],
-                units,
-                isLeader: m.userId == leader,
-              ),
-            ),
-      ],
     );
-  }
-
-  static String _describe(
-    PeerPosition? p,
-    PeerPosition? lead,
-    EtaInfo? eta,
-    SpeedUnits units, {
-    required bool isLeader,
-  }) {
-    if (p == null) {
-      return isLeader ? 'Leader · no position yet' : 'No position yet';
-    }
-    final parts = <String>[];
-    if (isLeader) {
-      parts.add('Leading');
-    } else if (lead != null && lead.userId != p.userId) {
-      final d = LatLon(lead.lat, lead.lon).distanceTo(LatLon(p.lat, p.lon));
-      parts.add('${formatDistance(d, units)} back');
-    }
-    if (eta != null) parts.add('ETA ${eta.estimated ? '~' : ''}${eta.label}');
-    return parts.isEmpty ? 'On the map' : parts.join(' · ');
   }
 }

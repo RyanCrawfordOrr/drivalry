@@ -22,7 +22,8 @@ class ConvoyGamesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Games')),
       body: driving
-          ? const Center(
+          // Top of the page, like every empty screen (docs/12 §2).
+          ? const SingleChildScrollView(
               child: EmptyState(
                 key: Key('driver-gate'),
                 kicker: 'Games',
@@ -51,6 +52,9 @@ class _GamesBody extends ConsumerWidget {
     return DefaultTabController(
       length: 4,
       child: Column(
+        // Stretched, so the result tile spans gutter to gutter like every
+        // other tile instead of floating centred.
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const TabBar(
             isScrollable: true,
@@ -143,6 +147,7 @@ class _PlatesTab extends StatelessWidget {
     final mine = controller.plates.mine;
     final standings = controller.plates.standings();
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _Standings(rows: [for (final (id, n) in standings) (nameOf(id), n)]),
         Expanded(
@@ -150,11 +155,11 @@ class _PlatesTab extends StatelessWidget {
             crossAxisCount: 6,
             mainAxisSpacing: Space.sm,
             crossAxisSpacing: Space.sm,
-            padding: const EdgeInsets.fromLTRB(
+            padding: EdgeInsets.fromLTRB(
               Space.gutter,
               Space.md,
               Space.gutter,
-              Space.xxxl,
+              pageBottomInset(context),
             ),
             children: [
               for (final code in plateStates)
@@ -205,11 +210,11 @@ class _TriviaTab extends StatelessWidget {
     final q = t.current;
     final answered = t.answers.containsKey(t.selfId);
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
         Space.gutter,
         Space.lg,
         Space.gutter,
-        Space.xxxl,
+        pageBottomInset(context),
       ),
       children: [
         Text(
@@ -324,7 +329,7 @@ class _SpyTab extends StatelessWidget {
     final s = controller.scavenger;
     final tally = s.tally();
     return ListView(
-      padding: const EdgeInsets.only(bottom: Space.xxxl),
+      padding: EdgeInsets.only(bottom: pageBottomInset(context)),
       children: [
         _Standings(
           rows: [for (final e in tally.entries) (nameOf(e.key), e.value)],
@@ -378,11 +383,11 @@ class _SmoothestTab extends StatelessWidget {
       );
     }
     return ListView(
-      padding: const EdgeInsets.fromLTRB(
+      padding: EdgeInsets.fromLTRB(
         Space.gutter,
         Space.md,
         Space.gutter,
-        Space.xxxl,
+        pageBottomInset(context),
       ),
       children: [
         for (var i = 0; i < rows.length; i++)

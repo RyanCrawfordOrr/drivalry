@@ -44,7 +44,10 @@ class ConvoyAlbumScreen extends ConsumerWidget {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           Padding(
             padding: Space.screen,
@@ -62,18 +65,25 @@ class ConvoyAlbumScreen extends ConsumerWidget {
               child: Row(
                 children: [
                   Expanded(child: SkeletonTile(height: 110)),
-                  SizedBox(width: Space.xs),
+                  SizedBox(width: Space.sm),
                   Expanded(child: SkeletonTile(height: 110)),
-                  SizedBox(width: Space.xs),
+                  SizedBox(width: Space.sm),
                   Expanded(child: SkeletonTile(height: 110)),
                 ],
               ),
             ),
           if (!loading && list.isEmpty)
-            const EmptyState(
+            // 24 under the button (the gap above), no band of its own.
+            const ConvoyNotice(
               kicker: 'Album',
               headline: 'No photos yet.',
               body: 'Small ones, for the recap. Passengers, this is your job.',
+              padding: EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.xxl,
+              ),
             ),
           if (list.isNotEmpty)
             Padding(
@@ -81,10 +91,11 @@ class ConvoyAlbumScreen extends ConsumerWidget {
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
+                // Photos are tappable, so at least 8 between them (docs/12 §2).
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: Space.xs,
-                  mainAxisSpacing: Space.xs,
+                  crossAxisSpacing: Space.sm,
+                  mainAxisSpacing: Space.sm,
                 ),
                 itemCount: list.length,
                 itemBuilder: (_, i) => Reveal(
@@ -104,7 +115,7 @@ class ConvoyAlbumScreen extends ConsumerWidget {
   }
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final source = await showDrivalrySheet<ImageSource>(
+    final source = await showConvoySheet<ImageSource>(
       context,
       title: 'Add a photo',
       builder: (ctx) => Column(

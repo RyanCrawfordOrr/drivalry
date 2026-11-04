@@ -7,10 +7,11 @@ import 'package:share_plus/share_plus.dart';
 import '../../../app/ui/ui.dart';
 import '../../../data/repos/convoy_repo.dart';
 import '../../../data/repos/convoy_sync.dart';
+import 'convoy_ui.dart';
 
 /// Invite code, QR and share button for a convoy.
 Future<void> showConvoyInviteSheet(BuildContext context, Convoy convoy) {
-  return showDrivalrySheet<void>(
+  return showConvoySheet<void>(
     context,
     title: 'Invite to ${convoy.name}',
     builder: (_) => _InviteSheet(convoy: convoy),

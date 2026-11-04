@@ -61,11 +61,11 @@ class _CreateConvoyScreenState extends ConsumerState<CreateConvoyScreen> {
         message: 'Sign in to start a convoy.',
         icon: Icons.route_outlined,
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(
+          padding: EdgeInsets.fromLTRB(
             Space.gutter,
             Space.lg,
             Space.gutter,
-            Space.xxxl,
+            pageBottomInset(context),
           ),
           children: [
             Reveal(
