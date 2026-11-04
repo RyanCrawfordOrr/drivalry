@@ -34,6 +34,18 @@
 				<string>drivalry</string>
 			</array>
 		</dict>
+		<dict>
+			<!-- Google Sign-In: the reversed GOOGLE_IOS_CLIENT_ID. The SDK aborts the app
+			     if this scheme is missing. Not secret; it is embedded in the binary anyway. -->
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>google-sign-in</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.699789683938-ggekcbrs23lh7qemb3c889rot5v9mvd3</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
