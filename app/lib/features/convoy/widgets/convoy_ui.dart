@@ -7,6 +7,31 @@ import '../../../data/repos/convoy_models.dart';
 /// the status capsule, the thing that floats over the map, a borderless row
 /// and a tonal action that can sit beside another one.
 
+/// Bottom padding for a scrolling page: the last row clears the gesture bar
+/// or the home indicator by at least 24 (docs/12 §2). Inside the tab shell
+/// the navigation bar already takes the inset, so this is 24 there.
+double pageBottomInset(BuildContext context) =>
+    Space.xl + MediaQuery.paddingOf(context).bottom;
+
+/// [showDrivalrySheet] with the sheet's last control kept clear of the
+/// gesture bar and the home indicator. The kit sheet leaves the bottom inset
+/// to its content; every convoy sheet opens through this until it pads it
+/// itself, at which point this becomes a plain alias.
+Future<T?> showConvoySheet<T>(
+  BuildContext context, {
+  required WidgetBuilder builder,
+  String? title,
+  bool scrollable = false,
+}) => showDrivalrySheet<T>(
+  context,
+  title: title,
+  scrollable: scrollable,
+  builder: (ctx) => Padding(
+    padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(ctx).bottom),
+    child: builder(ctx),
+  ),
+);
+
 /// Status capsule for a convoy's lifecycle (docs/10 §2).
 Pill convoyStatusPill(ConvoyStatus status, {bool compact = false}) =>
     switch (status) {
@@ -86,10 +111,11 @@ class ConvoyRow extends StatelessWidget {
         subtitle ??
         (caption == null
             ? null
+            // Two lines on a narrow phone rather than an ellipsis.
             : Text(
                 caption!,
                 style: context.caption,
-                maxLines: 1,
+                maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ));
     final row = ConstrainedBox(
@@ -139,6 +165,8 @@ class ConvoyRow extends StatelessWidget {
 
 /// A tonal action sized to share a row with another one: same height as
 /// [SecondaryButton], tighter padding so two labels fit on a narrow phone.
+/// A label that still does not fit at 360 wide wraps to a second line; a
+/// label is never cut to an ellipsis (docs/12 §2).
 class PairedAction extends StatelessWidget {
   const PairedAction({
     super.key,
@@ -161,7 +189,7 @@ class PairedAction extends StatelessWidget {
       child: FilledButton.tonal(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
-          padding: const EdgeInsets.symmetric(horizontal: Space.lg),
+          padding: const EdgeInsets.symmetric(horizontal: Space.md),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -171,7 +199,12 @@ class PairedAction extends StatelessWidget {
               const SizedBox(width: Space.sm),
             ],
             Flexible(
-              child: Text(label, maxLines: 1, overflow: TextOverflow.ellipsis),
+              child: Text(
+                label,
+                maxLines: 2,
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -181,7 +214,11 @@ class PairedAction extends StatelessWidget {
 }
 
 /// A small headline with a kicker above it and one line under it, for
-/// screen states that are not quite empty (radio off, mic denied).
+/// screen states that are not quite empty (radio off, mic denied) and for
+/// an empty section that follows other content.
+///
+/// At the top of a page it starts 24 under the app bar (docs/12 §2: content
+/// starts 16 to 24 below it); pass [padding] to tighten it under a section.
 class ConvoyNotice extends StatelessWidget {
   const ConvoyNotice({
     super.key,
@@ -190,6 +227,12 @@ class ConvoyNotice extends StatelessWidget {
     this.body,
     this.action,
     this.secondary,
+    this.padding = const EdgeInsets.fromLTRB(
+      Space.gutter,
+      Space.xl,
+      Space.gutter,
+      Space.xxl,
+    ),
   });
 
   final String headline;
@@ -197,16 +240,12 @@ class ConvoyNotice extends StatelessWidget {
   final String? body;
   final Widget? action;
   final Widget? secondary;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        Space.gutter,
-        Space.xxxl,
-        Space.gutter,
-        Space.xxl,
-      ),
+      padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -304,13 +343,15 @@ class NumberPill extends StatelessWidget {
 class SheetHandle extends StatelessWidget {
   const SheetHandle({super.key});
 
+  static const double height = 4;
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Container(
         width: 32,
-        height: 4,
+        height: height,
         decoration: BoxDecoration(
           color: scheme.onSurfaceVariant.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(2),

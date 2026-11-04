@@ -56,7 +56,10 @@ class ConvoyExpensesScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Expenses')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.lg, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           Padding(
             padding: Space.screen,
@@ -131,11 +134,18 @@ class ConvoyExpensesScreen extends ConsumerWidget {
               ),
             ),
           if (!expenses.isLoading && list.isEmpty)
-            const EmptyState(
+            // Follows the hero, which already ends with the section gap.
+            const ConvoyNotice(
               headline: 'No expenses yet.',
               body:
                   'Gas, tolls, snacks, the motel: add it and the split works '
                   'itself out.',
+              padding: EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.xxl,
+              ),
             ),
           if (list.isNotEmpty)
             EditorialSection(
@@ -172,7 +182,7 @@ class ConvoyExpensesScreen extends ConsumerWidget {
   };
 
   Future<void> _add(BuildContext context, WidgetRef ref) async {
-    final result = await showDrivalrySheet<_NewExpense>(
+    final result = await showConvoySheet<_NewExpense>(
       context,
       title: 'Add an expense',
       builder: (_) => const _AddExpenseSheet(),
@@ -327,7 +337,7 @@ class _AddExpenseSheetState extends State<_AddExpenseSheet> {
             maxLength: 60,
             decoration: const InputDecoration(labelText: 'Note (optional)'),
           ),
-          const SizedBox(height: Space.sm),
+          const SizedBox(height: Space.lg),
           PrimaryButton(
             label: 'Add',
             onPressed: _cents == null

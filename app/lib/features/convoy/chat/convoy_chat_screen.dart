@@ -56,7 +56,9 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
         children: [
           Expanded(
             child: state.messages.isEmpty
-                ? const Center(
+                // Top of the page, like every empty screen (docs/12 §2), not
+                // floating mid-screen above the composer.
+                ? const SingleChildScrollView(
                     child: EmptyState(
                       kicker: 'Chat',
                       headline: 'No messages yet.',
@@ -98,13 +100,16 @@ class _ConvoyChatScreenState extends ConsumerState<ConvoyChatScreen> {
               ),
             ),
           if (driving)
-            Padding(
-              key: const Key('driver-banner'),
-              padding: const EdgeInsets.all(Space.lg),
-              child: Text(
-                'Passengers type; drivers listen.',
-                textAlign: TextAlign.center,
-                style: context.bodyMuted,
+            SafeArea(
+              top: false,
+              child: Padding(
+                key: const Key('driver-banner'),
+                padding: const EdgeInsets.all(Space.lg),
+                child: Text(
+                  'Passengers type; drivers listen.',
+                  textAlign: TextAlign.center,
+                  style: context.bodyMuted,
+                ),
               ),
             )
           else
@@ -147,21 +152,29 @@ class _Composer extends StatelessWidget {
               ? Row(
                   key: const ValueKey('recording'),
                   children: [
+                    // Two short lines: on a 360 phone one line would not
+                    // fit beside the two buttons.
                     Expanded(
-                      child: Row(
+                      child: Column(
                         key: const Key('recording-label'),
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          PulsingDot(color: scheme.error, size: 8),
-                          const SizedBox(width: Space.xs),
-                          Text('Recording · ', style: context.title),
-                          AnimatedNumber(
-                            value: state.recordingMs / 1000,
-                            style: context.title,
-                            suffix: ' s',
-                            duration: Motion.reveal,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              PulsingDot(color: scheme.error, size: 8),
+                              const SizedBox(width: Space.xs),
+                              Text('Recording · ', style: context.title),
+                              AnimatedNumber(
+                                value: state.recordingMs / 1000,
+                                style: context.title,
+                                suffix: ' s',
+                                duration: Motion.reveal,
+                              ),
+                            ],
                           ),
-                          const SizedBox(width: Space.sm),
-                          Text('Max 20 seconds', style: context.caption),
+                          Text('Up to 20 seconds', style: context.caption),
                         ],
                       ),
                     ),

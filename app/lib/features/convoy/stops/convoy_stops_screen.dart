@@ -120,7 +120,10 @@ class _ConvoyStopsScreenState extends ConsumerState<ConvoyStopsScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Stops')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           EditorialSection(
             kicker: 'Propose a stop',
@@ -151,9 +154,17 @@ class _ConvoyStopsScreenState extends ConsumerState<ConvoyStopsScreen> {
               ),
             ),
           if (!stops.isLoading && list.isEmpty)
-            const EmptyState(
+            // Follows the propose section, which already ends with the
+            // section gap, so no top band of its own.
+            const ConvoyNotice(
               headline: 'No stops yet.',
               body: 'Propose gas, food or a photo stop and the convoy votes.',
+              padding: EdgeInsets.fromLTRB(
+                Space.gutter,
+                0,
+                Space.gutter,
+                Space.xxl,
+              ),
             ),
           if (accepted.isNotEmpty) section('Next up', accepted),
           if (proposed.isNotEmpty) section('Proposed', proposed),
@@ -248,7 +259,7 @@ class _ConvoyStopsScreenState extends ConsumerState<ConvoyStopsScreen> {
     final repo = ref.read(convoyRepoProvider);
     final id = widget.convoyId;
     final shown = found == null ? const <StopSuggestion>[] : found.take(8);
-    return showDrivalrySheet<void>(
+    return showConvoySheet<void>(
       context,
       title: '${category.label} along the way',
       scrollable: shown.length > 4,

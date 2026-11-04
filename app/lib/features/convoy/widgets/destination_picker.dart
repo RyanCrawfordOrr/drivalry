@@ -17,7 +17,7 @@ Future<Destination?> showDestinationPicker(
   BuildContext context, {
   String title = 'Destination',
 }) {
-  return showDrivalrySheet<Destination>(
+  return showConvoySheet<Destination>(
     context,
     title: title,
     builder: (_) => const _DestinationSheet(),

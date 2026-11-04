@@ -71,11 +71,17 @@ class ConvoyHubBody extends ConsumerWidget {
         if (c.status == ConvoyStatus.ended) c,
     ];
     final now = DateTime.now().toUtc();
+    final empty = !convoys.isLoading && hero == null;
 
     return RefreshIndicator(
       onRefresh: () => ref.read(myConvoysProvider.notifier).refresh(),
       child: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        // The empty state brings its own top band; everything else starts
+        // 16 under the app bar (docs/12 §2).
+        padding: EdgeInsets.only(
+          top: empty ? 0 : Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           if (convoys.isLoading && list.isEmpty)
             const Padding(
@@ -88,7 +94,7 @@ class ConvoyHubBody extends ConsumerWidget {
                 ],
               ),
             ),
-          if (!convoys.isLoading && hero == null)
+          if (empty)
             EmptyState(
               kicker: 'Convoy',
               headline: 'Road trips, together.',
@@ -125,7 +131,7 @@ class ConvoyHubBody extends ConsumerWidget {
 
 /// Asks for an invite code in a sheet and opens the join screen.
 Future<void> showJoinCodeSheet(BuildContext context) async {
-  final code = await showDrivalrySheet<String>(
+  final code = await showConvoySheet<String>(
     context,
     title: 'Join a convoy',
     builder: (_) => TextControllers(
@@ -420,10 +426,11 @@ class _FeatureTile extends StatelessWidget {
             const Spacer(),
             Text(feature.title, style: context.title),
             const SizedBox(height: Space.xs),
+            // Two lines at 360 wide rather than an ellipsis (docs/12 §2).
             Text(
               feature.caption,
               style: context.caption,
-              maxLines: 1,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],

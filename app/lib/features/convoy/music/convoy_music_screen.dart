@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,21 +16,35 @@ import 'dj_controller.dart';
 /// (docs/01 §4.6, docs/10 §6). Reached from inside a convoy, which already
 /// requires sign-in, so there is no scope gate here.
 class ConvoyMusicScreen extends ConsumerWidget {
-  const ConvoyMusicScreen({super.key, required this.convoyId});
+  const ConvoyMusicScreen({
+    super.key,
+    required this.convoyId,
+    @visibleForTesting this.djAvailable,
+  });
 
   final String convoyId;
+
+  /// Whether Convoy DJ is offered; the build's Spotify id decides. Tests set
+  /// it to render the DJ states without a Spotify app id.
+  final bool? djAvailable;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Music')),
       body: ListView(
-        padding: const EdgeInsets.only(top: Space.sm, bottom: Space.xxxl),
+        padding: EdgeInsets.only(
+          top: Space.lg,
+          bottom: pageBottomInset(context),
+        ),
         children: [
           const EditorialSection(kicker: 'Together', child: _JamTile()),
           EditorialSection(
             kicker: 'Convoy DJ',
-            child: _DjSection(convoyId: convoyId),
+            child: _DjSection(
+              convoyId: convoyId,
+              available: djAvailable ?? Env.hasSpotify,
+            ),
           ),
         ],
       ),
@@ -94,8 +108,9 @@ class _JamTile extends StatelessWidget {
 }
 
 class _DjSection extends ConsumerStatefulWidget {
-  const _DjSection({required this.convoyId});
+  const _DjSection({required this.convoyId, required this.available});
   final String convoyId;
+  final bool available;
 
   @override
   ConsumerState<_DjSection> createState() => _DjSectionState();
@@ -115,7 +130,7 @@ class _DjSectionState extends ConsumerState<_DjSection> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    if (!Env.hasSpotify) {
+    if (!widget.available) {
       return Reveal(
         child: Tile(
           child: Row(
