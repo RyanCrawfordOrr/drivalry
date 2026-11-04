@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" role="img" aria-labelledby="title">
+  <title id="title">Drivalry Good Company mark</title>
+  <defs>
+    <mask id="opening" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="1000" style="mask-type:luminance">
+      <rect width="1000" height="1000" fill="#fff"/>
+      <circle cx="500" cy="596" r="118" fill="#000"/>
+      <path d="M600 566 C617 570 618 579 638 579 L760 579 L760 615 L638 615 C618 615 617 625 600 628 L500 628 L500 566 Z" fill="#000"/>
+    </mask>
+  </defs>
+  <g fill="#F9ECDD" mask="url(#opening)">
+    <circle cx="500" cy="596" r="233"/>
+    <path d="M648 199 H681 A52 52 0 0 1 733 251 V596 H596 V251 A52 52 0 0 1 648 199 Z"/>
+  </g>
+  <circle cx="500" cy="596" r="72" fill="#F08566"/>
+</svg>
