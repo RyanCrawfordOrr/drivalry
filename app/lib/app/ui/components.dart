@@ -622,7 +622,9 @@ Future<T?> showDrivalrySheet<T>(
           ],
         ),
       );
-      if (!scrollable) return content;
+      // A plain sheet still scrolls when a keyboard or a short phone leaves
+      // too little room; it shrink-wraps otherwise, so nothing changes.
+      if (!scrollable) return SingleChildScrollView(child: content);
       return DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.6,
