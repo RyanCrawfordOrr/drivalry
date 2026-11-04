@@ -26,10 +26,8 @@ Future<T?> showConvoySheet<T>(
   context,
   title: title,
   scrollable: scrollable,
-  builder: (ctx) => Padding(
-    padding: EdgeInsets.only(bottom: MediaQuery.paddingOf(ctx).bottom),
-    child: builder(ctx),
-  ),
+  // The kit sheet clears the gesture bar and home indicator itself.
+  builder: builder,
 );
 
 /// Status capsule for a convoy's lifecycle (docs/10 §2).
