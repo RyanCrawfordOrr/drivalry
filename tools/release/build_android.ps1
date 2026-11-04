@@ -30,7 +30,7 @@ if (Test-Path $local) { $flutter = $local }
 Push-Location $app
 try {
     $code = [int](git rev-list --count HEAD)
-    $dirty = (git status --porcelain | Measure-Object -Line).Lines
+    $dirty = (git status --porcelain --untracked-files=no | Measure-Object -Line).Lines
     if ($dirty -gt 0) {
         Write-Warning "There are uncommitted changes. The bundle will carry version code $code but not match a commit."
     }
