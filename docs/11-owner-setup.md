@@ -196,7 +196,7 @@ Three pieces: Firebase (free, delivers the message to the phone), the `push` Edg
    | --- | --- |
    | **Web API Key** (top block) | `FIREBASE_API_KEY=` |
    | **Project ID** | `FIREBASE_PROJECT_ID=` |
-   | **Project number** (same as `GOOGLE_CLOUD_PROJECT_NUMBER` already in `.env`) | `FIREBASE_SENDER_ID=` |
+   | **Project number** of the Firebase project (Project settings → Cloud Messaging → **Sender ID**). Only the same as `GOOGLE_CLOUD_PROJECT_NUMBER` if you attached Firebase to the existing `drivalry` project; a fresh Firebase project has its own number | `FIREBASE_SENDER_ID=` |
    | Your apps → Drivalry Android → **App ID** (`1:…:android:…`) | `FIREBASE_APP_ID_ANDROID=` |
    | Your apps → Drivalry iOS → **App ID** (`1:…:ios:…`) | `FIREBASE_APP_ID_IOS=` |
 
