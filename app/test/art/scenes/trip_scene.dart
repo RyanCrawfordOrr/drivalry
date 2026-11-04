@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
 import 'package:drift/drift.dart' show Value;
 import 'package:drivalry/data/db/database.dart';
@@ -59,19 +58,8 @@ class TripScene extends ArtScene {
 
   @override
   Future<void> prepare(WidgetTester tester) async {
-    // Scroll the route map up under the transparent app bar so the hero,
-    // the bars and the events fill the phone.
-    final context = tester.element(find.byType(TripDetailScreen));
-    final target =
-        TripDetailScreen.mapHeight(context) -
-        MediaQuery.paddingOf(context).top -
-        kToolbarHeight -
-        8;
-    final position = tester
-        .firstState<ScrollableState>(find.byType(Scrollable))
-        .position;
-    position.jumpTo(math.min(target, position.maxScrollExtent));
-    await tester.pump();
+    // The seeded trip has no route, so the page opens on the hero: ring,
+    // verdict and breakdown are the shot. Nothing to scroll.
   }
 
   @override
