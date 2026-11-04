@@ -58,4 +58,8 @@ dev_dependencies:
   fake_async: ^1.3.3
 
 flutter:
+  # Firebase 13 and GoogleSignIn 9 cannot be resolved together by SwiftPM
+  # (GTMSessionFetcher 4.x vs 3.x); CocoaPods resolves them independently.
+  config:
+    enable-swift-package-manager: false
   uses-material-design: true

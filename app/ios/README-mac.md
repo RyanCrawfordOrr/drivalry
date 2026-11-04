@@ -55,6 +55,12 @@ pod install
 GoogleMaps version, run `pod repo update` and `pod install` again. If `pod install` ever
 rewrites `project.pbxproj`, that is expected (it adds the Pods configuration).
 
+All plugins go through CocoaPods: `pubspec.yaml` sets `flutter: config:
+enable-swift-package-manager: false`. With Swift Package Manager on, Xcode cannot resolve
+`firebase_messaging` (Firebase 13, GTMSessionFetcher 4.x) together with `google_sign_in_ios`
+(GoogleSignIn 9.x, GTMSessionFetcher 3.x). Re-enable it once `google_sign_in_ios` moves to
+GoogleSignIn 10; Firebase stops publishing new CocoaPods versions after October 2026.
+
 ## 4. Open and configure in Xcode
 
 Always open the **workspace**, not the project:
