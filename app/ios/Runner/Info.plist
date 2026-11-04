@@ -51,6 +51,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Drivalry uses the camera only when you choose to take a photo for a convoy album or to remember where you parked.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Drivalry opens your photo library only when you choose a picture for your profile, a convoy album, or a parking spot.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Drivalry needs location access even when the app is closed so it can notice when you start driving, record the trip automatically in the background, and share your position with the friend circles you choose. Your routes stay on this phone.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
