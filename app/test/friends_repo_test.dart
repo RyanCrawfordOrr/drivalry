@@ -65,6 +65,20 @@ void main() {
       expect(back.incoming.single.requesterId, 'dave');
       expect(back.fetchedAt, DateTime.utc(2026, 11, 2));
     });
+
+    test('isStale: never fetched, or fetched longer ago than maxAge', () {
+      final at = DateTime.utc(2026, 11, 5, 12);
+      const maxAge = Duration(seconds: 30);
+      final s = FriendsSnapshot.fromRows(const [], me, fetchedAt: at);
+      expect(s.isStale(at.add(const Duration(seconds: 10)), maxAge), isFalse);
+      expect(s.isStale(at.add(const Duration(seconds: 30)), maxAge), isFalse);
+      expect(s.isStale(at.add(const Duration(seconds: 31)), maxAge), isTrue);
+      // The cache from a previous session and a brand-new empty snapshot
+      // both carry no fetch time and must be refetched.
+      expect(const FriendsSnapshot().isStale(at, maxAge), isTrue);
+      // Optimistic writes keep the fetch time, so they do not force a fetch.
+      expect(s.copyWith(friends: const []).isStale(at, maxAge), isFalse);
+    });
   });
 
   test('initials', () {

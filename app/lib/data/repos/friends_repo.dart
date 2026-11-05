@@ -111,6 +111,13 @@ class FriendsSnapshot {
   bool hasIncomingFrom(String userId) =>
       incoming.any((r) => r.requesterId == userId);
 
+  /// Whether the last fetch is older than [maxAge] at [now]. A snapshot that
+  /// never came from the network (no [fetchedAt]) is always stale.
+  bool isStale(DateTime now, Duration maxAge) {
+    final at = fetchedAt;
+    return at == null || now.difference(at) > maxAge;
+  }
+
   /// Builds the snapshot from `friendships` rows embedded with both profiles
   /// (see [FriendsRepo.requestSelect]) as the signed-in user [me].
   static FriendsSnapshot fromRows(
