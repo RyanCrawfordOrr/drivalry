@@ -8,19 +8,23 @@ Apple paused the review of 1.0.0 with a *Guideline 2.1 - Information Needed* mes
 
 ---
 
-## Step 1. Create the two new database tables (PC, 3 minutes)
+## Step 1. Database: the two new tables and the invite-code fix (PC, 3 minutes)
+
+`0008` was applied on 2026-11-05. `0009` (the fix for the global league's Join button and for creating leagues) still has to be run: do the three numbered lines for it, then the check.
 
 1. Open https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/sql/new
-2. Open PowerShell (Start → type `PowerShell` → Enter) and run:
+2. Open PowerShell (Start → type `PowerShell` → Enter) and run the first line; click inside the SQL editor, Ctrl+A, Ctrl+V, **Run**. Then the second line, same thing.
    ```powershell
    Get-Content -Raw C:\Drivalry\supabase\migrations\0008_blocks_reports.sql | Set-Clipboard
+   Get-Content -Raw C:\Drivalry\supabase\migrations\0009_invite_code_pgcrypto.sql | Set-Clipboard
    ```
-3. Click inside the SQL editor, press Ctrl+A, then Ctrl+V, then **Run** (bottom right).
+3. Each run ends with *Success. No rows returned*.
 
-**Check it worked.** The result panel says *Success. No rows returned*. To be sure, replace the editor text with this and **Run**; it must print `true`:
+**Check it worked.** Replace the editor text with this and **Run**; it must print `true`:
 ```sql
 select to_regclass('public.user_blocks') is not null
-   and to_regclass('public.content_reports') is not null as ok;
+   and to_regclass('public.content_reports') is not null
+   and pg_get_functiondef('public.gen_invite_code()'::regprocedure) like '%extensions.gen_random_bytes%' as ok;
 ```
 
 **If it fails.** `relation "profiles" does not exist`: the earlier migrations were never applied; run `0001` to `0007` the same way first (same PowerShell line with each file name). Anything else: paste the red error text into the chat.

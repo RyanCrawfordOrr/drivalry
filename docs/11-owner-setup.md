@@ -15,7 +15,7 @@
 | --- | --- |
 | Phone | Android, debug build installed over adb. Trips, scoring, roasts, badges and speed-limit packs already work offline. |
 | `.env` | `GOOGLE_MAPS_API_KEY`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` filled in. Everything else blank. |
-| Supabase | Project `htqyutdwnnguqatakofx`. `0000` to `0007` are applied (checked 2026-11-05). `0008_blocks_reports.sql` (report and block) is not yet; Part 1 step 5. |
+| Supabase | Project `htqyutdwnnguqatakofx`. `0000` to `0008` are applied (2026-11-05). `0009_invite_code_pgcrypto.sql` (fixes the global league Join) still has to be run: Part 1 step 5, the last file. |
 | GitHub | Both repo secrets set. CI and the daily keep-alive already run. |
 
 Parts 1 to 4 make the Android phone work end to end: sign in, friends, leagues, convoys, radio. Part 5 adds push notifications. Parts 6 to 8 are optional or for later.
@@ -26,7 +26,7 @@ Parts 1 to 4 make the Android phone work end to end: sign in, friends, leagues, 
 
 **Unlocks:** everything that touches the cloud. Until this is done every signed-in screen fails.
 
-You paste eight SQL files into the Supabase SQL editor, one at a time, in order. If the check at the end already shows `true` for a file, skip that file: every migration is safe to run twice, but there is no need.
+You paste nine SQL files into the Supabase SQL editor, one at a time, in order. If the check at the end already shows `true` for a file, skip that file: every migration is safe to run twice, but there is no need.
 
 1. Open the SQL editor: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/sql/new
 2. In PowerShell, copy the first file to the clipboard:
@@ -44,6 +44,7 @@ You paste eight SQL files into the Supabase SQL editor, one at a time, in order.
    Get-Content -Raw C:\Drivalry\supabase\migrations\0006_convoy_can_view.sql | Set-Clipboard
    Get-Content -Raw C:\Drivalry\supabase\migrations\0007_duels_challenges_seasons.sql | Set-Clipboard
    Get-Content -Raw C:\Drivalry\supabase\migrations\0008_blocks_reports.sql | Set-Clipboard
+   Get-Content -Raw C:\Drivalry\supabase\migrations\0009_invite_code_pgcrypto.sql | Set-Clipboard
    ```
 
 **Check it worked.** Paste this into the editor and **Run**. Every column must read `true`:
@@ -64,7 +65,9 @@ select
             where n.nspname = 'public' and p.proname = 'can_view'), false)            as "0006 applied",
   (to_regclass('public.duels') is not null)                                           as "0007 applied",
   (to_regclass('public.user_blocks') is not null
-     and to_regclass('public.content_reports') is not null)                           as "0008 applied";
+     and to_regclass('public.content_reports') is not null)                           as "0008 applied",
+  (pg_get_functiondef('public.gen_invite_code()'::regprocedure) like '%extensions.gen_random_bytes%')
+                                                                                      as "0009 applied";
 ```
 
 Then check the scheduled jobs. Expect five rows: `finalize-duels`, `finalize-group-challenges`, `finalize-leagues`, `matchmake-global-leagues`, `prune-cloud`.
@@ -700,6 +703,7 @@ Skip this if the `push` Edge Function was never deployed (no push notifications 
 | Signed-in screens show errors or spin forever | Migrations not applied | Part 1 |
 | App Review message *Information Needed* (Guideline 2.1) | Apple wants a video, notes and a new build | `store/app-review.md`, Step 1 to 7 |
 | Report or Block say "could not…" | Migration 0008 not applied | `store/app-review.md` Step 1 |
+| Global league **Join** shows an error; creating a league fails | Migration 0009 not applied (invite codes need pgcrypto's schema named) | Part 1 step 5, the last file |
 | A report arrived but no push | `MODERATOR_USER_ID` not set, function not redeployed, or no `push_content_reports` webhook | Part 17a |
 | *Google sign-in is not configured for this build* | Blank `GOOGLE_WEB_CLIENT_ID`, no rebuild, or SHA-1 mismatch | Parts 2b, 2c, 4 |
 | *Access blocked: … has not completed the Google verification process* | Account not in Test users | Part 2a step 3 |
