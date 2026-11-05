@@ -38,9 +38,12 @@ git clone https://github.com/RyanCrawfordOrr/drivalry.git ~/dev/drivalry
 cd ~/dev/drivalry
 ```
 
-Copy `.env.example` to `.env` at the repo root and fill in the same values as on Windows
-(`GOOGLE_MAPS_API_KEY`, Supabase URL and publishable key). `.env` is gitignored; move it over
-by AirDrop or a password manager, never by committing it.
+Copy the whole `C:\Drivalry\.env` to the repo root here. Every value in it is baked into the
+build (Maps, Supabase, Google client IDs, Firebase, Metered, Spotify), so a partial copy
+builds an app with sign-in or push silently disabled. `.env` is gitignored; move it over by
+AirDrop or a password manager, never by committing it.
+
+Check: `grep -c = .env` prints the same number on both machines.
 
 ## 3. Install dependencies
 
@@ -92,6 +95,9 @@ Then, with the `Runner` target selected:
    reference did not survive the Windows edit: right-click the `Tracking` group → Delete →
    *Remove Reference*, then right-click `Runner` → *Add Files to "Runner"…* → select the
    `Runner/Tracking` folder, tick *Create groups* and the *Runner* target → Add.
+   The same applies to `Runner/PrivacyInfo.xcprivacy`, the privacy manifest Apple requires
+   since May 2024: it is registered in the project from Windows and must show in black under
+   `Runner`. If it is red or missing, *Add Files to "Runner"…* → that file, target Runner.
 
 8. **Live Activity widget extension** (docs/04 §2). The sources are already in
    `ios/DrivalryWidgets/`; Xcode has to create the target:
@@ -140,14 +146,34 @@ an API marked unavailable on the chosen iOS target, or a missing `import`.
 
 ## 6. Release build (.ipa)
 
-```sh
-cd ~/dev/drivalry/app
-flutter build ipa --dart-define-from-file=../.env
-```
+`tools/release/build_ios.sh` is the iOS twin of the Android release script: version name from
+`pubspec.yaml`, build number = number of commits on the branch, `.env` baked in.
 
-The archive lands in `build/ios/archive/Runner.xcarchive` and the `.ipa` in
-`build/ios/ipa/`. Upload with Xcode → *Window › Organizer* or with Transporter. Add
-`--export-method ad-hoc` for test installs on the five iPhones without TestFlight.
+1. Commit first. App Store Connect refuses a build number it has already seen for this
+   version, and the number only grows with a new commit.
+2. Build:
+   ```sh
+   cd ~/dev/drivalry
+   tools/release/build_ios.sh
+   ```
+   Five to ten minutes. The last lines read `Done: …/build/ios/ipa/….ipa (NN MB), version
+   1.0.0 (CODE)`. Check: the `.ipa` exists and CODE is higher than the last one you uploaded.
+   If the build stops on signing, open `Runner.xcworkspace` and fix the team under
+   *Signing & Capabilities* (§4 step 1); automatic signing creates the App Store profile.
+3. Upload: open **Transporter** (free, Mac App Store), sign in with the developer Apple ID,
+   drag the `.ipa` in, **Deliver**. Or Xcode → *Window › Organizer* → the archive →
+   **Distribute App** → *App Store Connect*. Check: App Store Connect → Drivalry →
+   **TestFlight** → *iOS Builds* lists `1.0.0 (CODE)` as *Processing*, then *Ready to Submit*
+   after 10 to 30 minutes (Apple emails when it is done).
+4. Attach it: https://appstoreconnect.apple.com/apps/6830844356/distribution/ios/version/inflight
+   → **Build** → **Add Build** → pick `1.0.0 (CODE)` → **Done** → **Save**. Check: the build
+   shows under *Build* with no *Missing Compliance* badge (`Info.plist` already answers the
+   export-compliance question with `ITSAppUsesNonExemptEncryption = NO`: TLS and WebRTC's
+   standard DTLS-SRTP only).
+
+For test installs on the five iPhones without TestFlight: `tools/release/build_ios.sh --ad-hoc`
+(the phones must be registered under *Devices* in the developer account), then drag the
+`.ipa` onto the phone in Finder.
 
 ## 7. What the tracking plugin needs on the phone
 

@@ -7,11 +7,13 @@ import '../../app/routes.dart';
 import '../../app/ui/ui.dart';
 import '../../data/badges/badges_providers.dart';
 import '../../data/badges/streaks.dart';
+import '../../data/repos/moderation_repo.dart';
 import '../../data/stats/stats_engine.dart';
 import '../../data/stats/stats_providers.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/signed_in_scope.dart';
+import '../friends/moderation_actions.dart';
 import '../friends/widgets/page_insets.dart';
 import '../friends/widgets/user_avatar.dart';
 import '../leagues/leagues_routes.dart' show badgesPath;
@@ -146,6 +148,15 @@ class _ProfileContent extends ConsumerWidget {
         ? (ref.watch(streaksProvider).value ?? Streaks.none)
         : null;
     final name = p.displayName.trim().isEmpty ? '@${p.handle}' : p.displayName;
+    final blocked =
+        !own &&
+        (ref.watch(moderationStateProvider).value?.isBlocked(p.id) ?? false);
+    final asBlockTarget = BlockedUser(
+      id: p.id,
+      handle: p.handle,
+      displayName: p.displayName,
+      avatarPath: p.avatarPath,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -272,7 +283,7 @@ class _ProfileContent extends ConsumerWidget {
               ),
             ),
           ),
-        ] else
+        ] else ...[
           Reveal(
             delay: Reveal.stagger(2),
             child: EditorialSection(
@@ -300,6 +311,24 @@ class _ProfileContent extends ConsumerWidget {
               ),
             ),
           ),
+          // Report lives on the posts; blocking a person lives here.
+          Reveal(
+            delay: Reveal.stagger(3),
+            child: EditorialSection(
+              kicker: 'Safety',
+              child: _DoorTile(
+                icon: Icons.block_outlined,
+                title: blocked ? 'Unblock @${p.handle}' : 'Block @${p.handle}',
+                caption: blocked
+                    ? 'They cannot see you or reach you.'
+                    : 'They will not see your drives, posts or location.',
+                onTap: () => blocked
+                    ? unblockUserFlow(context, ref, asBlockTarget)
+                    : blockUserFlow(context, ref, asBlockTarget),
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }

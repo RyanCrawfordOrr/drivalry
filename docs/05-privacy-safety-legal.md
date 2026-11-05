@@ -9,6 +9,7 @@ This app knows where people are, how they drive, and who they are with. That is 
 - **No covert installs.** Account creation requires the person's own phone and Sign in with Apple or Google. There is no phone-number or password sign-up and no "add a family member's device" flow.
 - **Minors**: 16+ by terms. No teen mode. No marketing to or features aimed at teens.
 - **Roasts are public to your groups by default.** Joining a league or circle means your trip cards and roasts post there. The hiding toggle is one tap and visible to the group.
+- **Report and block, everywhere content is.** Long-press a post or a comment to report it (abusive, not about the drive, spam, other); it disappears for the reporter at once and lands in `content_reports` for the owner, who gets a push and acts within 24 hours (`docs/11-owner-setup.md` Part 17). Block a person from a post, a comment, a friend row, a request or their profile: the friendship and any request end, they cannot send a new one, and neither of you sees the other's posts, comments, reactions or live location even inside a shared league, circle or convoy. Settings → Friends → Blocked people lists them with Unblock. Store policy (App Store 1.2, Play UGC) requires both; migration `0008_blocks_reports.sql` carries them.
 
 ## 2. Data minimisation and retention
 
@@ -25,6 +26,8 @@ This app knows where people are, how they drive, and who they are with. That is 
 | Convoy photos | Supabase Storage | 30 days | Small images only; per-convoy cap |
 | Speed-limit flags | Supabase | Indefinite | OSM way id, suggested limit, user id. No coordinates |
 | Emergency contacts | Phone only | Until the user removes them | Phone numbers never leave the device; pushes go to contacts who are Drivalry users |
+| Blocks | Supabase | Until unblocked or the account is deleted | Blocker and blocked ids only; the blocked person is never told |
+| Content reports | Supabase | Until the owner deletes them | Reporter, reported user, post or comment id, reason, optional note, and the reported text as a snapshot so it can be judged after deletion. Only the reporter can read their own |
 
 There is no analytics SDK. Battery and detection telemetry is computed on the phone and shown in Settings > Diagnostics. It is shared only if the user taps "Send diagnostics", and it contains no coordinates.
 

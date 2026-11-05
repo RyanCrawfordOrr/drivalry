@@ -4,11 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/feed_repo.dart';
 import '../../data/repos/friends_sync.dart';
+import '../../data/repos/moderation_repo.dart';
+import '../../data/supabase/supabase_providers.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/relative_time.dart';
 import '../../widgets/signed_in_scope.dart';
 import 'feed_controller.dart';
 import 'feed_post_card.dart';
+import 'moderation_actions.dart';
 import 'widgets/page_insets.dart';
 import 'widgets/quiet_error_tile.dart';
 import 'widgets/user_avatar.dart';
@@ -83,6 +86,47 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     ref.read(feedControllerProvider.notifier).bumpCommentCount(post.id);
   }
 
+  /// Long-press on someone else's comment: report it or block them.
+  Future<void> _commentActions(FeedComment c) async {
+    final choice = await showDrivalrySheet<String>(
+      context,
+      builder: (ctx) => Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ModerationActionTile(
+            icon: Icons.flag_outlined,
+            label: 'Report comment',
+            onTap: () => Navigator.of(ctx).pop('report'),
+          ),
+          const SizedBox(height: Space.sm),
+          ModerationActionTile(
+            icon: Icons.block_outlined,
+            label: 'Block ${c.author.name}',
+            danger: true,
+            onTap: () => Navigator.of(ctx).pop('block'),
+          ),
+        ],
+      ),
+    );
+    if (choice == null || !mounted) return;
+    switch (choice) {
+      case 'report':
+        await reportCommentFlow(context, ref, c);
+      case 'block':
+        await blockUserFlow(
+          context,
+          ref,
+          BlockedUser(
+            id: c.author.id,
+            handle: c.author.handle,
+            displayName: c.author.displayName,
+            avatarPath: c.author.avatarPath,
+          ),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final controller = ref.read(feedControllerProvider.notifier);
@@ -94,8 +138,55 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
     );
     final post = fromFeed ?? _post;
     final now = DateTime.now().toUtc();
+    final me = ref.watch(currentUserIdProvider);
+    final moderation =
+        ref.watch(moderationStateProvider).value ?? const ModerationState();
+    final comments = [
+      for (final c in _comments)
+        if (moderation.showsComment(c.id, c.author.id)) c,
+    ];
+    final own = post == null || post.author.id == me;
     return Scaffold(
-      appBar: AppBar(title: const Text('Post')),
+      appBar: AppBar(
+        title: const Text('Post'),
+        actions: [
+          if (!own)
+            PopupMenuButton<String>(
+              tooltip: 'More',
+              onSelected: (v) async {
+                switch (v) {
+                  case 'report':
+                    await reportPostFlow(context, ref, post);
+                    if (context.mounted) Navigator.of(context).maybePop();
+                  case 'block':
+                    final blocked = await blockUserFlow(
+                      context,
+                      ref,
+                      BlockedUser(
+                        id: post.author.id,
+                        handle: post.author.handle,
+                        displayName: post.author.displayName,
+                        avatarPath: post.author.avatarPath,
+                      ),
+                    );
+                    if (blocked && context.mounted) {
+                      Navigator.of(context).maybePop();
+                    }
+                }
+              },
+              itemBuilder: (_) => [
+                const PopupMenuItem(
+                  value: 'report',
+                  child: Text('Report post'),
+                ),
+                PopupMenuItem(
+                  value: 'block',
+                  child: Text('Block ${post.author.name}'),
+                ),
+              ],
+            ),
+        ],
+      ),
       body: SignedInScope(
         message: 'Sign in to see posts.',
         child: Column(
@@ -145,15 +236,21 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
                       ],
                       const Kicker('Comments'),
                       const SizedBox(height: Space.sm),
-                      if (_loading && _comments.isEmpty)
+                      if (_loading && comments.isEmpty)
                         const SkeletonTile(height: 56)
-                      else if (_comments.isEmpty)
+                      else if (comments.isEmpty)
                         Text(
                           'Nothing yet. Say something about this drive.',
                           style: context.bodyMuted,
                         ),
-                      for (final c in _comments)
-                        _CommentRow(comment: c, now: now),
+                      for (final c in comments)
+                        _CommentRow(
+                          comment: c,
+                          now: now,
+                          onLongPress: c.author.id == me || c.pending
+                              ? null
+                              : () => _commentActions(c),
+                        ),
                     ],
                   ],
                 ),
@@ -201,37 +298,50 @@ class _PostDetailScreenState extends ConsumerState<PostDetailScreen> {
 }
 
 class _CommentRow extends StatelessWidget {
-  const _CommentRow({required this.comment, required this.now});
+  const _CommentRow({
+    required this.comment,
+    required this.now,
+    this.onLongPress,
+  });
   final FeedComment comment;
   final DateTime now;
+
+  /// Report or block, on someone else's comment.
+  final VoidCallback? onLongPress;
 
   @override
   Widget build(BuildContext context) {
     final when = comment.pending
         ? 'sending…'
         : relativeTime(comment.createdAt, now);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Space.sm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          UserAvatar(
-            name: comment.author.name,
-            avatarPath: comment.author.avatarPath,
-            size: AvatarSize.sm,
-          ),
-          const SizedBox(width: Space.md),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(comment.body, style: context.body),
-                const SizedBox(height: Space.xs),
-                Text('${comment.author.name} · $when', style: context.caption),
-              ],
+    return InkWell(
+      onLongPress: onLongPress,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: Space.sm),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            UserAvatar(
+              name: comment.author.name,
+              avatarPath: comment.author.avatarPath,
+              size: AvatarSize.sm,
             ),
-          ),
-        ],
+            const SizedBox(width: Space.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(comment.body, style: context.body),
+                  const SizedBox(height: Space.xs),
+                  Text(
+                    '${comment.author.name} · $when',
+                    style: context.caption,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

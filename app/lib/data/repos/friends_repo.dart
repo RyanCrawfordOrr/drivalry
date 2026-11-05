@@ -111,6 +111,13 @@ class FriendsSnapshot {
   bool hasIncomingFrom(String userId) =>
       incoming.any((r) => r.requesterId == userId);
 
+  /// Whether the last fetch is older than [maxAge] at [now]. A snapshot that
+  /// never came from the network (no [fetchedAt]) is always stale.
+  bool isStale(DateTime now, Duration maxAge) {
+    final at = fetchedAt;
+    return at == null || now.difference(at) > maxAge;
+  }
+
   /// Builds the snapshot from `friendships` rows embedded with both profiles
   /// (see [FriendsRepo.requestSelect]) as the signed-in user [me].
   static FriendsSnapshot fromRows(
@@ -397,6 +404,11 @@ class FriendsRepo {
     await outbox.enqueue(kindRemove, {'a': uid, 'b': otherId});
     await _dropLocal(otherId);
   }
+
+  /// Drops [otherId] from the cached friends and requests without queueing
+  /// anything: a block (see `ModerationRepo`) ends the friendship on the
+  /// server through a trigger, so only the local view needs updating.
+  Future<void> forgetLocal(String otherId) => _dropLocal(otherId);
 
   Future<void> _dropLocal(String otherId) async {
     final s = await cached();

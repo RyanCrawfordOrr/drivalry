@@ -10,6 +10,7 @@ import '../../app/ui/ui.dart';
 import '../../data/crash/crash_monitor.dart';
 import '../../data/db/database.dart';
 import '../../data/push/quiet_hours.dart';
+import '../../data/repos/moderation_repo.dart';
 import '../../data/supabase/auth_service.dart';
 import '../../data/supabase/supabase_providers.dart';
 import '../../tracking/providers.dart';
@@ -17,6 +18,7 @@ import '../../tracking/tracking_controller.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
 import '../cues/cue_settings.dart';
+import '../drive/sample_drive_sheet.dart';
 import '../profile/profile_repo.dart';
 import 'emergency_contacts_screen.dart';
 import 'notifications_settings_screen.dart';
@@ -46,6 +48,13 @@ class SettingsScreen extends ConsumerWidget {
       0 => 'Who gets a text if you do not answer.',
       1 => 'One person gets a text if you do not answer.',
       _ => '$contacts people get a text if you do not answer.',
+    };
+    final blocked =
+        ref.watch(moderationStateProvider).value?.blocked.length ?? 0;
+    final blockedCaption = switch (blocked) {
+      0 => 'Nobody. Block from a profile or a post.',
+      1 => 'One person cannot see you or reach you.',
+      _ => '$blocked people cannot see you or reach you.',
     };
 
     final sections = <Widget>[
@@ -98,6 +107,13 @@ class SettingsScreen extends ConsumerWidget {
               caption: 'Roads and limits kept on this phone.',
               onTap: () => context.push(Routes.packs),
             ),
+            SettingsRow(
+              key: const Key('sample-drive'),
+              icon: Icons.play_circle_outline,
+              title: 'Sample drive',
+              caption: 'A pretend trip, scored like a real one. Stays here.',
+              onTap: () => showSampleDriveSheet(context, ref),
+            ),
           ],
         ),
       ),
@@ -118,6 +134,13 @@ class SettingsScreen extends ConsumerWidget {
                         .read(profileRepoProvider)
                         .setLocationHidden(profile.id, v)
                   : null,
+            ),
+            SettingsRow(
+              key: const Key('blocked-people'),
+              icon: Icons.block_outlined,
+              title: 'Blocked people',
+              caption: blockedCaption,
+              onTap: () => context.push(Routes.blockedPeople),
             ),
             SettingsRow(
               icon: Icons.notifications_outlined,

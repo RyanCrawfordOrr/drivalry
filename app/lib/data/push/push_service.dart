@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../app/router.dart';
 import '../../features/leagues/leagues_routes.dart';
 import '../repos/duels_repo.dart';
+import '../repos/friends_sync.dart';
 import '../../config/env.dart';
 import '../db/database.dart';
 import '../supabase/supabase_providers.dart';
@@ -222,6 +223,13 @@ class PushController extends Notifier<PushStatus> {
               onError: (Object e) => debugPrint('duel refresh after push: $e'),
             ),
       );
+    }
+    // A friends push means the other side answered or asked: pull the
+    // snapshot so the list, the requests screen and the Drive-tab badge
+    // change now rather than at the next restart. (refresh never throws.)
+    if (route is String &&
+        (route == Routes.friends || route.startsWith(Routes.friendRequests))) {
+      unawaited(ref.read(friendsSnapshotProvider.notifier).refresh());
     }
   }
 

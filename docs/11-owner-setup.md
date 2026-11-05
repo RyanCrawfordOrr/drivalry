@@ -15,7 +15,7 @@
 | --- | --- |
 | Phone | Android, debug build installed over adb. Trips, scoring, roasts, badges and speed-limit packs already work offline. |
 | `.env` | `GOOGLE_MAPS_API_KEY`, `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` filled in. Everything else blank. |
-| Supabase | Project `htqyutdwnnguqatakofx`. Only `0000_heartbeat.sql` has been applied. |
+| Supabase | Project `htqyutdwnnguqatakofx`. `0000` to `0007` are applied (checked 2026-11-05). `0008_blocks_reports.sql` (report and block) is not yet; Part 1 step 5. |
 | GitHub | Both repo secrets set. CI and the daily keep-alive already run. |
 
 Parts 1 to 4 make the Android phone work end to end: sign in, friends, leagues, convoys, radio. Part 5 adds push notifications. Parts 6 to 8 are optional or for later.
@@ -26,7 +26,7 @@ Parts 1 to 4 make the Android phone work end to end: sign in, friends, leagues, 
 
 **Unlocks:** everything that touches the cloud. Until this is done every signed-in screen fails.
 
-You paste seven SQL files into the Supabase SQL editor, one at a time, in order.
+You paste eight SQL files into the Supabase SQL editor, one at a time, in order. If the check at the end already shows `true` for a file, skip that file: every migration is safe to run twice, but there is no need.
 
 1. Open the SQL editor: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/sql/new
 2. In PowerShell, copy the first file to the clipboard:
@@ -43,6 +43,7 @@ You paste seven SQL files into the Supabase SQL editor, one at a time, in order.
    Get-Content -Raw C:\Drivalry\supabase\migrations\0005_convoy_vote_withdraw.sql | Set-Clipboard
    Get-Content -Raw C:\Drivalry\supabase\migrations\0006_convoy_can_view.sql | Set-Clipboard
    Get-Content -Raw C:\Drivalry\supabase\migrations\0007_duels_challenges_seasons.sql | Set-Clipboard
+   Get-Content -Raw C:\Drivalry\supabase\migrations\0008_blocks_reports.sql | Set-Clipboard
    ```
 
 **Check it worked.** Paste this into the editor and **Run**. Every column must read `true`:
@@ -61,7 +62,9 @@ select
   coalesce((select pg_get_functiondef(p.oid) ilike '%convoy_members%'
             from pg_proc p join pg_namespace n on n.oid = p.pronamespace
             where n.nspname = 'public' and p.proname = 'can_view'), false)            as "0006 applied",
-  (to_regclass('public.duels') is not null)                                           as "0007 applied";
+  (to_regclass('public.duels') is not null)                                           as "0007 applied",
+  (to_regclass('public.user_blocks') is not null
+     and to_regclass('public.content_reports') is not null)                           as "0008 applied";
 ```
 
 Then check the scheduled jobs. Expect five rows: `finalize-duels`, `finalize-group-challenges`, `finalize-leagues`, `matchmake-global-leagues`, `prune-cloud`.
@@ -274,6 +277,7 @@ Get-Content -Raw "$env:USERPROFILE\Downloads\drivalry-firebase-adminsdk-xxxxx.js
    | `push_friendships` | `friendships` | Insert, Update |
    | `push_duels` | `duels` | Insert, Update |
    | `push_crash_alerts` | `crash_alerts` | Insert |
+   | `push_content_reports` | `content_reports` | Insert (Part 17; needs migration 0008 first) |
 
    Choosing type **Supabase Edge Functions** and picking `push` works just as well; the `x-push-secret` header is the only thing the function checks.
 
@@ -358,7 +362,8 @@ All the iOS code is written and has never been compiled. `app/ios/README-mac.md`
    - Firebase → Project settings → **Cloud Messaging** → *Apple app configuration* → **Upload** the `.p8` with that Key ID and Team ID. Without it iPhones register tokens but never receive anything.
    - Google Cloud → https://console.cloud.google.com/auth/clients?project=drivalry → **+ Create client** → **iOS**, name `Drivalry iOS`, bundle id `app.drivalry` → **Create** → copy the Client ID into `.env` as `GOOGLE_IOS_CLIENT_ID=`, and add it after a comma in the Supabase Google provider's **Client IDs** (Part 2d).
    - Request the **CarPlay Driving Task** entitlement: Account → **Additional resources** → **CarPlay** → describe the app (driving score, convoy map, push-to-talk). Approval takes weeks. The in-app tree is ready; `docs/04-car-platforms.md` §2 lists the five Xcode steps for when it is granted.
-6. README §6 and `docs/06-roadmap.md` M1.6: TestFlight when the seven test phones are ready. Set the Edge Function secret `APNS_SANDBOX=false` at that point.
+6. README §6: `tools/release/build_ios.sh` builds the `.ipa` (version from `pubspec.yaml`, build number = commit count); upload it with Transporter, then attach it on the version page (README §6 step 4). The App Store Connect record (app 6830844356) was filled in on 2026-11-04: store text, screenshots, categories, privacy answers, price (free) and availability (174 regions, France excluded). Three things are still yours: App Privacy → **Publish**; the version page's App Review **Contact Information** (name, phone, email); and commit and push `docs/privacy-policy.md` so the privacy URL on the record resolves. Check: the version page's **Add for Review** button turns blue.
+7. `docs/06-roadmap.md` M1.6: TestFlight when the seven test phones are ready. Set the Edge Function secret `APNS_SANDBOX=false` at that point.
 
 ---
 
@@ -587,7 +592,7 @@ Check: Testing → Internal testing shows your list under Testers and "No releas
    cd C:\Drivalry
    .\tools\release\build_android.ps1
    ```
-   About three minutes. The last line reads `Done: …\app-release.aab (NN MB), version 0.1.0 (CODE)`.
+   About three minutes. The last line reads `Done: …\app-release.aab (NN MB), version 1.0.0 (CODE)`.
 3. Check: `C:\Drivalry\app\build\app\outputs\bundle\release\app-release.aab` exists and the printed CODE is higher than the last one you uploaded.
 
 For a release build you can install by cable instead (same signing, same code), add `-Apk` and run the `adb install` line it prints. That is only for a phone that is not on the tester list.
@@ -596,7 +601,7 @@ For a release build you can install by cable instead (same signing, same code), 
 
 1. Play Console → Testing → **Internal testing** → **Create new release**.
 2. The first time, under **App integrity** choose **Use Google-generated key** (Play App Signing) → **Continue**. Google now holds the real signing key; your file from 15a is only the upload key.
-3. **App bundles** → **Upload** → pick `app-release.aab` from 15c. Wait for the green tick. Release name fills itself (`CODE (0.1.0)`). Release notes: one line of what changed.
+3. **App bundles** → **Upload** → pick `app-release.aab` from 15c. Wait for the green tick. Release name fills itself (`CODE (1.0.0)`). Release notes: one line of what changed.
 4. **Next** → fix anything red (warnings in yellow are fine for internal testing) → **Save** → **Go to overview** → **Start rollout to Internal testing** → **Rollout**.
 5. First time only: **Testers** tab → under "How testers join your test" → **Copy link**. Send it to each tester. On the phone, open the link in a browser signed in with the tester's Gmail → **Accept invite** → **Download it on Google Play** → **Install**.
 6. Later releases: repeat 1, 3 and 4. Phones pick the update up within a few minutes; opening the Play Store page for Drivalry and tapping **Update** forces it.
@@ -625,11 +630,77 @@ Phones get APKs signed by Google's app signing key, not by your upload key, so t
 
 Two things release builds do differently from the debug APKs you used until now: the **Simulate a drive** and **Diagnostics** developer entries on the Drive tab are hidden (Diagnostics stays under Settings → About), and the code is shrunk, so a crash report from a tester names fewer internal details.
 
+### 15g. Move from internal testing to closed testing (30 minutes, then wait for review)
+
+**Why.** A personal developer account made after 13 November 2023 cannot publish to production until a **closed** test has run with at least 12 testers opted in, without a break, for 14 days. Internal testing does not count. Closed testing also goes through Google's app review (hours to a few days the first time), which internal testing skips.
+
+1. **Finish app setup.** https://play.google.com/console → Drivalry → **Dashboard** → the **Set up your app** list. Every task with an open circle has to be done before a closed-testing release rolls out: privacy policy URL (`https://github.com/RyanCrawfordOrr/drivalry/blob/main/docs/privacy-policy.md`), app access (all features available without special access), ads (no), content rating (the questionnaire), target audience (18 and over), news app (no), data safety, government apps (no), financial features (none), health (none), and the **Main store listing** (name, descriptions and graphics from `store/listing.md` and `store/play`). Check: every task shows a green tick.
+2. **Open the track.** Left column → **Testing** → **Closed testing**. There is one track already (Google names it *Alpha*); click **Manage track**. If you prefer your own name, **Create track** at the top right → name `Friends` → **Create track**.
+3. **Testers.** The **Testers** tab → under *Testers* click **Create email list** → list name `Drivalry testers` → paste the Gmail addresses, comma-separated (12 or more if this test is to unlock production) → **Save changes** → **Create** → tick the list → *Feedback URL or email address*: your email → **Save changes**.
+4. **Countries.** Same tab, *Countries/regions* → **Add countries/regions** → tick **United States** (or **Select all**) → **Add countries/regions** → **Save changes**. The choice applies to every track.
+5. **Release.** The **Releases** tab → **Create new release**. Under *App bundles* click **Add from library** and pick `1.0.0 (68)`, the bundle already on internal testing (or **Upload** a fresh `app-release.aab` from 15c). Release name stays as filled in. *Release notes*: `First closed test.` → **Next** → **Save** → **Review release** → **Start rollout to Closed testing** → **Rollout**. Shortcut that skips the upload: **Testing → Internal testing → Releases** → the 68 release → **Promote release** → **Closed testing**.
+6. **Wait for review.** The release shows *In review*, then *Available on Google Play*. Nothing to do meanwhile.
+7. **Invite.** Back on the **Testers** tab → *How testers join your test* → **Copy link** → send it to the testers. Each opens it on their phone, taps **Become a tester**, then installs Drivalry from the Play Store link on the same page. The link only works once the review is done, and can take a few hours to go live after that.
+
+**Check it worked.** Closed testing → *Track summary* shows the release *Active* and the tester count rising as people opt in. Fourteen days after the twelfth tester opted in, **Dashboard → Apply for production** turns on; the form asks about the test and the app, and Google answers within about seven days.
+
+**If it fails.**
+
+- A tester's link says *not available* or *item not found*: their Gmail is not on the list (step 3), or they are still opted in to **internal** testing. Someone on internal testing cannot join a closed test until they open the internal opt-in link and tap **Leave the program**. That includes your own phone.
+- **Start rollout** is grey: a *Set up your app* task is still open (step 1), or no countries are selected (step 4).
+- *Rejected* after review: open the message under **Policy status** in the left column; fix what it names, build again (15c), and roll out again.
+- The tester count drops below 12 before 14 days: the clock restarts for the next person who joins; it is 12 people opted in at the same time for 14 consecutive days.
+
+## Part 16: Answer App Review's "Information Needed" message
+
+Every step is in one file, start to finish, with each command and click written out: `store/app-review.md`. Open it and work down from Step 1. Nothing in it sends you back here.
+
+---
+
+## Part 17: Content reports, what to do when one arrives (10 minutes once, then as they come)
+
+**What it is.** Anyone can report a post or a comment (long-press → Report) and block a person. The reporter stops seeing the content at once; the report lands in the `content_reports` table for you to read. The notes given to Apple promise that a person looks within 24 hours. This part sends you a push notification for every report, then says what to do with one.
+
+### 17a. Get a push for every report (once)
+
+Skip this if the `push` Edge Function was never deployed (no push notifications yet); the table still fills up and you can read it by hand.
+
+1. Your user id: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/auth/users → the **UID** column of your own row → copy it.
+2. In PowerShell (the tool is not installed on the PC; `npx` fetches it each time, the same way the function was deployed in 5c):
+   ```powershell
+   cd C:\Drivalry
+   npx --yes supabase@latest secrets set MODERATOR_USER_ID=PASTE_YOUR_UID --project-ref htqyutdwnnguqatakofx
+   npx --yes supabase@latest functions deploy push --no-verify-jwt --use-api --project-ref htqyutdwnnguqatakofx
+   ```
+   The first ends with *Finished supabase secrets set*, the second with *Deployed Functions on project htqyutdwnnguqatakofx: push*. Keep `--no-verify-jwt`: without it every webhook call is refused and all pushes stop.
+3. https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/integrations/webhooks/overview → open the existing `push_feed_reactions` hook and copy the value of its `x-push-secret` header → **Create a new hook**: name `push_content_reports`, table `content_reports`, events **Insert**, type **HTTP Request**, method `POST`, URL `https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push`, add the header `x-push-secret` with the copied value → **Create webhook**.
+
+**Check it worked.** From any second account, long-press one of your posts → **Report** → any reason. Your phone shows *Content report* within seconds.
+
+**If it fails.** No push: the secret was set but the function was not redeployed (run the deploy line again), or the hook's header value differs from the one on `push_feed_reactions`.
+
+### 17b. Handle a report (each time)
+
+1. https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/editor → **content_reports** (left column) → sort by `created_at`, newest first. The `snapshot` column holds the reported text, so you can judge it even after the content is gone.
+2. Look at the content: `post_id` → open **feed_posts** and filter `id` = that value; `comment_id` → **feed_comments**. `reported_user_id` is the author; **profiles** shows their handle.
+3. Decide:
+   - **Fine, leave it**: set `status` to `reviewed`.
+   - **Take it down**: in **feed_posts** or **feed_comments** select the row → **Delete** (a post takes its reactions and comments with it). Set `status` to `actioned`.
+   - **Repeat offender**: **Authentication → Users** → the account → **Delete user**. Everything of theirs cascades away. Set `status` to `actioned`.
+4. Nobody is told who reported; nothing else to do.
+
+**Check it worked.** The reporter never sees the content again (it was hidden for them when they reported); everyone else stops seeing it on their next refresh.
+
+---
+
 ## Troubleshooting, all in one place
 
 | You see | Cause | Fix |
 | --- | --- | --- |
 | Signed-in screens show errors or spin forever | Migrations not applied | Part 1 |
+| App Review message *Information Needed* (Guideline 2.1) | Apple wants a video, notes and a new build | `store/app-review.md`, Step 1 to 7 |
+| Report or Block say "could not…" | Migration 0008 not applied | `store/app-review.md` Step 1 |
+| A report arrived but no push | `MODERATOR_USER_ID` not set, function not redeployed, or no `push_content_reports` webhook | Part 17a |
 | *Google sign-in is not configured for this build* | Blank `GOOGLE_WEB_CLIENT_ID`, no rebuild, or SHA-1 mismatch | Parts 2b, 2c, 4 |
 | *Access blocked: … has not completed the Google verification process* | Account not in Test users | Part 2a step 3 |
 | *Unacceptable audience in id_token* | Supabase Client IDs differs from `.env` | Part 2d step 3 |

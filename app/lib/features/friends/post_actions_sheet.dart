@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../app/ui/ui.dart';
 import '../../data/repos/feed_repo.dart';
+import '../../data/repos/moderation_repo.dart';
+import '../../data/supabase/supabase_providers.dart';
 import 'feed_post_card.dart';
+import 'moderation_actions.dart';
 import 'widgets/page_insets.dart';
 
-/// Long-press on a post: react, comment, share or report, in a sheet
-/// (docs/12 §5b, direct manipulation).
+/// Long-press on a post: react, comment, share, and on someone else's post
+/// report it or block them (docs/12 §5b, direct manipulation; docs/05 §1).
 Future<void> showPostActions(
-  BuildContext context, {
+  BuildContext context,
+  WidgetRef ref, {
   required FeedPost post,
   required void Function(String kind) onReact,
   VoidCallback? onComment,
 }) {
+  final own = post.author.id == ref.read(currentUserIdProvider);
   return showDrivalrySheet<void>(
     context,
     builder: (ctx) => Padding(
@@ -33,7 +39,7 @@ Future<void> showPostActions(
             },
           ),
           const SizedBox(height: Space.lg),
-          _Action(
+          ModerationActionTile(
             icon: Icons.mode_comment_outlined,
             label: 'Comment',
             onTap: () {
@@ -42,7 +48,7 @@ Future<void> showPostActions(
             },
           ),
           const SizedBox(height: Space.sm),
-          _Action(
+          ModerationActionTile(
             icon: Icons.share_outlined,
             label: 'Share',
             onTap: () {
@@ -52,15 +58,36 @@ Future<void> showPostActions(
               );
             },
           ),
-          const SizedBox(height: Space.sm),
-          _Action(
-            icon: Icons.flag_outlined,
-            label: 'Report',
-            onTap: () async {
-              Navigator.of(ctx).pop();
-              await _report(context);
-            },
-          ),
+          if (!own) ...[
+            const SizedBox(height: Space.sm),
+            ModerationActionTile(
+              icon: Icons.flag_outlined,
+              label: 'Report',
+              onTap: () async {
+                Navigator.of(ctx).pop();
+                await reportPostFlow(context, ref, post);
+              },
+            ),
+            const SizedBox(height: Space.sm),
+            ModerationActionTile(
+              icon: Icons.block_outlined,
+              label: 'Block ${post.author.name}',
+              danger: true,
+              onTap: () async {
+                Navigator.of(ctx).pop();
+                await blockUserFlow(
+                  context,
+                  ref,
+                  BlockedUser(
+                    id: post.author.id,
+                    handle: post.author.handle,
+                    displayName: post.author.displayName,
+                    avatarPath: post.author.avatarPath,
+                  ),
+                );
+              },
+            ),
+          ],
         ],
       ),
     ),
@@ -83,59 +110,4 @@ String shareTextFor(FeedPost post) {
     'checkin' => '$who checked in at $place.',
     _ => '$who on Drivalry.',
   };
-}
-
-Future<void> _report(BuildContext context) async {
-  final ok = await showDialog<bool>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      title: const Text('Report this post?'),
-      content: const Text(
-        'Use this when a post is abusive or not about the drive.',
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(ctx).pop(false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: () => Navigator.of(ctx).pop(true),
-          child: const Text('Report'),
-        ),
-      ],
-    ),
-  );
-  if (ok == true && context.mounted) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Thanks. We will take a look.')),
-    );
-  }
-}
-
-class _Action extends StatelessWidget {
-  const _Action({required this.icon, required this.label, required this.onTap});
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Tile(
-      onTap: onTap,
-      padding: const EdgeInsets.symmetric(
-        horizontal: Space.lg,
-        vertical: Space.md,
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: Theme.of(context).colorScheme.onSurfaceVariant),
-          const SizedBox(width: Space.lg),
-          Text(
-            label,
-            style: context.body.copyWith(fontWeight: FontWeight.w600),
-          ),
-        ],
-      ),
-    );
-  }
 }

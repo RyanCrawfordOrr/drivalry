@@ -1,15 +1,17 @@
 // Drivalry push fan-out. One Supabase Edge Function, invoked by Database Webhooks
 // (docs/03-architecture.md §10: one invocation per notification batch).
 //
-// Handles INSERTs on feed_reactions, feed_comments, friendships, crash_alerts and
-// UPDATEs on friendships (accepted). Resolves recipients with the service role,
-// loads their push_tokens, and sends through APNs (token-based auth, HTTP/2) and
-// FCM HTTP v1 (service-account OAuth). Invalid tokens are deleted.
+// Handles INSERTs on feed_reactions, feed_comments, friendships, crash_alerts,
+// content_reports and UPDATEs on friendships (accepted). Resolves recipients with
+// the service role, loads their push_tokens, and sends through APNs (token-based
+// auth, HTTP/2) and FCM HTTP v1 (service-account OAuth). Invalid tokens are deleted.
 //
 // Secrets (supabase secrets set ...): PUSH_WEBHOOK_SECRET, APNS_TEAM_ID, APNS_KEY_ID,
 // APNS_PRIVATE_KEY (the .p8 PEM), APNS_BUNDLE_ID (app.drivalry), APNS_SANDBOX ("true"
-// for development builds), FCM_SERVICE_ACCOUNT_JSON (the whole service-account file).
-// SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are injected by the platform.
+// for development builds), FCM_SERVICE_ACCOUNT_JSON (the whole service-account file),
+// MODERATOR_USER_ID (the owner's profile id: every content report pushes to them,
+// docs/11-owner-setup.md Part 17). SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are
+// injected by the platform.
 
 import { createClient } from "npm:@supabase/supabase-js@2.49.4";
 import * as jose from "npm:jose@5.9.6";
@@ -112,6 +114,20 @@ async function buildNotification(p: WebhookPayload): Promise<Notification | null
         body: body.length > 120 ? body.slice(0, 117) + "…" : body,
         category: "social",
         data: { route: `/friends/post/${r.post_id}` },
+      };
+    }
+    case "content_reports:INSERT": {
+      // Moderation (App Store Guideline 1.2): the owner hears about every
+      // report at once and reviews it in the dashboard within 24 hours.
+      const moderator = env("MODERATOR_USER_ID");
+      if (!moderator) return null;
+      const what = r.comment_id ? "comment" : r.post_id ? "post" : "person";
+      return {
+        recipients: [moderator],
+        title: "Content report",
+        body: `Someone reported a ${what} (${String(r.reason ?? "no reason")}). Review it in the Supabase dashboard.`,
+        category: "social",
+        data: { route: "/friends" },
       };
     }
     case "friendships:INSERT": {

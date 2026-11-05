@@ -177,7 +177,14 @@ void main() {
       find.text('Forty-one in a twenty-five on Elm Street.'),
     );
     await pumpFor(tester, const Duration(seconds: 1));
-    for (final label in ['REACT', 'Comment', 'Share', 'Report']) {
+    // Someone else's post: report it or block them (docs/05 §1).
+    for (final label in [
+      'REACT',
+      'Comment',
+      'Share',
+      'Report',
+      'Block jordan',
+    ]) {
       expect(find.text(label), findsOneWidget, reason: label);
     }
     await tester.tapAt(const Offset(5, 5));

@@ -7,6 +7,7 @@ import '../../app/ui/ui.dart';
 import '../../data/repos/feed_repo.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
+import '../../data/repos/moderation_repo.dart';
 import 'feed_controller.dart';
 import 'feed_post_card.dart';
 import 'post_actions_sheet.dart';
@@ -33,9 +34,17 @@ class FeedView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final feed = ref.watch(feedControllerProvider);
     final controller = ref.read(feedControllerProvider.notifier);
+    final moderation =
+        ref.watch(moderationStateProvider).value ?? const ModerationState();
+    // Blocked authors and reported posts drop out here, so a block or a
+    // report takes effect before the server has heard of it.
+    final posts = [
+      for (final p in feed.posts)
+        if (moderation.showsPost(p.id, p.author.id)) p,
+    ];
     final error = feed.error;
-    final skeletons = feed.loading && feed.posts.isEmpty;
-    final empty = !skeletons && feed.posts.isEmpty;
+    final skeletons = feed.loading && posts.isEmpty;
+    final empty = !skeletons && posts.isEmpty;
     final mode = skeletons
         ? 'skeleton'
         : empty
@@ -44,8 +53,8 @@ class FeedView extends ConsumerWidget {
     // Hero tags must be unique on a screen: only an author's first post
     // carries the avatar hero.
     final firstByAuthor = <String, int>{};
-    for (var i = 0; i < feed.posts.length; i++) {
-      firstByAuthor.putIfAbsent(feed.posts[i].author.id, () => i);
+    for (var i = 0; i < posts.length; i++) {
+      firstByAuthor.putIfAbsent(posts[i].author.id, () => i);
     }
 
     return TabScrollView(
@@ -101,15 +110,15 @@ class FeedView extends ConsumerWidget {
           SliverPadding(
             padding: EdgeInsets.only(bottom: pageBottomInset(context)),
             sliver: SliverList.builder(
-              itemCount: feed.posts.length + (feed.hasMore ? 1 : 0),
+              itemCount: posts.length + (feed.hasMore ? 1 : 0),
               itemBuilder: (context, j) {
-                if (j >= feed.posts.length) {
+                if (j >= posts.length) {
                   return const Padding(
                     padding: _cardPadding,
                     child: SkeletonTile(),
                   );
                 }
-                final post = feed.posts[j];
+                final post = posts[j];
                 void react(String k) => controller.toggleReaction(post.id, k);
                 void open() => context.push(Routes.post(post.id));
                 return Padding(
@@ -123,6 +132,7 @@ class FeedView extends ConsumerWidget {
                       onOpen: open,
                       onLongPress: () => showPostActions(
                         context,
+                        ref,
                         post: post,
                         onReact: react,
                         onComment: open,
