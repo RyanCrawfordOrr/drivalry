@@ -358,7 +358,8 @@ All the iOS code is written and has never been compiled. `app/ios/README-mac.md`
    - Firebase → Project settings → **Cloud Messaging** → *Apple app configuration* → **Upload** the `.p8` with that Key ID and Team ID. Without it iPhones register tokens but never receive anything.
    - Google Cloud → https://console.cloud.google.com/auth/clients?project=drivalry → **+ Create client** → **iOS**, name `Drivalry iOS`, bundle id `app.drivalry` → **Create** → copy the Client ID into `.env` as `GOOGLE_IOS_CLIENT_ID=`, and add it after a comma in the Supabase Google provider's **Client IDs** (Part 2d).
    - Request the **CarPlay Driving Task** entitlement: Account → **Additional resources** → **CarPlay** → describe the app (driving score, convoy map, push-to-talk). Approval takes weeks. The in-app tree is ready; `docs/04-car-platforms.md` §2 lists the five Xcode steps for when it is granted.
-6. README §6 and `docs/06-roadmap.md` M1.6: TestFlight when the seven test phones are ready. Set the Edge Function secret `APNS_SANDBOX=false` at that point.
+6. README §6: `tools/release/build_ios.sh` builds the `.ipa` (version from `pubspec.yaml`, build number = commit count); upload it with Transporter, then attach it on the version page (README §6 step 4). The App Store Connect record (app 6830844356) was filled in on 2026-11-04: store text, screenshots, categories, privacy answers, price (free) and availability (174 regions, France excluded). Three things are still yours: App Privacy → **Publish**; the version page's App Review **Contact Information** (name, phone, email); and commit and push `docs/privacy-policy.md` so the privacy URL on the record resolves. Check: the version page's **Add for Review** button turns blue.
+7. `docs/06-roadmap.md` M1.6: TestFlight when the seven test phones are ready. Set the Edge Function secret `APNS_SANDBOX=false` at that point.
 
 ---
 
@@ -587,7 +588,7 @@ Check: Testing → Internal testing shows your list under Testers and "No releas
    cd C:\Drivalry
    .\tools\release\build_android.ps1
    ```
-   About three minutes. The last line reads `Done: …\app-release.aab (NN MB), version 0.1.0 (CODE)`.
+   About three minutes. The last line reads `Done: …\app-release.aab (NN MB), version 1.0.0 (CODE)`.
 3. Check: `C:\Drivalry\app\build\app\outputs\bundle\release\app-release.aab` exists and the printed CODE is higher than the last one you uploaded.
 
 For a release build you can install by cable instead (same signing, same code), add `-Apk` and run the `adb install` line it prints. That is only for a phone that is not on the tester list.
@@ -596,7 +597,7 @@ For a release build you can install by cable instead (same signing, same code), 
 
 1. Play Console → Testing → **Internal testing** → **Create new release**.
 2. The first time, under **App integrity** choose **Use Google-generated key** (Play App Signing) → **Continue**. Google now holds the real signing key; your file from 15a is only the upload key.
-3. **App bundles** → **Upload** → pick `app-release.aab` from 15c. Wait for the green tick. Release name fills itself (`CODE (0.1.0)`). Release notes: one line of what changed.
+3. **App bundles** → **Upload** → pick `app-release.aab` from 15c. Wait for the green tick. Release name fills itself (`CODE (1.0.0)`). Release notes: one line of what changed.
 4. **Next** → fix anything red (warnings in yellow are fine for internal testing) → **Save** → **Go to overview** → **Start rollout to Internal testing** → **Rollout**.
 5. First time only: **Testers** tab → under "How testers join your test" → **Copy link**. Send it to each tester. On the phone, open the link in a browser signed in with the tester's Gmail → **Accept invite** → **Download it on Google Play** → **Install**.
 6. Later releases: repeat 1, 3 and 4. Phones pick the update up within a few minutes; opening the Play Store page for Drivalry and tapping **Update** forces it.
