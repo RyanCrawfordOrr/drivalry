@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../../app/routes.dart';
 import 'attribution_screen.dart';
 import 'auto_reply_settings_screen.dart';
+import 'blocked_people_screen.dart';
 import 'crash_settings_screen.dart';
 import 'cues_settings_screen.dart';
 import 'emergency_contacts_screen.dart';
@@ -33,6 +34,7 @@ List<RouteBase> settingsRoutes() => [
         path: 'auto-reply',
         builder: (_, _) => const AutoReplySettingsScreen(),
       ),
+      GoRoute(path: 'blocked', builder: (_, _) => const BlockedPeopleScreen()),
     ],
   ),
 ];

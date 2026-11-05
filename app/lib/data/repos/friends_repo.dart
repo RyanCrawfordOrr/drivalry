@@ -405,6 +405,11 @@ class FriendsRepo {
     await _dropLocal(otherId);
   }
 
+  /// Drops [otherId] from the cached friends and requests without queueing
+  /// anything: a block (see `ModerationRepo`) ends the friendship on the
+  /// server through a trigger, so only the local view needs updating.
+  Future<void> forgetLocal(String otherId) => _dropLocal(otherId);
+
   Future<void> _dropLocal(String otherId) async {
     final s = await cached();
     if (s == null) return;

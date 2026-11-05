@@ -598,6 +598,7 @@ class AppDatabase extends _$AppDatabase {
           ])
           ..where(
             trips.deletedAt.isNull() &
+                _realDrive &
                 trips.phase.isIn([
                   TripPhase.scored.wire,
                   TripPhase.unscored.wire,
@@ -836,11 +837,19 @@ class AppDatabase extends _$AppDatabase {
         ).join([innerJoin(tripScores, tripScores.tripId.equalsExp(trips.id))])
         ..where(
           trips.deletedAt.isNull() &
+              _realDrive &
               trips.phase.equals(TripPhase.scored.wire) &
               (trips.isPassenger.isNull() | trips.isPassenger.equals(false)),
         )
         ..orderBy([OrderingTerm.desc(trips.startedAt)])
         ..limit(limit);
+
+  /// A trip the phone recorded, as opposed to a sample drive played back by
+  /// the simulated tracking port (`triggerKind == 'simulated'`). Sample drives show
+  /// on the Drive tab and open like any trip, but never upload, never post
+  /// to the feed and never count for badges, streaks or stats.
+  Expression<bool> get _realDrive =>
+      trips.triggerKind.isNull() | trips.triggerKind.equals('simulated').not();
 
   List<TripWithScore> _rowsToTripsWithScores(List<TypedResult> rows) => [
     for (final r in rows)

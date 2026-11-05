@@ -518,6 +518,9 @@ Future<void> _pushProfile(WidgetTester t, _Ctx c, {String? userId}) async {
   await pumpFor(t, const Duration(seconds: 2));
 }
 
+/// The ref of the post-actions scene's blank page, set when it builds.
+WidgetRef? _postActionsRef;
+
 /// A sheet over a blank page, opened through its public entry point.
 _Scene _sheet(
   String name,
@@ -769,9 +772,28 @@ final _scenes = <_Scene>[
     platform: TargetPlatform.iOS,
   ),
   // Sheets, each over a blank page.
-  _sheet(
+  // The post actions sheet needs a ref (it asks who is signed in to decide
+  // whether Report and Block apply), so its blank page is a Consumer.
+  _Scene(
     'social-sheet-post-actions',
-    (ctx, c) => showPostActions(ctx, post: _posts()[1], onReact: (_) {}),
+    (c) async => _app(
+      c,
+      Consumer(
+        builder: (ctx, ref, _) {
+          _postActionsRef = ref;
+          return const Scaffold();
+        },
+      ),
+    ),
+    prepare: (t, c) async {
+      showPostActions(
+        t.element(find.byType(Scaffold)),
+        _postActionsRef!,
+        post: _posts()[1],
+        onReact: (_) {},
+      );
+      await pumpFor(t, const Duration(seconds: 1));
+    },
   ),
   _sheet(
     'social-sheet-friend-picker',

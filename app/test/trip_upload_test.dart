@@ -192,6 +192,36 @@ void main() {
       expect(sent.last['summary']['score'], clean.score);
     }, skip: skip);
 
+    test('a sample drive is never a candidate, nor a badge trip', () async {
+      final db = memoryDatabase();
+      addTearDown(db.close);
+      final outbox = OutboxWorker(db, now: () => 1);
+      addTearDown(outbox.dispose);
+      final uploader = TripUploader(db, outbox, now: () => 1);
+
+      await insertScoredTrip(db, 'real', messy);
+      await insertScoredTrip(db, 'sample', clean);
+      await db.updateTrip(
+        'sample',
+        const TripsCompanion(triggerKind: Value('simulated')),
+      );
+      await db.updateTrip(
+        'real',
+        const TripsCompanion(triggerKind: Value('activity')),
+      );
+
+      final candidates = await db.watchUploadCandidates().first;
+      expect(candidates.map((t) => t.trip.id), ['real']);
+      expect(await uploader.sweep(), 1);
+
+      // Badges, streaks and stats read the same list: the sample stays out.
+      final forBadges = await db.scoredTripsWithScores();
+      expect(forBadges.map((t) => t.trip.id), ['real']);
+      // The Drive tab still lists it like any trip.
+      final recent = await db.watchRecentTrips().first;
+      expect(recent.map((t) => t.trip.id), containsAll(['real', 'sample']));
+    }, skip: skip);
+
     test('an uploaded, unchanged trip is not even re-hashed', () async {
       final db = memoryDatabase();
       addTearDown(db.close);

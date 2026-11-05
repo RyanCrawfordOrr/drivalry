@@ -58,6 +58,7 @@ abstract final class Routes {
   static const emergencyContacts = '/settings/contacts';
   static const cuesSettings = '/settings/cues';
   static const autoReplySettings = '/settings/auto-reply';
+  static const blockedPeople = '/settings/blocked';
 
   /// Full-screen crash countdown, pushed over everything (docs/01 §4.5).
   static const crash = '/crash';

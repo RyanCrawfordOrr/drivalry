@@ -6,7 +6,9 @@ import '../../app/routes.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
+import '../../data/repos/moderation_repo.dart';
 import '../../data/repos/presence_repo.dart';
+import 'moderation_actions.dart';
 import 'widgets/decline_with_undo.dart';
 import 'widgets/live_badge.dart';
 import 'widgets/page_insets.dart';
@@ -121,6 +123,16 @@ class _FriendsListViewState extends ConsumerState<FriendsListView> {
                                         context,
                                         repo,
                                         s.friends[i],
+                                      ),
+                                      onBlock: () => blockUserFlow(
+                                        context,
+                                        ref,
+                                        BlockedUser(
+                                          id: s.friends[i].id,
+                                          handle: s.friends[i].handle,
+                                          displayName: s.friends[i].displayName,
+                                          avatarPath: s.friends[i].avatarPath,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -286,12 +298,14 @@ class _FriendRow extends StatelessWidget {
     required this.presence,
     required this.now,
     required this.onRemove,
+    required this.onBlock,
   });
 
   final FriendProfile friend;
   final PresenceRow? presence;
   final DateTime now;
   final VoidCallback onRemove;
+  final VoidCallback onBlock;
 
   @override
   Widget build(BuildContext context) {
@@ -316,9 +330,11 @@ class _FriendRow extends StatelessWidget {
         tooltip: 'More',
         onSelected: (v) {
           if (v == 'remove') onRemove();
+          if (v == 'block') onBlock();
         },
         itemBuilder: (_) => const [
           PopupMenuItem(value: 'remove', child: Text('Remove friend')),
+          PopupMenuItem(value: 'block', child: Text('Block')),
         ],
       ),
       onTap: () => context.push(Routes.userProfile(friend.id)),

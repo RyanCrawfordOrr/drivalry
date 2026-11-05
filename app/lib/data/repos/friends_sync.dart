@@ -9,6 +9,7 @@ import '../supabase/supabase_providers.dart';
 import '../sync/outbox.dart';
 import 'feed_repo.dart';
 import 'friends_repo.dart';
+import 'moderation_repo.dart';
 
 final friendsRepoProvider = Provider<FriendsRepo>(
   (ref) => FriendsRepo(
@@ -34,6 +35,7 @@ final friendsSyncProvider = Provider<void>((ref) {
   final worker = ref.watch(outboxWorkerProvider);
   ref.watch(friendsRepoProvider).registerHandlers(worker);
   ref.watch(feedRepoProvider).registerHandlers(worker);
+  ref.watch(moderationRepoProvider).registerHandlers(worker);
   // A sign-in may unblock rows that were waiting on `OutboxRetryLater`.
   ref.listen(currentUserIdProvider, (_, next) {
     if (next != null) worker.scheduleDrain();

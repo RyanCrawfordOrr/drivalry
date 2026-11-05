@@ -6,8 +6,10 @@ import '../../app/routes.dart';
 import '../../app/ui/ui.dart';
 import '../../data/repos/friends_repo.dart';
 import '../../data/repos/friends_sync.dart';
+import '../../data/repos/moderation_repo.dart';
 import '../../widgets/signed_in_scope.dart';
 import 'friends_list_view.dart' show DeclineBackground;
+import 'moderation_actions.dart';
 import 'widgets/decline_with_undo.dart';
 import 'widgets/page_insets.dart';
 import 'widgets/person_row.dart';
@@ -78,7 +80,21 @@ class _FriendRequestsScreenState extends ConsumerState<FriendRequestsScreen> {
                                         },
                                         onDecline: () =>
                                             _decline(repo, incoming[i]),
-                                        onBlock: () => repo.block(incoming[i]),
+                                        // One block mechanism everywhere:
+                                        // the server trigger drops the
+                                        // request, the flow drops it here.
+                                        onBlock: () => blockUserFlow(
+                                          context,
+                                          ref,
+                                          BlockedUser(
+                                            id: incoming[i].other.id,
+                                            handle: incoming[i].other.handle,
+                                            displayName:
+                                                incoming[i].other.displayName,
+                                            avatarPath:
+                                                incoming[i].other.avatarPath,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                 ],

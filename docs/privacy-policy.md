@@ -42,6 +42,10 @@ If you join a circle or convoy, or accept a friend, the app periodically sends y
 
 Friend connections, league and circle memberships, feed posts (trip cards and verdicts), reactions, comments, badges, duels, group challenges, season results, and global league entries.
 
+### Blocks and reports
+
+If you block someone, we store your account ID and theirs so the block can be enforced; the other person is not told. If you report a post or a comment, we store who reported it, who wrote it, which post or comment it was, the reason you chose, any note you typed, and a copy of the reported text so that we can review it even after it is deleted. Reports are read by a person and acted on within 24 hours.
+
 ### Convoys
 
 Convoy membership, proposed stops and votes, shared expenses (amount, currency, category, and an optional note), and photos you add to the shared album. Convoy positions and push-to-talk voice travel directly between the phones in the convoy and are not stored by us.
@@ -117,6 +121,8 @@ We do not share personal data with advertisers, data brokers, insurers, or emplo
 | Convoy photos and ended convoys | 30 days |
 | Speed-limit corrections | Until your account is deleted |
 | Push tokens | Until you sign out or delete your account |
+| Blocks | Until you unblock or delete your account |
+| Content reports | Until reviewed and deleted by us, or until the reporter deletes their account |
 | Account, friends, leagues, badges | Until you delete your account |
 
 ## 6. Your choices
@@ -124,6 +130,7 @@ We do not share personal data with advertisers, data brokers, insurers, or emplo
 - **Location sharing**: hide from any circle, or from everyone, in Settings. Circles see that you are hiding.
 - **Background location, motion, Bluetooth, microphone, and notifications** can be turned off in your phone's settings. Automatic trip detection stops without background location and motion access; push-to-talk needs the microphone only while you hold the button.
 - **Passenger**: mark any trip as a passenger trip and it is not scored or posted.
+- **Report and block**: long-press any post or comment to report it or to block its author. Reported content disappears for you immediately. Blocked people cannot see your drives, posts or location and cannot contact you; **Settings → Friends → Blocked people** lets you unblock.
 - **Delete a trip** in the app and its cloud summary is removed as well.
 - **Leave** any league, circle, or convoy at any time.
 - **Access or correct** your information by contacting us at the address below.

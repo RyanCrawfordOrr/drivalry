@@ -121,6 +121,17 @@ void main() {
       expect(find.text('Go for a drive.'), findsOneWidget);
       expect(find.text("We'll score it when you park."), findsOneWidget);
       expect(find.textContaining('imulate'), findsNothing);
+      // The one way to see a scored trip without driving (App Review uses
+      // it too): a quiet button under the empty copy, in every build.
+      expect(find.text('See a sample drive'), findsOneWidget);
+      await tester.tap(find.text('See a sample drive'));
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(find.text('A smooth commute'), findsOneWidget);
+      expect(find.text('A messy commute'), findsOneWidget);
+      expect(find.textContaining('never counts for leagues'), findsOneWidget);
+      await tester.tapAt(const Offset(5, 5));
+      await pumpFor(tester, const Duration(seconds: 1));
+      expect(find.text('A smooth commute'), findsNothing);
       expect(find.byIcon(Icons.mark_email_unread_outlined), findsOneWidget);
       expect(find.byIcon(Icons.settings_outlined), findsNothing);
       expect(find.byType(AppBar), findsNothing);

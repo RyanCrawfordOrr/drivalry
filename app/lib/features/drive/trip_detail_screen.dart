@@ -243,7 +243,9 @@ class TripDetailScreen extends ConsumerWidget {
         slivers: [
           SliverAppBar(
             pinned: true,
-            title: Text(tripDateLabel(t)),
+            title: Text(
+              t.triggerKind == 'simulated' ? 'Sample drive' : tripDateLabel(t),
+            ),
             actions: actions,
             // The bar's own extent is measured under the status bar.
             expandedHeight: showMap ? mapHeight(context) - topPad : null,
