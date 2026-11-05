@@ -185,12 +185,13 @@ Attached under App Review Information (also at [VIDEO LINK]). Captured on an iPh
 The Notes promise that a person reads every report within 24 hours. Reports land in a table you read in the Supabase dashboard; this sends you a push notification for each one so you do not have to look. Skip it if you have not set up push notifications yet (no `push` function deployed); the table still fills up and you can check it by hand.
 
 1. Your user id: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/auth/users → the **UID** column of your own row → copy it.
-2. In PowerShell:
+2. In PowerShell (the tool is not installed on the PC; `npx` fetches it each time, which is how the function was deployed the first time):
    ```powershell
    cd C:\Drivalry
-   supabase secrets set MODERATOR_USER_ID=PASTE_YOUR_UID --project-ref htqyutdwnnguqatakofx
-   supabase functions deploy push --project-ref htqyutdwnnguqatakofx --use-api
+   npx --yes supabase@latest secrets set MODERATOR_USER_ID=PASTE_YOUR_UID --project-ref htqyutdwnnguqatakofx
+   npx --yes supabase@latest functions deploy push --no-verify-jwt --use-api --project-ref htqyutdwnnguqatakofx
    ```
+   The first ends with *Finished supabase secrets set*, the second with *Deployed Functions on project htqyutdwnnguqatakofx: push*. Keep `--no-verify-jwt`: without it every webhook call is refused and all pushes stop.
 3. https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/integrations/webhooks/overview → open the existing `push_feed_reactions` hook and copy the value of its `x-push-secret` header → **Create a new hook**: name `push_content_reports`, table `content_reports`, events **Insert**, type **HTTP Request**, method `POST`, URL `https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push`, add header `x-push-secret` with the copied value → **Create webhook**.
 
 **Check it worked.** From any second account, long-press one of your posts → **Report** → any reason. Your phone shows *Content report* within seconds.
