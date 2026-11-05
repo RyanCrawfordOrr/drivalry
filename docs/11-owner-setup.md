@@ -630,66 +630,44 @@ Phones get APKs signed by Google's app signing key, not by your upload key, so t
 
 Two things release builds do differently from the debug APKs you used until now: the **Simulate a drive** and **Diagnostics** developer entries on the Drive tab are hidden (Diagnostics stays under Settings → About), and the code is shrunk, so a crash report from a tester names fewer internal details.
 
-## Part 16: Answer App Review's "Information Needed" message (about 2 hours, Mac and iPhone)
+## Part 16: Answer App Review's "Information Needed" message
 
-**What happened.** On 2026-11-05 Apple paused the review of 1.0.0 under *Guideline 2.1 - Information Needed*: they want a screen recording, a description, setup instructions with credentials, the list of external services, regional differences and a word on regulated content. The words are written in `store/app-review.md`; this part is the order to do things in. The old notes pointed the reviewer at "Simulate a drive", which only exists in debug builds, so a new build is part of the answer.
-
-**What you need.** The Mac from Part 8 with the repo pulled; an iPhone on the latest iOS; your own Android or second iPhone signed in as you (for the league and circle codes); 10 minutes in App Store Connect.
-
-1. **Apply migration 0008** (Part 1 step 5, the last line, then the check query). Report and Block in the new build write to these tables. Check: the check query's last column reads `true`.
-2. **Set the moderator push** (Part 17 steps 1 to 3). Optional for review, but it is how you keep the "reviewed within 24 hours" promise the Notes make.
-3. **Build and upload** from the Mac (Part 8 step 6; `app/ios/README-mac.md` §6): pull `main`, `tools/release/build_ios.sh`, Transporter, wait for *Ready to Submit*, attach the build on the version page. Check: TestFlight shows a build number higher than the one Apple reviewed, and that build installed on your iPhone shows **See a sample drive** on an empty Drive tab.
-4. **Make the review league and circle** on your own phone, signed in as you:
-   - Leagues tab → **New league** → name `App Review` → create → the invite sheet shows a code. Write it down.
-   - Friends tab → **Circles** → **New circle** → name `App Review` → the invite sheet shows a code. Write it down.
-   - Drive a real trip or two (or ask a friend in the league to) so the league has standings and the feed has posts. Your own trips post there as soon as they score.
-   - Profile (avatar on the Drive tab) → note your handle.
-5. **Record the video** on the iPhone with the TestFlight build, following the shot list in `store/app-review.md` ("The recording, shot by shot"). Check: it starts on the Home Screen, shows Sign in with Apple, a report, a block, and ends on "Account deleted."
-6. **Fill in App Store Connect**: https://appstoreconnect.apple.com/apps/6830844356/distribution/ios/version/inflight → scroll to **App Review Information**.
-   - **Notes**: paste the block from `store/app-review.md` with every `[…]` replaced (codes, handle, build number, phone model, iOS version).
-   - **Attachments** (same section): upload the video (`.mov` from Photos is fine). If it refuses the size, put the file in iCloud Drive with link sharing and paste the link in the Notes where `[VIDEO LINK]` is.
-   - **Sign-In required**: leave off.
-   - **Contact Information**: name, phone, email, if still empty.
-   - **Save** (top right).
-7. **Reply and resubmit.** On the same page the Apple message sits under *App Review* (or in **App Store Connect → Apps → Drivalry → App Review** in the left column). Click **Reply**, paste one line: "Thank you. A new build with the sample drive, report and block flows is attached, the screen recording is in Attachments and the requested information is in the Notes." Send it. Then back on the version page click **Submit for Review** (or **Add for Review** → **Submit to App Review**). Check: the version status reads **Waiting for Review**.
-
-**If it fails.**
-
-- *Submit for Review* is grey: a build is not attached, App Privacy is not published, or Contact Information is empty.
-- The reviewer cannot join the league: the code was typed with a 0/O mix-up (codes are letters and digits); send a new one in the reply.
-- Report or Block shows "could not…" in the app: migration 0008 is not applied (step 1).
-- The video is over the size limit: trim it in Photos (Edit → drag the ends) or use the link route in step 6.
+Every step is in one file, start to finish, with each command and click written out: `store/app-review.md`. Open it and work down from Step 1. Nothing in it sends you back here.
 
 ---
 
-## Part 17: Content reports, what to do when one arrives (10 minutes to set up)
+## Part 17: Content reports, what to do when one arrives (10 minutes once, then as they come)
 
-**What it is.** Anyone can report a post or a comment (long-press → Report) and block a person. The reporter stops seeing the content at once; the report lands in the `content_reports` table for you to read. Apple and Google both expect a human to act on reports promptly; the App Review notes promise 24 hours. This part sends you a push notification for every report and shows what to do with it.
+**What it is.** Anyone can report a post or a comment (long-press → Report) and block a person. The reporter stops seeing the content at once; the report lands in the `content_reports` table for you to read. The notes given to Apple promise that a person looks within 24 hours. This part sends you a push notification for every report, then says what to do with one.
 
 ### 17a. Get a push for every report (once)
 
-1. Find your own user id: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/auth/users → the **UID** column of your account → copy it.
-2. Set the secret and redeploy the push function. In PowerShell (the `supabase` tool from Part 5b):
+Skip this if the `push` Edge Function was never deployed (no push notifications yet); the table still fills up and you can read it by hand.
+
+1. Your user id: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/auth/users → the **UID** column of your own row → copy it.
+2. In PowerShell:
    ```powershell
    cd C:\Drivalry
    supabase secrets set MODERATOR_USER_ID=PASTE_YOUR_UID --project-ref htqyutdwnnguqatakofx
    supabase functions deploy push --project-ref htqyutdwnnguqatakofx --use-api
    ```
-3. Add the webhook: https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/integrations/webhooks/overview → **Create a new hook** → name `push_content_reports`, table `content_reports`, events **Insert**, type **HTTP Request**, method `POST`, URL `https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push`, header `x-push-secret` = the same value as in Part 5d → **Create webhook**.
+3. https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/integrations/webhooks/overview → open the existing `push_feed_reactions` hook and copy the value of its `x-push-secret` header → **Create a new hook**: name `push_content_reports`, table `content_reports`, events **Insert**, type **HTTP Request**, method `POST`, URL `https://htqyutdwnnguqatakofx.supabase.co/functions/v1/push`, add the header `x-push-secret` with the copied value → **Create webhook**.
 
-**Check it worked.** From a second account, long-press one of your posts → **Report** → any reason. Your phone gets "Content report" within seconds. Or run the Part 5f curl with `"table":"content_reports"` and `"record":{"post_id":"x","reason":"spam"}`; expect `"sent":1`.
+**Check it worked.** From any second account, long-press one of your posts → **Report** → any reason. Your phone shows *Content report* within seconds.
+
+**If it fails.** No push: the secret was set but the function was not redeployed (run the deploy line again), or the hook's header value differs from the one on `push_feed_reactions`.
 
 ### 17b. Handle a report (each time)
 
-1. Open https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/editor → **content_reports** (left column). Newest first: sort by `created_at`. The `snapshot` column holds the text as the reporter saw it, so you can judge it even after the content is gone.
+1. https://supabase.com/dashboard/project/htqyutdwnnguqatakofx/editor → **content_reports** (left column) → sort by `created_at`, newest first. The `snapshot` column holds the reported text, so you can judge it even after the content is gone.
 2. Look at the content: `post_id` → open **feed_posts** and filter `id` = that value; `comment_id` → **feed_comments**. `reported_user_id` is the author; **profiles** shows their handle.
 3. Decide:
    - **Fine, leave it**: set `status` to `reviewed`.
-   - **Take it down**: in **feed_posts** or **feed_comments** select the row → **Delete**. Then set `status` to `actioned`. Deleting a post removes its reactions and comments with it.
-   - **Repeat offender**: Authentication → Users → the account → **Delete user**. Everything of theirs cascades away. Set `status` to `actioned`.
+   - **Take it down**: in **feed_posts** or **feed_comments** select the row → **Delete** (a post takes its reactions and comments with it). Set `status` to `actioned`.
+   - **Repeat offender**: **Authentication → Users** → the account → **Delete user**. Everything of theirs cascades away. Set `status` to `actioned`.
 4. Nobody is told who reported; nothing else to do.
 
-**Check it worked.** The reporter's feed never shows the content again (it was hidden for them at the moment of reporting); everyone else stops seeing it on their next refresh.
+**Check it worked.** The reporter never sees the content again (it was hidden for them when they reported); everyone else stops seeing it on their next refresh.
 
 ---
 
@@ -698,8 +676,8 @@ Two things release builds do differently from the debug APKs you used until now:
 | You see | Cause | Fix |
 | --- | --- | --- |
 | Signed-in screens show errors or spin forever | Migrations not applied | Part 1 |
-| App Review message *Information Needed* (Guideline 2.1) | Apple wants a video, notes and a new build | Part 16 |
-| Report or Block say "could not…" | Migration 0008 not applied | Part 1 step 5 |
+| App Review message *Information Needed* (Guideline 2.1) | Apple wants a video, notes and a new build | `store/app-review.md`, Step 1 to 7 |
+| Report or Block say "could not…" | Migration 0008 not applied | `store/app-review.md` Step 1 |
 | A report arrived but no push | `MODERATOR_USER_ID` not set, function not redeployed, or no `push_content_reports` webhook | Part 17a |
 | *Google sign-in is not configured for this build* | Blank `GOOGLE_WEB_CLIENT_ID`, no rebuild, or SHA-1 mismatch | Parts 2b, 2c, 4 |
 | *Access blocked: … has not completed the Google verification process* | Account not in Test users | Part 2a step 3 |
