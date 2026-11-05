@@ -5,6 +5,7 @@
 #
 #   tools/release/build_ios.sh            -> app/build/ios/ipa/*.ipa for App Store Connect
 #   tools/release/build_ios.sh --ad-hoc   -> an ad-hoc .ipa for cable installs on registered iPhones
+#   tools/release/build_ios.sh --build-number 81   -> same, with an explicit build number
 #
 # Build number = number of commits on this branch, the same rule as Android, so
 # one commit has one number on both stores. App Store Connect refuses a build
@@ -33,10 +34,23 @@ if ! security show-keychain-info "$keychain" >/dev/null 2>&1; then
 fi
 
 method=app-store
-if [ "${1:-}" = "--ad-hoc" ]; then method=ad-hoc; fi
+override=""
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --ad-hoc) method=ad-hoc ;;
+    --build-number) override="$2"; shift ;;
+    --build-number=*) override="${1#*=}" ;;
+    *) echo "Unknown option: $1 (use --ad-hoc, --build-number N)" >&2; exit 2 ;;
+  esac
+  shift
+done
 
 cd "$app"
 code="$(git rev-list --count HEAD)"
+# --build-number N re-uploads without a new commit, for when App Store Connect
+# already has the commit-count number (a burned or duplicate upload). Pick N
+# above the last upload; the commit count catches up on its own.
+if [ -n "$override" ]; then code="$override"; fi
 if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
   echo "warning: uncommitted changes. The build carries number $code but will not match a commit." >&2
 fi
