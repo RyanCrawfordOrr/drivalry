@@ -122,45 +122,36 @@ Keep it under four minutes. No narration needed.
 1. Open https://appstoreconnect.apple.com/apps/6830844356/distribution/ios/version/inflight and scroll to **App Review Information**.
 2. **Sign-In required**: leave it **off** (the app works without an account).
 3. **Contact Information**: first name, last name, phone number, email. All four.
-4. **Notes**: paste the block below. Before you paste, replace the six bracketed values: the league code, the circle code and your handle from Step 4, CODE from Step 2, and the iPhone model and iOS version from the phone's *Settings → General → About*.
-5. **Attachments** (just under Notes): **Choose File** → the video. If it refuses the file, put the video in iCloud Drive or Google Drive, turn on link sharing, and paste that link in the Notes where it says `[VIDEO LINK]`.
+4. **Notes**: paste the block below. Before you paste, replace the three bracketed values: the league code, the circle code and your handle from Step 4. The field allows 4,000 characters; the block is under that.
+5. **Attachments** (just under Notes): **Choose File** → the video. If it refuses the file, put the video in iCloud Drive or Google Drive, turn on link sharing, and add that link at the end of the Notes.
 6. **Save** (top right).
 
 ```
 WHAT DRIVALRY IS, AND FOR WHOM
-Drivalry is a "step challenge for driving". The phone notices when the user drives and scores each trip from 0 to 100 on the device (speed against the posted limit, smoothness, phone handling). Friends compete in weekly leagues on those scores; good drives get praise and bad ones get a one-line "roast" from a fixed template library. It is for friends, families and car clubs who want a reason to drive more calmly; nothing in the app rewards speed or distance. Around that: a live-location map shared only with chosen friends ("circles"), road-trip "convoys" with a shared map and push-to-talk radio, crash detection that texts emergency contacts, and a garage for fuel and maintenance notes. Free, no ads, no in-app purchases, no subscriptions. Age 16+.
+A "step challenge for driving". The phone notices when the user drives and scores each trip 0-100 on the device (speed against the posted limit, smoothness, phone handling). Friends compete in weekly leagues on those scores; good drives get praise, bad ones a one-line "roast" from a fixed template library. For friends, families and car clubs who want a reason to drive more calmly; nothing rewards speed or distance. Also: a live-location map shared only with chosen friends ("circles"), road-trip "convoys" with a shared map and push-to-talk radio, crash detection that texts emergency contacts, and a garage for fuel and maintenance notes. Free, no ads, no purchases, no subscriptions. Age 16+.
 
-HOW TO SIGN IN (there is no password to give you)
-The app has no email/password login, so no demo credentials exist. Sign in with Apple creates an account instantly: on the Drive tab tap the round person icon (top right) → "Continue with Apple" → use any Apple ID. A handle such as @driver_1234 is generated automatically; "Continue with Google" works too. Account deletion: person icon → Profile → gear (Settings) → Account → "Delete account" → Delete. It removes the profile, friendships, posts and memberships from our database immediately.
-Most of the app works without an account (trip scoring, garage). Friends, leagues, the feed, circles and convoys need one.
+SIGN IN (no password exists)
+There is no email/password login, so no demo credentials. Sign in with Apple creates an account instantly: Drive tab → round person icon (top right) → "Continue with Apple" → any Apple ID. A handle like @driver_1234 is generated; "Continue with Google" works too. Delete account: person icon → Profile → gear → Account → "Delete account" → Delete; it removes the profile, friendships, posts and memberships at once. Trip scoring and the garage work without an account; friends, leagues, feed, circles and convoys need one.
 
-HOW TO SEE THE MAIN FEATURES WITHOUT DRIVING
-1. A scored trip needs real driving: trips start and stop on their own from motion and location and score when the car parks. There is no demo or simulated trip. The attached video opens a real scored trip (score, verdict, events on the map), and the review league below shows our test driver's scored trip cards in the feed.
-2. First launch asks for "Always" location and Motion & Fitness because of that automatic detection. "Not now" is fine on both pages; everything else in the app still works.
-3. Friends and the feed: Leagues tab → "Join with a code" → [LEAGUE CODE]. This is a league we made for review; it has standings and trip posts from our test driver, and sharing a league makes those posts visible in your Friends tab feed. You can also add us: Friends tab → Add friend → search [YOUR HANDLE].
-4. User-generated content and moderation: posts are trip cards with a template verdict; people react (six fixed emoji) and comment (free text, 280 characters). Long-press any post → React / Comment / Share / Report / Block. On a post's page the ⋮ menu has Report post and Block, and a long-press on a comment offers Report comment / Block. Reporting hides the content for the reporter at once and files a report that a person reviews within 24 hours. Blocking removes the person from your feed, comments, map, friends list and requests in both directions; Settings → Friends → Blocked people lists them with Unblock.
-5. Live-location map: Friends tab → Circles → "Join with code" → [CIRCLE CODE]. Our test phone then appears on the Drive-tab map. Sharing is opt-in per circle and "Hide my location" (Settings → Friends) stops it with one switch.
-6. Convoy push-to-talk needs two phones in one convoy and Convoy DJ needs a Spotify Premium account; both are optional and not needed to review the app.
+MAIN FEATURES WITHOUT DRIVING
+1. A scored trip needs real driving: trips start and stop on their own from motion and location and score when the car parks. No demo or simulated trip exists. The attached video opens a real scored trip, and the review league below shows our test driver's trip cards in the feed.
+2. First launch asks for "Always" location and Motion & Fitness for that automatic detection. "Not now" is fine; everything else still works.
+3. Feed and standings: Leagues tab → "Join with a code" → [LEAGUE CODE] (a league made for review with our test driver's posts). Sharing a league makes those posts visible in the Friends tab feed. Or add us: Friends tab → Add friend → search [YOUR HANDLE].
+4. User content and moderation: posts are trip cards with a template verdict; people react (six fixed emoji) and comment (free text, 280 characters). Long-press any post → React / Comment / Share / Report / Block. On a post's page the ⋮ menu has Report post and Block; long-press a comment for Report comment / Block. Reporting hides the content for the reporter at once and files a report a person reviews within 24 hours. Blocking removes the person from feed, comments, map, friends and requests both ways; Settings → Friends → Blocked people has Unblock.
+5. Live map: Friends tab → Circles → "Join with code" → [CIRCLE CODE]; our test phone appears on the Drive-tab map. Sharing is opt-in per circle; "Hide my location" (Settings → Friends) stops it.
+6. Convoy push-to-talk needs two phones in one convoy and Convoy DJ needs Spotify Premium; both optional, not needed for review.
 
 EXTERNAL SERVICES
-- Supabase (authentication, Postgres database, realtime, storage, edge functions): accounts, friends, leagues, trip summaries, feed, live positions, push fan-out.
-- Sign in with Apple and Google Sign-In: identity only.
-- Google Maps SDK for iOS (map tiles), Google Places API (convoy stop suggestions), Google Routes API (convoy ETAs).
-- Firebase Cloud Messaging with APNs: push notifications.
-- OpenStreetMap data: we build offline speed-limit packs from OSM and host them on GitHub Releases; Nominatim gives place names for trips.
-- Open-Meteo: weather on trip cards.
-- Metered.ca TURN relay: carries convoy push-to-talk audio (WebRTC) when a direct connection fails.
-- Spotify Web API: the optional Convoy DJ feature, through the user's own Spotify account.
-No AI services, no analytics SDK, no ad networks, no payment processors. Raw GPS traces never leave the phone; only trip summaries (score, distance, duration, verdict) are uploaded.
+Supabase (auth, Postgres, realtime, storage, edge functions); Sign in with Apple and Google Sign-In (identity only); Google Maps SDK, Places API and Routes API; Firebase Cloud Messaging with APNs; OpenStreetMap data (our offline speed-limit packs on GitHub Releases) and Nominatim (place names); Open-Meteo (weather); Metered.ca TURN relay (convoy push-to-talk audio via WebRTC); Spotify Web API (optional Convoy DJ, user's own account). No AI services, analytics SDKs, ad networks or payment processors. Raw GPS never leaves the phone; only trip summaries are uploaded.
 
 REGIONAL DIFFERENCES
-The app behaves the same in every region, with one data limitation: posted speed limits exist as offline packs for the United States only (every state plus DC) so far. Elsewhere a trip is still detected and scored for smoothness and phone handling, no speeding events can be flagged, and the app shows the limit as unknown. Units follow the region (mph or km/h) and can be set by hand. Map tiles are Google Maps, within Google's coverage. The app is not offered in France.
+Same behaviour everywhere, with one data limit: posted speed limits exist as offline packs for the United States only (all states plus DC) so far. Elsewhere trips are still detected and scored for smoothness and phone handling, no speeding can be flagged, and the limit shows as unknown. Units follow the region (mph or km/h) and can be set by hand. Map tiles are Google Maps. Not offered in France.
 
 REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
-Drivalry is not in a regulated industry: no insurance, no fleet or employer use, no payments. Third-party material: OpenStreetMap data under the ODbL, credited at Settings → About; Google Maps under the Google Maps Platform terms, with Google's attribution on every map; weather from Open-Meteo (CC BY 4.0). No licensed music or media ships in the app; Convoy DJ plays inside the user's own Spotify app.
+Not a regulated industry: no insurance, fleet or employer use, no payments. Third-party material: OpenStreetMap data under the ODbL, credited at Settings → About; Google Maps under the Google Maps Platform terms with Google's attribution on every map; weather from Open-Meteo (CC BY 4.0). No licensed music or media ships; Convoy DJ plays inside the user's own Spotify app.
 
 SCREEN RECORDING
-Attached under App Review Information (also at [VIDEO LINK]). Captured on an iPhone [MODEL] running iOS [VERSION] with build 1.0.0 ([CODE]): launch, first-run pages, a scored trip, Sign in with Apple, joining the review league, the feed, commenting, reporting a post, blocking and unblocking a person, and account deletion.
+Attached under App Review Information. Captured on an iPhone running the latest iOS with the latest build: launch, first-run pages, a scored trip, Sign in with Google, the feed, commenting, reporting a post, blocking and unblocking a person, and account deletion.
 ```
 
 **Check it worked.** After Save, the Notes show your real codes (no square brackets left) and the Attachments row lists the video.
