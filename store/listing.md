@@ -101,7 +101,7 @@ IN THE CAR
 **Privacy nutrition labels** Location (linked to you, used for app functionality, shared with friends you choose); Contact info: email and name (sign-in); Identifiers: user id. Nothing used for tracking.
 
 **App Review notes**
-The full text, the screen-recording shot list and the resubmission checks are in `store/app-review.md` (Apple asked for them under Guideline 2.1 on 2026-11-05). The short version: there is no password to give, Sign in with Apple with any Apple ID creates an account; a scored trip without driving is Drive → **See a sample drive** (also Settings → Drives → Sample drive); a review league code and a circle code let the reviewer see posts and the live map; Report and Block are on every post, comment and profile.
+The full text, the screen-recording shot list and the resubmission checks are in `store/app-review.md` (Apple asked for them under Guideline 2.1 on 2026-11-05). The short version: there is no password to give, Sign in with Apple with any Apple ID creates an account; scoring needs real driving and the video shows a scored trip (there is no demo or simulated trip in the product); a review league code and a circle code let the reviewer see posts and the live map; Report and Block are on every post, comment and profile.
 
 ## Screenshot captions
 

@@ -31,7 +31,6 @@ import 'first_run_flow.dart';
 import 'friends_map/friends_map.dart';
 import 'parking/parking_card.dart';
 import 'parking/parking_memory.dart';
-import 'sample_drive_sheet.dart';
 import 'share_card.dart';
 import 'simulate_sheet.dart';
 import 'trip_celebration.dart';
@@ -478,14 +477,12 @@ class _DriveHome extends ConsumerWidget {
   }
 }
 
-/// Empty sheet copy: no mention of the simulator (docs/12 audit item 3), and
-/// one quiet way to see what a scored trip looks like before the first real
-/// drive (the sample never counts for anything).
-class _NoTripsYet extends ConsumerWidget {
+/// Empty sheet copy: no mention of the simulator (docs/12 audit item 3).
+class _NoTripsYet extends StatelessWidget {
   const _NoTripsYet();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: Space.xl),
       child: Column(
@@ -494,16 +491,6 @@ class _NoTripsYet extends ConsumerWidget {
           Text('Go for a drive.', style: context.headline),
           const SizedBox(height: Space.md),
           Text("We'll score it when you park.", style: context.bodyMuted),
-          const SizedBox(height: Space.lg),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SecondaryButton(
-              key: const Key('sample-drive'),
-              label: 'See a sample drive',
-              icon: Icons.play_arrow_rounded,
-              onPressed: () => showSampleDriveSheet(context, ref),
-            ),
-          ),
         ],
       ),
     );

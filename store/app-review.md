@@ -4,7 +4,7 @@ Apple paused the review of 1.0.0 with a *Guideline 2.1 - Information Needed* mes
 
 **What you need:** your Windows PC; the Mac with the repo at `~/dev/drivalry` and the `.env` file already in it (the same Mac that built the last upload); an iPhone on the latest iOS with a cable; your own phone signed in to Drivalry; about two hours, half of it waiting for Apple to process the build.
 
-**Why a new build:** the notes Apple read said "open Drive → menu → Simulate a drive". That menu only exists in debug builds, so the reviewer had no way to see a scored trip. The build you upload below has **See a sample drive** on the Drive tab, a working **Report**, and **Block** everywhere a person appears.
+**Why a new build:** the notes Apple read said "open Drive → menu → Simulate a drive". That menu only exists in debug builds, and there is no demo or simulated trip in the product (scoring needs real driving, which the video shows). The build you upload below has a working **Report** and **Block** everywhere a person appears, which Apple requires for user content.
 
 ---
 
@@ -75,7 +75,7 @@ Your own scored drives already post to the feed, so the reviewer will see trip c
 
 ### 5a. Put the new build on the iPhone
 
-1. If Drivalry is on the iPhone, delete it (hold the icon → **Remove App** → **Delete App**), so the recording starts with the first-run pages.
+1. Drive once with Drivalry installed on this iPhone before you record, so the phone holds at least one scored trip (it scores when you park). Trips stay on the phone through reinstalls and sign-outs. Then sign out: avatar → Profile → gear → **Account → Sign out**.
 2. Plug the iPhone into the Mac, unlock it, tap **Trust** if asked. In Terminal:
    ```sh
    cd ~/dev/drivalry/app
@@ -84,7 +84,7 @@ Your own scored drives already post to the feed, so the reviewer will see trip c
    Wait for `Installing and launching…` and then the app on the phone. Press `q` in Terminal to quit; the app stays installed.
 3. Unplug the phone. Open **Settings → Control Center** on the iPhone and make sure **Screen Recording** is in the list of included controls (tap the green **+** next to it if not).
 
-**Check it worked.** Open Drivalry: the first page says *Every drive gets a score.* Close it with a swipe up.
+**Check it worked.** Open Drivalry: the Drive tab shows your trip and the round person icon (signed out). Close it with a swipe up.
 
 **If it fails.** `flutter run` cannot see the phone: *Settings → Privacy & Security → Developer Mode* on the iPhone must be on (restart when asked), then run the command again.
 
@@ -95,8 +95,8 @@ Go to the Home Screen. Swipe down from the top right, tap the **record** button 
 | # | Do | What the reviewer sees |
 | --- | --- | --- |
 | 1 | Tap the Drivalry icon | Launch, then *Every drive gets a score.* |
-| 2 | **Next** → **Allow** → **Allow While Using App** → **Allow** on the motion page | The first-run pages and the system prompts |
-| 3 | On the Drive tab tap **See a sample drive** → **A messy commute** | The trip page: score, verdict, events on the map. Scroll to the bottom and back up |
+| 2 | If the first-run pages appear: **Next** → **Allow** → **Allow While Using App** → **Allow** on the motion page. On a phone that already granted them they do not appear; carry on | The first-run pages and the system prompts |
+| 3 | On the Drive tab tap your latest trip card | The trip page: score, verdict, events on the map. Scroll to the bottom and back up |
 | 4 | Back → tap the round person icon (top right) → **Continue with Apple** → on Apple's sheet choose **Hide My Email** → confirm with Face ID | A new account is created. **Hide My Email matters**: it keeps this throwaway account separate from your real one, which you must not delete in shot 13 |
 | 5 | Tap your avatar → the profile page | The generated handle |
 | 6 | **Leagues** tab → **Create or join** (or the **+**) → **Join with a code** → type the league code from Step 4 → **Join** | Standings with you in them |
@@ -135,8 +135,8 @@ The app has no email/password login, so no demo credentials exist. Sign in with 
 Most of the app works without an account (trip scoring, garage). Friends, leagues, the feed, circles and convoys need one.
 
 HOW TO SEE THE MAIN FEATURES WITHOUT DRIVING
-1. A scored trip: Drive tab → "See a sample drive" (under "Go for a drive") → "A messy commute". A pretend 20-minute trip runs through the same scoring as a real one and opens: score, verdict, events on the map. Also at Settings → Drives → Sample drive. Sample drives stay on the phone and never post to friends.
-2. Real trips start on their own from motion and location, which is why first launch asks for "Always" location and Motion & Fitness. "Not now" is fine on both pages; the sample drive still works.
+1. A scored trip needs real driving: trips start and stop on their own from motion and location and score when the car parks. There is no demo or simulated trip. The attached video opens a real scored trip (score, verdict, events on the map), and the review league below shows our test driver's scored trip cards in the feed.
+2. First launch asks for "Always" location and Motion & Fitness because of that automatic detection. "Not now" is fine on both pages; everything else in the app still works.
 3. Friends and the feed: Leagues tab → "Join with a code" → [LEAGUE CODE]. This is a league we made for review; it has standings and trip posts from our test driver, and sharing a league makes those posts visible in your Friends tab feed. You can also add us: Friends tab → Add friend → search [YOUR HANDLE].
 4. User-generated content and moderation: posts are trip cards with a template verdict; people react (six fixed emoji) and comment (free text, 280 characters). Long-press any post → React / Comment / Share / Report / Block. On a post's page the ⋮ menu has Report post and Block, and a long-press on a comment offers Report comment / Block. Reporting hides the content for the reporter at once and files a report that a person reviews within 24 hours. Blocking removes the person from your feed, comments, map, friends list and requests in both directions; Settings → Friends → Blocked people lists them with Unblock.
 5. Live-location map: Friends tab → Circles → "Join with code" → [CIRCLE CODE]. Our test phone then appears on the Drive-tab map. Sharing is opt-in per circle and "Hide my location" (Settings → Friends) stops it with one switch.
@@ -160,7 +160,7 @@ REGULATED INDUSTRY AND THIRD-PARTY MATERIAL
 Drivalry is not in a regulated industry: no insurance, no fleet or employer use, no payments. Third-party material: OpenStreetMap data under the ODbL, credited at Settings → About; Google Maps under the Google Maps Platform terms, with Google's attribution on every map; weather from Open-Meteo (CC BY 4.0). No licensed music or media ships in the app; Convoy DJ plays inside the user's own Spotify app.
 
 SCREEN RECORDING
-Attached under App Review Information (also at [VIDEO LINK]). Captured on an iPhone [MODEL] running iOS [VERSION] with build 1.0.0 ([CODE]): launch, first-run pages, sample drive, Sign in with Apple, joining the review league, the feed, commenting, reporting a post, blocking and unblocking a person, and account deletion.
+Attached under App Review Information (also at [VIDEO LINK]). Captured on an iPhone [MODEL] running iOS [VERSION] with build 1.0.0 ([CODE]): launch, first-run pages, a scored trip, Sign in with Apple, joining the review league, the feed, commenting, reporting a post, blocking and unblocking a person, and account deletion.
 ```
 
 **Check it worked.** After Save, the Notes show your real codes (no square brackets left) and the Attachments row lists the video.
@@ -170,7 +170,7 @@ Attached under App Review Information (also at [VIDEO LINK]). Captured on an iPh
 ## Step 7. Reply to Apple and submit (browser, 2 minutes)
 
 1. On the same page, Apple's message sits at the top under **App Review** (if not, click **App Review** in the left column of https://appstoreconnect.apple.com/apps/6830844356). Click **Reply** and paste:
-   > Thank you. A new build (1.0.0 CODE) with the sample drive, report and block flows is attached, the screen recording is under Attachments, and the requested information is in the Notes.
+   > Thank you. A new build (1.0.0 CODE) with the report and block flows is attached, the screen recording is under Attachments, and the requested information is in the Notes.
    Send it.
 2. Back on the version page click **Submit for Review** (on some accounts it reads **Add for Review**, then **Submit to App Review** on the next page).
 

@@ -18,7 +18,6 @@ import '../../tracking/tracking_controller.dart';
 import '../../widgets/friendly_error.dart';
 import '../../widgets/units.dart';
 import '../cues/cue_settings.dart';
-import '../drive/sample_drive_sheet.dart';
 import '../profile/profile_repo.dart';
 import 'emergency_contacts_screen.dart';
 import 'notifications_settings_screen.dart';
@@ -106,13 +105,6 @@ class SettingsScreen extends ConsumerWidget {
               title: 'Speed-limit packs',
               caption: 'Roads and limits kept on this phone.',
               onTap: () => context.push(Routes.packs),
-            ),
-            SettingsRow(
-              key: const Key('sample-drive'),
-              icon: Icons.play_circle_outline,
-              title: 'Sample drive',
-              caption: 'A pretend trip, scored like a real one. Stays here.',
-              onTap: () => showSampleDriveSheet(context, ref),
             ),
           ],
         ),
