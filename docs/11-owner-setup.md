@@ -630,6 +630,27 @@ Phones get APKs signed by Google's app signing key, not by your upload key, so t
 
 Two things release builds do differently from the debug APKs you used until now: the **Simulate a drive** and **Diagnostics** developer entries on the Drive tab are hidden (Diagnostics stays under Settings → About), and the code is shrunk, so a crash report from a tester names fewer internal details.
 
+### 15g. Move from internal testing to closed testing (30 minutes, then wait for review)
+
+**Why.** A personal developer account made after 13 November 2023 cannot publish to production until a **closed** test has run with at least 12 testers opted in, without a break, for 14 days. Internal testing does not count. Closed testing also goes through Google's app review (hours to a few days the first time), which internal testing skips.
+
+1. **Finish app setup.** https://play.google.com/console → Drivalry → **Dashboard** → the **Set up your app** list. Every task with an open circle has to be done before a closed-testing release rolls out: privacy policy URL (`https://github.com/RyanCrawfordOrr/drivalry/blob/main/docs/privacy-policy.md`), app access (all features available without special access), ads (no), content rating (the questionnaire), target audience (18 and over), news app (no), data safety, government apps (no), financial features (none), health (none), and the **Main store listing** (name, descriptions and graphics from `store/listing.md` and `store/play`). Check: every task shows a green tick.
+2. **Open the track.** Left column → **Testing** → **Closed testing**. There is one track already (Google names it *Alpha*); click **Manage track**. If you prefer your own name, **Create track** at the top right → name `Friends` → **Create track**.
+3. **Testers.** The **Testers** tab → under *Testers* click **Create email list** → list name `Drivalry testers` → paste the Gmail addresses, comma-separated (12 or more if this test is to unlock production) → **Save changes** → **Create** → tick the list → *Feedback URL or email address*: your email → **Save changes**.
+4. **Countries.** Same tab, *Countries/regions* → **Add countries/regions** → tick **United States** (or **Select all**) → **Add countries/regions** → **Save changes**. The choice applies to every track.
+5. **Release.** The **Releases** tab → **Create new release**. Under *App bundles* click **Add from library** and pick `1.0.0 (68)`, the bundle already on internal testing (or **Upload** a fresh `app-release.aab` from 15c). Release name stays as filled in. *Release notes*: `First closed test.` → **Next** → **Save** → **Review release** → **Start rollout to Closed testing** → **Rollout**. Shortcut that skips the upload: **Testing → Internal testing → Releases** → the 68 release → **Promote release** → **Closed testing**.
+6. **Wait for review.** The release shows *In review*, then *Available on Google Play*. Nothing to do meanwhile.
+7. **Invite.** Back on the **Testers** tab → *How testers join your test* → **Copy link** → send it to the testers. Each opens it on their phone, taps **Become a tester**, then installs Drivalry from the Play Store link on the same page. The link only works once the review is done, and can take a few hours to go live after that.
+
+**Check it worked.** Closed testing → *Track summary* shows the release *Active* and the tester count rising as people opt in. Fourteen days after the twelfth tester opted in, **Dashboard → Apply for production** turns on; the form asks about the test and the app, and Google answers within about seven days.
+
+**If it fails.**
+
+- A tester's link says *not available* or *item not found*: their Gmail is not on the list (step 3), or they are still opted in to **internal** testing. Someone on internal testing cannot join a closed test until they open the internal opt-in link and tap **Leave the program**. That includes your own phone.
+- **Start rollout** is grey: a *Set up your app* task is still open (step 1), or no countries are selected (step 4).
+- *Rejected* after review: open the message under **Policy status** in the left column; fix what it names, build again (15c), and roll out again.
+- The tester count drops below 12 before 14 days: the clock restarts for the next person who joins; it is 12 people opted in at the same time for 14 consecutive days.
+
 ## Part 16: Answer App Review's "Information Needed" message
 
 Every step is in one file, start to finish, with each command and click written out: `store/app-review.md`. Open it and work down from Step 1. Nothing in it sends you back here.
