@@ -23,6 +23,15 @@ if ! command -v flutter >/dev/null 2>&1; then
   exit 1
 fi
 
+# Code signing reads the identities from the login keychain, which macOS locks
+# after sleep or a few hours idle; codesign then fails with errSecInternalComponent.
+# Unlock it here (asks for the Mac login password), so run this from Terminal.
+keychain="$HOME/Library/Keychains/login.keychain-db"
+if ! security show-keychain-info "$keychain" >/dev/null 2>&1; then
+  echo "The login keychain is locked; code signing needs it open."
+  security unlock-keychain "$keychain"
+fi
+
 method=app-store
 if [ "${1:-}" = "--ad-hoc" ]; then method=ad-hoc; fi
 
