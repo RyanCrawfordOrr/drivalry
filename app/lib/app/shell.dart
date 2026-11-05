@@ -36,12 +36,35 @@ class AppShell extends ConsumerWidget {
         destinations: [
           for (final tab in AppTab.values)
             NavigationDestination(
-              icon: Icon(tab.icon),
-              selectedIcon: Icon(tab.selectedIcon),
+              icon: _TabIcon(tab, selected: false),
+              selectedIcon: _TabIcon(tab, selected: true),
               label: tab.label,
             ),
         ],
       ),
+    );
+  }
+}
+
+/// A tab's icon. Friends carries a red dot while a friend request is waiting
+/// for an answer, so the ask is visible from every tab; accepting or
+/// declining the request clears it. A dot rather than a count: the number
+/// is on the requests button once you are there.
+class _TabIcon extends ConsumerWidget {
+  const _TabIcon(this.tab, {required this.selected});
+
+  final AppTab tab;
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final icon = Icon(selected ? tab.selectedIcon : tab.icon);
+    if (tab != AppTab.friends) return icon;
+    final pending = ref.watch(pendingRequestCountProvider);
+    return Badge(
+      isLabelVisible: pending > 0,
+      backgroundColor: Theme.of(context).colorScheme.error,
+      child: icon,
     );
   }
 }

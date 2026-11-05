@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:drivalry/app/app.dart';
 import 'package:drivalry/app/deep_links.dart';
 import 'package:drivalry/data/db/database.dart';
+import 'package:drivalry/data/repos/friends_repo.dart';
+import 'package:drivalry/data/repos/friends_sync.dart';
+import 'package:drivalry/data/supabase/supabase_providers.dart';
+import 'package:drivalry/data/sync/outbox.dart';
 import 'package:drivalry/features/drive/drive_screen.dart';
 import 'package:drivalry/tracking/providers.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +16,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'support/fake_tracking_port.dart';
 import 'support/sqlite_support.dart';
 import 'support/widget_support.dart';
+
+const _me = 'me-0000';
+
+/// Friends whose refresh returns the cache instead of an empty snapshot.
+class _CachedFriendsRepo extends FriendsRepo {
+  _CachedFriendsRepo({
+    required super.db,
+    required super.outbox,
+    required super.me,
+  }) : super(clientOf: () => null);
+
+  @override
+  Future<FriendsSnapshot> fetch() async =>
+      await cached() ?? const FriendsSnapshot();
+}
 
 void main() {
   // testWidgets takes a bool; the reason is printed by the unit tests.
@@ -67,6 +88,78 @@ void main() {
       ),
       findsWidgets,
     );
+    await unmountAndSettle(tester);
+  }, skip: skip);
+
+  testWidgets('the Friends tab carries a dot while a request waits', (
+    tester,
+  ) async {
+    final snapshot = FriendsSnapshot(
+      incoming: [
+        FriendRequest(
+          requesterId: 'jordan',
+          addresseeId: _me,
+          other: const FriendProfile(
+            id: 'jordan',
+            handle: 'jordan',
+            displayName: 'Jordan',
+          ),
+          direction: FriendRequestDirection.incoming,
+          createdAt: DateTime.utc(2026, 11, 2),
+        ),
+      ],
+    );
+    await db.cachePut(
+      FriendsRepo.cacheKey,
+      jsonEncode(snapshot.toJson()),
+      DateTime.now().millisecondsSinceEpoch,
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(db),
+          trackingPortProvider.overrideWithValue(port),
+          deepLinkSourceProvider.overrideWithValue(const NoDeepLinks()),
+          currentUserIdProvider.overrideWithValue(_me),
+          friendsRepoProvider.overrideWith(
+            (ref) => _CachedFriendsRepo(
+              db: ref.watch(databaseProvider),
+              outbox: ref.watch(outboxWorkerProvider),
+              me: () => _me,
+            ),
+          ),
+        ],
+        child: const DrivalryApp(),
+      ),
+    );
+    await pumpFor(tester, const Duration(seconds: 1));
+
+    // Only one of icon/selectedIcon is in the tree, so one Badge per tab.
+    Badge friendsDot() => tester.widget<Badge>(
+      find.descendant(
+        of: find.widgetWithText(NavigationDestination, 'Friends'),
+        matching: find.byType(Badge),
+      ),
+    );
+    expect(friendsDot().isLabelVisible, isTrue);
+    // The other tabs never carry one.
+    expect(
+      find.descendant(
+        of: find.widgetWithText(NavigationDestination, 'Drive'),
+        matching: find.byType(Badge),
+      ),
+      findsNothing,
+    );
+
+    // Declining drops the request from the cache: the dot goes with it.
+    await FriendsRepo(
+      clientOf: () => null,
+      db: db,
+      outbox: OutboxWorker(db),
+      me: () => _me,
+    ).remove('jordan');
+    await pumpFor(tester, const Duration(seconds: 1));
+    expect(friendsDot().isLabelVisible, isFalse);
     await unmountAndSettle(tester);
   }, skip: skip);
 }
